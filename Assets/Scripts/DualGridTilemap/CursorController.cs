@@ -55,9 +55,10 @@ public partial class CursorController : MonoBehaviour {
     void Update() {
         if (mouse == null || mainCamera == null || playerTransform == null) return;
         
-        // Hide cursor when inventory is open or dialogue is active
+        // Hide cursor when inventory is open, dialogue is active, or SellBox is open
         if ((playerInventory != null && playerInventory.IsInventoryOpen) ||
-            (dialogueUI != null && dialogueUI.IsDialogueActive)) {
+            (dialogueUI != null && dialogueUI.IsDialogueActive) ||
+            IsSellBoxOpen()) {
             cursorRenderer.enabled = false;
             return;
         } else {
@@ -215,19 +216,43 @@ public partial class CursorController : MonoBehaviour {
     }
 
     private GameObject CheckForInteractableAt(Vector3Int tilePos) {
-        // Primeiro verifica o dicionário de SoilBlocks
+        // First check the SoilBlocks dictionary
         if (soilBlocks.TryGetValue(tilePos, out GameObject existingSoil)) {
+            Debug.Log($"[CursorController] Found SoilBlock at {tilePos}: {existingSoil.name}");
             return existingSoil;
         }
 
-        // Depois faz uma verificação física
+        // Then do a physical check for other interactables
         Vector2 worldPos = new Vector2(tilePos.x + 0.5f, tilePos.y + 0.5f);
-        Collider2D hitCollider = Physics2D.OverlapCircle(worldPos, 0.4f, interactableLayer);
-
+        
+        // Try multiple detection methods to be thorough
+        
+        // Method 1: Layer-based overlap circle
+        Collider2D hitCollider = Physics2D.OverlapCircle(worldPos, 0.6f, interactableLayer);
         if (hitCollider != null && hitCollider.GetComponent<IInteractable>() != null) {
+            Debug.Log($"[CursorController] Found layered interactable at {tilePos}: {hitCollider.name} on layer {hitCollider.gameObject.layer}");
             return hitCollider.gameObject;
         }
+        
+        // Method 2: Check all colliders in area (no layer restriction)
+        Collider2D[] allColliders = Physics2D.OverlapCircleAll(worldPos, 0.6f);
+        foreach (var collider in allColliders) {
+            IInteractable interactable = collider.GetComponent<IInteractable>();
+            if (interactable != null) {
+                Debug.Log($"[CursorController] Found general interactable at {tilePos}: {collider.name} on layer {collider.gameObject.layer}");
+                return collider.gameObject;
+            }
+        }
+        
+        // Method 3: Direct check for SellBox components in area
+        foreach (var collider in allColliders) {
+            if (collider.GetComponent<SellBox>() != null) {
+                Debug.Log($"[CursorController] Found SellBox directly at {tilePos}: {collider.name}");
+                return collider.gameObject;
+            }
+        }
 
+        Debug.Log($"[CursorController] No interactables found at {tilePos}");
         return null;
     }
 
@@ -273,5 +298,16 @@ public partial class CursorController : MonoBehaviour {
     private bool IsMouseOverUI() {
         return UnityEngine.EventSystems.EventSystem.current != null && 
                UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject();
+    }
+    
+    // Helper method to check if any SellBox is currently open
+    private bool IsSellBoxOpen() {
+        SellBox[] sellBoxes = FindObjectsByType<SellBox>(FindObjectsSortMode.None);
+        foreach (SellBox sellBox in sellBoxes) {
+            if (sellBox != null && sellBox.IsOpen) {
+                return true;
+            }
+        }
+        return false;
     }
 }

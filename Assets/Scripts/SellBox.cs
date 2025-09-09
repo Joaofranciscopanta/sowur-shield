@@ -83,6 +83,7 @@ public class SellBox : MonoBehaviour, IInteractable
     private PlayerStats playerStats;
     private Inventory playerInventory;
     private Transform playerTransform;
+    private PlayerMove playerMove;
 
     public System.Action<int> OnItemsSold;
     public System.Action OnSellBoxToggled;
@@ -107,10 +108,14 @@ public class SellBox : MonoBehaviour, IInteractable
         playerStats = FindFirstObjectByType<PlayerStats>();
         playerInventory = FindFirstObjectByType<Inventory>();
         
-        // Find player transform for distance checking
+        // Find player transform and PlayerMove component for distance checking and movement control
         var player = GameObject.FindWithTag("Player");
         if (player == null) player = FindFirstObjectByType<PlayerMove>()?.gameObject;
-        if (player != null) playerTransform = player.transform;
+        if (player != null) 
+        {
+            playerTransform = player.transform;
+            playerMove = player.GetComponent<PlayerMove>();
+        }
 
         UpdateTotalValueDisplay();
         UpdateBoxSprite();
@@ -156,6 +161,7 @@ public class SellBox : MonoBehaviour, IInteractable
             float distance = Vector3.Distance(transform.position, playerTransform.position);
             if (distance > maxInteractionDistance)
             {
+                Debug.Log("SellBox: Auto-closing due to distance");
                 CloseSellBox();
             }
         }
@@ -273,6 +279,13 @@ public class SellBox : MonoBehaviour, IInteractable
         
         isSellBoxOpen = true;
         
+        // Disable player movement when SellBox is open
+        if (playerMove != null)
+        {
+            playerMove.DisableMovement();
+            Debug.Log("SellBox: Player movement disabled");
+        }
+        
         // Ensure cursor is visible for UI interaction
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -295,6 +308,13 @@ public class SellBox : MonoBehaviour, IInteractable
     public void CloseSellBox()
     {
         isSellBoxOpen = false;
+        
+        // Re-enable player movement when SellBox is closed
+        if (playerMove != null)
+        {
+            playerMove.EnableMovement();
+            Debug.Log("SellBox: Player movement enabled");
+        }
         
         // Use UIManager if available
         if (UIManager.Instance != null && sellBoxMainPanel != null)
