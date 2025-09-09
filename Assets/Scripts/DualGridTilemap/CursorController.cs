@@ -93,27 +93,125 @@ public partial class CursorController : MonoBehaviour {
         // Atualizar posição do cursor
         transform.position = cursorPosition;
 
-        // Verificar por objetos interagíveis
+        // Check for interactable objects and update cursor visual feedback
         currentInteractableObject = CheckForInteractableAt(activeTilePos);
-        cursorRenderer.color = (currentInteractableObject != null) ? interactableColor : normalColor;
+        UpdateCursorVisual(activeTilePos);
 
-        // Processar interações com clique
-        // Don't process tool clicks while dragging inventory items or when mouse is over UI
+        // Process left-click interactions with proper priority
+        // Don't process clicks while dragging inventory items or when mouse is over UI
         if (mouse.leftButton.wasPressedThisFrame && 
             !InventorySlot.IsAnySlotDragging && 
             !IsMouseOverUI()) {
-            // Se há um interagível, interaja com ele
-            if (currentInteractableObject != null) {
-                IInteractable interactable = currentInteractableObject.GetComponent<IInteractable>();
-                if (interactable != null) {
-                    interactable.Interact();
-                }
-            }
-            // Se não há interagível e temos uma enxada, crie um SoilBlock
-            else if (IsUsingHoe()) {
-                CreateSoilBlock(activeTilePos);
+            
+            ProcessHexInteraction(activeTilePos);
+        }
+    }
+
+    /// <summary>
+    /// Process left-click interaction at the specified hex position with proper priority:
+    /// 1. Objects in the hex (SellBox, NPCs, etc.) - HIGHEST PRIORITY
+    /// 2. Tools in hand (Hoe, WateringCan, etc.) - LOWEST PRIORITY
+    /// </summary>
+    private void ProcessHexInteraction(Vector3Int hexPos) {
+        // PRIORITY 1: Check for interactable objects at this hex position
+        GameObject interactableAtHex = CheckForInteractableAt(hexPos);
+        
+        if (interactableAtHex != null) {
+            IInteractable interactable = interactableAtHex.GetComponent<IInteractable>();
+            if (interactable != null) {
+                Debug.Log($"[CursorController] Interacting with object: {interactableAtHex.name} at hex {hexPos}");
+                interactable.Interact();
+                return; // Object interaction takes priority - stop here
             }
         }
+        
+        // PRIORITY 2: No objects in hex, check for tool usage
+        if (HasToolInHand()) {
+            Item selectedTool = playerInventory.GetSelectedItem();
+            if (selectedTool != null) {
+                ProcessToolUsage(selectedTool, hexPos);
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Check if player has any tool in their hand
+    /// </summary>
+    private bool HasToolInHand() {
+        if (playerInventory == null) return false;
+        
+        Item selectedItem = playerInventory.GetSelectedItem();
+        return selectedItem != null && HasToolTag(selectedItem);
+    }
+    
+    /// <summary>
+    /// Check if item has any tool-related tags
+    /// </summary>
+    private bool HasToolTag(Item item) {
+        if (item == null || item.itemTags == null) return false;
+        
+        // Check for any tool tags
+        return item.itemTags.Contains("Hoe") || 
+               item.itemTags.Contains("WateringCan") || 
+               item.itemTags.Contains("Shovel") ||
+               item.itemTags.Contains("Tool"); // Generic tool tag
+    }
+    
+    /// <summary>
+    /// Process tool usage based on the specific tool type
+    /// </summary>
+    private void ProcessToolUsage(Item tool, Vector3Int hexPos) {
+        if (tool.itemTags.Contains("Hoe")) {
+            Debug.Log($"[CursorController] Using Hoe at hex {hexPos}");
+            CreateSoilBlock(hexPos);
+        }
+        // Add other tool types here as needed:
+        // else if (tool.itemTags.Contains("WateringCan")) {
+        //     ProcessWateringCan(hexPos);
+        // }
+        // else if (tool.itemTags.Contains("Shovel")) {
+        //     ProcessShovel(hexPos);
+        // }
+    }
+    
+    /// <summary>
+    /// Update cursor visual feedback based on what's available at the hex position
+    /// </summary>
+    private void UpdateCursorVisual(Vector3Int hexPos) {
+        // Priority 1: Objects take precedence for visual feedback
+        if (currentInteractableObject != null) {
+            cursorRenderer.color = interactableColor; // Green for interactable objects
+            return;
+        }
+        
+        // Priority 2: Show tool feedback if we have a tool
+        if (HasToolInHand()) {
+            Item selectedTool = playerInventory.GetSelectedItem();
+            if (selectedTool != null && CanUseToolAt(selectedTool, hexPos)) {
+                cursorRenderer.color = Color.yellow; // Yellow for tool usage
+                return;
+            }
+        }
+        
+        // Default: Normal cursor
+        cursorRenderer.color = normalColor;
+    }
+    
+    /// <summary>
+    /// Check if the selected tool can be used at the specified hex position
+    /// </summary>
+    private bool CanUseToolAt(Item tool, Vector3Int hexPos) {
+        if (tool.itemTags.Contains("Hoe")) {
+            // Hoe can be used if there's no SoilBlock already there
+            return !soilBlocks.ContainsKey(hexPos);
+        }
+        
+        // Add checks for other tools as needed
+        // if (tool.itemTags.Contains("WateringCan")) {
+        //     return CanWaterAt(hexPos);
+        // }
+        
+        return true; // Default: tool can be used
     }
 
     private GameObject CheckForInteractableAt(Vector3Int tilePos) {
@@ -133,15 +231,6 @@ public partial class CursorController : MonoBehaviour {
         return null;
     }
 
-    private bool IsUsingHoe() {
-        if (playerInventory == null) return false;
-
-        Item selectedItem = playerInventory.GetSelectedItem();
-        if (selectedItem == null) return false;
-
-        // Verifica se o item tem a tag "Hoe"
-        return selectedItem.itemTags != null && selectedItem.itemTags.Contains(hoeTag);
-    }
 
     private void CreateSoilBlock(Vector3Int tilePos) {
         // Verifica se já existe um SoilBlock nesta posição
