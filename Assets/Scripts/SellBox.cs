@@ -96,6 +96,11 @@ public class SellBox : MonoBehaviour, IInteractable
     
     // Flag to track if UI needs updating after inactive period
     private bool needsUIUpdate = false;
+    
+    // Auto-close system
+    private bool isTrackingInputForClose = false;
+    private float inputTrackingStartTime = 0f;
+    private const float autoCloseDelay = 0.5f;
 
     private void Awake()
     {
@@ -155,15 +160,22 @@ public class SellBox : MonoBehaviour, IInteractable
     
     private void Update()
     {
-        // Auto-close if player moves too far away
-        if (isSellBoxOpen && playerTransform != null)
+        if (isSellBoxOpen)
         {
-            float distance = Vector3.Distance(transform.position, playerTransform.position);
-            if (distance > maxInteractionDistance)
+            // Auto-close if player moves too far away
+            if (playerTransform != null)
             {
-                Debug.Log("SellBox: Auto-closing due to distance");
-                CloseSellBox();
+                float distance = Vector3.Distance(transform.position, playerTransform.position);
+                if (distance > maxInteractionDistance)
+                {
+                    Debug.Log("SellBox: Auto-closing due to distance");
+                    CloseSellBox();
+                    return;
+                }
             }
+            
+            // Check for movement or interaction attempts to auto-close
+            CheckForInputAutoClose();
         }
         
         // Check if UI needs updating after being inactive (e.g., after sleep selling)
@@ -173,6 +185,67 @@ public class SellBox : MonoBehaviour, IInteractable
             ForceUpdateAllUI();
             needsUIUpdate = false;
         }
+    }
+    
+    /// <summary>
+    /// Check for movement or interaction input attempts and auto-close after delay
+    /// </summary>
+    private void CheckForInputAutoClose()
+    {
+        bool hasMovementInput = false;
+        bool hasInteractionInput = false;
+        
+        // Check for movement input (WASD or Arrow keys)
+        if (UnityEngine.Input.GetKey(KeyCode.W) || UnityEngine.Input.GetKey(KeyCode.UpArrow) ||
+            UnityEngine.Input.GetKey(KeyCode.S) || UnityEngine.Input.GetKey(KeyCode.DownArrow) ||
+            UnityEngine.Input.GetKey(KeyCode.A) || UnityEngine.Input.GetKey(KeyCode.LeftArrow) ||
+            UnityEngine.Input.GetKey(KeyCode.D) || UnityEngine.Input.GetKey(KeyCode.RightArrow))
+        {
+            hasMovementInput = true;
+        }
+        
+        // Check for interaction input (E key)
+        if (UnityEngine.Input.GetKey(KeyCode.E))
+        {
+            hasInteractionInput = true;
+        }
+        
+        // Start tracking if we detect input
+        if ((hasMovementInput || hasInteractionInput) && !isTrackingInputForClose)
+        {
+            isTrackingInputForClose = true;
+            inputTrackingStartTime = Time.time;
+            Debug.Log($"SellBox: Started tracking input for auto-close (Movement: {hasMovementInput}, Interaction: {hasInteractionInput})");
+        }
+        
+        // Continue tracking and check for auto-close
+        if (isTrackingInputForClose)
+        {
+            // If input stops, reset tracking
+            if (!hasMovementInput && !hasInteractionInput)
+            {
+                isTrackingInputForClose = false;
+                Debug.Log("SellBox: Input stopped, cancelled auto-close tracking");
+                return;
+            }
+            
+            // If we've been tracking for the delay period, auto-close
+            if (Time.time - inputTrackingStartTime >= autoCloseDelay)
+            {
+                Debug.Log($"SellBox: Auto-closing after {autoCloseDelay}s of input attempts");
+                CloseSellBox();
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Reset input tracking state
+    /// </summary>
+    private void ResetInputTracking()
+    {
+        isTrackingInputForClose = false;
+        inputTrackingStartTime = 0f;
+        Debug.Log("SellBox: Input tracking reset");
     }
     
     private void ValidateSetup()
@@ -279,6 +352,9 @@ public class SellBox : MonoBehaviour, IInteractable
         
         isSellBoxOpen = true;
         
+        // Reset input tracking for auto-close
+        ResetInputTracking();
+        
         // Disable player movement when SellBox is open
         if (playerMove != null)
         {
@@ -308,6 +384,9 @@ public class SellBox : MonoBehaviour, IInteractable
     public void CloseSellBox()
     {
         isSellBoxOpen = false;
+        
+        // Reset input tracking
+        ResetInputTracking();
         
         // Re-enable player movement when SellBox is closed
         if (playerMove != null)
