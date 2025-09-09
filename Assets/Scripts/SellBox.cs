@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -189,23 +190,28 @@ public class SellBox : MonoBehaviour, IInteractable
     
     /// <summary>
     /// Check for movement or interaction input attempts and auto-close after delay
+    /// Uses Unity's new Input System
     /// </summary>
     private void CheckForInputAutoClose()
     {
         bool hasMovementInput = false;
         bool hasInteractionInput = false;
         
+        // Get current keyboard state
+        var keyboard = Keyboard.current;
+        if (keyboard == null) return; // No keyboard available
+        
         // Check for movement input (WASD or Arrow keys)
-        if (UnityEngine.Input.GetKey(KeyCode.W) || UnityEngine.Input.GetKey(KeyCode.UpArrow) ||
-            UnityEngine.Input.GetKey(KeyCode.S) || UnityEngine.Input.GetKey(KeyCode.DownArrow) ||
-            UnityEngine.Input.GetKey(KeyCode.A) || UnityEngine.Input.GetKey(KeyCode.LeftArrow) ||
-            UnityEngine.Input.GetKey(KeyCode.D) || UnityEngine.Input.GetKey(KeyCode.RightArrow))
+        if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed ||
+            keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed ||
+            keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed ||
+            keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed)
         {
             hasMovementInput = true;
         }
         
         // Check for interaction input (E key)
-        if (UnityEngine.Input.GetKey(KeyCode.E))
+        if (keyboard.eKey.isPressed)
         {
             hasInteractionInput = true;
         }
