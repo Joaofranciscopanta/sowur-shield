@@ -209,6 +209,14 @@ The project follows excellent separation of concerns with modular script organiz
 - **Value Calculation**: Configurable sell multiplier (default 80%)
 - **Visual Feedback**: Dynamic box sprites based on contents
 - **UI Management**: Exclusive window management preventing conflicts
+- **Movement Control**: Player movement disabled while SellBox is open
+- **Auto-Close System**: Closes after 0.5s of movement/interaction attempts
+
+**Auto-Close Behavior:**
+- **Movement Detection**: WASD or Arrow keys held for 0.5+ seconds
+- **Interaction Detection**: E key held for 0.5+ seconds  
+- **Smart Reset**: Brief key presses won't trigger close (allows responsive UI)
+- **Automatic Recovery**: Movement immediately restored after auto-close
 
 ### 8. Dialogue System
 **Tree-Based Architecture:**
@@ -273,19 +281,77 @@ The project follows excellent separation of concerns with modular script organiz
 - `InteractionManager.cs:176-179,205-214`
 - `SellBox.cs:252-256`
 
-### Bug #2: Tool Clicking
-**Issue**: Could not click to use tools in certain situations
+### Bug #2: Interaction Priority Issues
+**Issue**: Hoe would create hex blocks even when clicking on SellBox, and player could move while SellBox was open
 **Root Causes**:
-1. Mouse clicks blocked when `IsMouseOverUI()` returned true, preventing legitimate tool usage
-2. Unity's Input System mouse detection potentially failing
+1. Incorrect interaction priority - tools had precedence over objects
+2. Insufficient object detection reliability (small radius, single method)
+3. No movement restriction during UI interactions
 
 **Fixes Applied**:
-1. Added `IsMouseOverCursor()` method allowing tool usage when mouse within cursor area
-2. Enhanced click logic to bypass UI blocking when over cursor position
-3. Added fallback Input.GetMouseButtonDown(0) for reliable mouse detection
-4. Added comprehensive debug logging for click detection and processing
+1. **Priority System Overhaul**: Objects now always take priority over tools
+2. **Enhanced Detection**: Multiple detection methods with larger radius (0.6f vs 0.4f)
+3. **Movement Control**: Player movement disabled when SellBox is open
+4. **Cursor Management**: Tool cursor hidden when SellBox is active
+5. **Comprehensive Logging**: Debug tracking for all interaction attempts
 
-**Files Modified**: `CursorController.cs:102-129,190-194`
+**Priority Order (NEW)**:
+1. Objects in hex (SellBox, NPCs, Soil) - HIGHEST PRIORITY
+2. Tools in hand (Hoe, WateringCan) - LOWEST PRIORITY
+
+**Files Modified**: 
+- `CursorController.cs:115-175,217-256,303-312` - Priority system and detection
+- `SellBox.cs:86,112-118,281-286,311-316` - Movement control integration
+
+### Bug #3: Cursor-Based Interaction Improvement
+**Issue**: SellBox and similar objects would respond to clicks anywhere in their hex tile, not requiring cursor to be over the actual sprite
+**Root Cause**: Interaction system used grid-based hex detection instead of direct cursor collision
+
+**Solution Applied**:
+1. **Dual Interaction System**:
+   - **Left-Click (Mouse)**: Direct cursor collision detection using raycasting - requires cursor to be over the sprite
+   - **E Key**: Proximity-based interaction via InteractionManager - works within range regardless of cursor position
+
+2. **New Priority System for Left-Click**:
+   - **HIGHEST**: Direct mouse cursor collision with sprites (SellBox, NPCs)
+   - **MEDIUM**: Hex-based interaction for grid objects (SoilBlocks, Beds)  
+   - **LOWEST**: Tool usage when no objects are present
+
+3. **Visual Feedback Enhancement**:
+   - Green cursor: Direct collision with interactable sprites
+   - Green cursor: Grid-based objects in current hex
+   - Yellow cursor: Tool can be used at current position
+   - White cursor: No interactions available
+
+**Files Modified**:
+- `CursorController.cs:116-152,234-300` - Added CheckForDirectMouseHit() and improved priority system
+- `PlayerMove.cs:169-170` - Added documentation clarifying E key vs left-click behavior
+
+**Behavior Changes**:
+- **SellBox**: Now requires cursor to be over the actual SellBox sprite to open with left-click
+- **NPCs**: Same direct cursor requirement for left-click interaction
+- **Soil Blocks**: Still use hex-based detection since they align to grid
+- **Tools**: Only activate when no objects are present at cursor/hex position
+- **E Key**: Unchanged - still works with proximity-based InteractionManager
+
+### Bug #4: Fixed Proximity-Based SellBox Issue
+**Issue**: SellBox was still triggering on left-clicks anywhere within collision radius, not requiring cursor to be over sprite
+**Root Cause**: `ProcessHexInteraction()` was falling back to `CheckForInteractableAt()` which used large collision detection radius
+
+**Solution Applied**:
+1. **Separated Grid vs Direct Detection**:
+   - Created `CheckForGridObjectsOnly()` method for soil blocks and beds only
+   - Modified `ProcessHexInteraction()` to use precise detection methods
+   - Removed SellBox/NPC detection from hex-based collision checking
+
+2. **Refined Detection Hierarchy**:
+   - **Direct Mouse Hit**: Uses raycasting and OverlapPoint for SellBox/NPCs
+   - **Grid Detection**: Uses 0.3f radius only for SoilBlock/Bed components  
+   - **Tool Usage**: Only when no objects detected at cursor position
+
+**Files Modified**:
+- `CursorController.cs:137-146,320-342` - Added CheckForGridObjectsOnly() method
+- `CursorController.cs:104,200-218` - Updated visual feedback and detection flow
 
 ### Debug Features Added
 **Comprehensive logging system added to track**:
@@ -344,26 +410,146 @@ The project follows excellent separation of concerns with modular script organiz
 
 ## Testing Recommendations
 
-1. **Interaction Testing**:
-   - Test E key interaction with SellBox at various distances
-   - Verify interaction priority when multiple objects nearby
-   - Test interaction during UI states (inventory open, etc.)
+### 1. **Priority-Based Interaction Testing**:
+   - **SellBox + Hoe**: Click on SellBox hex with hoe in hand → Should open SellBox (NOT create soil)
+   - **Empty Hex + Hoe**: Click on empty hex with hoe → Should create soil block
+   - **NPC + Tool**: Click on NPC hex with any tool → Should start dialogue
+   - **Multiple Objects**: Test priority when multiple objects overlap
 
-2. **Tool Usage Testing**:
-   - Test left-click tool usage at cursor position
-   - Verify tool usage works when mouse over UI elements
-   - Test hoe soil creation functionality
+### 2. **Movement Control Testing**:
+   - **SellBox Open**: Player should NOT be able to move when SellBox is open
+   - **SellBox Close**: Player movement should resume when SellBox is closed
+   - **Distance Auto-Close**: Movement should resume if SellBox auto-closes due to distance
+   - **Input Auto-Close**: Hold WASD for 0.5s → Should auto-close and restore movement
+   - **E Key Auto-Close**: Hold E for 0.5s → Should auto-close SellBox
+   - **Brief Key Presses**: Quick WASD/E taps should NOT trigger auto-close
+   - **Multiple UI**: Test with inventory + SellBox interactions
 
-3. **UI Integration Testing**:
-   - Test drag-and-drop between inventory and sellbox
-   - Verify cursor visibility in different UI states
-   - Test Escape key UI closing functionality
+### 3. **Visual Feedback Testing**:
+   - **Green Cursor**: Should appear when hovering over interactable objects
+   - **Yellow Cursor**: Should appear when tool can be used at empty hex
+   - **White Cursor**: Default state when no interactions available
+   - **Hidden Cursor**: Should hide when SellBox/inventory/dialogue is open
+
+### 4. **Tool Usage Testing**:
+   - **Hoe Detection**: Only use hoe when no objects present in hex
+   - **Tool Validation**: Test with different tool types and tags
+   - **Distance Limits**: Ensure tools respect maxDistance limitations
+
+### 5. **Integration Testing**:
+   - **E Key vs Left Click**: Both should respect same priority system
+   - **UI State Management**: No conflicts between different UI systems
+   - **Debug Logging**: Check console for proper interaction flow tracking
 
 ## Known Considerations
 
 - Hold interactions removed from input actions - may affect other game mechanics if they relied on hold behavior
 - Tool clicking now allowed when mouse over cursor area - may need fine-tuning based on gameplay feel
 - InteractionManager system provides better interaction priority than collision-based fallback
+
+## Main Menu System Implementation
+
+### New Main Menu Components ✨
+
+**MainMenuUI.cs** - Complete main menu interface:
+- **New Game**: Starts fresh game with save overwrite confirmation
+- **Continue**: Loads existing save (disabled when no save exists) 
+- **Settings**: Full audio/graphics settings with PlayerPrefs persistence
+- **Credits**: Expandable credits/about section
+- **Quit**: Application quit with confirmation dialog
+- **Save Info Display**: Shows basic save file information when available
+- **Loading Screen**: Integrated loading progress and tips
+
+**MainMenuManager.cs** - Singleton coordinator:
+- **Scene Integration**: Manages main menu initialization and cleanup
+- **Audio Management**: Background music with volume control
+- **Input Handling**: Navigation and ESC key support
+- **Settings Integration**: Coordinates with save system and audio settings
+- **Debug Support**: Comprehensive debug information for development
+
+**SceneTransitionManager.cs** - Smooth scene loading system:
+- **Async Loading**: Non-blocking scene transitions with progress tracking
+- **Fade Effects**: Configurable fade in/out transitions
+- **Loading Screens**: Customizable loading UI with tips and progress bars
+- **Minimum Load Time**: Ensures loading screen shows long enough for good UX
+- **Audio Feedback**: Transition sound effects
+- **Scene-Specific Callbacks**: Custom initialization for different scenes
+
+### Integration with Existing Systems ✅
+
+**SaveManager Integration**:
+- Continue button automatically disabled when no save exists
+- New game confirmation when save file would be overwritten
+- Save file info display (requires SaveManager.GetSaveFileInfo() implementation)
+
+**GameMenuManager Compatibility**:
+- "Quit to Main Menu" functionality already exists and works with new MainMenuUI
+- Consistent singleton pattern and event-driven architecture
+- Shared settings system through PlayerPrefs
+
+**Audio System Integration**:
+- Volume controls affect both menu and game audio
+- Sound effect playback respects SFX and Master volume settings
+- Background music with proper volume mixing
+
+### Scene Flow Architecture 🔄
+
+```
+MainMenu Scene → MainMenuUI → SceneTransitionManager → MainGameScene
+     ↑                                                        ↓
+GameMenuManager ← "Quit to Main Menu" ← In-Game ESC Menu ←────┘
+```
+
+**New Game Flow**:
+1. Check for existing save → Confirm overwrite if needed
+2. Clear save data → Play start sound
+3. Load MainGameScene via SceneTransitionManager
+4. Initialize fresh game state
+
+**Continue Game Flow**:
+1. Verify save file exists → Load MainGameScene
+2. SaveManager automatically loads save data in new scene
+3. Player continues from last save point
+
+### UI Architecture & Features 🎨
+
+**Panel Management System**:
+- Main Panel: Core navigation buttons
+- Settings Panel: Reusable audio/graphics controls
+- Credits Panel: Game information and credits
+- Confirmation Dialogs: Yes/No confirmations for important actions
+- Loading Panel: Progress bar, tips, and status text
+
+**Visual Polish**:
+- Button state management (disabled Continue when no save)
+- Color-coded feedback (success/error states)
+- Loading tips system with randomized helpful hints
+- Progress tracking with descriptive loading messages
+
+**Input Support**:
+- Mouse/touch button interaction
+- Keyboard navigation (ESC to cancel/back)
+- Extensible input action system for controller support
+
+### Files Added 📁
+- `MainMenuUI.cs` - Core main menu functionality and UI management
+- `MainMenuManager.cs` - Main menu coordinator and singleton manager  
+- `SceneTransitionManager.cs` - Advanced scene loading with transitions
+
+### Setup Requirements 🔧
+
+**MainMenu Scene Setup**:
+1. Add MainMenuManager script to a manager GameObject
+2. Add MainMenuUI script to UI Canvas
+3. Add SceneTransitionManager to a persistent GameObject
+4. Assign UI references (buttons, panels, sliders, etc.)
+5. Configure audio sources and clips
+6. Set up loading screen UI elements
+
+**Integration Notes**:
+- SceneTransitionManager persists between scenes (DontDestroyOnLoad)
+- MainMenuManager is scene-specific (destroyed on scene change)
+- SaveManager integration requires GetSaveFileInfo() method (currently placeholder)
 
 ## Advanced Features
 
@@ -372,12 +558,14 @@ The project follows excellent separation of concerns with modular script organiz
 - **Distance-Based Calculations**: Interaction optimization
 - **Conditional Updates**: UI updates only when necessary
 - **LayerMask Usage**: Efficient collision detection
+- **Async Scene Loading**: Non-blocking transitions with progress tracking
 
 ### Extensibility Features:
 - **ScriptableObject-Based Data**: Easy content creation
 - **Tag-Based Tool System**: Flexible tool categorization
 - **Event-Driven Architecture**: Loose coupling between systems
 - **Interface-Based Design**: Easy addition of new interactable types
+- **Modular UI System**: Reusable settings and confirmation panels
 
 ### Unity Integration:
 - **Unity Input System**: Modern input handling
@@ -385,6 +573,7 @@ The project follows excellent separation of concerns with modular script organiz
 - **Animator System**: Character animation integration
 - **Audio System**: Sound effect management
 - **UI System**: UGUI with TextMeshPro integration
+- **Scene Management**: Async loading with proper lifecycle management
 
 ## Project Synchronization Strategy
 
