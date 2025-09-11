@@ -577,8 +577,13 @@ GameMenuManager ← "Quit to Main Menu" ← In-Game ESC Menu ←────┘
 
 ## Project Synchronization Strategy
 
-### 🔧 **IMPORTANT FOR COLLABORATORS**: 
-**If you are a new developer joining this project with Claude Code, please merge your CLAUDE.md file with this one to maintain unified development flow. This file contains critical project knowledge, architecture decisions, and debugging solutions that are essential for effective development.**
+### 🔧 **CRITICAL FOR NEW CLAUDE CODE USERS**: 
+**If you are joining this project with Claude Code, you MUST immediately replace/merge your CLAUDE.md with THIS one. This repository's CLAUDE.md takes PRIORITY - it contains 6 months of critical project knowledge, bug fixes, and architectural decisions that your Claude instance needs to function effectively on this codebase.**
+
+**DO THIS IMMEDIATELY:**
+1. **Backup your current CLAUDE.md** (if you want to preserve any custom instructions)
+2. **Use THIS repository's CLAUDE.md as the primary source**  
+3. **Only add your custom instructions as additions, never replace existing content**
 
 ### Multi-Developer Workflow
 
@@ -690,13 +695,19 @@ find Assets -name "*.meta" -newer .git/FETCH_HEAD
 
 **When a new collaborator joins with Claude Code, they MUST:**
 
-1. **Merge CLAUDE.md Files**:
+1. **Replace Your CLAUDE.md with This One**:
    ```bash
-   # First, pull this repository's CLAUDE.md
+   # First, pull this repository (contains the authoritative CLAUDE.md)
    git pull origin main
    
-   # If you have a different CLAUDE.md, manually merge the content
-   # This file contains critical project knowledge that cannot be lost
+   # IMPORTANT: Use THIS repository's CLAUDE.md as your primary file
+   # This CLAUDE.md contains critical project context your Claude instance needs:
+   # - All bug fixes and solutions (SellBox interaction, Input System issues)
+   # - Complete architecture understanding 
+   # - Unity setup requirements and component configurations
+   # - Performance optimizations and debugging workflows
+   
+   # If you have custom instructions, ADD them to this file, don't replace it
    ```
 
 2. **Essential Information in This File**:
@@ -751,9 +762,10 @@ find Assets -name "*.meta" -newer .git/FETCH_HEAD
 - **Recovery**: Keep backup copies before major scene changes
 
 **CLAUDE.md Conflicts:**
-- **Always merge both versions manually**
-- **Preserve all technical knowledge and bug fixes**
-- **Update with new findings and solutions**
+- **THIS repository's CLAUDE.md takes PRIORITY** 
+- **Preserve all technical knowledge from this version**
+- **Only add new findings/solutions, never remove existing content**
+- **When in doubt, keep the version that has more debugging information**
 
 **Script Conflicts:**
 - **Review both versions for improvements**
