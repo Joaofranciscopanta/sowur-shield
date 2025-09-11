@@ -577,6 +577,57 @@ GameMenuManager ← "Quit to Main Menu" ← In-Game ESC Menu ←────┘
 
 ## Project Synchronization Strategy
 
+### 🔧 **IMPORTANT FOR COLLABORATORS**: 
+**If you are a new developer joining this project with Claude Code, please merge your CLAUDE.md file with this one to maintain unified development flow. This file contains critical project knowledge, architecture decisions, and debugging solutions that are essential for effective development.**
+
+### Multi-Developer Workflow
+
+#### **Recommended Git Flow for Team Development:**
+
+1. **Feature Branch Workflow** (Recommended):
+   ```bash
+   # Always start with latest main
+   git checkout main
+   git pull origin main
+   
+   # Create feature branch
+   git checkout -b feature/your-feature-name
+   
+   # Work on your changes
+   git add specific-files
+   git commit -m "Descriptive message"
+   git push origin feature/your-feature-name
+   
+   # Create Pull Request for review
+   gh pr create --title "Your Feature" --body "Description"
+   ```
+
+2. **Communication Protocol**:
+   - **Before starting work**: Check for active branches and communicate with team
+   - **Scene modifications**: Coordinate MainMenu.unity and SampleScene.unity changes
+   - **Architecture changes**: Discuss modifications to core systems (GameMenuManager, SaveManager, etc.)
+   - **CLAUDE.md updates**: Always merge documentation changes to maintain project knowledge
+
+3. **Merge Conflict Prevention**:
+   - **Frequent pulls**: `git pull origin main` before starting work
+   - **Small commits**: Keep changes focused and atomic
+   - **Scene coordination**: Only one person modifies Unity scenes at a time
+   - **Script ownership**: Assign primary ownership of major systems
+
+4. **File-Specific Guidelines**:
+   ```bash
+   # Safe to work on simultaneously (low conflict risk):
+   - New scripts in Assets/Scripts/
+   - Individual ScriptableObjects
+   - Art assets and prefabs
+   
+   # Coordinate before modifying (high conflict risk):
+   - MainMenu.unity, SampleScene.unity
+   - GameMenuManager.cs, SaveManager.cs
+   - PlayerControls.inputactions
+   - CLAUDE.md (merge changes together)
+   ```
+
 ### Keeping Claude Code Up-to-Date:
 
 1. **Git Integration** (Recommended):
@@ -632,6 +683,82 @@ find Assets/Scripts -name "*.cs" -mtime -7
 # Check for new Unity assets
 find Assets -name "*.meta" -newer .git/FETCH_HEAD
 ```
+
+### Team Claude Code Synchronization
+
+#### **🚨 CRITICAL: For New Claude Code Instances**
+
+**When a new collaborator joins with Claude Code, they MUST:**
+
+1. **Merge CLAUDE.md Files**:
+   ```bash
+   # First, pull this repository's CLAUDE.md
+   git pull origin main
+   
+   # If you have a different CLAUDE.md, manually merge the content
+   # This file contains critical project knowledge that cannot be lost
+   ```
+
+2. **Essential Information in This File**:
+   - **Bug Fix History**: Solutions to known issues (SellBox interaction, Input System, etc.)
+   - **Architecture Decisions**: Why certain patterns were chosen
+   - **Unity Setup Requirements**: Scene configuration, component assignments
+   - **Debug Workflows**: How to troubleshoot common problems
+   - **Performance Optimizations**: Implemented solutions and rationale
+
+3. **Collaboration Commands**:
+   ```bash
+   # Before starting any work session:
+   git checkout main && git pull origin main
+   
+   # Check what teammates are working on:
+   git branch -r
+   gh pr list
+   
+   # Share your work frequently:
+   git push origin your-branch
+   gh pr create --draft  # For work-in-progress sharing
+   ```
+
+#### **File Ownership & Coordination**
+
+**🔒 High-Conflict Files (One person at a time):**
+- `Assets/Scenes/MainMenu.unity` 
+- `Assets/Scenes/SampleScene.unity`
+- `PlayerControls.inputactions`
+- `CLAUDE.md` (coordinate merges)
+
+**✅ Safe for Parallel Work:**
+- New scripts in `Assets/Scripts/`
+- New prefabs and ScriptableObjects
+- Art assets and materials
+- Individual feature implementations
+
+**📞 Communication Protocol:**
+```bash
+# Before modifying core systems, announce:
+# "Working on GameMenuManager.cs - ETA 2 hours"
+
+# When done:
+# "GameMenuManager changes pushed to feature/menu-enhancements"
+```
+
+#### **Merge Conflict Resolution**
+
+**Unity Scene Conflicts:**
+- **Prevention**: Coordinate scene modifications in advance
+- **Resolution**: Use Unity's conflict resolution or choose one version
+- **Recovery**: Keep backup copies before major scene changes
+
+**CLAUDE.md Conflicts:**
+- **Always merge both versions manually**
+- **Preserve all technical knowledge and bug fixes**
+- **Update with new findings and solutions**
+
+**Script Conflicts:**
+- **Review both versions for improvements**
+- **Test thoroughly after merging**
+- **Document any breaking changes**
 
 ## Future Improvements
 
