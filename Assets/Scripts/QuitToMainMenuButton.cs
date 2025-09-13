@@ -41,7 +41,7 @@ public class QuitToMainMenuButton : MonoBehaviour
         if (audioSource == null)
             audioSource = GetComponent<AudioSource>();
             
-        Debug.Log($"[QuitToMainMenuButton] Quit button setup complete on {gameObject.name}");
+
     }
     
     private void SetupConfirmationDialog()
@@ -65,7 +65,7 @@ public class QuitToMainMenuButton : MonoBehaviour
     /// </summary>
     public void OnQuitButtonClicked()
     {
-        Debug.Log("[QuitToMainMenuButton] Quit button clicked");
+
         
         // Play sound
         PlaySound(clickSound);
@@ -93,7 +93,7 @@ public class QuitToMainMenuButton : MonoBehaviour
                 confirmationText.text = "Return to Main Menu?\n\nAny unsaved progress will be lost.\nMake sure to save your game first!";
             }
             
-            Debug.Log("[QuitToMainMenuButton] Showing confirmation dialog");
+
         }
     }
     
@@ -102,7 +102,7 @@ public class QuitToMainMenuButton : MonoBehaviour
     /// </summary>
     public void ConfirmQuit()
     {
-        Debug.Log("[QuitToMainMenuButton] Quit confirmed by user");
+
         
         // Hide confirmation dialog
         if (confirmationPanel != null)
@@ -120,7 +120,7 @@ public class QuitToMainMenuButton : MonoBehaviour
     /// </summary>
     public void CancelQuit()
     {
-        Debug.Log("[QuitToMainMenuButton] Quit cancelled by user");
+
         
         // Hide confirmation dialog
         if (confirmationPanel != null)
@@ -135,7 +135,7 @@ public class QuitToMainMenuButton : MonoBehaviour
     /// </summary>
     private void QuitToMainMenu()
     {
-        Debug.Log($"[QuitToMainMenuButton] Quitting to main menu scene: {mainMenuSceneName}");
+
         
         // Reset time scale (in case it was paused)
         Time.timeScale = 1f;
@@ -147,7 +147,7 @@ public class QuitToMainMenuButton : MonoBehaviour
         // Try to use GameMenuManager if it exists (for proper cleanup)
         if (GameMenuManager.Instance != null)
         {
-            Debug.Log("[QuitToMainMenuButton] Using GameMenuManager for proper cleanup");
+
             GameMenuManager.Instance.DoQuitToMainMenu();
             return;
         }
@@ -155,13 +155,13 @@ public class QuitToMainMenuButton : MonoBehaviour
         // Try to use SceneTransitionManager if available (for smooth transition)
         if (SceneTransitionManager.Instance != null)
         {
-            Debug.Log("[QuitToMainMenuButton] Using SceneTransitionManager for smooth transition");
+
             SceneTransitionManager.Instance.LoadMainMenu();
             return;
         }
         
         // Fallback: Direct scene loading
-        Debug.Log("[QuitToMainMenuButton] Using direct scene loading (no transition manager found)");
+
         SceneManager.LoadScene(mainMenuSceneName);
     }
     

@@ -32,7 +32,7 @@ public class InventorySpacingFix : MonoBehaviour
     {
         if (inventoryParent == null) return;
         
-        Debug.Log($"Applying spacing to {inventoryParent.childCount} inventory slots");
+
         
         // Get all child slots
         for (int i = 0; i < inventoryParent.childCount; i++)
@@ -52,10 +52,10 @@ public class InventorySpacingFix : MonoBehaviour
             
             slotRect.anchoredPosition = currentPos + spacingOffset;
             
-            Debug.Log($"Slot {i}: Row {row}, Col {col}, Position: {slotRect.anchoredPosition}");
+
         }
         
-        Debug.Log("Inventory spacing applied successfully!");
+
     }
     
     [ContextMenu("Apply Spacing")]
@@ -84,6 +84,6 @@ public class InventorySpacingFix : MonoBehaviour
             slotRect.anchoredPosition = basePosition;
         }
         
-        Debug.Log("Inventory positions reset!");
+
     }
 }

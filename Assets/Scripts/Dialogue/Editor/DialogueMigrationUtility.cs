@@ -118,7 +118,7 @@ public class DialogueMigrationUtility : EditorWindow
         
         hasScannedForLegacy = true;
         
-        Debug.Log("Legacy dialogue scanning disabled - all legacy classes have been removed");
+
     }
     
     private void MigrateLegacyDialogues()

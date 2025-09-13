@@ -73,7 +73,7 @@ public class InventorySetupHelper : EditorWindow
     {
         if (playerObject == null)
         {
-            Debug.LogError("Please assign a Player Object first!");
+
             return;
         }
 
@@ -81,7 +81,7 @@ public class InventorySetupHelper : EditorWindow
         Inventory existingInventory = playerObject.GetComponent<Inventory>();
         if (existingInventory != null)
         {
-            Debug.Log("Inventory component already exists on player!");
+
             return;
         }
 
@@ -98,7 +98,7 @@ public class InventorySetupHelper : EditorWindow
             inventory.slotParent = uiParent;
         }
 
-        Debug.Log("Added Inventory component to player with default settings!");
+
         EditorUtility.SetDirty(playerObject);
     }
 
@@ -106,13 +106,13 @@ public class InventorySetupHelper : EditorWindow
     {
         if (uiParent == null)
         {
-            Debug.LogError("Please assign a UI Parent first!");
+
             return;
         }
 
         if (slotPrefab == null)
         {
-            Debug.LogError("Please assign a Slot Prefab first!");
+
             return;
         }
 
@@ -139,36 +139,36 @@ public class InventorySetupHelper : EditorWindow
             }
         }
 
-        Debug.Log("Created 36 inventory slots!");
+
     }
 
     private void ValidateSetup()
     {
-        Debug.Log("=== INVENTORY SETUP VALIDATION ===");
+
         
         // Check player
         if (playerObject == null)
         {
-            Debug.LogError("❌ No player object assigned!");
+
         }
         else
         {
             Inventory inv = playerObject.GetComponent<Inventory>();
             if (inv == null)
             {
-                Debug.LogError("❌ Player missing Inventory component!");
+
             }
             else
             {
-                Debug.Log("✅ Player has Inventory component");
+
                 
                 if (inv.slotParent == null)
                 {
-                    Debug.LogWarning("⚠️ Inventory missing slotParent reference");
+
                 }
                 else
                 {
-                    Debug.Log($"✅ Slot parent assigned: {inv.slotParent.name}");
+
                 }
             }
         }
@@ -176,7 +176,7 @@ public class InventorySetupHelper : EditorWindow
         // Check UI
         if (uiParent == null)
         {
-            Debug.LogWarning("⚠️ No UI parent assigned");
+
         }
         else
         {
@@ -188,34 +188,34 @@ public class InventorySetupHelper : EditorWindow
                     slotCount++;
                 }
             }
-            Debug.Log($"✅ Found {slotCount} inventory slots in UI");
+
         }
 
         // Check EventSystem
         if (FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>() == null)
         {
-            Debug.LogError("❌ No EventSystem in scene! UI interactions won't work!");
+
         }
         else
         {
-            Debug.Log("✅ EventSystem found");
+
         }
 
-        Debug.Log("=== VALIDATION COMPLETE ===");
+
     }
 
     private void AddTestItems()
     {
         if (playerObject == null)
         {
-            Debug.LogError("Please assign a Player Object first!");
+
             return;
         }
 
         Inventory inventory = playerObject.GetComponent<Inventory>();
         if (inventory == null)
         {
-            Debug.LogError("Player doesn't have Inventory component!");
+
             return;
         }
 
@@ -224,7 +224,7 @@ public class InventorySetupHelper : EditorWindow
         
         if (items.Length == 0)
         {
-            Debug.LogWarning("No Item assets found in Resources/Items/. Create some items first!");
+
             return;
         }
 
@@ -234,7 +234,7 @@ public class InventorySetupHelper : EditorWindow
             inventory.AddItem(items[i], Random.Range(1, 10));
         }
 
-        Debug.Log($"Added {Mathf.Min(5, items.Length)} test items to inventory!");
+
     }
 
     private void FindPlayer()
@@ -243,11 +243,11 @@ public class InventorySetupHelper : EditorWindow
         if (players.Length > 0)
         {
             playerObject = players[0];
-            Debug.Log($"Found player: {playerObject.name}");
+
         }
         else
         {
-            Debug.LogWarning("No GameObject with 'Player' tag found!");
+
         }
     }
 
@@ -261,16 +261,16 @@ public class InventorySetupHelper : EditorWindow
             if (inventoryPanel != null)
             {
                 uiParent = inventoryPanel;
-                Debug.Log($"Found UI parent: {uiParent.name}");
+
             }
             else
             {
-                Debug.Log($"Found Canvas: {canvas.name}, but no 'Inventory' child found");
+
             }
         }
         else
         {
-            Debug.LogWarning("No Canvas found in scene!");
+
         }
     }
 }

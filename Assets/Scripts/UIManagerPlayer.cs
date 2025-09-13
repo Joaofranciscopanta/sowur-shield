@@ -29,7 +29,7 @@ public class UIManagerPlayer : MonoBehaviour
 
         if (timeController != null)
         {
-            Debug.Log("UIManagerPlayer: Encontrou GameTimeController");
+
 
             // Registra para eventos com handlers específicos
             timeController.OnTimeChanged += HandleTimeChanged;  // Este evento agora é disparado a cada 15 minutos
@@ -41,7 +41,7 @@ public class UIManagerPlayer : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("UIManagerPlayer: GameTimeController não encontrado!");
+
         }
 
         // Conecta com PlayerStats
@@ -86,7 +86,7 @@ public class UIManagerPlayer : MonoBehaviour
         
         if (playerStats != null)
         {
-            Debug.Log("UIManagerPlayer: Conectado ao PlayerStats");
+
             
             // Registra para eventos de mudança nos stats
             playerStats.OnEnergyChanged += UpdateStaminaUI;
@@ -98,7 +98,7 @@ public class UIManagerPlayer : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("UIManagerPlayer: PlayerStats não encontrado na cena!");
+
         }
     }
     

@@ -36,12 +36,7 @@ public partial class CursorController : MonoBehaviour {
         }
 
         if (mainCamera == null) {
-            Debug.LogError("Main Camera não encontrada!");
         }
-        if (playerTransform == null) {
-            Debug.LogError("Player Transform não atribuído!");
-        }
-
         // Encontrar o inventário do jogador
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) {
@@ -95,7 +90,14 @@ public partial class CursorController : MonoBehaviour {
         transform.position = cursorPosition;
 
         // Check for interactable objects and update cursor visual feedback
-        currentInteractableObject = CheckForInteractableAt(activeTilePos);
+        // First check for direct mouse hits (higher priority for visual feedback)
+        GameObject directHit = CheckForDirectMouseHit();
+        if (directHit != null) {
+            currentInteractableObject = directHit;
+        } else {
+            // Fallback to grid-based detection for soil blocks and similar objects only
+            currentInteractableObject = CheckForGridObjectsOnly(activeTilePos);
+        }
         UpdateCursorVisual(activeTilePos);
 
         // Process left-click interactions with proper priority
@@ -104,32 +106,74 @@ public partial class CursorController : MonoBehaviour {
             !InventorySlot.IsAnySlotDragging && 
             !IsMouseOverUI()) {
             
+            #if UNITY_EDITOR
+
+
+            #endif
+            
             ProcessHexInteraction(activeTilePos);
         }
     }
 
     /// <summary>
     /// Process left-click interaction at the specified hex position with proper priority:
-    /// 1. Objects in the hex (SellBox, NPCs, etc.) - HIGHEST PRIORITY
+    /// 1. Direct cursor collision with objects (SellBox, NPCs, etc.) - HIGHEST PRIORITY
     /// 2. Tools in hand (Hoe, WateringCan, etc.) - LOWEST PRIORITY
     /// </summary>
     private void ProcessHexInteraction(Vector3Int hexPos) {
-        // PRIORITY 1: Check for interactable objects at this hex position
-        GameObject interactableAtHex = CheckForInteractableAt(hexPos);
+        #if UNITY_EDITOR
+
+        #endif
         
-        if (interactableAtHex != null) {
-            IInteractable interactable = interactableAtHex.GetComponent<IInteractable>();
+        // PRIORITY 1: Check for direct mouse collision with interactable objects
+        GameObject directHitObject = CheckForDirectMouseHit();
+        
+        #if UNITY_EDITOR
+
+        #endif
+        
+        if (directHitObject != null) {
+            IInteractable interactable = directHitObject.GetComponent<IInteractable>();
             if (interactable != null) {
-                Debug.Log($"[CursorController] Interacting with object: {interactableAtHex.name} at hex {hexPos}");
+                #if UNITY_EDITOR
+
+                #endif
                 interactable.Interact();
-                return; // Object interaction takes priority - stop here
+                return; // Direct hit takes priority - stop here
             }
         }
         
-        // PRIORITY 2: No objects in hex, check for tool usage
+        // PRIORITY 2: Check for grid-based objects only (soil blocks) using precise hex detection
+        GameObject soilBlockAtHex = CheckForGridObjectsOnly(hexPos);
+        
+        #if UNITY_EDITOR
+
+        #endif
+        
+        if (soilBlockAtHex != null) {
+            IInteractable interactable = soilBlockAtHex.GetComponent<IInteractable>();
+            if (interactable != null) {
+                #if UNITY_EDITOR
+
+                #endif
+                interactable.Interact();
+                return;
+            }
+        }
+        
+        // PRIORITY 3: No objects found, check for tool usage
+        #if UNITY_EDITOR
+
+        bool hasToolResult = HasToolInHand();
+
+        #endif
+        
         if (HasToolInHand()) {
             Item selectedTool = playerInventory.GetSelectedItem();
             if (selectedTool != null) {
+                #if UNITY_EDITOR
+
+                #endif
                 ProcessToolUsage(selectedTool, hexPos);
             }
         }
@@ -139,9 +183,22 @@ public partial class CursorController : MonoBehaviour {
     /// Check if player has any tool in their hand
     /// </summary>
     private bool HasToolInHand() {
-        if (playerInventory == null) return false;
+        if (playerInventory == null) {
+            #if UNITY_EDITOR
+
+            #endif
+            return false;
+        }
         
         Item selectedItem = playerInventory.GetSelectedItem();
+        
+        #if UNITY_EDITOR
+
+        if (selectedItem != null) {
+
+        }
+        #endif
+        
         return selectedItem != null && HasToolTag(selectedItem);
     }
     
@@ -149,13 +206,28 @@ public partial class CursorController : MonoBehaviour {
     /// Check if item has any tool-related tags
     /// </summary>
     private bool HasToolTag(Item item) {
-        if (item == null || item.itemTags == null) return false;
+        if (item == null || item.itemTags == null) {
+            #if UNITY_EDITOR
+
+            #endif
+            return false;
+        }
+        
+        #if UNITY_EDITOR
+
+        #endif
         
         // Check for any tool tags
-        return item.itemTags.Contains("Hoe") || 
-               item.itemTags.Contains("WateringCan") || 
-               item.itemTags.Contains("Shovel") ||
-               item.itemTags.Contains("Tool"); // Generic tool tag
+        bool hasTool = item.itemTags.Contains("Hoe") || 
+                       item.itemTags.Contains("WateringCan") || 
+                       item.itemTags.Contains("Shovel") ||
+                       item.itemTags.Contains("Tool"); // Generic tool tag
+                       
+        #if UNITY_EDITOR
+
+        #endif
+        
+        return hasTool;
     }
     
     /// <summary>
@@ -163,7 +235,6 @@ public partial class CursorController : MonoBehaviour {
     /// </summary>
     private void ProcessToolUsage(Item tool, Vector3Int hexPos) {
         if (tool.itemTags.Contains("Hoe")) {
-            Debug.Log($"[CursorController] Using Hoe at hex {hexPos}");
             CreateSoilBlock(hexPos);
         }
         // Add other tool types here as needed:
@@ -176,16 +247,16 @@ public partial class CursorController : MonoBehaviour {
     }
     
     /// <summary>
-    /// Update cursor visual feedback based on what's available at the hex position
+    /// Update cursor visual feedback based on what's available at the cursor position
     /// </summary>
     private void UpdateCursorVisual(Vector3Int hexPos) {
-        // Priority 1: Objects take precedence for visual feedback
+        // Priority 1: Any interactable object (direct hits or grid objects)
         if (currentInteractableObject != null) {
-            cursorRenderer.color = interactableColor; // Green for interactable objects
+            cursorRenderer.color = interactableColor; // Green for any interactable objects
             return;
         }
         
-        // Priority 2: Show tool feedback if we have a tool
+        // Priority 2: Show tool feedback if we have a tool and no objects are in the way
         if (HasToolInHand()) {
             Item selectedTool = playerInventory.GetSelectedItem();
             if (selectedTool != null && CanUseToolAt(selectedTool, hexPos)) {
@@ -215,10 +286,106 @@ public partial class CursorController : MonoBehaviour {
         return true; // Default: tool can be used
     }
 
+    /// <summary>
+    /// Check for direct mouse cursor collision with interactable objects using raycasting
+    /// This ensures SellBox and similar objects only respond when the cursor is actually over them
+    /// </summary>
+    private GameObject CheckForDirectMouseHit() {
+        if (mouse == null || mainCamera == null) return null;
+        
+        // Get mouse position in world space
+        Vector2 mouseScreenPos = mouse.position.ReadValue();
+        Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(new Vector3(mouseScreenPos.x, mouseScreenPos.y, mainCamera.nearClipPlane));
+        Vector2 mousePos2D = new Vector2(mouseWorldPos.x, mouseWorldPos.y);
+        
+        // Raycast from mouse position to find interactable objects
+        RaycastHit2D hit = Physics2D.Raycast(mousePos2D, Vector2.zero, 0f, interactableLayer);
+        
+        if (hit.collider != null) {
+            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
+            if (interactable != null) {
+                // Check if the player is within interaction range
+                float distanceToPlayer = Vector2.Distance(hit.collider.transform.position, playerTransform.position);
+                float interactionRange = GetInteractionRangeForObject(hit.collider.gameObject);
+                
+                if (distanceToPlayer <= interactionRange) {
+
+                    return hit.collider.gameObject;
+                }
+                else {
+
+                }
+            }
+        }
+        
+        // Fallback: Use OverlapPoint for objects without proper colliders or edge cases
+        Collider2D[] overlapping = Physics2D.OverlapPointAll(mousePos2D);
+        foreach (var collider in overlapping) {
+            IInteractable interactable = collider.GetComponent<IInteractable>();
+            if (interactable != null) {
+                float distanceToPlayer = Vector2.Distance(collider.transform.position, playerTransform.position);
+                float interactionRange = GetInteractionRangeForObject(collider.gameObject);
+                
+                if (distanceToPlayer <= interactionRange) {
+
+                    return collider.gameObject;
+                }
+            }
+        }
+        
+        return null;
+    }
+    
+    /// <summary>
+    /// Get the appropriate interaction range for different types of objects
+    /// </summary>
+    private float GetInteractionRangeForObject(GameObject obj) {
+        // SellBox has its own interaction range
+        if (obj.GetComponent<SellBox>() != null) {
+            return obj.GetComponent<SellBox>().GetInteractionRange();
+        }
+        
+        // NPCs might have different ranges
+        if (obj.GetComponent<NPCDialogueInteractable>() != null) {
+            return obj.GetComponent<NPCDialogueInteractable>().GetInteractionRange();
+        }
+        
+        // Default interaction range
+        return maxDistance;
+    }
+
+    /// <summary>
+    /// Check specifically for grid-based objects that should use hex-detection (soil blocks, beds)
+    /// This method excludes SellBox and NPCs which should only respond to direct cursor hits
+    /// </summary>
+    private GameObject CheckForGridObjectsOnly(Vector3Int tilePos) {
+        // Check the SoilBlocks dictionary first (most precise)
+        if (soilBlocks.TryGetValue(tilePos, out GameObject existingSoil)) {
+
+            return existingSoil;
+        }
+
+        // Check for other grid-aligned objects at this position
+        Vector2 worldPos = new Vector2(tilePos.x + 0.5f, tilePos.y + 0.5f);
+        
+        // Use a smaller, more precise detection radius for grid objects
+        Collider2D[] allColliders = Physics2D.OverlapCircleAll(worldPos, 0.3f);
+        foreach (var collider in allColliders) {
+            // Only return objects that should use grid-based interaction
+            if (collider.GetComponent<SoilBlockInteractable>() != null ||
+                collider.GetComponent<BedInteractable>() != null) {
+
+                return collider.gameObject;
+            }
+        }
+
+        return null;
+    }
+
     private GameObject CheckForInteractableAt(Vector3Int tilePos) {
         // First check the SoilBlocks dictionary
         if (soilBlocks.TryGetValue(tilePos, out GameObject existingSoil)) {
-            Debug.Log($"[CursorController] Found SoilBlock at {tilePos}: {existingSoil.name}");
+
             return existingSoil;
         }
 
@@ -230,7 +397,7 @@ public partial class CursorController : MonoBehaviour {
         // Method 1: Layer-based overlap circle
         Collider2D hitCollider = Physics2D.OverlapCircle(worldPos, 0.6f, interactableLayer);
         if (hitCollider != null && hitCollider.GetComponent<IInteractable>() != null) {
-            Debug.Log($"[CursorController] Found layered interactable at {tilePos}: {hitCollider.name} on layer {hitCollider.gameObject.layer}");
+
             return hitCollider.gameObject;
         }
         
@@ -239,7 +406,7 @@ public partial class CursorController : MonoBehaviour {
         foreach (var collider in allColliders) {
             IInteractable interactable = collider.GetComponent<IInteractable>();
             if (interactable != null) {
-                Debug.Log($"[CursorController] Found general interactable at {tilePos}: {collider.name} on layer {collider.gameObject.layer}");
+
                 return collider.gameObject;
             }
         }
@@ -247,12 +414,12 @@ public partial class CursorController : MonoBehaviour {
         // Method 3: Direct check for SellBox components in area
         foreach (var collider in allColliders) {
             if (collider.GetComponent<SellBox>() != null) {
-                Debug.Log($"[CursorController] Found SellBox directly at {tilePos}: {collider.name}");
+
                 return collider.gameObject;
             }
         }
 
-        Debug.Log($"[CursorController] No interactables found at {tilePos}");
+
         return null;
     }
 

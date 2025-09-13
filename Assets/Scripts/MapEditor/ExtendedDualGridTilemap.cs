@@ -53,7 +53,7 @@ public class ExtendedDualGridTilemap : MonoBehaviour
         }
         
         RefreshDisplayTilemap();
-        Debug.Log("ExtendedDualGridTilemap initialized with " + tileLibraries.Length + " tile libraries");
+
     }
     
     private void InitializeTileLibrary(TileLibrary library)
@@ -126,12 +126,12 @@ public class ExtendedDualGridTilemap : MonoBehaviour
             
             if (showDebugInfo)
             {
-                Debug.Log($"Set tile at {coords} to {tileType} on layer {layer}");
+
             }
         }
         else
         {
-            Debug.LogWarning($"No placeholder tile found for type: {tileType}");
+
         }
     }
     
@@ -241,7 +241,7 @@ public class ExtendedDualGridTilemap : MonoBehaviour
             }
         }
         
-        Debug.Log("Display tilemap refreshed");
+
     }
     
     public void ClearArea(BoundsInt area, int layer = 0)
@@ -287,7 +287,7 @@ public class ExtendedDualGridTilemap : MonoBehaviour
         }
         
         RefreshDisplayTilemap();
-        Debug.Log($"Loaded {mapData.tileData.Count} tiles from map data");
+
     }
     
     public void SaveToMapData(MapData mapData)
@@ -316,7 +316,7 @@ public class ExtendedDualGridTilemap : MonoBehaviour
             }
         }
         
-        Debug.Log($"Saved {mapData.tileData.Count} tiles to map data");
+
     }
     
     // Utility methods

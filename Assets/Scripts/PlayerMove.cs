@@ -166,7 +166,8 @@ animator.SetBool("isWalking", moveInput != Vector2.zero);
             }
         }
 
-        // Use InteractionManager if available for priority-based interaction
+        // Use InteractionManager for proximity-based E key interactions
+        // Note: This is different from cursor-based left-click interactions
         if (InteractionManager.Instance != null)
         {
             if (InteractionManager.Instance.CanInteract())
@@ -246,13 +247,11 @@ animator.SetBool("isWalking", moveInput != Vector2.zero);
             animator.SetBool("IsMoving", false);
         }
         
-        Debug.Log("Player movement disabled");
     }
 
     public void EnableMovement()
     {
         movementEnabled = true;
-        Debug.Log("Player movement enabled");
     }
 
     public bool IsMovementEnabled()

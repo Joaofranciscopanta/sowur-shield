@@ -32,7 +32,7 @@ public class UIDataConnector : MonoBehaviour
     [ContextMenu("Connect UI Elements")]
     public void ConnectUIElements()
     {
-        Debug.Log("UIDataConnector: Connecting UI elements to PlayerStats...");
+
         
         // Find components if not assigned
         if (playerStats == null)
@@ -43,7 +43,7 @@ public class UIDataConnector : MonoBehaviour
         
         if (playerStats == null)
         {
-            Debug.LogError("UIDataConnector: PlayerStats not found! Add PlayerStats component to the scene.");
+
             return;
         }
         
@@ -55,7 +55,7 @@ public class UIDataConnector : MonoBehaviour
         {
             // Connect to PlayerStats for direct updates
             playerStats.energySlider = staminaSlider;
-            Debug.Log("✓ Connected stamina slider to PlayerStats");
+
             
             // Initial update
             staminaSlider.maxValue = playerStats.maxEnergy;
@@ -63,7 +63,7 @@ public class UIDataConnector : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("UIDataConnector: Stamina slider not found!");
+
         }
         
         // Connect money text
@@ -74,7 +74,7 @@ public class UIDataConnector : MonoBehaviour
         {
             // Create a wrapper for TextMeshProUGUI to work with PlayerStats
             EnsureMoneyTextUpdater();
-            Debug.Log("✓ Connected money text (TextMeshPro) to PlayerStats");
+
             
             // Initial update
             UpdateMoneyDisplay();
@@ -82,24 +82,24 @@ public class UIDataConnector : MonoBehaviour
         else if (legacyMoneyText != null)
         {
             playerStats.moneyText = legacyMoneyText;
-            Debug.Log("✓ Connected legacy money text to PlayerStats");
+
             
             // Initial update
             legacyMoneyText.text = $"Money: ${playerStats.money}";
         }
         else
         {
-            Debug.LogWarning("UIDataConnector: Money text not found!");
+
         }
         
         // Subscribe to PlayerStats events if UIManager exists
         if (uiManager != null)
         {
-            Debug.Log("✓ UIManagerPlayer connection verified");
+
             // The UIManagerPlayer should handle its own event subscriptions now
         }
         
-        Debug.Log("UIDataConnector: Connection complete!");
+
     }
     
     private void EnsureMoneyTextUpdater()
@@ -128,7 +128,7 @@ public class UIDataConnector : MonoBehaviour
         if (playerStats != null)
         {
             playerStats.AddMoney(25);
-            Debug.Log("Test: Added $25");
+
         }
     }
     
@@ -138,7 +138,7 @@ public class UIDataConnector : MonoBehaviour
         if (playerStats != null)
         {
             playerStats.UseEnergy(10);
-            Debug.Log("Test: Used 10 energy");
+
         }
     }
 }

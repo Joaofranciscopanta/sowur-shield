@@ -227,7 +227,7 @@ public class SaveGameUI : MonoBehaviour
         saveNotificationPanel.SetActive(true);
         notificationCoroutine = StartCoroutine(HideNotificationAfterDelay(duration));
         
-        Debug.Log($"[SaveGameUI] {message}");
+
     }
     
     private IEnumerator HideNotificationAfterDelay(float delay)

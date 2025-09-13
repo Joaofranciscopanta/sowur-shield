@@ -102,11 +102,9 @@ public class SceneTransitionManager : MonoBehaviour
     {
         if (isTransitioning)
         {
-            Debug.LogWarning($"[SceneTransitionManager] Already transitioning to a scene. Ignoring request to load {sceneName}");
             return;
         }
         
-        Debug.Log($"[SceneTransitionManager] Starting transition to scene: {sceneName}");
         
         if (currentTransition != null)
             StopCoroutine(currentTransition);
@@ -121,11 +119,9 @@ public class SceneTransitionManager : MonoBehaviour
     {
         if (isTransitioning)
         {
-            Debug.LogWarning($"[SceneTransitionManager] Cannot do immediate load while transitioning");
             return;
         }
         
-        Debug.Log($"[SceneTransitionManager] Immediate load to scene: {sceneName}");
         SceneManager.LoadScene(sceneName);
     }
     
@@ -233,7 +229,6 @@ public class SceneTransitionManager : MonoBehaviour
         // Trigger event
         OnSceneTransitionCompleted?.Invoke(sceneName);
         
-        Debug.Log($"[SceneTransitionManager] Transition to {sceneName} completed!");
     }
     
     // ============================================================================
@@ -253,7 +248,6 @@ public class SceneTransitionManager : MonoBehaviour
             progressBar.value = 0f;
         }
         
-        Debug.Log("[SceneTransitionManager] Loading screen shown");
     }
     
     private void HideLoadingScreen()
@@ -263,7 +257,6 @@ public class SceneTransitionManager : MonoBehaviour
             loadingScreenPanel.SetActive(false);
         }
         
-        Debug.Log("[SceneTransitionManager] Loading screen hidden");
     }
     
     private void UpdateLoadingProgress(float progress)
@@ -336,7 +329,6 @@ public class SceneTransitionManager : MonoBehaviour
     
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log($"[SceneTransitionManager] Scene loaded: {scene.name}");
         
         // You can add scene-specific initialization here
         switch (scene.name)
@@ -352,13 +344,11 @@ public class SceneTransitionManager : MonoBehaviour
     
     private void OnMainMenuLoaded()
     {
-        Debug.Log("[SceneTransitionManager] Main menu loaded - setting up menu environment");
         // Add any main menu specific setup here
     }
     
     private void OnGameSceneLoaded()
     {
-        Debug.Log("[SceneTransitionManager] Game scene loaded - setting up game environment");
         // Add any game scene specific setup here
     }
     

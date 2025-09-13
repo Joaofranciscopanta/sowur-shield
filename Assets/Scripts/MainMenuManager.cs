@@ -82,7 +82,6 @@ public class MainMenuManager : MonoBehaviour
     {
         if (isInitialized) return;
         
-        Debug.Log("[MainMenuManager] Initializing main menu...");
         
         // Setup cursor and input
         SetupCursorAndInput();
@@ -102,7 +101,6 @@ public class MainMenuManager : MonoBehaviour
         // Trigger event
         OnMenuInitialized?.Invoke();
         
-        Debug.Log("[MainMenuManager] Main menu initialization complete");
     }
     
     private void SetupCursorAndInput()
@@ -117,7 +115,6 @@ public class MainMenuManager : MonoBehaviour
         // Enable input actions if assigned
         EnableInputActions();
         
-        Debug.Log("[MainMenuManager] Cursor and input configured");
     }
     
     private void SetupAudio()
@@ -130,7 +127,6 @@ public class MainMenuManager : MonoBehaviour
             menuMusicSource.volume = musicVolume * PlayerPrefs.GetFloat("MusicVolume", 1f) * PlayerPrefs.GetFloat("MasterVolume", 1f);
             menuMusicSource.Play();
             
-            Debug.Log("[MainMenuManager] Background music started");
         }
     }
     
@@ -139,11 +135,9 @@ public class MainMenuManager : MonoBehaviour
         if (menuUI != null)
         {
             // UI is already configured in its own Start method
-            Debug.Log("[MainMenuManager] UI setup complete");
         }
         else
         {
-            Debug.LogError("[MainMenuManager] MainMenuUI not found! Make sure MainMenuUI script is attached to a GameObject in the scene.");
         }
     }
     
@@ -152,7 +146,6 @@ public class MainMenuManager : MonoBehaviour
         // Ensure time is running normally in main menu
         Time.timeScale = pauseOnStart ? 0f : 1f;
         
-        Debug.Log($"[MainMenuManager] Time scale set to: {Time.timeScale}");
     }
     
     private void EnableInputActions()
@@ -196,7 +189,6 @@ public class MainMenuManager : MonoBehaviour
     /// </summary>
     public void StartNewGame()
     {
-        Debug.Log("[MainMenuManager] Starting new game...");
         
         // Disable input to prevent multiple clicks
         DisableInputActions();
@@ -217,7 +209,6 @@ public class MainMenuManager : MonoBehaviour
     /// </summary>
     public void ContinueGame()
     {
-        Debug.Log("[MainMenuManager] Continuing game...");
         
         // Disable input to prevent multiple clicks
         DisableInputActions();
@@ -238,7 +229,6 @@ public class MainMenuManager : MonoBehaviour
     /// </summary>
     public void QuitApplication()
     {
-        Debug.Log("[MainMenuManager] Quitting application...");
         
         // Save any necessary data before quitting
         PlayerPrefs.Save();
@@ -264,7 +254,6 @@ public class MainMenuManager : MonoBehaviour
         // Update audio volumes
         UpdateAudioVolumes();
         
-        Debug.Log("[MainMenuManager] UI refreshed");
     }
     
     /// <summary>
@@ -349,7 +338,6 @@ public class MainMenuManager : MonoBehaviour
     {
         // Apply resolution, fullscreen, quality settings
         // This would integrate with your graphics settings system
-        Debug.Log("[MainMenuManager] Graphics settings applied");
     }
     
     /// <summary>
@@ -358,7 +346,6 @@ public class MainMenuManager : MonoBehaviour
     public void ApplyAudioSettings()
     {
         UpdateAudioVolumes();
-        Debug.Log("[MainMenuManager] Audio settings applied");
     }
     
     // ============================================================================
@@ -368,14 +355,6 @@ public class MainMenuManager : MonoBehaviour
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
     public void DebugMainMenu()
     {
-        Debug.Log("=== MAIN MENU DEBUG INFO ===");
-        Debug.Log($"Initialized: {isInitialized}");
-        Debug.Log($"MenuUI Found: {menuUI != null}");
-        Debug.Log($"SaveManager Available: {SaveManager.Instance != null}");
-        Debug.Log($"Has Save File: {HasSaveFile()}");
-        Debug.Log($"SceneTransitionManager Available: {SceneTransitionManager.Instance != null}");
-        Debug.Log($"Music Playing: {menuMusicSource != null && menuMusicSource.isPlaying}");
-        Debug.Log("=== END DEBUG INFO ===");
     }
     
     // ============================================================================

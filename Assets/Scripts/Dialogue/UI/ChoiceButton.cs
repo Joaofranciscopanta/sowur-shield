@@ -92,7 +92,7 @@ public class ChoiceButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         
         if (choice == null)
         {
-            Debug.LogError("ChoiceButton: Cannot initialize with null choice");
+
             return;
         }
         

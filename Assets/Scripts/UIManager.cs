@@ -61,7 +61,7 @@ public class UIManager : MonoBehaviour
         // Ensure cursor is visible for UI interaction
         EnsureCursorVisible();
         
-        Debug.Log($"UIManager: Opened {panel.name}");
+
     }
     
     public void ClosePanel(GameObject panel)
@@ -73,7 +73,7 @@ public class UIManager : MonoBehaviour
         if (currentlyOpenPanel == panel)
             currentlyOpenPanel = null;
             
-        Debug.Log($"UIManager: Closed {panel.name}");
+
     }
     
     public void CloseAllPanels()
@@ -86,7 +86,7 @@ public class UIManager : MonoBehaviour
             }
         }
         currentlyOpenPanel = null;
-        Debug.Log("UIManager: Closed all UI panels");
+
     }
     
     public void CloseCurrentPanel()
@@ -130,6 +130,6 @@ public class UIManager : MonoBehaviour
         // Force cursor to be visible and unlocked for UI interaction
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        Debug.Log($"UIManager: Cursor made visible - Visible={Cursor.visible}, LockState={Cursor.lockState}");
+
     }
 }

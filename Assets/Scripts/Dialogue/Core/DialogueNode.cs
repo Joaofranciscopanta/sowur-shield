@@ -100,18 +100,18 @@ public class DialogueNode
         
         if (string.IsNullOrEmpty(nodeId))
         {
-            Debug.LogError("DialogueNode has empty nodeId");
+
             isValid = false;
         }
         
         if (string.IsNullOrEmpty(dialogueText) && nodeType == NodeType.Dialogue)
         {
-            Debug.LogWarning($"DialogueNode '{nodeId}' has empty dialogue text");
+
         }
         
         if (nodeType == NodeType.Choice && (choices == null || choices.Length == 0))
         {
-            Debug.LogError($"Choice node '{nodeId}' has no choices defined");
+
             isValid = false;
         }
         

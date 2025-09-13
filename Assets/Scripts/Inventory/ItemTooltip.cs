@@ -507,7 +507,17 @@ public class ItemTooltip : MonoBehaviour
             StopCoroutine(showHideCoroutine);
         }
 
-        showHideCoroutine = StartCoroutine(HideAnimation());
+        if (gameObject.activeInHierarchy)
+        {
+            showHideCoroutine = StartCoroutine(HideAnimation());
+        }
+        else
+        {
+            // If tooltip is inactive, just hide it immediately without animation
+            if (canvasGroup != null)
+                canvasGroup.alpha = 0f;
+            gameObject.SetActive(false);
+        }
     }
 
     public void HideTooltip()

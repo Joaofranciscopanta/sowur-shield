@@ -82,13 +82,13 @@ public class DialogueTree : ScriptableObject
         
         if (string.IsNullOrEmpty(conversationId))
         {
-            Debug.LogError($"DialogueTree '{name}' has empty conversationId");
+
             isValid = false;
         }
         
         if (nodes == null || nodes.Length == 0)
         {
-            Debug.LogError($"DialogueTree '{name}' has no nodes");
+
             return false;
         }
         
@@ -98,14 +98,14 @@ public class DialogueTree : ScriptableObject
         {
             if (string.IsNullOrEmpty(node.nodeId))
             {
-                Debug.LogError($"DialogueTree '{name}' contains node with empty ID");
+
                 isValid = false;
                 continue;
             }
             
             if (nodeIds.Contains(node.nodeId))
             {
-                Debug.LogError($"DialogueTree '{name}' contains duplicate node ID: {node.nodeId}");
+
                 isValid = false;
             }
             else
@@ -122,7 +122,7 @@ public class DialogueTree : ScriptableObject
         var startNode = GetNode(startNodeId);
         if (startNode == null)
         {
-            Debug.LogError($"DialogueTree '{name}' start node '{startNodeId}' not found");
+
             isValid = false;
         }
         
@@ -132,7 +132,7 @@ public class DialogueTree : ScriptableObject
             // Check nextNodeId references
             if (!string.IsNullOrEmpty(node.nextNodeId) && GetNode(node.nextNodeId) == null)
             {
-                Debug.LogWarning($"DialogueTree '{name}' node '{node.nodeId}' references missing next node '{node.nextNodeId}'");
+
             }
             
             // Check choice references
@@ -142,7 +142,7 @@ public class DialogueTree : ScriptableObject
                 {
                     if (!choice.isExitChoice && !string.IsNullOrEmpty(choice.nextNodeId) && GetNode(choice.nextNodeId) == null)
                     {
-                        Debug.LogWarning($"DialogueTree '{name}' node '{node.nodeId}' choice references missing node '{choice.nextNodeId}'");
+
                     }
                 }
             }

@@ -62,7 +62,7 @@ public class UIInput : MonoBehaviour
         Cursor.visible = true;
         
         // Debug log to help track cursor state
-        Debug.Log($"Cursor state: Visible={Cursor.visible}, LockState={Cursor.lockState}");
+
     }
     
     private System.Collections.IEnumerator EnsureCursorVisibleDelayed()
@@ -88,7 +88,7 @@ public class UIInput : MonoBehaviour
         if (needsCursor)
         {
             EnsureCursorVisible();
-            Debug.Log("UIInput: Kept cursor visible for active UI");
+
         }
     }
     

@@ -213,7 +213,7 @@ public class FarmingGameData
     public List<CropSaveData> activeCrops = new List<CropSaveData>();
     
     [Header("Soil State")]
-    public Dictionary<string, SoilData> soilStates = new Dictionary<string, SoilData>();
+    public List<SoilStateEntry> soilStates = new List<SoilStateEntry>();
     
     [Header("Farm Buildings")]
     public List<BuildingData> farmBuildings = new List<BuildingData>();
@@ -232,20 +232,23 @@ public class FarmingGameData
     }
     
     [System.Serializable]
+    public class SoilStateEntry
+    {
+        public string positionKey = "";
+        public SoilData soilData = new SoilData();
+    }
+    
+    [System.Serializable]
     public class SoilData
     {
         public bool isTilled = false;
         public bool isWatered = false;
         public float fertility = 1.0f;
         public string soilType = "Normal";
-        public Dictionary<string, float> nutrients = new Dictionary<string, float>();
-        
-        public SoilData()
-        {
-            nutrients["nitrogen"] = 1.0f;
-            nutrients["phosphorus"] = 1.0f;
-            nutrients["potassium"] = 1.0f;
-        }
+        // Simplified nutrients - no Dictionary for JSON serialization
+        public float nitrogen = 1.0f;
+        public float phosphorus = 1.0f;
+        public float potassium = 1.0f;
     }
     
     [System.Serializable]

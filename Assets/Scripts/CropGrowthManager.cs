@@ -1,8 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 // This component should be attached to each SoilBlock to manage crop growth
-public class CropGrowthManager : MonoBehaviour
+public class CropGrowthManager : MonoBehaviour, ISaveable
 {
     [Header("Current Crop Status")]
     [SerializeField] private CropData currentCrop;
@@ -19,7 +20,6 @@ public class CropGrowthManager : MonoBehaviour
     public GameObject cropVisualObject;
 
     [Header("Debug")]
-    public bool showDebugInfo = false;
 
     // Events
     public System.Action<CropGrowthManager> OnCropGrown; // When crop advances a stage
@@ -42,6 +42,32 @@ public class CropGrowthManager : MonoBehaviour
     {
         SetupCropVisual();
         ConnectToTimeSystem();
+        RegisterWithSaveManager();
+    }
+
+    private void RegisterWithSaveManager()
+    {
+        // Register with SaveManager for save/load functionality
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.RegisterSaveable(this);
+        }
+        else
+        {
+            // Try again in Start() - SaveManager might not be initialized yet
+            StartCoroutine(DelayedRegistration());
+        }
+    }
+
+    private System.Collections.IEnumerator DelayedRegistration()
+    {
+        // Wait a frame for SaveManager to initialize
+        yield return null;
+        
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.RegisterSaveable(this);
+        }
     }
 
     private void SetupCropVisual()
@@ -81,10 +107,6 @@ public class CropGrowthManager : MonoBehaviour
         {
             timeController.OnDayChanged += OnDayChanged;
         }
-        else
-        {
-            Debug.LogWarning("CropGrowthManager: GameTimeController not found!");
-        }
     }
 
     private void OnDestroy()
@@ -93,6 +115,12 @@ public class CropGrowthManager : MonoBehaviour
         {
             timeController.OnDayChanged -= OnDayChanged;
         }
+
+        // Unregister from SaveManager
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.UnregisterSaveable(this);
+        }
     }
 
     // Plant a new crop
@@ -100,13 +128,11 @@ public class CropGrowthManager : MonoBehaviour
     {
         if (HasCrop)
         {
-            Debug.LogWarning("Cannot plant crop: soil already has a crop");
             return false;
         }
 
         if (cropData == null)
         {
-            Debug.LogWarning("Cannot plant crop: crop data is null");
             return false;
         }
 
@@ -122,9 +148,6 @@ public class CropGrowthManager : MonoBehaviour
         // Show crop visual
         UpdateCropVisual();
 
-        if (showDebugInfo)
-            Debug.Log($"Planted {cropData.cropName}");
-
         return true;
     }
 
@@ -136,9 +159,6 @@ public class CropGrowthManager : MonoBehaviour
 
         isWatered = true;
         daysSinceLastWatered = 0;
-
-        if (showDebugInfo)
-            Debug.Log($"Watered {currentCrop.cropName}");
     }
 
     // Called when a new day starts
@@ -171,11 +191,6 @@ public class CropGrowthManager : MonoBehaviour
                 AdvanceGrowthStage();
             }
         }
-
-        if (showDebugInfo)
-        {
-            Debug.Log($"Day changed - Crop: {currentCrop.cropName}, Stage: {currentGrowthStage}, Days in stage: {daysInCurrentStage}, Days since watered: {daysSinceLastWatered}");
-        }
     }
 
     // Advance to next growth stage
@@ -190,9 +205,6 @@ public class CropGrowthManager : MonoBehaviour
             currentGrowthStage = currentCrop.TotalStages - 1;
             isReadyForHarvest = true;
             OnCropReadyForHarvest?.Invoke(this);
-
-            if (showDebugInfo)
-                Debug.Log($"{currentCrop.cropName} is ready for harvest!");
         }
 
         UpdateCropVisual();
@@ -209,9 +221,6 @@ public class CropGrowthManager : MonoBehaviour
         isReadyForHarvest = false;
         UpdateCropVisual();
         OnCropDied?.Invoke(this);
-
-        if (showDebugInfo)
-            Debug.Log($"{currentCrop.cropName} died from lack of water!");
     }
 
     // Harvest the crop
@@ -232,17 +241,11 @@ public class CropGrowthManager : MonoBehaviour
             daysInCurrentStage = 0;
             isReadyForHarvest = false;
             UpdateCropVisual();
-
-            if (showDebugInfo)
-                Debug.Log($"Harvested {yield} {currentCrop.harvestItem.itemName} - Regrowing (#{regrowthCount})");
         }
         else
         {
             // Remove crop completely
             RemoveCrop();
-
-            if (showDebugInfo)
-                Debug.Log($"Harvested {yield} {currentCrop.harvestItem.itemName} - Crop removed");
         }
 
         OnCropHarvested?.Invoke(this);
@@ -266,9 +269,6 @@ public class CropGrowthManager : MonoBehaviour
 
         if (cropSpriteRenderer != null)
             cropSpriteRenderer.enabled = false;
-
-        if (showDebugInfo)
-            Debug.Log("Crop removed");
     }
 
     // Update the visual appearance of the crop
@@ -320,6 +320,61 @@ public class CropGrowthManager : MonoBehaviour
         float progressPercent = (GrowthProgress * 100f);
         return $"{currentCrop.cropName} - Stage {currentGrowthStage + 1}/{currentCrop.TotalStages} ({progressPercent:F0}%)";
     }
+
+    // ============================================================================
+    // ISAVEABLE IMPLEMENTATION
+    // ============================================================================
+
+    public void SaveData(GameData gameData)
+    {
+        if (!HasCrop)
+            return;
+
+        // Create crop save data
+        var cropSaveData = new FarmingGameData.CropSaveData
+        {
+            position = new Vector2Int(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y)),
+            cropType = currentCrop.cropName,
+            growthStage = currentGrowthStage,
+            growthProgress = daysInCurrentStage,
+            isWatered = isWatered,
+            isReady = isReadyForHarvest,
+            quality = 1, // Default quality, could be extended later
+            plantedDate = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") // Could track actual plant date
+        };
+
+        gameData.farmingData.activeCrops.Add(cropSaveData);
+    }
+
+    public void LoadData(GameData gameData)
+    {
+        Vector2Int myPosition = new Vector2Int(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
+        
+        // Find crop data for this position
+        var cropData = gameData.farmingData.activeCrops.FirstOrDefault(crop => crop.position == myPosition);
+        
+        if (cropData != null)
+        {
+            // Find the CropData asset
+            CropData cropAsset = Resources.LoadAll<CropData>("Crops")
+                .FirstOrDefault(c => c.cropName == cropData.cropType);
+                
+            if (cropAsset != null)
+            {
+                // Restore crop state
+                currentCrop = cropAsset;
+                currentGrowthStage = cropData.growthStage;
+                daysInCurrentStage = Mathf.RoundToInt(cropData.growthProgress);
+                isWatered = cropData.isWatered;
+                isReadyForHarvest = cropData.isReady;
+                isDead = false; // Could save/load death state if needed
+                regrowthCount = 0; // Could save/load regrowth count if needed
+                
+                // Update visual
+                UpdateCropVisual();
+            }
+        }
+    }
 }
 
 // Static helper class for crop management
@@ -336,7 +391,7 @@ public static class CropDatabase
 
             if (allCrops.Length == 0)
             {
-                Debug.LogWarning("No CropData found in Resources/Crops folder!");
+                Debug.LogWarning("CropDatabase: No crop data found in Resources/Crops folder");
             }
         }
 
@@ -368,7 +423,9 @@ public static class CropDatabase
         foreach (CropData crop in allCrops)
         {
             if (crop.IsValidSeason(season))
+            {
                 seasonalCrops.Add(crop);
+            }
         }
 
         return seasonalCrops.ToArray();

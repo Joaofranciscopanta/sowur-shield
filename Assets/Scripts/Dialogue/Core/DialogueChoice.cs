@@ -72,13 +72,13 @@ public class DialogueChoice
     {
         if (string.IsNullOrEmpty(choiceText))
         {
-            Debug.LogWarning("DialogueChoice has empty choice text");
+
             return false;
         }
         
         if (!isExitChoice && string.IsNullOrEmpty(nextNodeId))
         {
-            Debug.LogWarning($"DialogueChoice '{choiceText}' has no next node ID and is not marked as exit choice");
+
             return false;
         }
         

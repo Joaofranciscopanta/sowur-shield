@@ -36,7 +36,7 @@ public class DialogueUI : MonoBehaviour
         // Verifica se encontrou o TypewriterEffect
         if (typewriter == null)
         {
-            Debug.LogError("TypewriterEffect não encontrado! Certifique-se de ter o script TypewriterEffect na cena.");
+
         }
         
         // REMOVIDO: não esconde mais o painel aqui
@@ -48,19 +48,19 @@ public class DialogueUI : MonoBehaviour
         // Verificações de segurança
         if (dialogueObject == null)
         {
-            Debug.LogError("DialogueObject é null!");
+
             return;
         }
         
         if (dialogueObject.Dialogue == null || dialogueObject.Dialogue.Length == 0)
         {
-            Debug.LogError("DialogueObject não tem diálogos configurados!");
+
             return;
         }
         
         if (typewriter == null)
         {
-            Debug.LogError("TypewriterEffect não encontrado!");
+
             return;
         }
         
@@ -81,7 +81,7 @@ public class DialogueUI : MonoBehaviour
         // Verificação adicional de segurança
         if (dialogueObject?.Dialogue == null)
         {
-            Debug.LogError("Dialogue array é null!");
+
             EndDialogue();
             yield break;
         }
@@ -93,7 +93,7 @@ public class DialogueUI : MonoBehaviour
             // Pula diálogos vazios ou null
             if (string.IsNullOrEmpty(dialogue))
             {
-                Debug.LogWarning($"Diálogo {i} está vazio ou null!");
+
                 continue;
             }
             
@@ -127,7 +127,7 @@ public class DialogueUI : MonoBehaviour
         if (dialogueText != null)
             dialogueText.text = "";
             
-        Debug.Log("Diálogo finalizado!");
+
     }
     
     private void Update()

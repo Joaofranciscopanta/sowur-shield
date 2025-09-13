@@ -60,6 +60,10 @@ public class GameMenuUI : MonoBehaviour
     private void Awake()
     {
         menuManager = GetComponent<GameMenuManager>();
+        if (menuManager == null)
+        {
+            Debug.LogError("[GameMenuUI] GameMenuManager component not found on the same GameObject!");
+        }
     }
     
     private void Start()
@@ -76,60 +80,76 @@ public class GameMenuUI : MonoBehaviour
     
     private void SetupButtons()
     {
-        // Main menu buttons
+        // Main menu buttons with proper initialization
         if (resumeButton != null)
+        {
             resumeButton.onClick.AddListener(() => menuManager?.ResumeGame());
-        else
-            Debug.LogWarning("[GameMenuUI] Resume Button not assigned!");
+            resumeButton.interactable = true;
+        }
         
         if (settingsButton != null)
-            settingsButton.onClick.AddListener(() => {
-                Debug.Log("[GameMenuUI] Settings button clicked");
-                ShowSettingsPanel();
-            });
-        else
-            Debug.LogWarning("[GameMenuUI] Settings Button not assigned!");
+        {
+            settingsButton.onClick.AddListener(() => ShowSettingsPanel());
+            settingsButton.interactable = true;
+        }
         
         if (saveInfoButton != null)
-            saveInfoButton.onClick.AddListener(() => {
-                Debug.Log("[GameMenuUI] Save Info button clicked");
-                ShowSaveInfoPanel();
-            });
-        else
-            Debug.LogWarning("[GameMenuUI] Save Info Button not assigned!");
+        {
+            saveInfoButton.onClick.AddListener(() => ShowSaveInfoPanel());
+            saveInfoButton.interactable = true;
+        }
         
         if (loadGameButton != null)
+        {
             loadGameButton.onClick.AddListener(() => menuManager?.LoadGame());
-        else
-            Debug.LogWarning("[GameMenuUI] Load Game Button not assigned!");
+            loadGameButton.interactable = true;
+        }
         
         if (quitToMenuButton != null)
+        {
             quitToMenuButton.onClick.AddListener(() => menuManager?.QuitToMainMenu());
-        else
-            Debug.LogWarning("[GameMenuUI] Quit To Menu Button not assigned!");
+            quitToMenuButton.interactable = true;
+        }
         
         if (quitToDesktopButton != null)
+        {
             quitToDesktopButton.onClick.AddListener(() => menuManager?.QuitToDesktop());
-        else
-            Debug.LogWarning("[GameMenuUI] Quit To Desktop Button not assigned!");
+            quitToDesktopButton.interactable = true;
+        }
+
         
         // Settings buttons
         if (settingsBackButton != null)
+        {
             settingsBackButton.onClick.AddListener(ShowMainPanel);
+            settingsBackButton.interactable = true;
+        }
         
         // Save info buttons
         if (saveInfoBackButton != null)
+        {
             saveInfoBackButton.onClick.AddListener(ShowMainPanel);
+            saveInfoBackButton.interactable = true;
+        }
         
         if (deleteSaveButton != null)
+        {
             deleteSaveButton.onClick.AddListener(ShowDeleteSaveConfirmation);
+            deleteSaveButton.interactable = true;
+        }
         
         // Confirmation buttons
         if (confirmYesButton != null)
+        {
             confirmYesButton.onClick.AddListener(OnConfirmYes);
+            confirmYesButton.interactable = true;
+        }
         
         if (confirmNoButton != null)
+        {
             confirmNoButton.onClick.AddListener(OnConfirmNo);
+            confirmNoButton.interactable = true;
+        }
     }
     
     private void SetupSettings()
@@ -172,7 +192,7 @@ public class GameMenuUI : MonoBehaviour
     
     public void ShowMainPanel()
     {
-        Debug.Log("[GameMenuUI] Showing main panel");
+
         SetPanelActive(mainMenuPanel, true);
         SetPanelActive(settingsPanel, false);
         SetPanelActive(saveInfoPanel, false);
@@ -183,11 +203,11 @@ public class GameMenuUI : MonoBehaviour
     
     public void ShowSettingsPanel()
     {
-        Debug.Log("[GameMenuUI] Showing settings panel");
+
         
         if (settingsPanel == null)
         {
-            Debug.LogError("[GameMenuUI] Settings panel is not assigned! Cannot show settings.");
+
             ShowNotification("Settings panel not configured!", true);
             return;
         }
@@ -202,11 +222,11 @@ public class GameMenuUI : MonoBehaviour
     
     public void ShowSaveInfoPanel()
     {
-        Debug.Log("[GameMenuUI] Showing save info panel");
+
         
         if (saveInfoPanel == null)
         {
-            Debug.LogError("[GameMenuUI] Save info panel is not assigned! Cannot show save info.");
+
             ShowNotification("Save info panel not configured!", true);
             return;
         }
@@ -224,11 +244,11 @@ public class GameMenuUI : MonoBehaviour
         if (panel != null)
         {
             panel.SetActive(active);
-            Debug.Log($"[GameMenuUI] Set {panel.name} active: {active}");
+
         }
         else if (active)
         {
-            Debug.LogWarning($"[GameMenuUI] Tried to activate a null panel!");
+
         }
     }
     

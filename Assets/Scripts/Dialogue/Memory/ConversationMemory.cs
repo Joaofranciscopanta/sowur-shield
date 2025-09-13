@@ -65,9 +65,6 @@ public class ConversationMemory : MonoBehaviour
         
         // Load existing data or create new
         LoadData();
-        
-        if (enableDebugLogs)
-            Debug.Log($"ConversationMemory initialized. Save path: {saveFilePath}");
     }
     
     private void LoadData()
@@ -79,19 +76,15 @@ public class ConversationMemory : MonoBehaviour
                 string jsonData = File.ReadAllText(saveFilePath);
                 conversationData = JsonUtility.FromJson<ConversationData>(jsonData);
                 
-                if (enableDebugLogs)
-                    Debug.Log("Conversation data loaded successfully");
             }
             else
             {
                 conversationData = new ConversationData();
-                if (enableDebugLogs)
-                    Debug.Log("No existing conversation data found, created new data");
             }
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Failed to load conversation data: {e.Message}");
+            Debug.LogError($"[ConversationMemory] Failed to load conversation data: {e.Message}");
             conversationData = new ConversationData();
         }
         
@@ -109,14 +102,12 @@ public class ConversationMemory : MonoBehaviour
             hasUnsavedChanges = false;
             lastAutoSaveTime = Time.time;
             
-            if (enableDebugLogs)
-                Debug.Log("Conversation data saved successfully");
                 
             OnSaveCompleted?.Invoke(true);
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Failed to save conversation data: {e.Message}");
+            Debug.LogError($"[ConversationMemory] Failed to save conversation data: {e.Message}");
             OnSaveCompleted?.Invoke(false);
         }
     }
@@ -136,7 +127,7 @@ public class ConversationMemory : MonoBehaviour
         OnConversationCompleted?.Invoke(conversationId);
         
         if (enableDebugLogs)
-            Debug.Log($"Completed conversation: {conversationId}");
+            Debug.Log($"[ConversationMemory] Completed conversation: {conversationId}");
     }
     
     /// <summary>
@@ -160,7 +151,7 @@ public class ConversationMemory : MonoBehaviour
         OnChoiceMade?.Invoke(conversationId, nodeId, choiceText, nextNodeId);
         
         if (enableDebugLogs)
-            Debug.Log($"Recorded choice: {choiceText} in {conversationId}");
+            Debug.Log($"[ConversationMemory] Recorded choice in {conversationId}: {choiceText}");
     }
     
     /// <summary>
@@ -185,7 +176,7 @@ public class ConversationMemory : MonoBehaviour
         OnRelationshipChanged?.Invoke(npcId, level);
         
         if (enableDebugLogs)
-            Debug.Log($"Set relationship with {npcId}: {oldLevel} -> {level}");
+            Debug.Log($"[ConversationMemory] Set relationship with {npcId}: {oldLevel} -> {level}");
     }
     
     /// <summary>
@@ -218,7 +209,7 @@ public class ConversationMemory : MonoBehaviour
         MarkDataChanged();
         
         if (enableDebugLogs)
-            Debug.Log($"Set quest {questId} status: {status}");
+            Debug.Log($"[ConversationMemory] Set quest {questId} status: {status}");
     }
     
     /// <summary>
@@ -240,7 +231,7 @@ public class ConversationMemory : MonoBehaviour
         MarkDataChanged();
         
         if (enableDebugLogs)
-            Debug.Log($"Set variable {key}: {value}");
+            Debug.Log($"[ConversationMemory] Set variable {key}: {value}");
     }
     
     /// <summary>
@@ -262,7 +253,7 @@ public class ConversationMemory : MonoBehaviour
         MarkDataChanged();
         
         if (enableDebugLogs)
-            Debug.Log($"Gave {count} {itemId} to player");
+            Debug.Log($"[ConversationMemory] Gave {count} {itemId} to player");
     }
     
     /// <summary>
@@ -276,7 +267,7 @@ public class ConversationMemory : MonoBehaviour
         MarkDataChanged();
         
         if (enableDebugLogs)
-            Debug.Log($"Took {count} {itemId} from player");
+            Debug.Log($"[ConversationMemory] Took {count} {itemId} from player");
     }
     
     /// <summary>
@@ -324,7 +315,7 @@ public class ConversationMemory : MonoBehaviour
         SaveData();
         
         if (enableDebugLogs)
-            Debug.Log("Cleared all conversation data");
+            Debug.Log("[ConversationMemory] Cleared all conversation data");
     }
     
     private void MarkDataChanged()

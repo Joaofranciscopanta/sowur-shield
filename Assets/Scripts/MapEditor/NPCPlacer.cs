@@ -85,7 +85,7 @@ public class NPCPlacer : MonoBehaviour
         // Create preview
         CreatePreview();
         
-        Debug.Log("NPCPlacer initialized with " + availableNPCTemplates?.Length + " NPC templates");
+
     }
     
     private void CreatePreview()
@@ -251,7 +251,7 @@ public class NPCPlacer : MonoBehaviour
     {
         if (selectedNPCTemplate == null)
         {
-            Debug.LogWarning("No NPC template selected!");
+
             return;
         }
         
@@ -259,7 +259,7 @@ public class NPCPlacer : MonoBehaviour
         
         if (npcPrefab == null)
         {
-            Debug.LogError("No NPC prefab available!");
+
             return;
         }
         
@@ -298,7 +298,7 @@ public class NPCPlacer : MonoBehaviour
         // Trigger event
         OnNPCPlaced?.Invoke(spawnData);
         
-        Debug.Log($"Placed NPC '{selectedNPCTemplate.npcName}' at {position}");
+
     }
     
     private void ConfigureNPC(GameObject npc, NPCTemplate template)
@@ -373,7 +373,7 @@ public class NPCPlacer : MonoBehaviour
         // Trigger event
         OnNPCRemoved?.Invoke(npcPosition);
         
-        Debug.Log($"Removed NPC at {npcPosition}");
+
     }
     
     private void LoadExistingNPCs()
@@ -386,7 +386,7 @@ public class NPCPlacer : MonoBehaviour
             NPCTemplate template = FindTemplateById(spawnData.npcId);
             if (template == null)
             {
-                Debug.LogWarning($"No template found for NPC ID: {spawnData.npcId}");
+
                 continue;
             }
             
@@ -402,7 +402,7 @@ public class NPCPlacer : MonoBehaviour
             placedNPCs.Add(npc);
         }
         
-        Debug.Log($"Loaded {placedNPCs.Count} NPCs from map data");
+
     }
     
     private NPCTemplate FindTemplateById(string npcId)
@@ -442,14 +442,14 @@ public class NPCPlacer : MonoBehaviour
         
         OnPlacementModeToggled?.Invoke(npcPlacementMode);
         
-        Debug.Log($"NPC Placement Mode: {(enabled ? "ENABLED" : "DISABLED")}");
+
     }
     
     public void SelectNPCTemplate(int templateIndex)
     {
         if (availableNPCTemplates == null || templateIndex < 0 || templateIndex >= availableNPCTemplates.Length)
         {
-            Debug.LogWarning($"Invalid NPC template index: {templateIndex}");
+
             return;
         }
         
@@ -462,7 +462,7 @@ public class NPCPlacer : MonoBehaviour
         }
         CreatePreview();
         
-        Debug.Log($"Selected NPC template: {selectedNPCTemplate.npcName}");
+
     }
     
     public void SelectNPCTemplate(string npcId)
@@ -488,7 +488,7 @@ public class NPCPlacer : MonoBehaviour
             RemoveNPC(placedNPCs[0]);
         }
         
-        Debug.Log("Cleared all placed NPCs");
+
     }
     
     public List<NPCSpawnData> GetAllNPCSpawnData()

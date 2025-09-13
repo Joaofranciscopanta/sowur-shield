@@ -22,7 +22,7 @@ public class DialogueCondition
         var memory = ConversationMemory.Instance;
         if (memory == null) 
         {
-            Debug.LogWarning("ConversationMemory not found. Condition will return false.");
+
             return invertCondition; // Return inverted false if no memory system
         }
         

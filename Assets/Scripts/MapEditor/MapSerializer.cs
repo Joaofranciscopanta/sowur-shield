@@ -58,13 +58,13 @@ public class MapSerializer : MonoBehaviour
         if (!Directory.Exists(mapsFolder))
         {
             Directory.CreateDirectory(mapsFolder);
-            Debug.Log($"Created maps directory: {mapsFolder}");
+
         }
         
         if (!Directory.Exists(backupFolder))
         {
             Directory.CreateDirectory(backupFolder);
-            Debug.Log($"Created backup directory: {backupFolder}");
+
         }
     }
     
@@ -119,14 +119,14 @@ public class MapSerializer : MonoBehaviour
             SaveAsJSON(mapData, fullPath.Replace(".asset", ".json"));
             
             OnMapSaved?.Invoke(fileName);
-            Debug.Log($"Map saved successfully: {fileName}");
+
             
         }
         catch (System.Exception e)
         {
             string errorMsg = $"Failed to save map: {e.Message}";
             OnError?.Invoke(errorMsg);
-            Debug.LogError(errorMsg);
+
         }
     }
     
@@ -160,7 +160,7 @@ public class MapSerializer : MonoBehaviour
             if (mapData != null)
             {
                 OnMapLoaded?.Invoke(fileName);
-                Debug.Log($"Map loaded successfully: {fileName}");
+
             }
             
             return mapData;
@@ -169,7 +169,7 @@ public class MapSerializer : MonoBehaviour
         {
             string errorMsg = $"Failed to load map: {e.Message}";
             OnError?.Invoke(errorMsg);
-            Debug.LogError(errorMsg);
+
             return null;
         }
     }
@@ -192,7 +192,7 @@ public class MapSerializer : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Failed to get available maps: {e.Message}");
+
         }
         
         return mapFiles;
@@ -222,13 +222,13 @@ public class MapSerializer : MonoBehaviour
                 File.Delete(jsonPath);
             }
             
-            Debug.Log($"Map deleted: {fileName}");
+
         }
         catch (System.Exception e)
         {
             string errorMsg = $"Failed to delete map: {e.Message}";
             OnError?.Invoke(errorMsg);
-            Debug.LogError(errorMsg);
+
         }
     }
     
@@ -247,11 +247,11 @@ public class MapSerializer : MonoBehaviour
             CleanupOldBackups(fileName);
             
             OnBackupCreated?.Invoke(backupFileName);
-            Debug.Log($"Backup created: {backupFileName}");
+
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Failed to create backup: {e.Message}");
+
         }
     }
     
@@ -277,7 +277,7 @@ public class MapSerializer : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Failed to cleanup old backups: {e.Message}");
+
         }
     }
     
@@ -291,7 +291,7 @@ public class MapSerializer : MonoBehaviour
         // Clean up old auto saves
         CleanupOldAutoSaves();
         
-        Debug.Log($"Auto-saved: {autoSaveFileName}");
+
     }
     
     private void CleanupOldAutoSaves()
@@ -313,7 +313,7 @@ public class MapSerializer : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Failed to cleanup auto saves: {e.Message}");
+
         }
     }
     
@@ -351,7 +351,7 @@ public class MapSerializer : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Failed to save JSON: {e.Message}");
+
         }
     }
     
@@ -367,7 +367,7 @@ public class MapSerializer : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"Failed to load JSON: {e.Message}");
+
             return null;
         }
     }
@@ -441,7 +441,7 @@ public class MapSerializer : MonoBehaviour
             string json = JsonUtility.ToJson(jsonData, true);
             File.WriteAllText(exportPath, json);
             
-            Debug.Log($"Map exported to: {exportPath}");
+
         }
         catch (System.Exception e)
         {

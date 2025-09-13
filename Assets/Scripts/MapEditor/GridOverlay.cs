@@ -85,7 +85,7 @@ public class GridOverlay : MonoBehaviour
         // Set initial visibility
         SetGridVisibility(showGrid && mapEditor?.IsEditorActive == true);
         
-        Debug.Log("GridOverlay initialized");
+
     }
     
     private void OnEditorToggled(bool editorActive)

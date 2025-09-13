@@ -89,12 +89,12 @@ public class SellBoxDragTester : EditorWindow
     
     private void ValidateSellBoxSetup()
     {
-        Debug.Log("=== Validating SellBox Drag Fix Setup ===");
+
         
         SellBox sellBox = FindFirstObjectByType<SellBox>();
         if (sellBox != null)
         {
-            Debug.Log("✓ SellBox found in scene");
+
             
             // Check if new methods exist using reflection
             var methods = typeof(SellBox).GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
@@ -102,21 +102,21 @@ public class SellBoxDragTester : EditorWindow
             bool hasInternalMove = System.Array.Exists(methods, m => m.Name == "HandleSellBoxInternalMove");
             bool hasSilentAdd = System.Array.Exists(methods, m => m.Name == "AddItemSilent");
             
-            Debug.Log($"✓ HandleSellBoxInternalMove method: {(hasInternalMove ? "Present" : "Missing")}");
-            Debug.Log($"✓ AddItemSilent method: {(hasSilentAdd ? "Present" : "Missing")}");
+
+
             
             if (hasInternalMove && hasSilentAdd)
             {
-                Debug.Log("🎉 All SellBox drag fixes are properly implemented!");
+
             }
             else
             {
-                Debug.LogWarning("⚠️ Some fixes may not be properly implemented");
+
             }
         }
         else
         {
-            Debug.LogError("❌ No SellBox found in scene");
+
         }
         
         // Check InventorySlot routing fix
@@ -124,24 +124,24 @@ public class SellBoxDragTester : EditorWindow
         var onDropMethod = inventorySlotType.GetMethod("OnDrop");
         if (onDropMethod != null)
         {
-            Debug.Log("✓ InventorySlot.OnDrop method found - routing should be fixed");
+
         }
         
-        Debug.Log("=== Validation Complete ===");
+
     }
     
     private void DebugSellBoxState()
     {
-        Debug.Log("=== SellBox State Debug ===");
+
         
         SellBox sellBox = FindFirstObjectByType<SellBox>();
         if (sellBox == null)
         {
-            Debug.LogError("No SellBox found!");
+
             return;
         }
         
-        Debug.Log($"SellBox Open: {sellBox.IsOpen}");
+
         
         // Try to get inventory via reflection for debugging
         try
@@ -152,12 +152,12 @@ public class SellBoxDragTester : EditorWindow
             if (inventoryField != null)
             {
                 var inventory = inventoryField.GetValue(sellBox);
-                Debug.Log($"SellBox inventory field accessible: {inventory != null}");
+
             }
         }
         catch (System.Exception e)
         {
-            Debug.Log($"Could not access SellBox inventory for debugging: {e.Message}");
+
         }
         
         // Check for InventorySlot components
@@ -175,26 +175,26 @@ public class SellBoxDragTester : EditorWindow
             }
         }
         
-        Debug.Log($"Found {sellBoxSlots} SellBox slots out of {slots.Length} total slots");
-        Debug.Log("=== Debug Complete ===");
+
+
     }
     
     private void FixValueDuplication()
     {
-        Debug.Log("=== Emergency Value Duplication Fix ===");
+
         
         SellBox sellBox = FindFirstObjectByType<SellBox>();
         if (sellBox == null)
         {
-            Debug.LogError("No SellBox found!");
+
             return;
         }
         
         // Call the validation method
         sellBox.ValidateAndFixState();
         
-        Debug.Log("🔧 Emergency fix applied - check SellBox values now!");
-        Debug.Log("=== Fix Complete ===");
+
+
     }
 }
 #endif

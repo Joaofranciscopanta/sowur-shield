@@ -76,7 +76,7 @@ public class BrushTool : MonoBehaviour
         
         CreateBrushPreview();
         
-        Debug.Log("BrushTool initialized");
+
     }
     
     private void CreateBrushPreview()
@@ -325,7 +325,7 @@ public class BrushTool : MonoBehaviour
         }
         
         PlaySound(paintSound);
-        Debug.Log($"Flood fill completed. Filled {visited.Count} tiles.");
+
     }
     
     private void DrawLine(Vector3Int start, Vector3Int end, ExtendedTileType tileType)
@@ -499,13 +499,13 @@ public class BrushTool : MonoBehaviour
         // Hide previews when switching tools
         HideAllPreviews();
         
-        Debug.Log($"Brush type changed to: {brushType}");
+
     }
     
     public void SetBrushSize(int size)
     {
         brushSize = Mathf.Clamp(size, 1, 10);
-        Debug.Log($"Brush size changed to: {brushSize}");
+
     }
     
     private void HideAllPreviews()

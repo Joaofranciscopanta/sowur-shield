@@ -20,7 +20,7 @@ public class DialogueEffect
         var memory = ConversationMemory.Instance;
         if (memory == null)
         {
-            Debug.LogWarning("ConversationMemory not found. Effect cannot be executed.");
+
             return;
         }
         
@@ -57,7 +57,7 @@ public class DialogueEffect
                 break;
                 
             default:
-                Debug.LogWarning($"Unknown effect type: {effectType}");
+
                 break;
         }
     }
@@ -71,7 +71,7 @@ public class DialogueEffect
             // You would load the audio clip by name/path
             // AudioClip clip = Resources.Load<AudioClip>(effectKey);
             // if (clip != null) audioSource.PlayOneShot(clip);
-            Debug.Log($"Would play sound: {effectKey}");
+
         }
     }
     
@@ -79,7 +79,7 @@ public class DialogueEffect
     {
         // Integration point for custom game events
         // This could trigger quest updates, cutscenes, etc.
-        Debug.Log($"Triggering custom event: {effectKey} with value: {effectValue}");
+
         
         // Example: You could use Unity Events or a custom event system
         // GameEvents.Instance?.TriggerEvent(effectKey, effectValue);

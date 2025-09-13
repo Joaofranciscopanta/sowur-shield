@@ -32,7 +32,7 @@ public class InteractionManager : MonoBehaviour
     private void Start()
     {
         FindPlayer();
-        Debug.Log("InteractionManager initialized successfully");
+
     }
     
     private void Update()
@@ -61,7 +61,7 @@ public class InteractionManager : MonoBehaviour
         {
             registeredInteractables.Add(interactable);
             string name = interactable is MonoBehaviour mb ? mb.gameObject.name : "Unknown";
-            Debug.Log($"InteractionManager: Registered interactable '{name}'. Total registered: {registeredInteractables.Count}");
+
         }
     }
     
@@ -124,7 +124,7 @@ public class InteractionManager : MonoBehaviour
             {
                 SetInteractablePromptVisibility(currentClosestInteractable, false);
                 string oldName = currentClosestInteractable is MonoBehaviour oldMb ? oldMb.gameObject.name : "Unknown";
-                Debug.Log($"InteractionManager: Hiding prompt for '{oldName}'");
+
             }
             
             currentClosestInteractable = newClosest;
@@ -134,7 +134,7 @@ public class InteractionManager : MonoBehaviour
             {
                 SetInteractablePromptVisibility(currentClosestInteractable, true);
                 string newName = currentClosestInteractable is MonoBehaviour newMb ? newMb.gameObject.name : "Unknown";
-                Debug.Log($"InteractionManager: Showing prompt for '{newName}'");
+
             }
             
             OnClosestInteractableChanged?.Invoke(currentClosestInteractable);

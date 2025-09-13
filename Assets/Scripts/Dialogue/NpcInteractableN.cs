@@ -70,13 +70,13 @@ public class NPCInteractable : MonoBehaviour
         // Verificações de segurança
         if (dialogueUI == null)
         {
-            Debug.LogError("DialogueUI não encontrado na cena!");
+
             return;
         }
         
         if (dialogueObject == null)
         {
-            Debug.LogError("DialogueObject não está configurado no NPC!");
+
             return;
         }
         

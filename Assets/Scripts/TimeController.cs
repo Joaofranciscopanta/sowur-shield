@@ -68,18 +68,18 @@ public class GameTimeController : MonoBehaviour, ISaveable
         _dayProgress = defaultWakeUpTime; // Começa no horário de acordar (6:00)
         _lastUIUpdateProgress = _dayProgress;
 
+        // Register with SaveManager (before SaveManager.Start() runs)
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.RegisterSaveable(this);
+            //Debug.Log("[TimeController] Successfully registered with SaveManager in Awake");
+        }
     }
 
     private void Start()
     {
-        // Register with SaveManager
-        if (SaveManager.Instance != null)
-        {
-            SaveManager.Instance.RegisterSaveable(this);
-        }
-        
+
         // Disparar eventos iniciais para garantir que todos os ouvintes recebam a notificação inicial
-        Debug.Log("GameTimeController: Inicializando eventos");
 
         // Verificar quantos listeners existem
         int timeListeners = OnTimeChanged?.GetInvocationList()?.Length ?? 0;
@@ -200,6 +200,8 @@ public class GameTimeController : MonoBehaviour, ISaveable
     // Método chamado ao dormir - avança o dia
     public void AdvanceDay(int days = 1)
     {
+        //Debug.Log($"[TimeController] AdvanceDay called - BEFORE: Day {_currentDay}, Progress {_dayProgress:F3}");
+
         // Atualiza o dia
         int oldDay = _currentDay;
         _currentDay += days;
@@ -226,6 +228,7 @@ public class GameTimeController : MonoBehaviour, ISaveable
             OnDayChanged.Invoke();
         }
 
+        //Debug.Log($"[TimeController] AdvanceDay complete - AFTER: Day {_currentDay}, Progress {_dayProgress:F3}");
     }
 
 
@@ -353,52 +356,98 @@ public class GameTimeController : MonoBehaviour, ISaveable
 
         if (OnTimeChanged != null)
         {
-            Debug.Log("GameTimeController: Forçando atualização da UI de tempo");
             OnTimeChanged.Invoke();
         }
     }
-    
+
     // ============================================================================
     // ISAVEABLE IMPLEMENTATION
     // ============================================================================
-    
+
     public void SaveData(GameData gameData)
     {
         gameData.timeData.currentDay = _currentDay;
         gameData.timeData.dayProgress = _dayProgress;
         gameData.timeData.timeFlowEnabled = timeFlowEnabled;
         gameData.timeData.minutesPerRealSecond = minutesPerRealSecond;
-        
+
         // For now, keep default season and year - can be expanded later
         gameData.timeData.season = "Spring";
         gameData.timeData.year = 1;
-        
-        Debug.Log($"[GameTimeController] Saved time data: Day {_currentDay}, Progress {_dayProgress:F3}");
+
+        //Debug.Log($"[TimeController] SaveData: Day {_currentDay}, Progress {_dayProgress:F3}");
     }
-    
+
     public void LoadData(GameData gameData)
     {
+        //Debug.Log($"[TimeController] LoadData: Loading Day {gameData.timeData.currentDay}, Progress {gameData.timeData.dayProgress:F3}");
+
         _currentDay = gameData.timeData.currentDay;
         _dayProgress = gameData.timeData.dayProgress;
         timeFlowEnabled = gameData.timeData.timeFlowEnabled;
         minutesPerRealSecond = gameData.timeData.minutesPerRealSecond;
-        
+
         // Update UI progress tracking
         _lastUIUpdateProgress = GetRoundedUITime(_dayProgress);
-        
+
+        //Debug.Log($"[TimeController] LoadData: Set current state to Day {_currentDay}, Progress {_dayProgress:F3}");
+
         // Trigger events to update UI
         if (OnRealTimeChanged != null)
             OnRealTimeChanged.Invoke();
-            
+
         if (OnTimeChanged != null)
             OnTimeChanged.Invoke();
-            
+
         if (OnDayChanged != null)
             OnDayChanged.Invoke();
-        
-        Debug.Log($"[GameTimeController] Loaded time data: Day {_currentDay}, Progress {_dayProgress:F3}");
+
     }
-    
+
+    /// <summary>
+    /// Reset day progress to wake-up time (start of day) - used by Continue button
+    /// </summary>
+    public void ResetToStartOfDay()
+    {
+        //Debug.Log($"[GameTimeController] ResetToStartOfDay called - BEFORE: Day {_currentDay}, Progress {_dayProgress:F3}");
+
+        _dayProgress = defaultWakeUpTime; // Reset to 6:00 AM
+        _lastUIUpdateProgress = GetRoundedUITime(_dayProgress);
+
+        // Trigger events to update UI
+        if (OnRealTimeChanged != null)
+            OnRealTimeChanged.Invoke();
+
+        if (OnTimeChanged != null)
+            OnTimeChanged.Invoke();
+
+        //Debug.Log($"[GameTimeController] ResetToStartOfDay complete - AFTER: Day {_currentDay}, Progress {_dayProgress:F3} (6:00 AM)");
+    }
+
+    /// <summary>
+    /// Complete reset for new games - resets day, time, and all settings to initial state
+    /// </summary>
+    public void ResetForNewGame()
+    {
+        _currentDay = startingDay; // Reset to Day 1
+        _dayProgress = defaultWakeUpTime; // Reset to 6:00 AM
+        _lastUIUpdateProgress = GetRoundedUITime(_dayProgress);
+        _isPaused = false;
+        timeFlowEnabled = true;
+
+        // Trigger events to update UI
+        if (OnRealTimeChanged != null)
+            OnRealTimeChanged.Invoke();
+
+        if (OnTimeChanged != null)
+            OnTimeChanged.Invoke();
+
+        if (OnDayChanged != null)
+            OnDayChanged.Invoke();
+
+        //Debug.Log($"[GameTimeController] Reset for new game: Day {_currentDay}, Progress {_dayProgress:F3} (6:00 AM)");
+    }
+
     private void OnDestroy()
     {
         // Unregister from SaveManager

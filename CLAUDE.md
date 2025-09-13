@@ -794,3 +794,4 @@ find Assets -name "*.meta" -newer .git/FETCH_HEAD
 3. **Code Documentation**: API documentation generation
 4. **Asset Management**: Addressable asset system
 5. **Build Pipeline**: Automated build and deployment
+- delete debug logs after a feature is done

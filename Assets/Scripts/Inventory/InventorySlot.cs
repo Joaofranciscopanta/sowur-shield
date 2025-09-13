@@ -556,7 +556,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         if (!draggedItemStack.IsEmpty)
         {
-            Debug.Log($"Permanently consumed dragged item: {draggedItemStack.quantity}x {draggedItemStack.item.itemName}");
+
             dragWasSuccessful = true; // Mark drag as successful
             // Don't clear draggedItemStack here - let OnEndDrag handle it
         }
@@ -567,7 +567,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         dragWasSuccessful = true;
         // Don't clear draggedItemStack here - let OnEndDrag handle it
-        Debug.Log($"Marked drag as successful for slot {slotIndex}");
+
     }
 
     // ============================================================================
@@ -1226,7 +1226,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         InventorySlot draggedSlot = eventData.pointerDrag?.GetComponent<InventorySlot>();
         if (draggedSlot != null && draggedSlot != this)
         {
-            Debug.Log($"InventorySlot OnDrop: {draggedSlot.name} -> {this.name} (draggedSlot.isSellBoxMode: {draggedSlot.isSellBoxMode}, this.isSellBoxMode: {isSellBoxMode})");
+
 
             // Mark that the dragged slot was dropped on a valid slot
             draggedSlot.wasDroppedOnSlot = true;
@@ -1236,7 +1236,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             // Check if dragging FROM SellBox TO inventory
             if (draggedSlot.isSellBoxMode && !isSellBoxMode && sellBox != null && sellBox.IsOpen)
             {
-                Debug.Log("Routing to SellBox.HandleSellBoxToInventoryDrop");
+
                 sellBox.HandleSellBoxToInventoryDrop(draggedSlot, this);
                 return;
             }
@@ -1244,7 +1244,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             // Check if this is a SellBox-to-SellBox move (internal rearrangement)
             if (draggedSlot.isSellBoxMode && isSellBoxMode && sellBox != null && sellBox.IsOpen)
             {
-                Debug.Log("Routing to SellBox.HandleSellBoxInternalMove");
+
                 sellBox.HandleSellBoxInternalMove(draggedSlot, this);
                 return;
             }
@@ -1252,7 +1252,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             // Check if this is a drop TO SellBox slot (from inventory)
             if (isSellBoxMode && sellBox != null && sellBox.IsOpen)
             {
-                Debug.Log("Routing to SellBox.HandleSlotDrop");
+
                 sellBox.HandleSlotDrop(draggedSlot, this);
                 return;
             }
@@ -1260,12 +1260,12 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             // Default to regular inventory handling
             if (inventoryManager != null)
             {
-                Debug.Log("Routing to Inventory.HandleSlotDrop");
+
                 inventoryManager.HandleSlotDrop(draggedSlot, this);
             }
             else
             {
-                Debug.LogWarning("No inventory manager found for handling slot drop");
+
             }
         }
     }
@@ -1301,7 +1301,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         Camera mainCamera = Camera.main;
         if (mainCamera == null)
         {
-            Debug.LogError("Main camera not found - cannot create ground item");
+
             return;
         }
 
@@ -1341,13 +1341,13 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             if (existingGroundItem != null)
             {
                 groundItemPrefab = existingGroundItem.gameObject;
-                Debug.Log("Using existing GroundItem as template");
+
             }
         }
 
         if (groundItemPrefab == null)
         {
-            Debug.LogError("GroundItem prefab not found! Please ensure GroundItem.prefab is in Resources/Prefabs/ folder or create a Resources folder");
+
             return;
         }
 
@@ -1363,16 +1363,16 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
             // Set the item data (with quantity)
             groundItem.SetItemStack(itemStack);
-            Debug.Log($"Created GroundItem: {quantity}x {itemName} at position {worldPosition}");
+
 
             // Completely clear the slot
             ClearSlot();
 
-            Debug.Log($"Cleared slot {slotIndex} after dropping {quantity}x {itemName}");
+
         }
         else
         {
-            Debug.LogError("GroundItem component not found on instantiated prefab!");
+
             Destroy(groundItemObj);
         }
     }
@@ -1385,7 +1385,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         Camera mainCamera = Camera.main;
         if (mainCamera == null)
         {
-            Debug.LogError("Main camera not found - cannot create ground item");
+
             return;
         }
 
@@ -1425,13 +1425,13 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             if (existingGroundItem != null)
             {
                 groundItemPrefab = existingGroundItem.gameObject;
-                Debug.Log("Using existing GroundItem as template");
+
             }
         }
 
         if (groundItemPrefab == null)
         {
-            Debug.LogError("GroundItem prefab not found! Please ensure GroundItem.prefab is in Resources/Prefabs/ folder or create a Resources folder");
+
             return;
         }
 
@@ -1447,13 +1447,13 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
             // Set the item data from the dragged item (with quantity)
             groundItem.SetItemStack(draggedItemStack);
-            Debug.Log($"Created GroundItem from drag: {quantity}x {itemName} at position {worldPosition}");
 
-            Debug.Log($"Consumed dragged item {quantity}x {itemName} from slot {slotIndex}");
+
+
         }
         else
         {
-            Debug.LogError("GroundItem component not found on instantiated prefab!");
+
             Destroy(groundItemObj);
         }
     }

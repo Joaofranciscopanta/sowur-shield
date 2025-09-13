@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class PlayerStats : MonoBehaviour
+public class PlayerStats : MonoBehaviour, ISaveable
 {
     [Header("Health & Energy")]
     public int maxHealth = 100;
@@ -39,11 +39,39 @@ public class PlayerStats : MonoBehaviour
     public float Experience => experience;
     public float ExperienceToNextLevel => experienceToNextLevel;
 
-    private void Start()
+    private void Awake()
     {
         currentHealth = maxHealth;
         currentEnergy = maxEnergy;
+        
+        // Register with SaveManager early in Awake to ensure we get LoadData calls
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.RegisterSaveable(this);
+        }
+        else
+        {
+            // Try again in Start if SaveManager isn't ready yet
+            StartCoroutine(DelayedRegistration());
+        }
+    }
+    
+    private void Start()
+    {
         UpdateUI();
+    }
+    
+    private System.Collections.IEnumerator DelayedRegistration()
+    {
+        yield return null; // Wait one frame
+        
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.RegisterSaveable(this);
+        }
+        else
+        {
+        }
     }
 
     public void RestoreHealth(int amount)
@@ -245,5 +273,44 @@ public class PlayerStats : MonoBehaviour
         {
             moneyText.text = $"Money: ${money}";
         }
+    }
+    
+    // ============================================================================
+    // ISAVEABLE IMPLEMENTATION
+    // ============================================================================
+    
+    public void SaveData(GameData gameData)
+    {
+        gameData.playerData.health = (float)currentHealth;
+        gameData.playerData.energy = (float)currentEnergy;
+        gameData.playerData.money = money;
+        gameData.playerData.playerLevel = playerLevel;
+        gameData.playerData.experience = experience;
+        gameData.playerData.experienceToNextLevel = experienceToNextLevel;
+        gameData.playerData.maxHealth = (float)maxHealth;
+        gameData.playerData.maxEnergy = (float)maxEnergy;
+        
+    }
+    
+    public void LoadData(GameData gameData)
+    {
+        currentHealth = Mathf.RoundToInt(gameData.playerData.health);
+        currentEnergy = Mathf.RoundToInt(gameData.playerData.energy);
+        money = gameData.playerData.money;
+        playerLevel = gameData.playerData.playerLevel;
+        experience = gameData.playerData.experience;
+        experienceToNextLevel = gameData.playerData.experienceToNextLevel;
+        maxHealth = Mathf.RoundToInt(gameData.playerData.maxHealth);
+        maxEnergy = Mathf.RoundToInt(gameData.playerData.maxEnergy);
+        
+        // Trigger events and update UI
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        OnEnergyChanged?.Invoke(currentEnergy, maxEnergy);
+        OnMoneyChanged?.Invoke(money);
+        OnLevelChanged?.Invoke(playerLevel);
+        OnExperienceChanged?.Invoke(experience, experienceToNextLevel);
+        
+        UpdateUI();
+        
     }
 }

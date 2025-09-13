@@ -110,7 +110,6 @@ public class GameMenuManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("[GameMenuManager] Menu toggle action not assigned! ESC menu won't work.");
         }
     }
 
@@ -142,7 +141,6 @@ public class GameMenuManager : MonoBehaviour
 
             if (isPanelVisible)
             {
-                Debug.Log("[GameMenuManager] Sleep confirmation panel is active, ignoring ESC key for menu.");
                 return;
             }
         }
@@ -156,7 +154,6 @@ public class GameMenuManager : MonoBehaviour
 
     public void ToggleMenu()
     {
-        Debug.Log($"[GameMenuManager] ToggleMenu called. Current state: {(isMenuOpen ? "Open" : "Closed")}");
 
         if (isMenuOpen)
         {
@@ -172,18 +169,15 @@ public class GameMenuManager : MonoBehaviour
     {
         if (isMenuOpen) return;
 
-        Debug.Log("[GameMenuManager] Opening menu...");
 
         // Validate required components
         if (menuPanel == null)
         {
-            Debug.LogError("[GameMenuManager] Cannot open menu - menuPanel is not assigned!");
             return;
         }
 
         if (menuUI == null)
         {
-            Debug.LogError("[GameMenuManager] Cannot open menu - GameMenuUI component not found!");
             return;
         }
 
@@ -222,7 +216,6 @@ public class GameMenuManager : MonoBehaviour
         // Update cursor state
         SetCursorState(true);
 
-        Debug.Log("[GameMenuManager] Menu opened successfully");
     }
 
     public void CloseMenu()
@@ -260,7 +253,6 @@ public class GameMenuManager : MonoBehaviour
         // Update cursor state
         SetCursorState(false);
 
-        Debug.Log("[GameMenuManager] Menu closed");
     }
 
     // ============================================================================
@@ -274,27 +266,23 @@ public class GameMenuManager : MonoBehaviour
 
     public void ShowSettings()
     {
-        Debug.Log("[GameMenuManager] ShowSettings called");
         if (menuUI != null)
         {
             menuUI.ShowSettingsPanel();
         }
         else
         {
-            Debug.LogError("[GameMenuManager] Settings panel requested but GameMenuUI not found!");
         }
     }
 
     public void ShowSaveInfo()
     {
-        Debug.Log("[GameMenuManager] ShowSaveInfo called");
         if (menuUI != null)
         {
             menuUI.ShowSaveInfoPanel();
         }
         else
         {
-            Debug.LogError("[GameMenuManager] Save info requested but GameMenuUI not found!");
         }
     }
 
@@ -346,7 +334,6 @@ public class GameMenuManager : MonoBehaviour
 
     public void DoQuitToMainMenu()
     {
-        Debug.Log("[GameMenuManager] Quitting to main menu...");
 
         // Optional: Auto-save before quitting (commented out by default to match current UX)
         // if (SaveManager.Instance != null)
@@ -384,17 +371,14 @@ public class GameMenuManager : MonoBehaviour
         // Use SceneTransitionManager if available for smooth transition
         if (SceneTransitionManager.Instance != null)
         {
-            Debug.Log("[GameMenuManager] Using SceneTransitionManager for smooth transition to main menu");
             SceneTransitionManager.Instance.LoadMainMenu();
         }
         else
         {
-            Debug.Log("[GameMenuManager] SceneTransitionManager not found, using direct scene loading");
             // Fallback to direct scene loading
             SceneManager.LoadScene(mainMenuSceneName);
         }
 
-        Debug.Log("[GameMenuManager] Main menu transition initiated successfully");
     }
 
     public void DoQuitToDesktop()
@@ -402,7 +386,6 @@ public class GameMenuManager : MonoBehaviour
         // Restore time scale
         Time.timeScale = 1f;
 
-        Debug.Log("[GameMenuManager] Quitting to desktop");
 
         #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;

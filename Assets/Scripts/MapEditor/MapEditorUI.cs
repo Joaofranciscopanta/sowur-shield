@@ -116,7 +116,7 @@ public class MapEditorUI : MonoBehaviour
         SelectTile(ExtendedTileType.Grass);
         
         isInitialized = true;
-        Debug.Log("MapEditorUI initialized");
+
     }
     
     private void SetupToolButtons()
@@ -319,7 +319,7 @@ public class MapEditorUI : MonoBehaviour
     {
         // Update tile properties
         // TODO: Implement collision property system
-        Debug.Log($"Collision toggled: {hasCollision}");
+
     }
     
     private void OnLayerChanged(int layerIndex)
@@ -328,7 +328,7 @@ public class MapEditorUI : MonoBehaviour
         {
             mapEditor.selectedLayer = layerIndex;
         }
-        Debug.Log($"Layer changed to: {layerIndex}");
+
     }
     
     private void UpdatePropertiesDisplay()
@@ -401,7 +401,7 @@ public class MapEditorUI : MonoBehaviour
         if (serializer != null)
         {
             var availableMaps = serializer.GetAvailableMaps();
-            Debug.Log("Available maps: " + string.Join(", ", availableMaps));
+
         }
     }
     
@@ -417,7 +417,7 @@ public class MapEditorUI : MonoBehaviour
     private void ShowExportDialog()
     {
         // TODO: Implement export dialog
-        Debug.Log("Export dialog - TODO");
+
     }
     
     private void ToggleHelpPanel()
@@ -442,7 +442,7 @@ public class MapEditorUI : MonoBehaviour
     private void OnMapLoaded(MapData mapData)
     {
         RefreshUI();
-        Debug.Log($"UI updated for loaded map: {mapData.mapName}");
+
     }
     
     private void OnMapSaved()

@@ -74,11 +74,11 @@ public class NPCDialogueInteractable : MonoBehaviour, IInteractable
         if (InteractionManager.Instance != null)
         {
             InteractionManager.Instance.RegisterInteractable(this);
-            Debug.Log($"NPC '{npcDisplayName}' registered with InteractionManager");
+
         }
         else
         {
-            Debug.LogWarning($"NPC '{npcDisplayName}': InteractionManager.Instance is null! Cannot register.");
+
         }
     }
     
@@ -149,7 +149,7 @@ public class NPCDialogueInteractable : MonoBehaviour, IInteractable
         dialogueUI = FindFirstObjectByType<DialogueTreeUI>();
         if (dialogueUI == null)
         {
-            Debug.LogWarning($"NPCDialogueInteractable '{npcDisplayName}': DialogueTreeUI not found in scene!");
+
         }
         
         // Find conversation memory
@@ -184,7 +184,7 @@ public class NPCDialogueInteractable : MonoBehaviour, IInteractable
             else
                 OnInteractionUnavailable?.Invoke();
                 
-            Debug.Log($"NPC '{npcDisplayName}': Fallback prompt visibility set to {playerInRange}");
+
         }
     }
     
@@ -261,7 +261,7 @@ public class NPCDialogueInteractable : MonoBehaviour, IInteractable
         // When using fallback system, check range
         if (InteractionManager.Instance == null && !playerInRange)
         {
-            Debug.Log($"NPC '{npcDisplayName}': Cannot interact - player not in range");
+
             return;
         }
         
@@ -278,13 +278,13 @@ public class NPCDialogueInteractable : MonoBehaviour, IInteractable
         var dialogueToShow = GetBestAvailableDialogue();
         if (dialogueToShow == null)
         {
-            Debug.LogWarning($"NPCDialogueInteractable '{npcDisplayName}': No available dialogue to show!");
+
             return;
         }
         
         if (dialogueUI == null)
         {
-            Debug.LogError($"NPCDialogueInteractable '{npcDisplayName}': DialogueTreeUI not found!");
+
             return;
         }
         
@@ -428,11 +428,11 @@ public class NPCDialogueInteractable : MonoBehaviour, IInteractable
         if (interactionPrompt != null)
         {
             interactionPrompt.SetActive(visible);
-            Debug.Log($"NPC '{npcDisplayName}': Prompt visibility set to {visible}");
+
         }
         else
         {
-            Debug.LogWarning($"NPC '{npcDisplayName}': interactionPrompt is null!");
+
         }
         
         if (visible)

@@ -26,11 +26,18 @@ public class SaveManager : MonoBehaviour
     
     // Save data
     private GameData currentGameData;
+    public GameData CurrentGameData => currentGameData;
     private string saveDirectoryPath;
     private string currentSaveFilePath;
     
     // Registered saveable objects
     private List<ISaveable> saveableObjects = new List<ISaveable>();
+    
+    // Continue from start of day flag
+    public static bool resetToStartOfDayAfterLoad = false;
+    
+    // New game initialization flag
+    public static bool initializeNewGameAfterLoad = false;
     
     private void Awake()
     {
@@ -57,17 +64,34 @@ public class SaveManager : MonoBehaviour
         if (!Directory.Exists(saveDirectoryPath))
         {
             Directory.CreateDirectory(saveDirectoryPath);
-            LogDebug($"Created save directory: {saveDirectoryPath}");
         }
-        
-        LogDebug($"SaveManager initialized. Save path: {currentSaveFilePath}");
     }
     
     private void Start()
     {
-        // Auto-load game on start if save exists
-        if (HasSaveFile())
+        LogDebug($"SaveManager Start() - resetToStartOfDayAfterLoad: {resetToStartOfDayAfterLoad}, initializeNewGameAfterLoad: {initializeNewGameAfterLoad}");
+        LogDebug($"Registered saveable objects count: {saveableObjects.Count}");
+        
+        // Check if we're starting a new game
+        if (initializeNewGameAfterLoad)
         {
+            LogDebug("New game initialization requested - resetting TimeController");
+            
+            // Reset TimeController for new game
+            if (GameTimeController.instance != null)
+            {
+                GameTimeController.instance.ResetForNewGame();
+            }
+            
+            // Create fresh game data
+            currentGameData = new GameData();
+            initializeNewGameAfterLoad = false;
+            LogDebug("New game initialized successfully");
+        }
+        // Auto-load game on start if save exists (and not starting new game)
+        else if (HasSaveFile())
+        {
+            LogDebug("Save file detected, calling LoadGame()");
             LoadGame();
         }
         else
@@ -90,7 +114,21 @@ public class SaveManager : MonoBehaviour
         if (saveable != null && !saveableObjects.Contains(saveable))
         {
             saveableObjects.Add(saveable);
-            LogDebug($"Registered saveable object: {saveable.GetType().Name}");
+            string objectName = "Unknown";
+            if (saveable is MonoBehaviour mb)
+            {
+                objectName = mb.gameObject.name;
+            }
+            LogDebug($"RegisterSaveable: Added {saveable.GetType().Name} from GameObject '{objectName}' - Total registered: {saveableObjects.Count}");
+        }
+        else
+        {
+            string objectName = "Unknown";
+            if (saveable is MonoBehaviour mb)
+            {
+                objectName = mb.gameObject.name;
+            }
+            LogDebug($"RegisterSaveable: SKIPPED duplicate {saveable?.GetType().Name} from GameObject '{objectName}'");
         }
     }
     
@@ -102,7 +140,6 @@ public class SaveManager : MonoBehaviour
         if (saveableObjects.Contains(saveable))
         {
             saveableObjects.Remove(saveable);
-            LogDebug($"Unregistered saveable object: {saveable.GetType().Name}");
         }
     }
     
@@ -116,7 +153,7 @@ public class SaveManager : MonoBehaviour
     public void SaveGame()
     {
         OnSaveStarted?.Invoke();
-        LogDebug("Starting save operation...");
+        LogDebug($"SaveGame() called - registered objects: {saveableObjects.Count}");
         
         try
         {
@@ -149,7 +186,6 @@ public class SaveManager : MonoBehaviour
             string jsonData = JsonUtility.ToJson(currentGameData, true);
             File.WriteAllText(currentSaveFilePath, jsonData);
             
-            LogDebug($"Game saved successfully to: {currentSaveFilePath}");
             OnSaveCompleted?.Invoke(true);
         }
         catch (System.Exception e)
@@ -170,7 +206,6 @@ public class SaveManager : MonoBehaviour
             string backupFilePath = Path.Combine(saveDirectoryPath, backupFileName);
             
             File.Copy(currentSaveFilePath, backupFilePath);
-            LogDebug($"Created backup save: {backupFileName}");
             
             // Clean old backups if necessary
             CleanOldBackups();
@@ -196,7 +231,6 @@ public class SaveManager : MonoBehaviour
             for (int i = maxBackupSaves; i < backupFiles.Length; i++)
             {
                 File.Delete(backupFiles[i]);
-                LogDebug($"Removed old backup: {Path.GetFileName(backupFiles[i])}");
             }
         }
         catch (System.Exception e)
@@ -236,12 +270,14 @@ public class SaveManager : MonoBehaviour
             }
             
             // Load data into all registered saveable objects
+            LogDebug($"Loading data into {saveableObjects.Count} registered objects");
             foreach (var saveable in saveableObjects.ToList())
             {
                 if (saveable != null)
                 {
                     try
                     {
+                        LogDebug($"Loading data into: {saveable.GetType().Name}");
                         saveable.LoadData(currentGameData);
                     }
                     catch (System.Exception e)
@@ -251,7 +287,42 @@ public class SaveManager : MonoBehaviour
                 }
             }
             
-            LogDebug($"Game loaded successfully from: {currentSaveFilePath}");
+            // Check if we should reset to start of day (for Continue button)
+            if (resetToStartOfDayAfterLoad)
+            {
+                LogDebug("resetToStartOfDayAfterLoad flag is TRUE - processing day reset");
+                
+                // Find the TimeController and reset it
+                if (GameTimeController.instance != null)
+                {
+                    GameTimeController.instance.ResetToStartOfDay();
+                    LogDebug("Reset day progress to start of day for Continue operation");
+                }
+                else
+                {
+                    // Try to find it if instance is null
+                    GameTimeController timeController = FindObjectOfType<GameTimeController>();
+                    if (timeController != null)
+                    {
+                        timeController.ResetToStartOfDay();
+                        LogDebug("Reset day progress to start of day for Continue operation (found via FindObjectOfType)");
+                    }
+                    else
+                    {
+                        LogError("Could not find GameTimeController to reset day progress");
+                    }
+                }
+                
+                // Reset the flag after use
+                resetToStartOfDayAfterLoad = false;
+                LogDebug("resetToStartOfDayAfterLoad flag reset to FALSE");
+            }
+            else
+            {
+                LogDebug("resetToStartOfDayAfterLoad flag is FALSE - no day reset needed");
+            }
+            
+            // Game loaded successfully
             OnLoadCompleted?.Invoke(true);
         }
         catch (System.Exception e)
@@ -284,7 +355,6 @@ public class SaveManager : MonoBehaviour
         if (File.Exists(currentSaveFilePath))
         {
             File.Delete(currentSaveFilePath);
-            LogDebug("Save file deleted");
         }
     }
     
@@ -324,10 +394,15 @@ public class SaveManager : MonoBehaviour
     /// </summary>
     public void TriggerAutoSave()
     {
+        LogDebug("TriggerAutoSave() called");
+        
         if (enableAutoSave)
         {
-            LogDebug("Auto-save triggered by sleeping");
             SaveGame();
+        }
+        else
+        {
+            LogDebug("Auto save is disabled - skipping save");
         }
     }
     
@@ -339,13 +414,13 @@ public class SaveManager : MonoBehaviour
     {
         if (enableDebugLogs)
         {
-            Debug.Log($"[SaveManager] {message}");
+
         }
     }
     
     private void LogError(string message)
     {
-        Debug.LogError($"[SaveManager] {message}");
+
     }
     
     // ============================================================================

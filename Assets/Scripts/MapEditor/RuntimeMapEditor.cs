@@ -100,7 +100,7 @@ public class RuntimeMapEditor : MonoBehaviour
         }
         
         isInitialized = true;
-        Debug.Log("RuntimeMapEditor initialized successfully");
+
     }
     
     private void HandleInput()
@@ -132,13 +132,13 @@ public class RuntimeMapEditor : MonoBehaviour
         if (keyboard != null && (keyboard[Key.LeftCtrl].isPressed || keyboard[Key.RightCtrl].isPressed) && keyboard[Key.O].wasPressedThisFrame)
         {
             // TODO: Implement load dialog
-            Debug.Log("Load map dialog - TODO");
+
         }
         
         // Undo (Ctrl+Z) - TODO: Implement undo system
         if (keyboard != null && (keyboard[Key.LeftCtrl].isPressed || keyboard[Key.RightCtrl].isPressed) && keyboard[Key.Z].wasPressedThisFrame)
         {
-            Debug.Log("Undo - TODO");
+
         }
         
         // Quick tile type switching (1-5 keys)
@@ -180,7 +180,7 @@ public class RuntimeMapEditor : MonoBehaviour
         }
         
         OnEditorToggled?.Invoke(editorEnabled);
-        Debug.Log($"Map Editor {(enabled ? "ENABLED" : "DISABLED")}");
+
     }
     
     private void EnterEditorMode()
@@ -229,7 +229,7 @@ public class RuntimeMapEditor : MonoBehaviour
         // Pause any time-based systems
         Time.timeScale = 1f; // Keep normal for editor responsiveness
         
-        Debug.Log("Entered Map Editor Mode");
+
     }
     
     private void ExitEditorMode()
@@ -276,7 +276,7 @@ public class RuntimeMapEditor : MonoBehaviour
         // Resume normal game cursor settings
         // This will be handled by the game's normal systems
         
-        Debug.Log("Exited Map Editor Mode");
+
     }
     
     public void CreateNewMapData()
@@ -284,14 +284,14 @@ public class RuntimeMapEditor : MonoBehaviour
         currentMapData = ScriptableObject.CreateInstance<MapData>();
         currentMapData.mapName = "New Map " + System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm");
         currentMapData.createdBy = System.Environment.UserName;
-        Debug.Log($"Created new map data: {currentMapData.mapName}");
+
     }
     
     public void LoadMapData(MapData mapData)
     {
         if (mapData == null)
         {
-            Debug.LogError("Cannot load null map data!");
+
             return;
         }
         
@@ -301,7 +301,7 @@ public class RuntimeMapEditor : MonoBehaviour
         ApplyMapDataToTilemap();
         
         OnMapLoaded?.Invoke(currentMapData);
-        Debug.Log($"Loaded map: {currentMapData.mapName}");
+
     }
     
     private void ApplyMapDataToTilemap()
@@ -321,14 +321,14 @@ public class RuntimeMapEditor : MonoBehaviour
         // Apply NPC spawns, objects, etc.
         // TODO: Implement object spawning
         
-        Debug.Log($"Applied {currentMapData.tileData.Count} tiles from map data");
+
     }
     
     public void SaveCurrentMap()
     {
         if (currentMapData == null)
         {
-            Debug.LogError("No map data to save!");
+
             return;
         }
         
@@ -340,13 +340,13 @@ public class RuntimeMapEditor : MonoBehaviour
         currentMapData.UpdateMetadata();
         
         OnMapSaved?.Invoke();
-        Debug.Log($"Saved map: {currentMapData.mapName}");
+
     }
     
     private void AutoSaveMap()
     {
         SaveCurrentMap();
-        Debug.Log($"Auto-saved map at {System.DateTime.Now:HH:mm:ss}");
+
     }
     
     private void UpdateMapDataFromTilemap()
@@ -356,7 +356,7 @@ public class RuntimeMapEditor : MonoBehaviour
         // TODO: Scan current tilemap state and update MapData
         // This will need integration with extended DualGridTilemap
         
-        Debug.Log("Updated map data from current tilemap state");
+
     }
     
     // Tool methods for other systems

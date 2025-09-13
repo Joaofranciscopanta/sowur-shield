@@ -20,15 +20,12 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
             
         if (playerStats == null)
             playerStats = GetComponent<PlayerStats>();
-    }
-    
-    private void Start()
-    {
-        // Register with SaveManager
+            
+        // Register with SaveManager (before SaveManager.Start() runs)
         if (SaveManager.Instance != null)
         {
             SaveManager.Instance.RegisterSaveable(this);
-            LogDebug("PlayerDataManager registered with SaveManager");
+            LogDebug("PlayerDataManager registered with SaveManager in Awake");
         }
     }
     
@@ -154,7 +151,7 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
     {
         if (enableDebugLogs)
         {
-            Debug.Log($"[PlayerDataManager] {message}");
+
         }
     }
     
@@ -173,14 +170,6 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
     public void DebugShowPlayerData()
     {
         var data = GetPlayerData();
-        Debug.Log($"Player Data:\n" +
-                 $"Position: {data.position}\n" +
-                 $"Rotation: {data.rotation}\n" +
-                 $"Scene: {data.currentSceneName}\n" +
-                 $"Health: {data.health}/{data.maxHealth}\n" +
-                 $"Energy: {data.energy}/{data.maxEnergy}\n" +
-                 $"Money: {data.money}\n" +
-                 $"Level: {data.playerLevel} (XP: {data.experience}/{data.experienceToNextLevel})");
     }
     #endif
 }

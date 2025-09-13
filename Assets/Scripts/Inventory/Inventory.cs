@@ -106,6 +106,17 @@ public class Inventory : MonoBehaviour, ISaveable
     private void Awake()
     {
         InitializeInventory();
+
+        // Only register if this is on the Player GameObject
+        if (gameObject.CompareTag("Player"))
+        {
+            // Register with SaveManager first (before SaveManager.Start() runs)
+            if (SaveManager.Instance != null)
+            {
+                SaveManager.Instance.RegisterSaveable(this);
+
+            }
+        }
     }
 
     private void Start()
@@ -113,20 +124,14 @@ public class Inventory : MonoBehaviour, ISaveable
         SetupUI();
         SelectSlot(0); // Select first hotbar slot
         EnableInputActions();
-        
-        // Register with SaveManager
-        if (SaveManager.Instance != null)
-        {
-            SaveManager.Instance.RegisterSaveable(this);
-        }
     }
 
     private void OnDestroy()
     {
         DisableInputActions();
-        
-        // Unregister from SaveManager
-        if (SaveManager.Instance != null)
+
+        // Unregister from SaveManager if this was registered
+        if (gameObject.CompareTag("Player") && SaveManager.Instance != null)
         {
             SaveManager.Instance.UnregisterSaveable(this);
         }
@@ -426,7 +431,7 @@ public class Inventory : MonoBehaviour, ISaveable
         // Get the dragged item instead of the (now empty) slot
         ItemStack fromStack = fromSlot.GetDraggedItem();
         ItemStack toStack = inventory[toIndex];
-        
+
         if (fromStack == null || fromStack.IsEmpty)
         {
             return;
@@ -438,7 +443,7 @@ public class Inventory : MonoBehaviour, ISaveable
             // Move entire stack to empty slot
             inventory[toIndex] = fromStack.Clone();
             // Don't clear fromIndex - it's already cleared by the drag system
-            
+
             // Consume the dragged item
             fromSlot.ConsumeDraggedItem();
         }
@@ -464,7 +469,7 @@ public class Inventory : MonoBehaviour, ISaveable
             // Swap stacks - put toStack in fromSlot, fromStack in toSlot
             inventory[fromIndex] = toStack.Clone();
             inventory[toIndex] = fromStack.Clone();
-            
+
             // Consume the dragged item since swap succeeded
             fromSlot.ConsumeDraggedItem();
         }
@@ -563,7 +568,7 @@ public class Inventory : MonoBehaviour, ISaveable
     public ItemStack ClearSlotForDrag(InventorySlot slotUI)
     {
         int slotIndex = slotUIs.IndexOf(slotUI);
-        if (slotIndex < 0 || slotIndex >= inventorySize) 
+        if (slotIndex < 0 || slotIndex >= inventorySize)
         {
             return new ItemStack();
         }
@@ -578,15 +583,15 @@ public class Inventory : MonoBehaviour, ISaveable
     public void RestoreSlotFromDrag(InventorySlot slotUI, ItemStack itemStack)
     {
         int slotIndex = slotUIs.IndexOf(slotUI);
-        if (slotIndex < 0 || slotIndex >= inventorySize) 
+        if (slotIndex < 0 || slotIndex >= inventorySize)
         {
-            Debug.LogWarning($"RestoreSlotFromDrag: Invalid slot index {slotIndex}");
+
             return;
         }
 
         inventory[slotIndex] = itemStack.Clone();
         UpdateSlot(slotIndex);
-        Debug.Log($"RestoreSlotFromDrag: Restored {itemStack.quantity}x {itemStack.item?.itemName} to inventory slot {slotIndex}");
+
     }
 
     // ============================================================================
@@ -782,7 +787,7 @@ public class Inventory : MonoBehaviour, ISaveable
                 else
                 {
                     inventory[i].Clear();
-                    Debug.LogWarning($"Could not find item: {itemData.itemName}");
+
                 }
             }
         }
@@ -793,68 +798,90 @@ public class Inventory : MonoBehaviour, ISaveable
         UpdateAllSlots();
         SelectSlot(selectedSlotIndex);
     }
-    
+
     // ============================================================================
     // ISAVEABLE IMPLEMENTATION
     // ============================================================================
-    
+
     public void SaveData(GameData gameData)
     {
+
+
         gameData.inventoryData.selectedSlotIndex = selectedSlotIndex;
         gameData.inventoryData.inventorySize = inventorySize;
         gameData.inventoryData.inventoryItems.Clear();
-        
+
         // Save all inventory items
+        int itemCount = 0;
+        string itemList = "";
         for (int i = 0; i < inventorySize; i++)
         {
             gameData.inventoryData.inventoryItems.Add(new InventoryGameData.ItemStackData(inventory[i]));
+            if (!inventory[i].IsEmpty)
+            {
+                itemCount++;
+                itemList += $"[{i}:{inventory[i].item.itemName}x{inventory[i].quantity}] ";
+            }
         }
-        
-        Debug.Log($"[Inventory] Saved inventory data with {inventory.Count(item => !item.IsEmpty)} items");
+
+
     }
-    
+
     public void LoadData(GameData gameData)
     {
+
         selectedSlotIndex = gameData.inventoryData.selectedSlotIndex;
-        
-        // Ensure inventory size matches
-        if (gameData.inventoryData.inventorySize != inventorySize)
-        {
-            Debug.LogWarning($"[Inventory] Save file inventory size ({gameData.inventoryData.inventorySize}) doesn't match current size ({inventorySize})");
-        }
-        
+
+
         // Clear current inventory
         for (int i = 0; i < inventorySize; i++)
         {
             inventory[i].Clear();
         }
-        
+
         // Load items from save data
+        int foundItems = 0;
         for (int i = 0; i < Mathf.Min(gameData.inventoryData.inventoryItems.Count, inventorySize); i++)
         {
             var itemData = gameData.inventoryData.inventoryItems[i];
+
             if (!itemData.IsEmpty)
             {
-                // Find item by name
-                Item item = Resources.LoadAll<Item>("Items")
+                foundItems++;
+
+                // Find item by name - search all Resources subfolders
+                Item item = Resources.LoadAll<Item>("")
                     .FirstOrDefault(x => x.itemName == itemData.itemName);
-                    
+
                 if (item != null)
                 {
                     inventory[i] = new ItemStack(item, itemData.quantity);
                 }
                 else
                 {
-                    Debug.LogWarning($"[Inventory] Could not find item: {itemData.itemName}");
+
+                    // Debug: List all available items
+                    var allItems = Resources.LoadAll<Item>("");
                 }
             }
         }
-        
+
+
+        // IMPORTANT: Ensure inventory is closed after loading
+        isInventoryOpen = false;
+        for (int i = hotbarSize; i < slotUIs.Count; i++)
+        {
+            if (slotUIs[i] != null && slotUIs[i].gameObject != null)
+            {
+                slotUIs[i].gameObject.SetActive(false);
+            }
+        }
+
         // Update UI and selection
         UpdateAllSlots();
         SelectSlot(Mathf.Clamp(selectedSlotIndex, 0, hotbarSize - 1));
-        
+
         int loadedItems = inventory.Count(item => !item.IsEmpty);
-        Debug.Log($"[Inventory] Loaded inventory data with {loadedItems} items");
+
     }
 }

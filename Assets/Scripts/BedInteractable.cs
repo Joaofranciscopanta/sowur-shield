@@ -35,7 +35,8 @@ public class BedInteractable : MonoBehaviour, IInteractable
 
         // Verifica se encontrou
         if (timeController == null)
-            Debug.LogError("GameTimeController não encontrado! Adicione-o à cena.");
+            Debug.LogWarning("[BedInteractable] GameTimeController not found!");
+
 
         // Setup new confirmation panel events
         if (confirmationPanel != null)
@@ -117,7 +118,7 @@ public class BedInteractable : MonoBehaviour, IInteractable
 
     private void CancelSleep()
     {
-        Debug.Log("BedInteractable: CancelSleep called");
+
         
         // Hide confirmation panel (new or legacy)
         if (confirmationPanel != null)
@@ -135,7 +136,7 @@ public class BedInteractable : MonoBehaviour, IInteractable
             // Por exemplo: playerControls.EnableControls();
         }
         
-        Debug.Log("BedInteractable: Sleep cancelled, controls should be restored");
+
     }
 
     private IEnumerator SleepSequence()
@@ -165,10 +166,10 @@ public class BedInteractable : MonoBehaviour, IInteractable
         bool fadeComplete = false;
         if (confirmationPanel != null)
         {
-            Debug.Log("Starting sleep fade transition...");
+
             confirmationPanel.StartSleepFade(() => {
                 fadeComplete = true;
-                Debug.Log("Sleep fade complete - continuing with sleep sequence");
+
             });
             
             // Wait for fade to complete
@@ -180,26 +181,20 @@ public class BedInteractable : MonoBehaviour, IInteractable
             yield return new WaitForSeconds(1.5f);
         }
 
-        // TRIGGER AUTO-SAVE BEFORE ADVANCING TIME
-        if (SaveManager.Instance != null)
-        {
-            Debug.Log("BedInteractable: Triggering auto-save before sleeping...");
-            SaveManager.Instance.TriggerAutoSave();
-            
-            // Wait a brief moment for save to complete
-            yield return new WaitForSeconds(0.5f);
-        }
-        else
-        {
-            Debug.LogWarning("BedInteractable: SaveManager not found! Save not triggered.");
-        }
-
         // SELL ALL ITEMS FROM SELLBOXES BEFORE ADVANCING TIME
         ProcessSellBoxSales();
 
         // Avança o tempo
         timeController.AdvanceDay(daysToAdvance);
-        timeController.SetTimeOfDay(wakeUpTime);
+
+        // TRIGGER AUTO-SAVE AFTER ADVANCING TIME
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.TriggerAutoSave();
+            
+            // Wait a brief moment for save to complete
+            yield return new WaitForSeconds(0.5f);
+        }
 
         yield return new WaitForSeconds(0.5f);
 
@@ -207,10 +202,10 @@ public class BedInteractable : MonoBehaviour, IInteractable
         bool fadeInComplete = false;
         if (confirmationPanel != null)
         {
-            Debug.Log("Starting sleep fade-in for new day...");
+
             confirmationPanel.StartSleepFadeIn(() => {
                 fadeInComplete = true;
-                Debug.Log("Sleep fade-in complete - new day visible");
+
             });
             
             // Wait for fade-in to complete
@@ -226,7 +221,7 @@ public class BedInteractable : MonoBehaviour, IInteractable
         // Ensure game state is fully restored (safety check for Unity editor)
         if (confirmationPanel != null)
         {
-            Debug.Log("BedInteractable: Final game state restoration");
+
             confirmationPanel.ForceGameStateRestore();
         }
 
@@ -259,7 +254,7 @@ public class BedInteractable : MonoBehaviour, IInteractable
         
         if (sellBoxes.Length == 0)
         {
-            Debug.Log("[Sleep Sale] No SellBoxes found in scene.");
+
             return;
         }
         
@@ -274,13 +269,13 @@ public class BedInteractable : MonoBehaviour, IInteractable
                 int earnings = sellBox.SellAllItemsAutomatically();
                 totalEarningsFromAllBoxes += earnings;
                 
-                Debug.Log($"[Sleep Sale] SellBox '{sellBox.name}' sold items for {earnings} coins");
+
             }
         }
         
         if (totalEarningsFromAllBoxes > 0)
         {
-            Debug.Log($"[Sleep Sale] TOTAL EARNINGS: {totalEarningsFromAllBoxes} coins from {boxesWithItems} SellBox(es)");
+
             
             // Play sell sound effect if any items were sold
             if (sellBoxes.Length > 0 && sellBoxes[0].sellSound != null)
@@ -290,7 +285,7 @@ public class BedInteractable : MonoBehaviour, IInteractable
         }
         else
         {
-            Debug.Log("[Sleep Sale] No items were sold - all SellBoxes were empty.");
+
         }
     }
 }

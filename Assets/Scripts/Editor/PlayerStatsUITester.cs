@@ -52,13 +52,11 @@ public class PlayerStatsUITester : EditorWindow
         if (GUILayout.Button($"Add ${testMoneyAmount}"))
         {
             playerStats.AddMoney(testMoneyAmount);
-            Debug.Log($"Added {testMoneyAmount} money. Total: {playerStats.money}");
+
         }
         if (GUILayout.Button($"Spend ${testMoneyAmount}"))
         {
             bool success = playerStats.SpendMoney(testMoneyAmount);
-            Debug.Log(success ? $"Spent {testMoneyAmount} money. Remaining: {playerStats.money}" 
-                             : $"Cannot spend {testMoneyAmount} - insufficient funds!");
         }
         EditorGUILayout.EndHorizontal();
         
@@ -72,12 +70,12 @@ public class PlayerStatsUITester : EditorWindow
         if (GUILayout.Button($"Add {testEnergyAmount} Energy"))
         {
             playerStats.RestoreEnergy(testEnergyAmount);
-            Debug.Log($"Restored {testEnergyAmount} energy. Current: {playerStats.currentEnergy}");
+
         }
         if (GUILayout.Button($"Use {testEnergyAmount} Energy"))
         {
             playerStats.UseEnergy(testEnergyAmount);
-            Debug.Log($"Used {testEnergyAmount} energy. Current: {playerStats.currentEnergy}");
+
         }
         EditorGUILayout.EndHorizontal();
         
@@ -89,20 +87,20 @@ public class PlayerStatsUITester : EditorWindow
         {
             int earnings = Random.Range(50, 200);
             playerStats.AddMoney(earnings);
-            Debug.Log($"🚜 Farm sale! Earned ${earnings}");
+
         }
         
         if (GUILayout.Button("Simulate Using Energy (Farm Work)"))
         {
             int energyUsed = Random.Range(10, 30);
             playerStats.UseEnergy(energyUsed);
-            Debug.Log($"💪 Farm work! Used {energyUsed} energy");
+
         }
         
         if (GUILayout.Button("Full Restore (Sleep)"))
         {
             playerStats.RestoreEnergy(playerStats.maxEnergy);
-            Debug.Log("😴 Good night's sleep! Energy fully restored");
+
         }
         
         EditorGUILayout.Space();
@@ -114,25 +112,25 @@ public class PlayerStatsUITester : EditorWindow
             UIManagerPlayer uiManager = FindFirstObjectByType<UIManagerPlayer>();
             if (uiManager != null)
             {
-                Debug.Log("=== UI Connection Check ===");
-                Debug.Log($"UIManagerPlayer found: {uiManager.name}");
-                Debug.Log($"Stamina Slider connected: {uiManager.staminaSlider != null}");
-                Debug.Log($"Money Text connected: {uiManager.moneyText != null}");
+
+
+
+
                 
                 if (uiManager.staminaSlider != null)
                 {
-                    Debug.Log($"Stamina Slider - Max: {uiManager.staminaSlider.maxValue}, Current: {uiManager.staminaSlider.value}");
+
                 }
                 if (uiManager.moneyText != null)
                 {
-                    Debug.Log($"Money Text content: '{uiManager.moneyText.text}'");
+
                 }
                 
-                Debug.Log("=== End Check ===");
+
             }
             else
             {
-                Debug.LogWarning("UIManagerPlayer not found!");
+
             }
         }
         

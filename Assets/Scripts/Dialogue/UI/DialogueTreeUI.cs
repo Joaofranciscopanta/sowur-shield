@@ -79,19 +79,20 @@ public class DialogueTreeUI : MonoBehaviour
     private void ValidateComponents()
     {
         if (dialoguePanel == null)
-            Debug.LogError("DialogueTreeUI: Dialogue panel not assigned!");
+            Debug.LogError("DialogueTreeUI: dialoguePanel is not assigned!");
         
         if (dialogueText == null)
-            Debug.LogError("DialogueTreeUI: Dialogue text component not assigned!");
+            Debug.LogError("DialogueTreeUI: dialogueText is not assigned!");
         
         if (choicePanel == null)
-            Debug.LogError("DialogueTreeUI: Choice panel not assigned!");
+            Debug.LogError("DialogueTreeUI: choicePanel is not assigned!");
         
         if (choiceContainer == null)
-            Debug.LogError("DialogueTreeUI: Choice container not assigned!");
+            Debug.LogError("DialogueTreeUI: choiceContainer is not assigned!");
         
         if (choiceButtonPrefab == null)
-            Debug.LogError("DialogueTreeUI: Choice button prefab not assigned!");
+            Debug.LogError("DialogueTreeUI: choiceButtonPrefab is not assigned!");
+
         
         if (portraitManager == null)
             portraitManager = GetComponentInChildren<PortraitManager>();
@@ -124,13 +125,9 @@ public class DialogueTreeUI : MonoBehaviour
         if (typewriter == null)
             typewriter = FindFirstObjectByType<TypewriterEffect>();
         
-        if (typewriter == null)
-            Debug.LogError("DialogueTreeUI: TypewriterEffect not found!");
         
         // Find ConversationMemory
         conversationMemory = ConversationMemory.Instance;
-        if (conversationMemory == null)
-            Debug.LogWarning("DialogueTreeUI: ConversationMemory not found. Some features may not work.");
     }
     
     /// <summary>
@@ -140,20 +137,20 @@ public class DialogueTreeUI : MonoBehaviour
     {
         if (dialogueTree == null)
         {
-            Debug.LogError("DialogueTreeUI: Cannot start dialogue with null DialogueTree!");
+            Debug.LogError("DialogueTreeUI: Cannot start dialogue - dialogueTree is null");
             return;
         }
         
         if (isDialogueActive)
         {
-            Debug.LogWarning("DialogueTreeUI: Dialogue is already active!");
+            Debug.LogWarning("DialogueTreeUI: Cannot start dialogue - dialogue is already active");
             return;
         }
         
         // Validate tree
         if (!dialogueTree.ValidateTree())
         {
-            Debug.LogError($"DialogueTreeUI: DialogueTree '{dialogueTree.name}' failed validation!");
+            Debug.LogError($"DialogueTreeUI: Dialogue tree {dialogueTree.conversationId} failed validation");
             return;
         }
         
@@ -182,7 +179,7 @@ public class DialogueTreeUI : MonoBehaviour
         }
         else
         {
-            Debug.LogError($"DialogueTreeUI: Start node '{startNodeId}' not found!");
+            Debug.LogError($"DialogueTreeUI: Start node '{startNodeId}' not found in dialogue tree");
             EndDialogue();
         }
         
@@ -317,7 +314,7 @@ public class DialogueTreeUI : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"Choice node '{node.nodeId}' has no available choices!");
+            Debug.LogWarning("DialogueTreeUI: Choice node has no available choices");
             ContinueToNextNode();
         }
     }
@@ -406,7 +403,7 @@ public class DialogueTreeUI : MonoBehaviour
             }
             else
             {
-                Debug.LogError($"Next node '{choice.nextNodeId}' not found!");
+                Debug.LogError($"DialogueTreeUI: Next node '{choice.nextNodeId}' not found");
                 EndDialogue();
             }
         }

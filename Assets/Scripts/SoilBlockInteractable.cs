@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using System.Linq;
 
-public class SoilBlockInteractable : MonoBehaviour, IInteractable
+public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 {
     public enum SoilState
     {
@@ -44,7 +45,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
     private bool playerInRange = false;
 
     [Header("Debug")]
-    public bool showDebugInfo = false;
 
     // Componentes
     private SpriteRenderer soilRenderer;
@@ -68,6 +68,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
         EnsureCollider();
         SubscribeToCropEvents();
         StoreOriginalColor();
+        RegisterWithSaveManager();
     }
 
     private void InitializeComponents()
@@ -78,9 +79,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
 
         // Adiciona CropGrowthManager se não estiver presente
         if (cropGrowthManager == null)
-        {
             cropGrowthManager = gameObject.AddComponent<CropGrowthManager>();
-        }
 
         // Define sprite padrão
         if (regularSprite == null && soilRenderer != null)
@@ -120,8 +119,31 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
     {
         // Armazena cor original para destacamento visual
         if (soilRenderer != null)
-        {
             originalColor = soilRenderer.color;
+    }
+
+    private void RegisterWithSaveManager()
+    {
+        // Register with SaveManager for save/load functionality
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.RegisterSaveable(this);
+        }
+        else
+        {
+            // Try again in Start() - SaveManager might not be initialized yet
+            StartCoroutine(DelayedRegistration());
+        }
+    }
+
+    private System.Collections.IEnumerator DelayedRegistration()
+    {
+        // Wait a frame for SaveManager to initialize
+        yield return null;
+        
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.RegisterSaveable(this);
         }
     }
 
@@ -129,6 +151,12 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
     {
         UnsubscribeFromEvents();
         UnregisterFromCursorController();
+
+        // Unregister from SaveManager
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.UnregisterSaveable(this);
+        }
     }
 
     private void UnsubscribeFromEvents()
@@ -174,9 +202,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
             {
                 soilRenderer.color = highlightColor;
             }
-
-            if (showDebugInfo)
-                Debug.Log($"Player entrou no range do solo: {GetStatusText()}");
         }
     }
 
@@ -191,9 +216,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
             {
                 soilRenderer.color = originalColor;
             }
-
-            if (showDebugInfo)
-                Debug.Log("Player saiu do range do solo");
         }
     }
 
@@ -214,9 +236,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
             UpdateAppearance();
             PlayEffect(tillEffect);
             PlaySound(tillSound);
-
-            if (showDebugInfo)
-                Debug.Log("Solo arado diretamente");
         }
     }
 
@@ -249,11 +268,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
                 {
                     playerInventory = playerMove.GetInventory();
                 }
-            }
-
-            if (playerInventory == null)
-            {
-                Debug.LogError("Não foi possível encontrar o inventário do jogador.");
             }
         }
     }
@@ -338,8 +352,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
         UpdateAppearance();
         PlayEffect(tillEffect);
         PlaySound(tillSound);
-
-        Debug.Log("Solo arado com sucesso!");
     }
 
     private void WaterSoil()
@@ -350,8 +362,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
             UpdateAppearance();
             PlayEffect(waterEffect);
             PlaySound(waterSound);
-
-            Debug.Log("Solo regado!");
         }
         else if (currentState == SoilState.WithCrop && cropGrowthManager != null)
         {
@@ -359,8 +369,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
             UpdateAppearance(); // Atualiza aparência caso cultivo estivesse morrendo
             PlayEffect(waterEffect);
             PlaySound(waterSound);
-
-            Debug.Log("Planta regada!");
         }
     }
 
@@ -373,7 +381,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
 
         if (cropData == null)
         {
-            Debug.Log("Esta semente não pode ser plantada aqui ou dados do cultivo não foram encontrados.");
             ProvideFeedback(seedItem);
             return;
         }
@@ -389,6 +396,12 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
         // Planta o cultivo
         if (cropGrowthManager.PlantCrop(cropData))
         {
+            // If soil was watered, transfer that water to the crop
+            if (currentState == SoilState.Watered)
+            {
+                cropGrowthManager.WaterCrop();
+            }
+            
             currentState = SoilState.WithCrop;
             UpdateAppearance();
 
@@ -397,122 +410,72 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
 
             PlayEffect(plantEffect);
             PlaySound(plantSound);
-
-            Debug.Log($"Plantou {seedItem.itemName}!");
-        }
-        else
-        {
-            Debug.Log("Falha ao plantar semente - solo pode já ter um cultivo");
         }
     }
 
     private void HarvestCrop()
     {
-        if (showDebugInfo)
-            Debug.Log($"HarvestCrop called - HasCrop: {HasCrop}, IsReadyForHarvest: {IsReadyForHarvest}");
-
         if (!HasCrop || !IsReadyForHarvest)
-        {
-            if (showDebugInfo)
-                Debug.Log("Cannot harvest - crop not ready or doesn't exist");
             return;
-        }
 
         StartCoroutine(HarvestWithAnimation());
     }
 
     private IEnumerator HarvestWithAnimation()
-{
-    if (showDebugInfo)
-        Debug.Log($"Starting harvest animation for crop: {CurrentCrop?.cropName}");
-
-    // IMPORTANT: Store crop data BEFORE calling HarvestCrop()
-    // because HarvestCrop() might remove the crop (set currentCrop to null)
-    CropData cropToHarvest = CurrentCrop;
-
-    if (cropToHarvest == null)
     {
-        if (showDebugInfo)
-            Debug.Log("Cannot harvest - no crop data available");
-        yield break;
-    }
+        // IMPORTANT: Store crop data BEFORE calling HarvestCrop()
+        // because HarvestCrop() might remove the crop (set currentCrop to null)
+        CropData cropToHarvest = CurrentCrop;
 
-    // Get yield from crop manager
-    int yield = cropGrowthManager.HarvestCrop();
-
-    if (showDebugInfo)
-        Debug.Log($"Crop manager returned yield: {yield}");
-
-    if (yield > 0)
-    {
-        // Use the stored crop data to get harvest item
-        Item harvestItem = cropToHarvest.harvestItem;
-
-        if (harvestItem == null)
-        {
-            Debug.LogError($"Harvest item is null for crop: {cropToHarvest.cropName}");
+        if (cropToHarvest == null)
             yield break;
-        }
 
-        if (showDebugInfo)
-            Debug.Log($"Spawning {yield} ground items of {harvestItem.itemName}");
+        // Get yield from crop manager
+        int yield = cropGrowthManager.HarvestCrop();
 
-        for (int i = 0; i < yield; i++)
+        if (yield > 0)
         {
-            SpawnGroundItem(harvestItem, i, yield);
+            // Use the stored crop data to get harvest item
+            Item harvestItem = cropToHarvest.harvestItem;
+
+            if (harvestItem == null)
+                yield break;
+
+            for (int i = 0; i < yield; i++)
+            {
+                SpawnGroundItem(harvestItem, i, yield);
+            }
+
+            // Visual and sound effects
+            PlayEffect(harvestEffect);
+            PlaySound(harvestSound);
+
+            // Small pause for harvest animation
+            yield return new WaitForSeconds(0.5f);
         }
 
-        // Visual and sound effects
-        PlayEffect(harvestEffect);
-        PlaySound(harvestSound);
+        // Update soil state based on whether crop still exists (regrowth)
+        if (!HasCrop)
+        {
+            currentState = SoilState.Tilled;
+        }
 
-        // Small pause for harvest animation
-        yield return new WaitForSeconds(0.5f);
-
-        Debug.Log($"Harvested {yield}x {harvestItem.itemName}!");
+        UpdateAppearance();
     }
-    else
-    {
-        if (showDebugInfo)
-            Debug.Log($"No yield returned from crop manager");
-    }
-
-    // Update soil state based on whether crop still exists (regrowth)
-    if (!HasCrop)
-    {
-        currentState = SoilState.Tilled;
-        if (showDebugInfo)
-            Debug.Log("No crop remaining - setting soil to tilled");
-    }
-
-    UpdateAppearance();
-}
 
     private void SpawnGroundItem(Item item, int index, int totalItems)
     {
-        if (showDebugInfo)
-            Debug.Log($"SpawnGroundItem called for {item?.itemName}, index: {index}");
-
         if (item == null)
-        {
-            Debug.LogError("Cannot spawn ground item - item is null");
             return;
-        }
 
         // Cria um GameObject para o GroundItem
         GameObject groundItemObj = new GameObject($"GroundItem_{item.itemName}");
         groundItemObj.transform.position = transform.position;
 
-        if (showDebugInfo)
-            Debug.Log($"Created GameObject at position: {groundItemObj.transform.position}");
-
         // Adiciona componentes necessários
         SpriteRenderer sr = groundItemObj.AddComponent<SpriteRenderer>();
         sr.sprite = item.icon;
         sr.sortingOrder = 10; // Garante que fica visível sobre o solo
-
-        if (showDebugInfo)
-            Debug.Log($"Added SpriteRenderer with sprite: {item.icon?.name}");
 
         // Adiciona collider
         CircleCollider2D collider = groundItemObj.AddComponent<CircleCollider2D>();
@@ -522,9 +485,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
         // Adiciona o componente GroundItem
         GroundItem groundItem = groundItemObj.AddComponent<GroundItem>();
         groundItem.SetItem(item);
-
-        if (showDebugInfo)
-            Debug.Log($"Added GroundItem component and set item");
 
         // Posiciona os itens em um pequeno círculo ao redor da planta
         if (totalItems > 1)
@@ -537,9 +497,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
                 0
             );
             groundItemObj.transform.position += offset;
-
-            if (showDebugInfo)
-                Debug.Log($"Positioned item {index} at angle {angle} with offset {offset}");
         }
         else
         {
@@ -550,13 +507,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
                 0
             );
             groundItemObj.transform.position += randomOffset;
-
-            if (showDebugInfo)
-                Debug.Log($"Single item positioned with random offset: {randomOffset}");
         }
-
-        if (showDebugInfo)
-            Debug.Log($"Final ground item position: {groundItemObj.transform.position}");
     }
 
     private void ResetSoil()
@@ -578,13 +529,10 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
         switch (previousState)
         {
             case SoilState.Tilled:
-                Debug.Log("Solo arado foi nivelado.");
                 break;
             case SoilState.Watered:
-                Debug.Log("Solo molhado foi nivelado.");
                 break;
             case SoilState.WithCrop:
-                Debug.Log("Planta removida e solo nivelado.");
                 break;
         }
     }
@@ -596,22 +544,16 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
     private void OnCropGrown(CropGrowthManager manager)
     {
         UpdateAppearance();
-        if (showDebugInfo)
-            Debug.Log($"Cultivo cresceu para estágio {manager.CurrentGrowthStage + 1}");
     }
 
     private void OnCropReadyForHarvest(CropGrowthManager manager)
     {
         UpdateAppearance();
-        if (showDebugInfo)
-            Debug.Log($"{manager.CurrentCrop.cropName} está pronto para colheita!");
     }
 
     private void OnCropDied(CropGrowthManager manager)
     {
         UpdateAppearance();
-        if (showDebugInfo)
-            Debug.Log($"{manager.CurrentCrop.cropName} morreu!");
     }
 
     private void OnCropHarvested(CropGrowthManager manager)
@@ -629,25 +571,21 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
         if (currentState == SoilState.WithCrop)
         {
             if (IsCropDead)
-            {
-                Debug.Log("Esta planta está morta. Use uma pá para removê-la.");
                 return;
-            }
 
             if (IsReadyForHarvest)
             {
-                Debug.Log("Este cultivo está pronto para colheita!");
                 if (!string.IsNullOrEmpty(scytheTag) && selectedItem != null && !HasTag(selectedItem, scytheTag))
-                    Debug.Log($"Use uma ferramenta com tag '{scytheTag}' para colheita mais eficiente.");
-                return;
+                    return;
             }
 
             // Mostra informações do crescimento do cultivo
             if (cropGrowthManager != null)
             {
-                Debug.Log(cropGrowthManager.GetCropInfo());
                 if (CurrentCrop != null && CurrentCrop.requiresWater && !cropGrowthManager.IsWatered)
-                    Debug.Log("Este cultivo precisa de água! Use um regador.");
+                {
+                    return;
+                }
             }
             return;
         }
@@ -656,13 +594,10 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
         switch (currentState)
         {
             case SoilState.Regular:
-                Debug.Log("Use uma enxada para arar este solo antes de plantar.");
                 break;
             case SoilState.Tilled:
-                Debug.Log("Este solo está pronto para plantio. Você pode plantar sementes ou regá-lo primeiro.");
                 break;
             case SoilState.Watered:
-                Debug.Log("Este solo está molhado e pronto para plantio de sementes.");
                 break;
         }
 
@@ -671,7 +606,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
         {
             if (selectedItem.itemType == ItemType.Seed && currentState == SoilState.Regular)
             {
-                Debug.Log("Are o solo com uma enxada antes de plantar sementes.");
+                // Feedback for trying to plant on untilled soil
             }
         }
     }
@@ -765,4 +700,81 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable
         return IsReadyForHarvest;
     }
     #endregion
+
+    // ============================================================================
+    // ISAVEABLE IMPLEMENTATION
+    // ============================================================================
+
+    public void SaveData(GameData gameData)
+    {
+        Vector2Int position = new Vector2Int(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
+        string positionKey = $"{position.x},{position.y}";
+
+        // Save soil state data
+        // Remove existing entry for this position if it exists
+        gameData.farmingData.soilStates.RemoveAll(entry => entry.positionKey == positionKey);
+        
+        // Create new soil state entry
+        var soilStateEntry = new FarmingGameData.SoilStateEntry
+        {
+            positionKey = positionKey,
+            soilData = new FarmingGameData.SoilData
+            {
+                isTilled = currentState != SoilState.Regular,
+                isWatered = currentState == SoilState.Watered || (currentState == SoilState.WithCrop && cropGrowthManager != null && cropGrowthManager.IsWatered),
+                fertility = 1.0f,
+                soilType = "Normal"
+            }
+        };
+
+        gameData.farmingData.soilStates.Add(soilStateEntry);
+    }
+
+    public void LoadData(GameData gameData)
+    {
+        Vector2Int position = new Vector2Int(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
+        string positionKey = $"{position.x},{position.y}";
+
+        // Load soil state data
+        var soilStateEntry = gameData.farmingData.soilStates.FirstOrDefault(entry => entry.positionKey == positionKey);
+        if (soilStateEntry != null && soilStateEntry.soilData != null)
+        {
+            var soilData = soilStateEntry.soilData;
+            if (soilData.isTilled)
+            {
+                if (soilData.isWatered)
+                {
+                    // Check if we have a crop at this position
+                    bool hasCrop = gameData.farmingData.activeCrops.Any(crop => crop.position == position);
+                    if (hasCrop)
+                    {
+                        currentState = SoilState.WithCrop;
+                    }
+                    else
+                    {
+                        currentState = SoilState.Watered;
+                    }
+                }
+                else
+                {
+                    // Check if we have a crop at this position
+                    bool hasCrop = gameData.farmingData.activeCrops.Any(crop => crop.position == position);
+                    if (hasCrop)
+                    {
+                        currentState = SoilState.WithCrop;
+                    }
+                    else
+                    {
+                        currentState = SoilState.Tilled;
+                    }
+                }
+            }
+            else
+            {
+                currentState = SoilState.Regular;
+            }
+
+            UpdateAppearance();
+        }
+    }
 }

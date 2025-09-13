@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections;
+using System.IO;
 
 /// <summary>
 /// Main menu UI handler for the game's title screen
@@ -63,33 +64,50 @@ public class MainMenuUI : MonoBehaviour
     private void Start()
     {
         SetupUI();
+        // Delay save file check to ensure all components are initialized
+        StartCoroutine(DelayedSaveFileCheck());
+    }
+    
+    private IEnumerator DelayedSaveFileCheck()
+    {
+        // Wait one frame to ensure all initialization is complete
+        yield return null;
+        
         CheckSaveFileAvailability();
         UpdateSaveInfoDisplay();
     }
     
     private void SetupUI()
     {
-        // Setup main menu buttons
+        // Setup main menu buttons with proper initialization
         if (newGameButton != null)
+        {
             newGameButton.onClick.AddListener(OnNewGameClicked);
+            newGameButton.interactable = true;
+        }
             
         if (continueButton != null)
+        {
             continueButton.onClick.AddListener(OnContinueClicked);
+            // Continue button interactable state will be set by CheckSaveFileAvailability
+        }
             
         if (settingsButton != null)
+        {
             settingsButton.onClick.AddListener(OnSettingsClicked);
+            settingsButton.interactable = true;
+        }
             
         if (creditsButton != null)
+        {
             creditsButton.onClick.AddListener(OnCreditsClicked);
+            creditsButton.interactable = true;
+        }
             
         if (quitButton != null)
         {
             quitButton.onClick.AddListener(OnQuitClicked);
-            Debug.Log("[MainMenuUI] Quit button listener added successfully");
-        }
-        else
-        {
-            Debug.LogError("[MainMenuUI] Quit button is NULL! Not assigned in Inspector.");
+            quitButton.interactable = true;
         }
         
         // Setup settings panel
@@ -152,10 +170,8 @@ public class MainMenuUI : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            Debug.LogWarning($"[MainMenuUI] Could not apply saved graphics settings: {e.Message}");
         }
         
-        Debug.Log($"[MainMenuUI] Loaded settings - Master: {masterVolume:F2}, Music: {musicVolume:F2}, SFX: {sfxVolume:F2}, Fullscreen: {fullscreen}, Resolution: {savedWidth}x{savedHeight}");
     }
     
     private void SetupSettingsControls()
@@ -191,14 +207,12 @@ public class MainMenuUI : MonoBehaviour
         // Setup resolution dropdown
         SetupResolutionDropdown();
         
-        Debug.Log("[MainMenuUI] Settings controls initialized with saved values");
     }
     
     private void SetupResolutionDropdown()
     {
         if (resolutionDropdown == null) 
         {
-            Debug.LogWarning("[MainMenuUI] Resolution dropdown not assigned - skipping resolution setup");
             return;
         }
         
@@ -249,7 +263,6 @@ public class MainMenuUI : MonoBehaviour
         resolutionDropdown.value = currentResolutionIndex;
         resolutionDropdown.onValueChanged.AddListener(OnResolutionChanged);
         
-        Debug.Log($"[MainMenuUI] Resolution dropdown setup complete. {options.Count} resolutions available. Current: {options[currentResolutionIndex]}");
     }
     
     // ============================================================================
@@ -279,15 +292,31 @@ public class MainMenuUI : MonoBehaviour
     
     private void OnContinueClicked()
     {
+
         PlaySound(buttonClickSound);
         
-        if (SaveManager.Instance != null && SaveManager.Instance.HasSaveFile())
+        // Check save file existence again
+        bool hasSave = false;
+        if (SaveManager.Instance != null)
         {
+            hasSave = SaveManager.Instance.HasSaveFile();
+        }
+        else
+        {
+            // Manual check as fallback
+            string saveDirectory = Path.Combine(Application.persistentDataPath, "Saves");
+            string saveFilePath = Path.Combine(saveDirectory, "GameSave.json");
+            hasSave = File.Exists(saveFilePath);
+        }
+        
+        if (hasSave)
+        {
+
             LoadGame();
         }
         else
         {
-            Debug.LogWarning("Continue clicked but no save file exists!");
+
         }
     }
     
@@ -305,7 +334,6 @@ public class MainMenuUI : MonoBehaviour
     
     private void OnQuitClicked()
     {
-        Debug.Log("[MainMenuUI] Quit button clicked!");
         PlaySound(buttonClickSound);
         ShowConfirmationDialog(
             "Are you sure you want to quit the game?",
@@ -320,13 +348,16 @@ public class MainMenuUI : MonoBehaviour
     
     private void StartNewGame()
     {
-        Debug.Log("[MainMenuUI] Starting new game...");
         
         // Clear any existing save data
         if (SaveManager.Instance != null)
         {
             SaveManager.Instance.DeleteSaveFile();
         }
+        
+        // Set flag to initialize new game
+        SaveManager.initializeNewGameAfterLoad = true;
+
         
         // Play game start sound
         PlaySound(gameStartSound);
@@ -345,7 +376,11 @@ public class MainMenuUI : MonoBehaviour
     
     private void LoadGame()
     {
-        Debug.Log("[MainMenuUI] Loading existing game...");
+
+        
+        // Set flag to reset day progress to start of day
+        SaveManager.resetToStartOfDayAfterLoad = true;
+
         
         // Play game start sound
         PlaySound(gameStartSound);
@@ -356,7 +391,7 @@ public class MainMenuUI : MonoBehaviour
             SceneTransitionManager.Instance.LoadMainGameScene();
             
             // Note: SaveManager will handle loading the save file in the new scene
-            // via SceneTransitionManager's scene loaded callback or directly in MainGameScene
+            // and will reset day progress to start of day due to the flag
         }
         else
         {
@@ -405,7 +440,6 @@ public class MainMenuUI : MonoBehaviour
             SaveManager.Instance.LoadGame();
         }
         
-        Debug.Log("[MainMenuUI] Game scene loaded successfully!");
     }
     
     // ============================================================================
@@ -451,11 +485,9 @@ public class MainMenuUI : MonoBehaviour
     
     private void ShowConfirmationDialog(string message, string title = "Confirmation")
     {
-        Debug.Log($"[MainMenuUI] ShowConfirmationDialog called with message: {message}");
         
         if (confirmationPanel == null)
         {
-            Debug.LogError("[MainMenuUI] Confirmation panel is NULL! Not assigned in Inspector.");
             return;
         }
         
@@ -464,11 +496,9 @@ public class MainMenuUI : MonoBehaviour
         if (confirmationText != null)
         {
             confirmationText.text = message;
-            Debug.Log("[MainMenuUI] Confirmation text set successfully");
         }
         else
         {
-            Debug.LogError("[MainMenuUI] Confirmation text is NULL! Not assigned in Inspector.");
         }
     }
     
@@ -499,7 +529,6 @@ public class MainMenuUI : MonoBehaviour
             }
             else
             {
-                Debug.Log("[MainMenuUI] Quitting game (fallback)...");
                 Application.Quit();
                 
                 #if UNITY_EDITOR
@@ -543,7 +572,6 @@ public class MainMenuUI : MonoBehaviour
             MainMenuManager.Instance.UpdateAudioVolumes();
         }
         
-        Debug.Log($"[MainMenuUI] Master volume changed to: {value:F2} ({value * 100:F0}%)");
         
         // Play a quick sound to test the volume change
         if (audioSource != null && buttonClickSound != null)
@@ -562,14 +590,12 @@ public class MainMenuUI : MonoBehaviour
             MainMenuManager.Instance.UpdateAudioVolumes();
         }
         
-        Debug.Log($"[MainMenuUI] Music volume changed to: {value:F2} ({value * 100:F0}%)");
     }
     
     private void OnSFXVolumeChanged(float value)
     {
         PlayerPrefs.SetFloat("SFXVolume", value);
         
-        Debug.Log($"[MainMenuUI] SFX volume changed to: {value:F2} ({value * 100:F0}%)");
         
         // Play a test sound with the new SFX volume
         if (audioSource != null && buttonClickSound != null)
@@ -581,7 +607,6 @@ public class MainMenuUI : MonoBehaviour
     
     private void OnFullscreenToggled(bool isFullscreen)
     {
-        Debug.Log($"[MainMenuUI] Fullscreen toggled: {isFullscreen}");
         
         try
         {
@@ -594,11 +619,9 @@ public class MainMenuUI : MonoBehaviour
             // Play feedback sound
             PlaySound(buttonClickSound);
             
-            Debug.Log($"[MainMenuUI] Fullscreen applied successfully. Current state: {Screen.fullScreen}");
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"[MainMenuUI] Error changing fullscreen: {e.Message}");
         }
     }
     
@@ -627,7 +650,6 @@ public class MainMenuUI : MonoBehaviour
         {
             Resolution selectedResolution = filteredResolutions[resolutionIndex];
             
-            Debug.Log($"[MainMenuUI] Resolution changing to: {selectedResolution.width}x{selectedResolution.height}@{selectedResolution.refreshRate}Hz");
             
             try
             {
@@ -642,23 +664,19 @@ public class MainMenuUI : MonoBehaviour
                 // Play feedback sound
                 PlaySound(buttonClickSound);
                 
-                Debug.Log($"[MainMenuUI] Resolution applied successfully: {Screen.currentResolution.width}x{Screen.currentResolution.height}");
             }
             catch (System.Exception e)
             {
-                Debug.LogError($"[MainMenuUI] Error changing resolution: {e.Message}");
             }
         }
         else
         {
-            Debug.LogWarning($"[MainMenuUI] Invalid resolution index: {resolutionIndex}");
         }
     }
     
     private void SaveSettings()
     {
         PlayerPrefs.Save();
-        Debug.Log("[MainMenuUI] Settings saved");
     }
     
     /// <summary>
@@ -667,7 +685,6 @@ public class MainMenuUI : MonoBehaviour
     /// </summary>
     public void ResetSettingsToDefaults()
     {
-        Debug.Log("[MainMenuUI] Resetting settings to defaults...");
         
         // Reset audio settings
         PlayerPrefs.SetFloat("MasterVolume", 1f);
@@ -705,7 +722,6 @@ public class MainMenuUI : MonoBehaviour
         // Play confirmation sound
         PlaySound(buttonClickSound);
         
-        Debug.Log("[MainMenuUI] Settings reset to defaults complete");
     }
     
     // ============================================================================
@@ -714,7 +730,29 @@ public class MainMenuUI : MonoBehaviour
     
     private void CheckSaveFileAvailability()
     {
-        bool hasSave = SaveManager.Instance != null && SaveManager.Instance.HasSaveFile();
+        bool hasSave = false;
+        
+        // Check if SaveManager exists, if not try to find or create one
+        if (SaveManager.Instance == null)
+        {
+            // Try to find existing SaveManager in scene
+            SaveManager existingSaveManager = FindObjectOfType<SaveManager>();
+            if (existingSaveManager == null)
+            {
+                // No SaveManager found, check for save file manually
+                string saveDirectory = Path.Combine(Application.persistentDataPath, "Saves");
+                string saveFilePath = Path.Combine(saveDirectory, "GameSave.json");
+                hasSave = File.Exists(saveFilePath);
+            }
+            else
+            {
+                hasSave = existingSaveManager.HasSaveFile();
+            }
+        }
+        else
+        {
+            hasSave = SaveManager.Instance.HasSaveFile();
+        }
         
         if (continueButton != null)
         {
@@ -727,8 +765,6 @@ public class MainMenuUI : MonoBehaviour
                 buttonText.color = hasSave ? Color.white : Color.gray;
             }
         }
-        
-        Debug.Log($"[MainMenuUI] Save file available: {hasSave}");
     }
     
     private void UpdateSaveInfoDisplay()

@@ -169,7 +169,7 @@ public class SellBox : MonoBehaviour, IInteractable
                 float distance = Vector3.Distance(transform.position, playerTransform.position);
                 if (distance > maxInteractionDistance)
                 {
-                    Debug.Log("SellBox: Auto-closing due to distance");
+
                     CloseSellBox();
                     return;
                 }
@@ -182,7 +182,7 @@ public class SellBox : MonoBehaviour, IInteractable
         // Check if UI needs updating after being inactive (e.g., after sleep selling)
         if (needsUIUpdate && AreUIElementsActive())
         {
-            Debug.Log("SellBox: Updating UI after inactive period (sleep selling)");
+
             ForceUpdateAllUI();
             needsUIUpdate = false;
         }
@@ -221,7 +221,7 @@ public class SellBox : MonoBehaviour, IInteractable
         {
             isTrackingInputForClose = true;
             inputTrackingStartTime = Time.time;
-            Debug.Log($"SellBox: Started tracking input for auto-close (Movement: {hasMovementInput}, Interaction: {hasInteractionInput})");
+
         }
         
         // Continue tracking and check for auto-close
@@ -231,14 +231,14 @@ public class SellBox : MonoBehaviour, IInteractable
             if (!hasMovementInput && !hasInteractionInput)
             {
                 isTrackingInputForClose = false;
-                Debug.Log("SellBox: Input stopped, cancelled auto-close tracking");
+
                 return;
             }
             
             // If we've been tracking for the delay period, auto-close
             if (Time.time - inputTrackingStartTime >= autoCloseDelay)
             {
-                Debug.Log($"SellBox: Auto-closing after {autoCloseDelay}s of input attempts");
+
                 CloseSellBox();
             }
         }
@@ -251,7 +251,7 @@ public class SellBox : MonoBehaviour, IInteractable
     {
         isTrackingInputForClose = false;
         inputTrackingStartTime = 0f;
-        Debug.Log("SellBox: Input tracking reset");
+
     }
     
     private void ValidateSetup()
@@ -365,7 +365,7 @@ public class SellBox : MonoBehaviour, IInteractable
         if (playerMove != null)
         {
             playerMove.DisableMovement();
-            Debug.Log("SellBox: Player movement disabled");
+
         }
         
         // Ensure cursor is visible for UI interaction
@@ -398,7 +398,7 @@ public class SellBox : MonoBehaviour, IInteractable
         if (playerMove != null)
         {
             playerMove.EnableMovement();
-            Debug.Log("SellBox: Player movement enabled");
+
         }
         
         // Use UIManager if available
@@ -701,12 +701,12 @@ public class SellBox : MonoBehaviour, IInteractable
             }
             else
             {
-                Debug.LogWarning("Failed to add item to inventory despite CanAdd check");
+
             }
         }
         else
         {
-            Debug.Log("Inventory cannot accept item - full or incompatible");
+
         }
     }
 
@@ -717,7 +717,7 @@ public class SellBox : MonoBehaviour, IInteractable
     {
         if (playerStats == null)
         {
-            Debug.LogError("PlayerStats not found!");
+
             return 0;
         }
 
@@ -747,18 +747,18 @@ public class SellBox : MonoBehaviour, IInteractable
         {
             playerStats.AddMoney(totalEarnings);
 
-            Debug.Log($"[Sleep Sale] Sold {itemsSold.Count} different items for {totalEarnings} coins!");
+
 
             foreach (var soldItem in itemsSold)
             {
-                Debug.Log($"[Sleep Sale] Sold {soldItem.quantity}x {soldItem.item.itemName} for {Mathf.RoundToInt(soldItem.item.baseValue * sellMultiplier * soldItem.quantity)} coins");
+
             }
 
             OnItemsSold?.Invoke(totalEarnings);
         }
         else
         {
-            Debug.Log("[Sleep Sale] No sellable items in the box!");
+
         }
 
         UpdateTotalValueDisplay();
@@ -852,7 +852,7 @@ public class SellBox : MonoBehaviour, IInteractable
         // Update box sprite
         UpdateBoxSprite();
         
-        Debug.Log("SellBox: Forced UI update complete - slots should now reflect sold items");
+
     }
     
     /// <summary>
@@ -972,7 +972,7 @@ public class SellBox : MonoBehaviour, IInteractable
     /// </summary>
     public void ValidateAndFixState()
     {
-        Debug.Log("[SellBox] Validating and fixing state...");
+
         
         // Ensure all slots are properly configured
         for (int i = 0; i < sellBoxSlotUIs.Count && i < boxInventorySize; i++)

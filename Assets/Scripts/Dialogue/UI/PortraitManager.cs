@@ -44,10 +44,10 @@ public class PortraitManager : MonoBehaviour
     private void ValidateComponents()
     {
         if (leftPortrait == null)
-            Debug.LogError("PortraitManager: Left portrait Image not assigned!");
+
         
         if (rightPortrait == null)
-            Debug.LogError("PortraitManager: Right portrait Image not assigned!");
+
         
         if (leftPortraitGroup == null && leftPortrait != null)
         {
@@ -126,7 +126,7 @@ public class PortraitManager : MonoBehaviour
     {
         if (portraitSprite == null)
         {
-            Debug.LogWarning("PortraitManager: Attempting to show null portrait sprite");
+
             currentAnimation = null;
             yield break;
         }
