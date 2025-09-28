@@ -32,26 +32,37 @@ public class UIInput : MonoBehaviour
     {
         // Always ensure cursor is visible when handling UI
         EnsureCursorVisible();
-        
+
+        // Delegate ESC handling to UIManager
         if (UIManager.Instance != null)
         {
-            // Close the current panel if any is open
-            if (UIManager.Instance.IsAnyPanelOpen())
-            {
-                UIManager.Instance.CloseCurrentPanel();
-                // Keep cursor visible after closing UI panels
-                StartCoroutine(EnsureCursorVisibleDelayed());
-                return;
-            }
+            UIManager.Instance.HandleEscapeKey();
+            // Keep cursor visible after UI changes
+            StartCoroutine(EnsureCursorVisibleDelayed());
+            return;
         }
-        
-        // If no UI is open, close any sellbox that might be open
+
+        // Fallback behavior if no UIManager
+        FallbackEscapeHandling();
+    }
+
+    private void FallbackEscapeHandling()
+    {
+        // Legacy ESC handling for compatibility
+        // Close any sellbox that might be open
         var sellBox = FindFirstObjectByType<SellBox>();
         if (sellBox != null && sellBox.IsOpen)
         {
             sellBox.CloseSellBox();
-            // Keep cursor visible after closing sellbox
             StartCoroutine(EnsureCursorVisibleDelayed());
+            return;
+        }
+
+        // Try to open game menu
+        var gameMenuManager = FindFirstObjectByType<GameMenuManager>();
+        if (gameMenuManager != null && !gameMenuManager.IsMenuOpen)
+        {
+            gameMenuManager.OpenMenu();
         }
     }
     

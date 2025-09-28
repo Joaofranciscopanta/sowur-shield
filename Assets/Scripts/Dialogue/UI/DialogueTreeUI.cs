@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.EventSystems;
 
-public class DialogueTreeUI : MonoBehaviour
+public class DialogueTreeUI : MonoBehaviour, IUIWindow
 {
     [Header("Core UI Elements")]
     [SerializeField] private GameObject dialoguePanel;
@@ -64,6 +64,12 @@ public class DialogueTreeUI : MonoBehaviour
     public bool IsDialogueActive => isDialogueActive;
     public bool IsWaitingForChoice => isWaitingForChoice;
     public DialogueNode CurrentNode => currentNode;
+
+    // IUIWindow implementation
+    public string WindowName => "Dialogue";
+    public int WindowPriority => 30;
+    public bool IsWindowOpen => isDialogueActive;
+    public bool CanCloseWithEsc => true; // Allow closing dialogues with ESC
     
     private void Awake()
     {
@@ -74,6 +80,46 @@ public class DialogueTreeUI : MonoBehaviour
     private void Start()
     {
         FindDependencies();
+        RegisterWithUIManager();
+    }
+
+    private void OnDestroy()
+    {
+        UnregisterFromUIManager();
+    }
+
+    private void RegisterWithUIManager()
+    {
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.RegisterWindow(this);
+        }
+    }
+
+    private void UnregisterFromUIManager()
+    {
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UnregisterWindow(this);
+        }
+    }
+
+    // IUIWindow implementation methods
+    public void OpenWindow()
+    {
+        // This is called by UIManager when window can open
+        // The actual dialogue opening logic continues from StartDialogue
+    }
+
+    public void CloseWindow()
+    {
+        // Force close dialogue
+        EndDialogue();
+    }
+
+    public void OnWindowBlocked(string blockedBy)
+    {
+        Debug.LogWarning($"[DialogueTreeUI] Cannot start dialogue - blocked by {blockedBy}");
     }
     
     private void ValidateComponents()
@@ -140,10 +186,17 @@ public class DialogueTreeUI : MonoBehaviour
             Debug.LogError("DialogueTreeUI: Cannot start dialogue - dialogueTree is null");
             return;
         }
-        
+
         if (isDialogueActive)
         {
             Debug.LogWarning("DialogueTreeUI: Cannot start dialogue - dialogue is already active");
+            return;
+        }
+
+        // Use UIManager to try opening this window
+        if (UIManager.Instance != null && !UIManager.Instance.TryOpenWindow(this))
+        {
+            Debug.LogWarning("DialogueTreeUI: Cannot start dialogue - blocked by another window");
             return;
         }
         
@@ -475,7 +528,13 @@ public class DialogueTreeUI : MonoBehaviour
         isWaitingForChoice = false;
         currentDialogueTree = null;
         currentNode = null;
-        
+
+        // Notify UIManager that dialogue has ended
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.TryCloseWindow(this);
+        }
+
         OnDialogueEnded?.Invoke();
     }
     

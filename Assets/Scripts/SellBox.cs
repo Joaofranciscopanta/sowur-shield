@@ -54,7 +54,7 @@ public class ItemBoxSprite
     }
 }
 
-public class SellBox : MonoBehaviour, IInteractable
+public class SellBox : MonoBehaviour, IInteractable, IUIWindow
 {
     [Header("Sell Box Settings")]
     public int boxInventorySize = 12;
@@ -91,6 +91,12 @@ public class SellBox : MonoBehaviour, IInteractable
 
     public bool IsOpen => isSellBoxOpen;
     public int TotalValue => CalculateTotalValue();
+
+    // IUIWindow implementation
+    public string WindowName => "SellBox";
+    public int WindowPriority => 20;
+    public bool IsWindowOpen => isSellBoxOpen;
+    public bool CanCloseWithEsc => true;
     
     // Static reference for single UI window management
     private static SellBox currentlyOpenSellBox;
@@ -133,6 +139,9 @@ public class SellBox : MonoBehaviour, IInteractable
         
         // Register with InteractionManager
         RegisterWithInteractionManager();
+
+        // Register with UIManager
+        RegisterWithUIManager();
         
         // Debug information
         ValidateSetup();
@@ -141,6 +150,29 @@ public class SellBox : MonoBehaviour, IInteractable
     private void OnDestroy()
     {
         UnregisterFromInteractionManager();
+        UnregisterFromUIManager();
+    }
+
+    private void RegisterWithUIManager()
+    {
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.RegisterWindow(this);
+        }
+    }
+
+    private void UnregisterFromUIManager()
+    {
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UnregisterWindow(this);
+        }
+    }
+
+    public void OnWindowBlocked(string blockedBy)
+    {
+        // Could show a message to player or play a sound
+        Debug.Log($"[SellBox] Cannot open - blocked by {blockedBy}");
     }
     
     private void RegisterWithInteractionManager()
@@ -353,8 +385,17 @@ public class SellBox : MonoBehaviour, IInteractable
     
     public void OpenSellBox()
     {
-        // Close other UI windows first
-        CloseOtherUIWindows();
+        // Use UIManager to try opening this window
+        if (UIManager.Instance != null && !UIManager.Instance.TryOpenWindow(this))
+        {
+            return; // Window was blocked by another window
+        }
+
+        // If no UIManager, fall back to old behavior
+        if (UIManager.Instance == null)
+        {
+            CloseOtherUIWindows();
+        }
         
         isSellBoxOpen = true;
         
@@ -389,11 +430,64 @@ public class SellBox : MonoBehaviour, IInteractable
 
     public void CloseSellBox()
     {
+        // Notify UIManager if available
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.TryCloseWindow(this);
+        }
+        else
+        {
+            // Direct close if no UIManager
+            CloseWindow();
+        }
+    }
+
+    // IUIWindow implementation methods
+    public void OpenWindow()
+    {
+        // Direct opening logic (called by UIManager)
+        isSellBoxOpen = true;
+
+        // Reset input tracking for auto-close
+        ResetInputTracking();
+
+        // Disable player movement when SellBox is open
+        if (playerMove != null)
+        {
+            playerMove.DisableMovement();
+        }
+
+        // Show UI panel
+        if (sellBoxMainPanel != null)
+        {
+            sellBoxMainPanel.SetActive(true);
+        }
+
+        // Set as currently open SellBox
+        currentlyOpenSellBox = this;
+
+        // Play opening sound
+        if (itemPlaceSound != null && playerTransform != null)
+        {
+            AudioSource.PlayClipAtPoint(itemPlaceSound, playerTransform.position, 0.5f);
+        }
+
+        // Update display
+        UpdateTotalValueDisplay();
+        ForceUpdateAllUI();
+
+        // Notify systems
+        OnSellBoxToggled?.Invoke();
+    }
+
+    public void CloseWindow()
+    {
+        // Direct closing logic (called by UIManager)
         isSellBoxOpen = false;
-        
+
         // Reset input tracking
         ResetInputTracking();
-        
+
         // Re-enable player movement when SellBox is closed
         if (playerMove != null)
         {

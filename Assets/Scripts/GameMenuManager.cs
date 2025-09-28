@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 /// Manages the main game menu that opens with ESC key
 /// Handles pausing, settings, save management, and quitting
 /// </summary>
-public class GameMenuManager : MonoBehaviour
+public class GameMenuManager : MonoBehaviour, IUIWindow
 {
     [Header("Menu Settings")]
     [SerializeField] private GameObject menuPanel;
@@ -39,6 +39,12 @@ public class GameMenuManager : MonoBehaviour
 
     // Properties
     public bool IsMenuOpen => isMenuOpen;
+
+    // IUIWindow implementation
+    public string WindowName => "GameMenu";
+    public int WindowPriority => 1;
+    public bool IsWindowOpen => isMenuOpen;
+    public bool CanCloseWithEsc => true;
 
     private void Awake()
     {
@@ -73,17 +79,42 @@ public class GameMenuManager : MonoBehaviour
         // Initialize menu state
         if (menuPanel != null)
             menuPanel.SetActive(false);
+
+        // Register with UIManager
+        RegisterWithUIManager();
     }
 
     private void OnDestroy()
     {
         CleanupInput();
+        UnregisterFromUIManager();
 
         // Restore time scale if destroyed while paused
         if (isMenuOpen && pauseGameWhenOpen)
         {
             Time.timeScale = previousTimeScale;
         }
+    }
+
+    private void RegisterWithUIManager()
+    {
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.RegisterWindow(this);
+        }
+    }
+
+    private void UnregisterFromUIManager()
+    {
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UnregisterWindow(this);
+        }
+    }
+
+    public void OnWindowBlocked(string blockedBy)
+    {
+        Debug.Log($"[GameMenuManager] Cannot open menu - blocked by {blockedBy}");
     }
 
     private void FindGameReferences()
@@ -169,15 +200,51 @@ public class GameMenuManager : MonoBehaviour
     {
         if (isMenuOpen) return;
 
+        // Use UIManager to try opening this window
+        if (UIManager.Instance != null && !UIManager.Instance.TryOpenWindow(this))
+        {
+            return; // Window was blocked by another window
+        }
+
+        // If no UIManager, fall back to direct opening
+        if (UIManager.Instance == null)
+        {
+            OpenWindow();
+        }
+    }
+
+    public void CloseMenu()
+    {
+        if (!isMenuOpen) return;
+
+        // Notify UIManager if available
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.TryCloseWindow(this);
+        }
+        else
+        {
+            // Direct close if no UIManager
+            CloseWindow();
+        }
+    }
+
+    // IUIWindow implementation methods
+    public void OpenWindow()
+    {
+        // Direct opening logic (called by UIManager or fallback)
+        if (isMenuOpen) return;
 
         // Validate required components
         if (menuPanel == null)
         {
+            Debug.LogError("GameMenuManager: menuPanel is not assigned!");
             return;
         }
 
         if (menuUI == null)
         {
+            Debug.LogError("GameMenuManager: menuUI component not found!");
             return;
         }
 
@@ -218,8 +285,9 @@ public class GameMenuManager : MonoBehaviour
 
     }
 
-    public void CloseMenu()
+    public void CloseWindow()
     {
+        // Direct closing logic (called by UIManager or fallback)
         if (!isMenuOpen) return;
 
         isMenuOpen = false;
