@@ -157,8 +157,17 @@ public class SaveManager : MonoBehaviour
         
         try
         {
-            // Create fresh game data
-            currentGameData = new GameData();
+            // Preserve existing game data or create fresh if none exists
+            if (currentGameData == null)
+            {
+                currentGameData = new GameData();
+            }
+            else
+            {
+                // Update metadata for existing data
+                currentGameData.saveTimestamp = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                currentGameData.saveCount++;
+            }
             
             // Collect data from all registered saveable objects
             foreach (var saveable in saveableObjects.ToList()) // ToList to avoid modification during iteration
@@ -414,13 +423,13 @@ public class SaveManager : MonoBehaviour
     {
         if (enableDebugLogs)
         {
-
+            Debug.Log($"[SaveManager] {message}");
         }
     }
     
     private void LogError(string message)
     {
-
+        Debug.LogError($"[SaveManager] {message}");
     }
     
     // ============================================================================

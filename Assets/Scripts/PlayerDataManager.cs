@@ -67,13 +67,28 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
             LogDebug("PlayerStats component not found, using default values");
         }
         
-        LogDebug($"Saved player data: Position {gameData.playerData.position}, Scene {gameData.playerData.currentSceneName}");
+        LogDebug($"Saved player data: Position {gameData.playerData.position}, Scene {gameData.playerData.currentSceneName}, HasSleptInBed: {gameData.playerData.hasSleptInBed}, BedPosition: {gameData.playerData.lastBedPosition}");
     }
     
     public void LoadData(GameData gameData)
     {
-        // Load player position
-        transform.position = gameData.playerData.position;
+        // Debug bed spawn data
+        LogDebug($"Loading data - hasSleptInBed: {gameData.playerData.hasSleptInBed}, lastBedPosition: {gameData.playerData.lastBedPosition}, savedPosition: {gameData.playerData.position}");
+
+        // Load player position - spawn at bed if they've slept in one
+        Vector3 spawnPosition = gameData.playerData.position;
+
+        if (gameData.playerData.hasSleptInBed && gameData.playerData.lastBedPosition != Vector3.zero)
+        {
+            spawnPosition = gameData.playerData.lastBedPosition;
+            LogDebug($"✓ Spawning player at bed position: {spawnPosition}");
+        }
+        else
+        {
+            LogDebug($"✗ Spawning player at saved position: {spawnPosition} (hasSleptInBed: {gameData.playerData.hasSleptInBed}, bedPos: {gameData.playerData.lastBedPosition})");
+        }
+
+        transform.position = spawnPosition;
         transform.rotation = Quaternion.Euler(0, 0, gameData.playerData.rotation);
         
         // Load player stats if available
@@ -151,7 +166,7 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
     {
         if (enableDebugLogs)
         {
-
+            Debug.Log($"[PlayerDataManager] {message}");
         }
     }
     

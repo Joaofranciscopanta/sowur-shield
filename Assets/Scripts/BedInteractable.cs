@@ -187,11 +187,19 @@ public class BedInteractable : MonoBehaviour, IInteractable
         // Avança o tempo
         timeController.AdvanceDay(daysToAdvance);
 
+        // Store bed position for respawning
+        if (SaveManager.Instance != null && SaveManager.Instance.CurrentGameData != null)
+        {
+            SaveManager.Instance.CurrentGameData.playerData.lastBedPosition = transform.position;
+            SaveManager.Instance.CurrentGameData.playerData.hasSleptInBed = true;
+            Debug.Log($"[BedInteractable] Stored bed position: {transform.position}");
+        }
+
         // TRIGGER AUTO-SAVE AFTER ADVANCING TIME
         if (SaveManager.Instance != null)
         {
             SaveManager.Instance.TriggerAutoSave();
-            
+
             // Wait a brief moment for save to complete
             yield return new WaitForSeconds(0.5f);
         }

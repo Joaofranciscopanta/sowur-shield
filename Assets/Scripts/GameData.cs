@@ -67,6 +67,10 @@ public class PlayerGameData
     public Vector3 position = Vector3.zero;
     public float rotation = 0f;
     public string currentSceneName = "";
+
+    [Header("Bed Spawn")]
+    public Vector3 lastBedPosition = Vector3.zero;
+    public bool hasSleptInBed = false;
     
     [Header("Stats")]
     public float health = 100f;
