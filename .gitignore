@@ -8,6 +8,10 @@
 [Mm]emoryCaptures/
 [Uu]serSettings/
 
+# Exception: Allow docs/Build for GitHub Pages
+!docs/Build/
+!docs/Build/*
+
 # Unity Asset store tools
 [Aa]ssets/AssetStoreTools*
 
