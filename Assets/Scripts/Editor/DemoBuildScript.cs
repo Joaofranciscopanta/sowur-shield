@@ -70,10 +70,7 @@ public class DemoBuildScript
                 PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
                 PlayerSettings.defaultIsNativeResolution = false;
 
-                // Use Minimal template to avoid default fullscreen behaviors
-                PlayerSettings.WebGL.template = "PROJECT:Minimal";
-
-                Debug.Log("WebGL: Disabled compression, exceptions, data caching, auto-fullscreen, and set Minimal template");
+                Debug.Log("WebGL: Disabled compression, exceptions, data caching, and auto-fullscreen");
             }
 
             // Windows-specific settings
