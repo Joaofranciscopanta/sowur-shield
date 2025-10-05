@@ -6,7 +6,20 @@
       "Bash(dir:*)",
       "Read(//c/users/lucas/**)",
       "Bash(git push:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(echo $USERPROFILE)",
+      "Read(//c/Users/Administrator/AppData/LocalLow/DefaultCompany/Sowur Shield/Saves/**)",
+      "Read(//c/Users/Administrator/AppData/LocalLow/Sovl Studios/Sowur Shield/Saves/**)",
+      "Bash(git pull:*)",
+      "Bash(sed:*)",
+      "Bash(for file in \"C:\\Users\\Administrator\\Desktop\\Sowur Shield\\Sowur Shield\\Assets\\Scripts\\MapEditor\"/*.cs)",
+      "Bash(do sed -i 's/.*Debug\\.Log.*;//g' \"$file\")",
+      "Bash(done)",
+      "Bash(for:*)",
+      "Bash(do sed -i 's/.*Debug\\.Log.*;//g' \"C:\\Users\\Administrator\\Desktop\\Sowur Shield\\Sowur Shield\\Assets\\Scripts/$file\")",
+      "Bash(start \"\" \"C:\\Program Files\\Unity\\Hub\\Editor\\2022.3.46f1\\Editor\\Unity.exe\" -batchmode -quit -projectPath . -executeMethod UnityEditor.Build.Buildme -logFile build_log.txt)",
+      "Bash(tasklist)",
+      "Bash(git stash push:*)"
     ],
     "deny": [],
     "ask": []
