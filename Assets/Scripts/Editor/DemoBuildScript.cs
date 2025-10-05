@@ -94,11 +94,18 @@ public class DemoBuildScript
 
             Debug.Log($"Added {DEMO_DEFINE} scripting define symbol");
 
-            // Wait for compilation
+            // Wait for compilation to finish
             AssetDatabase.Refresh();
 
+            // Check if scripts are compiling
+            if (EditorApplication.isCompiling)
+            {
+                Debug.LogError("Cannot build: Scripts are still compiling. Please wait for compilation to finish and try again.");
+                return false;
+            }
+
             // Small delay to ensure settings are applied
-            System.Threading.Thread.Sleep(1000);
+            System.Threading.Thread.Sleep(500);
 
             // Configure build settings
             string buildPath = GetBuildPath(target, platformName);
