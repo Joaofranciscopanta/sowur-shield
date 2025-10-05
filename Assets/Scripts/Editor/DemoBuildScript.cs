@@ -68,8 +68,12 @@ public class DemoBuildScript
 
                 // Disable auto-fullscreen on first user interaction
                 PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
+                PlayerSettings.defaultIsNativeResolution = false;
 
-                Debug.Log("WebGL: Disabled compression, exceptions, data caching, and auto-fullscreen");
+                // Use Minimal template to avoid default fullscreen behaviors
+                PlayerSettings.WebGL.template = "PROJECT:Minimal";
+
+                Debug.Log("WebGL: Disabled compression, exceptions, data caching, auto-fullscreen, and set Minimal template");
             }
 
             // Windows-specific settings
