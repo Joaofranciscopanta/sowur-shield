@@ -1,5 +1,15 @@
 # Sowur Shield - Unity Farming Game
 
+## ⚠️ IMPORTANT: Git Branch Policy
+
+**ALWAYS USE `main` BRANCH - NEVER USE `master`**
+
+This project uses `main` as the primary branch. All references to "master" are deprecated.
+- ✅ Use: `git push origin main`
+- ❌ Never: `git push origin master`
+- ✅ Pull requests target: `main`
+- ✅ Default branch: `main`
+
 ## Project Overview
 
 **Sowur Shield** is a sophisticated 2D farming simulation game built in Unity that demonstrates mature game development practices. The project combines traditional farming mechanics with modern Unity architecture, featuring extensive system integration and thoughtful design patterns.
