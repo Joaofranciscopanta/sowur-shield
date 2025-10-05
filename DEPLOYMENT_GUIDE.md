@@ -7,6 +7,8 @@
 Build → Demo → Build WebGL Demo
 ```
 
+**IMPORTANT:** Always rebuild in Unity - this ensures proper settings (no auto-fullscreen, disabled compression, etc.)
+
 This creates: `Builds/WebGL_Demo/` with fixed filenames:
 - `Build/WebGL_Demo.data`
 - `Build/WebGL_Demo.framework.js`

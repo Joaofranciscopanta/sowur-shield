@@ -65,7 +65,11 @@ public class DemoBuildScript
                 PlayerSettings.WebGL.compressionFormat = WebGLCompressionFormat.Disabled;
                 PlayerSettings.WebGL.exceptionSupport = WebGLExceptionSupport.None;
                 PlayerSettings.WebGL.dataCaching = false;
-                Debug.Log("WebGL: Disabled compression for local testing, disabled exceptions and data caching");
+
+                // Disable auto-fullscreen on first user interaction
+                PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
+
+                Debug.Log("WebGL: Disabled compression, exceptions, data caching, and auto-fullscreen");
             }
 
             // Windows-specific settings
