@@ -19,7 +19,12 @@
       "Bash(do sed -i 's/.*Debug\\.Log.*;//g' \"C:\\Users\\Administrator\\Desktop\\Sowur Shield\\Sowur Shield\\Assets\\Scripts/$file\")",
       "Bash(start \"\" \"C:\\Program Files\\Unity\\Hub\\Editor\\2022.3.46f1\\Editor\\Unity.exe\" -batchmode -quit -projectPath . -executeMethod UnityEditor.Build.Buildme -logFile build_log.txt)",
       "Bash(tasklist)",
-      "Bash(git stash push:*)"
+      "Bash(git stash push:*)",
+      "Bash(grep:*)",
+      "Bash(awk:*)",
+      "Bash(git branch:*)",
+      "Bash(git commit:*)",
+      "Bash(git check-ignore:*)"
     ],
     "deny": [],
     "ask": []
