@@ -25,7 +25,8 @@
       "Bash(git branch:*)",
       "Bash(git commit:*)",
       "Bash(git check-ignore:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(git stash pop:*)"
     ],
     "deny": [],
     "ask": []

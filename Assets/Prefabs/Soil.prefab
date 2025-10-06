@@ -169,7 +169,6 @@ MonoBehaviour:
   harvestSound: {fileID: 0}
   highlightColor: {r: 1, g: 1, b: 0.5, a: 1}
   enableHighlightOnHover: 1
-  showDebugInfo: 0
 --- !u!50 &5834525890521901003
 Rigidbody2D:
   serializedVersion: 5
@@ -219,4 +218,3 @@ MonoBehaviour:
   isWatered: 0
   cropSpriteRenderer: {fileID: 0}
   cropVisualObject: {fileID: 0}
-  showDebugInfo: 0

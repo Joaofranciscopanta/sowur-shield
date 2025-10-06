@@ -11,7 +11,7 @@ public class SaveManager : MonoBehaviour
     [SerializeField] private bool enableAutoSave = true;
     [SerializeField] private bool enableBackupSaves = true;
     [SerializeField] private int maxBackupSaves = 5;
-    
+
     [Header("Debug")]
     [SerializeField] private bool enableDebugLogs = true;
     
@@ -152,6 +152,11 @@ public class SaveManager : MonoBehaviour
     /// </summary>
     public void SaveGame()
     {
+#if DEMO_BUILD
+        Debug.Log("SaveGame() called but DISABLED in demo build");
+        OnSaveCompleted?.Invoke(false);
+        return;
+#endif
         OnSaveStarted?.Invoke();
         LogDebug($"SaveGame() called - registered objects: {saveableObjects.Count}");
         
@@ -257,6 +262,11 @@ public class SaveManager : MonoBehaviour
     /// </summary>
     public void LoadGame()
     {
+#if DEMO_BUILD
+        Debug.Log("LoadGame() called but DISABLED in demo build");
+        OnLoadCompleted?.Invoke(false);
+        return;
+#endif
         if (!HasSaveFile())
         {
             LogError("No save file found to load!");
@@ -353,6 +363,9 @@ public class SaveManager : MonoBehaviour
     /// </summary>
     public bool HasSaveFile()
     {
+#if DEMO_BUILD
+        return false; // No save files in demo build
+#endif
         return File.Exists(currentSaveFilePath);
     }
     
@@ -421,12 +434,10 @@ public class SaveManager : MonoBehaviour
     
     private void LogDebug(string message)
     {
-        #if UNITY_EDITOR
         if (enableDebugLogs)
         {
             Debug.Log($"[SaveManager] {message}");
         }
-        #endif
     }
     
     private void LogError(string message)

@@ -5,7 +5,7 @@ using System.Linq;
 
 /*
  * SELLBOX SETUP INSTRUCTIONS:
- * 
+ *
  * 1. Create a GameObject with SellBox script
  * 2. Add a Collider2D component with IsTrigger = true
  * 3. Set Layer to an interactable layer (configure in PlayerMove)
@@ -21,7 +21,7 @@ using System.Linq;
  *    - sellSound: Audio when selling (during sleep)
  *    - itemPlaceSound: Audio when placing items
  *    - sellParticleEffect: Particle effect when selling
- * 
+ *
  * Items placed in the SellBox will be automatically sold when the player sleeps!
  * The system will automatically handle drag & drop between inventory and sellbox!
  */
@@ -78,7 +78,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     public Sprite defaultBoxSprite;
     public List<ItemBoxSprite> itemBoxSprites = new List<ItemBoxSprite>();
 
-    private ItemStack[] sellBoxInventory;
+    private InventoryContainer container;
     private List<InventorySlot> sellBoxSlotUIs = new List<InventorySlot>();
     private bool isSellBoxOpen = false;
     private PlayerStats playerStats;
@@ -97,13 +97,13 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     public int WindowPriority => 20;
     public bool IsWindowOpen => isSellBoxOpen;
     public bool CanCloseWithEsc => true;
-    
+
     // Static reference for single UI window management
     private static SellBox currentlyOpenSellBox;
-    
+
     // Flag to track if UI needs updating after inactive period
     private bool needsUIUpdate = false;
-    
+
     // Auto-close system
     private bool isTrackingInputForClose = false;
     private float inputTrackingStartTime = 0f;
@@ -119,11 +119,11 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         SetupUI();
         playerStats = FindFirstObjectByType<PlayerStats>();
         playerInventory = FindFirstObjectByType<Inventory>();
-        
+
         // Find player transform and PlayerMove component for distance checking and movement control
         var player = GameObject.FindWithTag("Player");
         if (player == null) player = FindFirstObjectByType<PlayerMove>()?.gameObject;
-        if (player != null) 
+        if (player != null)
         {
             playerTransform = player.transform;
             playerMove = player.GetComponent<PlayerMove>();
@@ -132,21 +132,21 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         UpdateTotalValueDisplay();
         UpdateBoxSprite();
         CloseSellBox();
-        
+
         // Ensure main panel starts inactive
         if (sellBoxMainPanel != null)
             sellBoxMainPanel.SetActive(false);
-        
+
         // Register with InteractionManager
         RegisterWithInteractionManager();
 
         // Register with UIManager
         RegisterWithUIManager();
-        
+
         // Debug information
         ValidateSetup();
     }
-    
+
     private void OnDestroy()
     {
         UnregisterFromInteractionManager();
@@ -172,8 +172,9 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     public void OnWindowBlocked(string blockedBy)
     {
         // Could show a message to player or play a sound
+        Debug.Log($"[SellBox] Cannot open - blocked by {blockedBy}");
     }
-    
+
     private void RegisterWithInteractionManager()
     {
         if (InteractionManager.Instance != null)
@@ -181,7 +182,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
             InteractionManager.Instance.RegisterInteractable(this);
         }
     }
-    
+
     private void UnregisterFromInteractionManager()
     {
         if (InteractionManager.Instance != null)
@@ -189,7 +190,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
             InteractionManager.Instance.UnregisterInteractable(this);
         }
     }
-    
+
     private void Update()
     {
         if (isSellBoxOpen)
@@ -200,25 +201,23 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
                 float distance = Vector3.Distance(transform.position, playerTransform.position);
                 if (distance > maxInteractionDistance)
                 {
-
                     CloseSellBox();
                     return;
                 }
             }
-            
+
             // Check for movement or interaction attempts to auto-close
             CheckForInputAutoClose();
         }
-        
+
         // Check if UI needs updating after being inactive (e.g., after sleep selling)
         if (needsUIUpdate && AreUIElementsActive())
         {
-
             ForceUpdateAllUI();
             needsUIUpdate = false;
         }
     }
-    
+
     /// <summary>
     /// Check for movement or interaction input attempts and auto-close after delay
     /// Uses Unity's new Input System
@@ -227,11 +226,11 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     {
         bool hasMovementInput = false;
         bool hasInteractionInput = false;
-        
+
         // Get current keyboard state
         var keyboard = Keyboard.current;
         if (keyboard == null) return; // No keyboard available
-        
+
         // Check for movement input (WASD or Arrow keys)
         if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed ||
             keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed ||
@@ -240,21 +239,20 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         {
             hasMovementInput = true;
         }
-        
+
         // Check for interaction input (E key)
         if (keyboard.eKey.isPressed)
         {
             hasInteractionInput = true;
         }
-        
+
         // Start tracking if we detect input
         if ((hasMovementInput || hasInteractionInput) && !isTrackingInputForClose)
         {
             isTrackingInputForClose = true;
             inputTrackingStartTime = Time.time;
-
         }
-        
+
         // Continue tracking and check for auto-close
         if (isTrackingInputForClose)
         {
@@ -262,19 +260,17 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
             if (!hasMovementInput && !hasInteractionInput)
             {
                 isTrackingInputForClose = false;
-
                 return;
             }
-            
+
             // If we've been tracking for the delay period, auto-close
             if (Time.time - inputTrackingStartTime >= autoCloseDelay)
             {
-
                 CloseSellBox();
             }
         }
     }
-    
+
     /// <summary>
     /// Reset input tracking state
     /// </summary>
@@ -282,13 +278,12 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     {
         isTrackingInputForClose = false;
         inputTrackingStartTime = 0f;
-
     }
-    
+
     private void ValidateSetup()
     {
     }
-    
+
     private void CloseOtherUIWindows()
     {
         // Close any other currently open SellBox
@@ -296,7 +291,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         {
             currentlyOpenSellBox.CloseSellBox();
         }
-        
+
         // Use UIManager if available, otherwise fallback to manual closing
         if (UIManager.Instance != null)
         {
@@ -310,25 +305,33 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
                 var inventory = playerInventory.GetComponent<Inventory>();
                 if (inventory != null)
                 {
-                    var closeMethod = inventory.GetType().GetMethod("CloseInventory") ?? 
+                    var closeMethod = inventory.GetType().GetMethod("CloseInventory") ??
                                     inventory.GetType().GetMethod("Close") ??
                                     inventory.GetType().GetMethod("SetActive");
                     closeMethod?.Invoke(inventory, new object[] { false });
                 }
             }
         }
-        
+
         // Set this as the currently open SellBox
         currentlyOpenSellBox = this;
     }
 
     private void InitializeSellBox()
     {
-        sellBoxInventory = new ItemStack[boxInventorySize];
-        for (int i = 0; i < boxInventorySize; i++)
+        // Initialize ItemDatabase
+        var _ = ItemDatabase.Instance;
+
+        // Create container
+        container = new InventoryContainer(boxInventorySize, "SellBox");
+
+        // Subscribe to container events for automatic UI updates
+        container.OnSlotChanged += (index, stack) =>
         {
-            sellBoxInventory[i] = new ItemStack();
-        }
+            UpdateSlot(index);
+            UpdateTotalValueDisplay();
+            UpdateBoxSprite();
+        };
     }
 
     private void SetupUI()
@@ -359,7 +362,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         {
             sellBoxSlotUIs.Add(slotUI);
             slotUI.SetSlotIndex(index);
-            slotUI.SetItemStack(sellBoxInventory[index]);
+            slotUI.SetItemStack(container.GetSlot(index));
             slotUI.EnableSellBoxMode(sellMultiplier);
         }
     }
@@ -381,7 +384,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
             OpenSellBox();
         }
     }
-    
+
     public void OpenSellBox()
     {
         // Use UIManager to try opening this window
@@ -395,23 +398,22 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         {
             CloseOtherUIWindows();
         }
-        
+
         isSellBoxOpen = true;
-        
+
         // Reset input tracking for auto-close
         ResetInputTracking();
-        
+
         // Disable player movement when SellBox is open
         if (playerMove != null)
         {
             playerMove.DisableMovement();
-
         }
-        
+
         // Ensure cursor is visible for UI interaction
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        
+
         // Use UIManager if available
         if (UIManager.Instance != null && sellBoxMainPanel != null)
         {
@@ -424,7 +426,6 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
 
         OnSellBoxToggled?.Invoke();
         UpdateTotalValueDisplay();
-        
     }
 
     public void CloseSellBox()
@@ -491,9 +492,8 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         if (playerMove != null)
         {
             playerMove.EnableMovement();
-
         }
-        
+
         // Use UIManager if available
         if (UIManager.Instance != null && sellBoxMainPanel != null)
         {
@@ -503,7 +503,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         {
             sellBoxMainPanel.SetActive(false);
         }
-            
+
         // Clear static reference if this was the open one
         if (currentlyOpenSellBox == this)
             currentlyOpenSellBox = null;
@@ -512,7 +512,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     public bool AddItem(Item item, int quantity = 1)
     {
         bool success = AddItemSilent(item, quantity);
-        
+
         if (!success && (item == null || !item.canBeSold))
         {
             // Show rejection feedback on all slots
@@ -523,27 +523,28 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
             }
             return false;
         }
-        
+
         if (success)
         {
             PlaySound(itemPlaceSound);
             UpdateTotalValueDisplay();
             UpdateBoxSprite();
-            
+
             // Show accept feedback on slots that received items
             for (int i = 0; i < boxInventorySize; i++)
             {
-                if (!sellBoxInventory[i].IsEmpty && sellBoxInventory[i].item == item)
+                ItemStack stack = container.GetSlot(i);
+                if (!stack.IsEmpty && stack.item == item)
                 {
                     if (i < sellBoxSlotUIs.Count && sellBoxSlotUIs[i] != null)
                         StartCoroutine(ShowAcceptFeedbackOnSlot(sellBoxSlotUIs[i]));
                 }
             }
         }
-        
+
         return success;
     }
-    
+
     /// <summary>
     /// Adds items without triggering sound, feedback, or UI updates (for internal operations)
     /// </summary>
@@ -551,100 +552,59 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     {
         if (item == null || quantity <= 0 || !item.canBeSold) return false;
 
-        int remainingQuantity = quantity;
-        int originalQuantity = remainingQuantity;
-
-        if (item.isStackable)
-        {
-            for (int i = 0; i < boxInventorySize && remainingQuantity > 0; i++)
-            {
-                if (sellBoxInventory[i].CanStack(item))
-                {
-                    remainingQuantity = sellBoxInventory[i].AddQuantity(remainingQuantity);
-                    UpdateSlot(i);
-                }
-            }
-        }
-
-        for (int i = 0; i < boxInventorySize && remainingQuantity > 0; i++)
-        {
-            if (sellBoxInventory[i].IsEmpty)
-            {
-                int toAdd = Mathf.Min(remainingQuantity, item.maxStackSize);
-                sellBoxInventory[i] = new ItemStack(item, toAdd);
-                remainingQuantity -= toAdd;
-                UpdateSlot(i);
-            }
-        }
-
-        return remainingQuantity == 0;
+        // Use container's AddItem method which handles stacking automatically
+        return container.AddItem(item, quantity);
     }
 
     public bool RemoveItem(Item item, int quantity = 1)
     {
-        if (item == null || quantity <= 0) return false;
-
-        int remainingToRemove = quantity;
-
-        for (int i = boxInventorySize - 1; i >= 0 && remainingToRemove > 0; i--)
-        {
-            if (!sellBoxInventory[i].IsEmpty && sellBoxInventory[i].item == item)
-            {
-                int toRemove = Mathf.Min(remainingToRemove, sellBoxInventory[i].quantity);
-                sellBoxInventory[i].quantity -= toRemove;
-                remainingToRemove -= toRemove;
-
-                if (sellBoxInventory[i].quantity <= 0)
-                {
-                    sellBoxInventory[i].Clear();
-                }
-
-                UpdateSlot(i);
-            }
-        }
+        bool success = container.RemoveItem(item, quantity);
 
         UpdateTotalValueDisplay();
         UpdateBoxSprite();
-        
-        return remainingToRemove == 0;
+
+        return success;
     }
-    
+
     public bool RemoveFromSlot(int slotIndex, int quantity = 1)
     {
         if (slotIndex < 0 || slotIndex >= boxInventorySize) return false;
-        if (sellBoxInventory[slotIndex].IsEmpty || quantity <= 0) return false;
-        
-        int toRemove = Mathf.Min(quantity, sellBoxInventory[slotIndex].quantity);
-        sellBoxInventory[slotIndex].quantity -= toRemove;
-        
-        if (sellBoxInventory[slotIndex].quantity <= 0)
+
+        ItemStack stack = container.GetSlot(slotIndex);
+        if (stack.IsEmpty || quantity <= 0) return false;
+
+        int toRemove = Mathf.Min(quantity, stack.quantity);
+        ItemStack updatedStack = stack.Clone();
+        updatedStack.quantity -= toRemove;
+
+        if (updatedStack.quantity <= 0)
         {
-            sellBoxInventory[slotIndex].Clear();
+            updatedStack.Clear();
         }
-        
-        UpdateSlot(slotIndex);
+
+        container.SetSlot(slotIndex, updatedStack);
         UpdateTotalValueDisplay();
         UpdateBoxSprite();
-        
+
         return toRemove > 0;
     }
-    
+
     public ItemStack GetSlotItemStack(int slotIndex)
     {
         if (slotIndex < 0 || slotIndex >= boxInventorySize) return null;
-        return sellBoxInventory[slotIndex];
+        return container.GetSlot(slotIndex);
     }
 
     public void HandleSlotDrop(InventorySlot fromSlot, InventorySlot toSlot)
     {
         int toIndex = sellBoxSlotUIs.IndexOf(toSlot);
-        if (toIndex < 0 || toIndex >= boxInventorySize) 
+        if (toIndex < 0 || toIndex >= boxInventorySize)
         {
             return;
         }
 
         ItemStack fromItemStack = fromSlot.GetDraggedItem();
-        if (fromItemStack == null || fromItemStack.IsEmpty) 
+        if (fromItemStack == null || fromItemStack.IsEmpty)
         {
             return;
         }
@@ -669,7 +629,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
                 // Consume the dragged item (it's already stored in draggedItemStack)
                 fromSlot.ConsumeDraggedItem();
                 PlaySound(itemPlaceSound);
-                
+
                 // Show accept feedback only once
                 StartCoroutine(ShowAcceptFeedbackOnSlot(toSlot));
             }
@@ -697,7 +657,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         // Single update at the end
         UpdateTotalValueDisplay();
     }
-    
+
     /// <summary>
     /// Handles moving items within the SellBox (slot to slot rearrangement)
     /// </summary>
@@ -705,38 +665,34 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     {
         int fromIndex = sellBoxSlotUIs.IndexOf(fromSlot);
         int toIndex = sellBoxSlotUIs.IndexOf(toSlot);
-        
+
         if (fromIndex < 0 || fromIndex >= boxInventorySize || toIndex < 0 || toIndex >= boxInventorySize)
         {
             return;
         }
-        
-        // Get the dragged item info
-        ItemStack draggedItem = fromSlot.GetDraggedItem();
-        
-        // Simple slot swap - no need for complex add/remove logic
-        ItemStack fromStack = sellBoxInventory[fromIndex];
-        ItemStack toStack = sellBoxInventory[toIndex];
-        
+
+        // Get stacks
+        ItemStack fromStack = container.GetSlot(fromIndex);
+        ItemStack toStack = container.GetSlot(toIndex);
+
         // Swap the items
-        sellBoxInventory[fromIndex] = toStack;
-        sellBoxInventory[toIndex] = fromStack;
-        
+        container.SetSlot(fromIndex, toStack);
+        container.SetSlot(toIndex, fromStack);
+
         // Consume the dragged item since the move succeeded
         fromSlot.ConsumeDraggedItem();
-        
+
         // Update both slot UIs
         UpdateSlot(fromIndex);
         UpdateSlot(toIndex);
-        
+
         // Single total value update (no duplication)
         UpdateTotalValueDisplay();
-        
+
         // No green feedback for internal moves - just a subtle sound
         PlaySound(itemPlaceSound);
-        
     }
-    
+
     public void HandleSellBoxToInventoryDrop(InventorySlot fromSlot, InventorySlot toSlot)
     {
         // Find the from slot index in sellBox
@@ -745,34 +701,33 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         {
             return;
         }
-        
+
         // Get the dragged item from the fromSlot (SellBox slot)
         ItemStack sellBoxItemStack = fromSlot.GetDraggedItem();
         if (sellBoxItemStack == null || sellBoxItemStack.IsEmpty)
         {
             return;
         }
-        
+
         // Store item info before any modifications
         Item itemToMove = sellBoxItemStack.item;
         int quantityToMove = sellBoxItemStack.quantity;
-        string itemName = itemToMove?.itemName ?? "Unknown";
-        
+
         if (itemToMove == null)
         {
             return;
         }
-        
+
         // Get the inventory manager
         Inventory inventory = FindFirstObjectByType<Inventory>();
         if (inventory == null)
         {
             return;
         }
-        
+
         // Check if inventory can accept the item
         bool canAdd = inventory.CanAdd(itemToMove, quantityToMove);
-        
+
         if (canAdd)
         {
             // Add to inventory
@@ -781,25 +736,16 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
             {
                 // Remove from sellbox inventory
                 RemoveFromSlot(fromIndex, quantityToMove);
-                
+
                 // Consume the dragged item
                 fromSlot.ConsumeDraggedItem();
-                
+
                 // Mark the slot as processed to prevent double-processing
                 if (fromSlot != null)
                 {
                     fromSlot.wasDroppedOnSlot = true; // Ensure this is set
                 }
-                
             }
-            else
-            {
-
-            }
-        }
-        else
-        {
-
         }
     }
 
@@ -810,7 +756,6 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     {
         if (playerStats == null)
         {
-
             return 0;
         }
 
@@ -819,18 +764,19 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
 
         for (int i = 0; i < boxInventorySize; i++)
         {
-            if (!sellBoxInventory[i].IsEmpty)
+            ItemStack stack = container.GetSlot(i);
+            if (!stack.IsEmpty)
             {
-                Item item = sellBoxInventory[i].item;
-                int quantity = sellBoxInventory[i].quantity;
+                Item item = stack.item;
+                int quantity = stack.quantity;
 
                 if (item.canBeSold)
                 {
                     int itemValue = Mathf.RoundToInt(item.baseValue * sellMultiplier * quantity);
                     totalEarnings += itemValue;
 
-                    itemsSold.Add(sellBoxInventory[i].Clone());
-                    sellBoxInventory[i].Clear();
+                    itemsSold.Add(stack.Clone());
+                    container.SetSlot(i, new ItemStack());
                     UpdateSlot(i);
                 }
             }
@@ -839,30 +785,18 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         if (totalEarnings > 0)
         {
             playerStats.AddMoney(totalEarnings);
-
-
-
-            foreach (var soldItem in itemsSold)
-            {
-
-            }
-
             OnItemsSold?.Invoke(totalEarnings);
-        }
-        else
-        {
-
         }
 
         UpdateTotalValueDisplay();
         UpdateBoxSprite();
-        
+
         // Mark that UI needs to be updated when it becomes active again
         needsUIUpdate = true;
-        
+
         return totalEarnings;
     }
-    
+
     /// <summary>
     /// Check if there are any items to sell
     /// </summary>
@@ -870,7 +804,8 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     {
         for (int i = 0; i < boxInventorySize; i++)
         {
-            if (!sellBoxInventory[i].IsEmpty && sellBoxInventory[i].item.canBeSold)
+            ItemStack stack = container.GetSlot(i);
+            if (!stack.IsEmpty && stack.item.canBeSold)
             {
                 return true;
             }
@@ -883,9 +818,10 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         int total = 0;
         for (int i = 0; i < boxInventorySize; i++)
         {
-            if (!sellBoxInventory[i].IsEmpty && sellBoxInventory[i].item.canBeSold)
+            ItemStack stack = container.GetSlot(i);
+            if (!stack.IsEmpty && stack.item.canBeSold)
             {
-                total += Mathf.RoundToInt(sellBoxInventory[i].item.baseValue * sellMultiplier * sellBoxInventory[i].quantity);
+                total += Mathf.RoundToInt(stack.item.baseValue * sellMultiplier * stack.quantity);
             }
         }
         return total;
@@ -907,19 +843,19 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
             // Only update UI if the slot GameObject is active
             if (sellBoxSlotUIs[index].gameObject.activeInHierarchy)
             {
-                sellBoxSlotUIs[index].SetItemStack(sellBoxInventory[index]);
+                sellBoxSlotUIs[index].SetItemStack(container.GetSlot(index));
             }
         }
     }
 
     private void UpdateAllSlots()
     {
-        for (int i = 0; i < Mathf.Min(sellBoxInventory.Length, sellBoxSlotUIs.Count); i++)
+        for (int i = 0; i < Mathf.Min(container.MaxSlots, sellBoxSlotUIs.Count); i++)
         {
             UpdateSlot(i);
         }
     }
-    
+
     /// <summary>
     /// Force updates all UI elements regardless of active state checks
     /// Used after automatic selling when UI was inactive
@@ -927,27 +863,25 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     private void ForceUpdateAllUI()
     {
         // Force update all slots without active checks
-        for (int i = 0; i < Mathf.Min(sellBoxInventory.Length, sellBoxSlotUIs.Count); i++)
+        for (int i = 0; i < Mathf.Min(container.MaxSlots, sellBoxSlotUIs.Count); i++)
         {
             if (i >= 0 && i < sellBoxSlotUIs.Count && sellBoxSlotUIs[i] != null)
             {
-                sellBoxSlotUIs[i].SetItemStack(sellBoxInventory[i]);
+                sellBoxSlotUIs[i].SetItemStack(container.GetSlot(i));
             }
         }
-        
+
         // Force update total value display
         if (totalValueText != null)
         {
             int totalValue = CalculateTotalValue();
             totalValueText.text = $"Total Value: {totalValue} coins";
         }
-        
+
         // Update box sprite
         UpdateBoxSprite();
-        
-
     }
-    
+
     /// <summary>
     /// Checks if the main UI elements are currently active
     /// </summary>
@@ -956,14 +890,14 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         // Check if the main panel or at least some slot UIs are active
         if (sellBoxMainPanel != null && sellBoxMainPanel.activeInHierarchy)
             return true;
-            
+
         // Check if any slot UI is active
         foreach (var slot in sellBoxSlotUIs)
         {
             if (slot != null && slot.gameObject.activeInHierarchy)
                 return true;
         }
-        
+
         return false;
     }
 
@@ -978,31 +912,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     public bool CanAdd(Item item, int quantity = 1)
     {
         if (item == null || quantity <= 0 || !item.canBeSold) return false;
-
-        int remainingQuantity = quantity;
-
-        if (item.isStackable)
-        {
-            for (int i = 0; i < boxInventorySize && remainingQuantity > 0; i++)
-            {
-                if (sellBoxInventory[i].CanStack(item))
-                {
-                    int canAddToSlot = Mathf.Min(remainingQuantity, sellBoxInventory[i].AvailableSpace);
-                    remainingQuantity -= canAddToSlot;
-                }
-            }
-        }
-
-        for (int i = 0; i < boxInventorySize && remainingQuantity > 0; i++)
-        {
-            if (sellBoxInventory[i].IsEmpty)
-            {
-                int toAdd = Mathf.Min(remainingQuantity, item.maxStackSize);
-                remainingQuantity -= toAdd;
-            }
-        }
-
-        return remainingQuantity == 0;
+        return container.CanAdd(item, quantity);
     }
 
     public int GetAvailableSpace(Item item)
@@ -1016,9 +926,10 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         {
             for (int i = 0; i < boxInventorySize; i++)
             {
-                if (sellBoxInventory[i].CanStack(item))
+                ItemStack stack = container.GetSlot(i);
+                if (stack.CanStack(item))
                 {
-                    availableSpace += sellBoxInventory[i].AvailableSpace;
+                    availableSpace += stack.AvailableSpace;
                 }
             }
         }
@@ -1026,7 +937,8 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         // Check empty slots
         for (int i = 0; i < boxInventorySize; i++)
         {
-            if (sellBoxInventory[i].IsEmpty)
+            ItemStack stack = container.GetSlot(i);
+            if (stack.IsEmpty)
             {
                 availableSpace += item.maxStackSize;
             }
@@ -1037,36 +949,22 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
 
     public List<ItemStack> GetAllItems()
     {
-        List<ItemStack> items = new List<ItemStack>();
-        for (int i = 0; i < boxInventorySize; i++)
-        {
-            if (!sellBoxInventory[i].IsEmpty)
-            {
-                items.Add(sellBoxInventory[i].Clone());
-            }
-        }
-        return items;
+        return container.GetAllItems();
     }
 
     public void ClearSellBox()
     {
-        for (int i = 0; i < boxInventorySize; i++)
-        {
-            sellBoxInventory[i].Clear();
-            UpdateSlot(i);
-        }
+        container.ClearAll();
         UpdateTotalValueDisplay();
         UpdateBoxSprite();
     }
-    
+
     /// <summary>
     /// Validates and fixes any inconsistencies in SellBox state
     /// Call this if you suspect value duplication issues
     /// </summary>
     public void ValidateAndFixState()
     {
-
-        
         // Ensure all slots are properly configured
         for (int i = 0; i < sellBoxSlotUIs.Count && i < boxInventorySize; i++)
         {
@@ -1074,18 +972,17 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
             {
                 // Force correct SellBox mode
                 sellBoxSlotUIs[i].EnableSellBoxMode(sellMultiplier);
-                
+
                 // Ensure slot data matches internal inventory
-                sellBoxSlotUIs[i].SetItemStack(sellBoxInventory[i]);
-                
+                sellBoxSlotUIs[i].SetItemStack(container.GetSlot(i));
+
                 // Force UI update
                 sellBoxSlotUIs[i].UpdateSellBoxDisplay();
             }
         }
-        
+
         // Force total value recalculation
         UpdateTotalValueDisplay();
-        
     }
 
     private void UpdateBoxSprite()
@@ -1121,9 +1018,10 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         // Return the first non-empty item in the inventory
         for (int i = 0; i < boxInventorySize; i++)
         {
-            if (!sellBoxInventory[i].IsEmpty)
+            ItemStack stack = container.GetSlot(i);
+            if (!stack.IsEmpty)
             {
-                return sellBoxInventory[i].item;
+                return stack.item;
             }
         }
         return null;
@@ -1158,7 +1056,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     {
         itemBoxSprites.Add(new ItemBoxSprite { itemTag = itemTag, boxSprite = boxSprite });
     }
-    
+
     private System.Collections.IEnumerator ShowRejectFeedbackOnSlot(InventorySlot slot)
     {
         if (slot != null && slot.rejectHighlight != null)
@@ -1168,7 +1066,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
             slot.rejectHighlight.gameObject.SetActive(false);
         }
     }
-    
+
     private System.Collections.IEnumerator ShowAcceptFeedbackOnSlot(InventorySlot slot)
     {
         if (slot != null)
@@ -1177,35 +1075,36 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         }
         yield return null;
     }
-    
+
     // ============================================================================
     // PUBLIC INFO METHODS (for UI display)
     // ============================================================================
-    
+
     public int GetTotalValue()
     {
         return CalculateTotalValue();
     }
-    
+
     public int GetTotalItemCount()
     {
         int totalItems = 0;
         for (int i = 0; i < boxInventorySize; i++)
         {
-            if (!sellBoxInventory[i].IsEmpty)
+            ItemStack stack = container.GetSlot(i);
+            if (!stack.IsEmpty)
             {
-                totalItems += sellBoxInventory[i].quantity;
+                totalItems += stack.quantity;
             }
         }
         return totalItems;
     }
-    
+
     // Methods for InteractionManager compatibility
     public float GetInteractionRange()
     {
         return maxInteractionDistance;
     }
-    
+
     public bool IsActive()
     {
         return gameObject.activeInHierarchy && enabled;

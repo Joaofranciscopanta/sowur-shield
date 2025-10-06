@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 11400000, guid: 3c410f5a275f1d14c8e69bb48f80db39, type: 2}
+  quantity: 1
   itemPicked: 0
   enableFloating: 1
   floatHeight: 0.1

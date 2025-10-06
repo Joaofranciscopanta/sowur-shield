@@ -9,9 +9,11 @@ public class GroundItem : MonoBehaviour, IInteractable
     private bool playerInRange = false;
     public bool itemPicked = false;
 
+    // Componentes visuais
     private SpriteRenderer spriteRenderer;
     private float initialY;
 
+    // Configurações de efeitos visuais
     [Header("Visual Effects")]
     public bool enableFloating = true;
     public float floatHeight = 0.1f;
@@ -39,6 +41,7 @@ public class GroundItem : MonoBehaviour, IInteractable
     public float minimumMoveTime = 0.1f;
     public float maximumMoveTime = 0.3f;
 
+    // Referência ao jogador e seu inventário
     private Transform playerTransform;
     private Inventory playerInventory;
 
@@ -64,12 +67,14 @@ public class GroundItem : MonoBehaviour, IInteractable
     {
         if (!itemPicked && enableFloating)
         {
+            // Movimento de flutuação suave
             float y = Mathf.Sin(Time.time * floatSpeed) * floatHeight;
             transform.position = new Vector3(transform.position.x, initialY + y, transform.position.z);
         }
 
         if (!itemPicked && enableRotation)
         {
+            // Rotação suave para dar dimensão
             transform.Rotate(0, 0, rotationSpeed * Time.deltaTime);
         }
     }
@@ -99,12 +104,14 @@ public class GroundItem : MonoBehaviour, IInteractable
             playerInRange = true;
             playerTransform = other.transform;
 
+            // Obtém referência ao inventário do jogador
             PlayerMove playerMove = other.GetComponent<PlayerMove>();
             if (playerMove != null)
             {
                 playerInventory = playerMove.GetInventory();
             }
 
+            // Destaque visual quando jogador se aproxima
             if (spriteRenderer != null)
             {
                 spriteRenderer.color = highlightColor;
@@ -118,6 +125,7 @@ public class GroundItem : MonoBehaviour, IInteractable
         {
             playerInRange = false;
 
+            // Remove o destaque quando o jogador se afasta
             if (spriteRenderer != null)
             {
                 spriteRenderer.color = originalColor;
@@ -131,10 +139,12 @@ public class GroundItem : MonoBehaviour, IInteractable
         {
             if (enableAreaCollection)
             {
+                // Colete todos os itens na área
                 CollectAllItemsInArea();
             }
             else
             {
+                // Coleta apenas este item
                 PickupItem();
             }
         }
@@ -142,11 +152,14 @@ public class GroundItem : MonoBehaviour, IInteractable
 
     private void CollectAllItemsInArea()
     {
+        // Encontra todos os GroundItems próximos
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, collectionRadius);
         List<GroundItem> itemsToCollect = new List<GroundItem>();
 
+        // Adiciona este próprio item primeiro (garantindo que seja coletado)
         itemsToCollect.Add(this);
 
+        // Encontra outros itens na área
         foreach (Collider2D col in colliders)
         {
             GroundItem otherItem = col.GetComponent<GroundItem>();
@@ -156,12 +169,14 @@ public class GroundItem : MonoBehaviour, IInteractable
             }
         }
 
+        // Se tem apenas 1 item (este), faz coleta normal
         if (itemsToCollect.Count == 1)
         {
             PickupItem();
             return;
         }
 
+        // Inicia a coleta com movimento em direção ao jogador
         StartCoroutine(CollectItemsWithAnimation(itemsToCollect));
     }
 
@@ -170,6 +185,7 @@ public class GroundItem : MonoBehaviour, IInteractable
         int collectedCount = 0;
         List<GroundItem> successfullyCollected = new List<GroundItem>();
 
+        // Primeiro verifica se todos cabem no inventário
         foreach (GroundItem groundItem in itemsToCollect)
         {
             groundItem.itemPicked = true;
@@ -184,27 +200,33 @@ public class GroundItem : MonoBehaviour, IInteractable
             }
         }
 
+        // Realiza a animação de movimento para os itens que serão coletados
         List<Coroutine> movementCoroutines = new List<Coroutine>();
 
         foreach (GroundItem groundItem in itemsToCollect)
         {
             if (groundItem.itemPicked)
             {
+                // Calcula tempo de movimento baseado na distância
                 float distance = Vector2.Distance(groundItem.transform.position, playerTransform.position);
                 float moveTime = Mathf.Lerp(minimumMoveTime, maximumMoveTime,
                                            distance / collectionRadius);
 
+                // Inicia a coroutine de movimento e armazena a referência
                 Coroutine moveCo = StartCoroutine(groundItem.MoveToPlayer(playerTransform, moveTime));
                 movementCoroutines.Add(moveCo);
 
+                // Adiciona à lista de coletados com sucesso
                 successfullyCollected.Add(groundItem);
             }
         }
 
+        // Aguarda um pequeno delay para variar o início do movimento dos itens
         foreach (GroundItem groundItem in successfullyCollected)
         {
             yield return new WaitForSeconds(0.05f);
 
+            // Adiciona ao inventário enquanto os itens estão se movendo
             bool added = playerInventory.Add(groundItem.item, 1);
             if (added)
             {
@@ -212,17 +234,20 @@ public class GroundItem : MonoBehaviour, IInteractable
             }
         }
 
+        // Aguarda todas as coroutines de movimento terminarem
         foreach (Coroutine co in movementCoroutines)
         {
             yield return co;
         }
 
+        // Destrói os itens coletados
         foreach (GroundItem groundItem in successfullyCollected)
         {
             groundItem.PlayPickupEffects();
             Destroy(groundItem.gameObject, 0.1f);
         }
 
+        // Se coletou vários itens, mostra efeito especial de área
         if (collectedCount > 1)
         {
             PlayAreaCollectionEffect(collectedCount);
@@ -235,8 +260,10 @@ public class GroundItem : MonoBehaviour, IInteractable
         Vector3 endPosition = target.position;
         float elapsed = 0;
 
+        // Desativa efeitos de flutuação durante o movimento
         enableFloating = false;
 
+        // Aumenta um pouco a velocidade de rotação
         float originalRotationSpeed = rotationSpeed;
         rotationSpeed = originalRotationSpeed * 2;
 
@@ -245,24 +272,30 @@ public class GroundItem : MonoBehaviour, IInteractable
             float t = elapsed / duration;
             float curvedT = movementCurve.Evaluate(t);
 
+            // Move em direção ao jogador com a curva de animação
             transform.position = Vector3.Lerp(startPosition, endPosition, curvedT);
+
+            // Diminui o tamanho gradualmente enquanto se aproxima
             transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one * 0.5f, curvedT);
 
             elapsed += Time.deltaTime;
             yield return null;
         }
 
+        // Finaliza no centro do jogador
         transform.position = endPosition;
     }
 
     private void PlayAreaCollectionEffect(int count)
     {
+        // Efeito visual de coleta em área
         if (areaCollectionEffectPrefab != null && playerTransform != null)
         {
             GameObject effect = Instantiate(areaCollectionEffectPrefab,
                                            playerTransform.position,
                                            Quaternion.identity);
 
+            // Ajusta a intensidade do efeito baseado na quantidade de itens
             ParticleSystem ps = effect.GetComponent<ParticleSystem>();
             if (ps != null)
             {
@@ -273,17 +306,19 @@ public class GroundItem : MonoBehaviour, IInteractable
             Destroy(effect, 2f);
         }
 
+        // Som de coleta em área
         if (areaSoundEffect != null && playerTransform != null)
         {
             AudioSource.PlayClipAtPoint(areaSoundEffect, playerTransform.position);
         }
 
-        ShowFloatingText($"+{count} items");
+        // Exibe texto flutuante com a quantidade coletada
+        ShowFloatingText($"+{count} itens");
     }
 
     private void ShowFloatingText(string message)
     {
-        // Implement floating text system here if available
+        // Se você tiver um sistema de texto flutuante, implemente aqui
     }
 
     private void PickupItem()
@@ -305,8 +340,10 @@ public class GroundItem : MonoBehaviour, IInteractable
 
     private IEnumerator CollectWithAnimation()
     {
+        // Move em direção ao jogador antes de adicionar ao inventário
         yield return StartCoroutine(MoveToPlayer(playerTransform, minimumMoveTime));
 
+        // Adiciona ao inventário após o movimento
         bool added = playerInventory.Add(item, quantity);
         if (added)
         {
@@ -315,12 +352,14 @@ public class GroundItem : MonoBehaviour, IInteractable
         }
         else
         {
+            // Se algo deu errado, reseta
             itemPicked = false;
         }
     }
 
     public void PlayPickupEffects()
     {
+        // Efeito visual de coleta (partículas)
         if (pickupEffectPrefab != null && playerTransform != null)
         {
             GameObject effect = Instantiate(pickupEffectPrefab,
@@ -329,6 +368,7 @@ public class GroundItem : MonoBehaviour, IInteractable
             Destroy(effect, 2f);
         }
 
+        // Efeito sonoro de coleta
         if (pickupSound != null && playerTransform != null)
         {
             AudioSource.PlayClipAtPoint(pickupSound, playerTransform.position);
@@ -343,10 +383,11 @@ public class GroundItem : MonoBehaviour, IInteractable
         }
     }
 
+    // Método público para definir o item quando spawnar dinamicamente
     public void SetItem(Item newItem)
     {
         item = newItem;
-        quantity = 1;
+        quantity = 1; // Default quantity
         UpdateVisual();
     }
 
@@ -369,6 +410,7 @@ public class GroundItem : MonoBehaviour, IInteractable
         }
     }
 
+    // Visualização da área de coleta no editor
     private void OnDrawGizmosSelected()
     {
         if (enableAreaCollection)

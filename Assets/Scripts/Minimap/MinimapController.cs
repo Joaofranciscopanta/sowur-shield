@@ -603,15 +603,15 @@ public class MinimapController : MonoBehaviour, IUIWindow
     // DEBUG & LOGGING
     // ============================================================================
 
-    #if UNITY_EDITOR
     private void LogDebug(string message)
     {
+        #if UNITY_EDITOR
         if (enableDebugLogs)
         {
             Debug.Log($"[MinimapController] {message}");
         }
+        #endif
     }
-    #endif
 }
 
 /// <summary>

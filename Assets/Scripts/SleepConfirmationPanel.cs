@@ -399,6 +399,7 @@ public class SleepConfirmationPanel : MonoBehaviour
     {
         if (sleepFadeOverlay == null || sleepFadeCanvasGroup == null)
         {
+            Debug.LogWarning("Sleep fade overlay not configured, skipping fade effect");
             onFadeComplete?.Invoke();
             return;
         }
@@ -439,7 +440,7 @@ public class SleepConfirmationPanel : MonoBehaviour
             elapsed += Time.unscaledDeltaTime;
             float progress = elapsed / sleepFadeDuration;
             float curveValue = sleepFadeCurve.Evaluate(progress);
-            
+
             sleepFadeCanvasGroup.alpha = Mathf.Lerp(0f, 1f, curveValue);
             yield return null;
         }
@@ -461,14 +462,14 @@ public class SleepConfirmationPanel : MonoBehaviour
             elapsed += Time.unscaledDeltaTime;
             float progress = elapsed / sleepFadeDuration;
             float curveValue = sleepFadeCurve.Evaluate(progress);
-            
+
             sleepFadeCanvasGroup.alpha = Mathf.Lerp(1f, 0f, curveValue);
             yield return null;
         }
-        
+
         sleepFadeCanvasGroup.alpha = 0f;
         sleepFadeOverlay.SetActive(false);
-        
+
         // ENSURE GAME STATE IS FULLY RESTORED
         ForceGameStateRestore();
 

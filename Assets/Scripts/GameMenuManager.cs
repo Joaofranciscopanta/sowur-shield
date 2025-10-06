@@ -114,6 +114,7 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
 
     public void OnWindowBlocked(string blockedBy)
     {
+        Debug.Log($"[GameMenuManager] Cannot open menu - blocked by {blockedBy}");
     }
 
     private void FindGameReferences()
@@ -137,6 +138,9 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
         {
             menuToggleAction.action.Enable();
             menuToggleAction.action.performed += OnMenuTogglePressed;
+        }
+        else
+        {
         }
     }
 
@@ -181,6 +185,7 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
 
     public void ToggleMenu()
     {
+
         if (isMenuOpen)
         {
             CloseMenu();
@@ -233,17 +238,13 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
         // Validate required components
         if (menuPanel == null)
         {
-            #if UNITY_EDITOR
             Debug.LogError("GameMenuManager: menuPanel is not assigned!");
-            #endif
             return;
         }
 
         if (menuUI == null)
         {
-            #if UNITY_EDITOR
             Debug.LogError("GameMenuManager: menuUI component not found!");
-            #endif
             return;
         }
 
@@ -281,6 +282,7 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
 
         // Update cursor state
         SetCursorState(true);
+
     }
 
     public void CloseWindow()
@@ -318,6 +320,7 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
 
         // Update cursor state
         SetCursorState(false);
+
     }
 
     // ============================================================================
@@ -335,6 +338,9 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
         {
             menuUI.ShowSettingsPanel();
         }
+        else
+        {
+        }
     }
 
     public void ShowSaveInfo()
@@ -342,6 +348,9 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
         if (menuUI != null)
         {
             menuUI.ShowSaveInfoPanel();
+        }
+        else
+        {
         }
     }
 
@@ -393,6 +402,7 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
 
     public void DoQuitToMainMenu()
     {
+
         // Optional: Auto-save before quitting (commented out by default to match current UX)
         // if (SaveManager.Instance != null)
         // {
@@ -436,12 +446,14 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
             // Fallback to direct scene loading
             SceneManager.LoadScene(mainMenuSceneName);
         }
+
     }
 
     public void DoQuitToDesktop()
     {
         // Restore time scale
         Time.timeScale = 1f;
+
 
         #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;

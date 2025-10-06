@@ -389,7 +389,11 @@ public static class CropDatabase
         {
             allCrops = Resources.LoadAll<CropData>("Crops");
 
+            if (allCrops.Length == 0)
+            {
+                Debug.LogWarning("CropDatabase: No crop data found in Resources/Crops folder");
             }
+        }
 
         return allCrops;
     }

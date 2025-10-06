@@ -756,7 +756,12 @@ public class MainMenuUI : MonoBehaviour
         
         if (continueButton != null)
         {
+#if DEMO_BUILD
+            // Hide Continue button in demo builds
+            continueButton.gameObject.SetActive(false);
+#else
             continueButton.interactable = hasSave;
+#endif
             
             // Visual feedback for disabled continue button
             var buttonText = continueButton.GetComponentInChildren<TextMeshProUGUI>();

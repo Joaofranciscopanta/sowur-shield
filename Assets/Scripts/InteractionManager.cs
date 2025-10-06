@@ -144,25 +144,31 @@ public class InteractionManager : MonoBehaviour
     private bool IsInteractableAvailable(IInteractable interactable)
     {
         if (interactable == null) return false;
-        
+
         // Check NPCDialogueInteractable
         if (interactable is NPCDialogueInteractable npc)
         {
             return npc.isActiveAndEnabled && !npc.IsDialogueActive();
         }
-        
+
         // Check SellBox
         if (interactable is SellBox sellBox)
         {
             return sellBox.isActiveAndEnabled;
         }
-        
+
+        // Check Animal
+        if (interactable is Animal animal)
+        {
+            return animal.isActiveAndEnabled && animal.CanInteract();
+        }
+
         // Check other interactable types
         if (interactable is MonoBehaviour mb)
         {
             return mb.isActiveAndEnabled;
         }
-        
+
         return true;
     }
     
@@ -172,12 +178,17 @@ public class InteractionManager : MonoBehaviour
         {
             return npc.GetInteractionRange();
         }
-        
+
         if (interactable is SellBox)
         {
             return 2.0f; // Default SellBox interaction range
         }
-        
+
+        if (interactable is Animal animal)
+        {
+            return animal.GetInteractionRange();
+        }
+
         // Default range for other interactables
         return 2.0f;
     }

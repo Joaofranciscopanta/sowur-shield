@@ -24,8 +24,8 @@ public class Inventory : MonoBehaviour, ISaveable
     public AudioClip dropSound;
     public AudioClip useSound;
 
-    // Inventory data
-    private ItemStack[] inventory;
+    // Inventory data - now using container system
+    private InventoryContainer container;
     private List<InventorySlot> slotUIs = new List<InventorySlot>();
 
     // Selection and interaction
@@ -37,15 +37,19 @@ public class Inventory : MonoBehaviour, ISaveable
     private ItemStack draggedStack;
     private InventorySlot draggedFromSlot;
 
+    // Hotbar auto-refill tracking
+    private Item[] lastHotbarItems; // Track last item in each hotbar slot for refill
+
     // Events
     public System.Action<int> OnHotbarSelectionChanged;
     public System.Action<ItemStack> OnItemUsed;
     public System.Action<ItemStack> OnItemAdded;
     public System.Action<ItemStack> OnItemRemoved;
+    public System.Action<int> OnInventorySizeChanged;
 
     // Properties
-    public ItemStack SelectedItem => selectedSlotIndex >= 0 && selectedSlotIndex < inventory.Length
-        ? inventory[selectedSlotIndex] : new ItemStack();
+    public ItemStack SelectedItem => selectedSlotIndex >= 0 && selectedSlotIndex < inventorySize
+        ? container.GetSlot(selectedSlotIndex) : new ItemStack();
     public bool IsInventoryOpen => isInventoryOpen;
     public int SelectedSlotIndex => selectedSlotIndex;
 
@@ -59,34 +63,7 @@ public class Inventory : MonoBehaviour, ISaveable
     // Legacy compatibility methods for GroundItem and SoilBlockInteractable
     public bool CanAdd(Item item, int quantity = 1)
     {
-        if (item == null || quantity <= 0) return false;
-
-        int remainingQuantity = quantity;
-
-        // Check if we can stack with existing items
-        if (item.isStackable)
-        {
-            for (int i = 0; i < inventorySize && remainingQuantity > 0; i++)
-            {
-                if (inventory[i].CanStack(item))
-                {
-                    int canAddToSlot = Mathf.Min(remainingQuantity, inventory[i].AvailableSpace);
-                    remainingQuantity -= canAddToSlot;
-                }
-            }
-        }
-
-        // Check empty slots
-        for (int i = 0; i < inventorySize && remainingQuantity > 0; i++)
-        {
-            if (inventory[i].IsEmpty)
-            {
-                int toAdd = Mathf.Min(remainingQuantity, item.maxStackSize);
-                remainingQuantity -= toAdd;
-            }
-        }
-
-        return remainingQuantity == 0;
+        return container.CanAdd(item, quantity);
     }
 
     public bool Add(Item item, int quantity = 1)
@@ -139,11 +116,19 @@ public class Inventory : MonoBehaviour, ISaveable
 
     private void InitializeInventory()
     {
-        inventory = new ItemStack[inventorySize];
-        for (int i = 0; i < inventorySize; i++)
-        {
-            inventory[i] = new ItemStack();
-        }
+        // Initialize ItemDatabase
+        var _ = ItemDatabase.Instance;
+
+        // Create container
+        container = new InventoryContainer(inventorySize, "PlayerInventory");
+
+        // Subscribe to container events
+        container.OnSlotChanged += (index, stack) => UpdateSlot(index);
+        container.OnItemAdded += (item, qty) => OnItemAdded?.Invoke(new ItemStack(item, qty));
+        container.OnItemRemoved += (item, qty) => OnItemRemoved?.Invoke(new ItemStack(item, qty));
+
+        // Initialize hotbar tracking
+        lastHotbarItems = new Item[hotbarSize];
     }
 
     private void SetupUI()
@@ -196,7 +181,7 @@ public class Inventory : MonoBehaviour, ISaveable
         {
             slotUIs.Add(slotUI);
             slotUI.SetSlotIndex(index); // Assign proper slot index
-            slotUI.SetItemStack(inventory[index]);
+            slotUI.SetItemStack(container.GetSlot(index));
 
             // Hide non-hotbar slots initially
             if (index >= hotbarSize)
@@ -265,104 +250,35 @@ public class Inventory : MonoBehaviour, ISaveable
 
     public bool AddItem(Item item, int quantity = 1)
     {
-        if (item == null || quantity <= 0) return false;
+        bool success = container.AddItem(item, quantity);
 
-        int remainingQuantity = quantity;
-
-        // First, try to stack with existing items
-        if (item.isStackable)
-        {
-            for (int i = 0; i < inventorySize && remainingQuantity > 0; i++)
-            {
-                if (inventory[i].CanStack(item))
-                {
-                    remainingQuantity = inventory[i].AddQuantity(remainingQuantity);
-                    UpdateSlot(i);
-                }
-            }
-        }
-
-        // Then, fill empty slots
-        for (int i = 0; i < inventorySize && remainingQuantity > 0; i++)
-        {
-            if (inventory[i].IsEmpty)
-            {
-                int toAdd = Mathf.Min(remainingQuantity, item.maxStackSize);
-                inventory[i] = new ItemStack(item, toAdd);
-                remainingQuantity -= toAdd;
-                UpdateSlot(i);
-            }
-        }
-
-        // Play sound and trigger event if any items were added
-        if (remainingQuantity < quantity)
+        // Play sound if any items were added
+        if (success || container.GetItemCount(item) > 0)
         {
             PlaySound(pickupSound);
-            OnItemAdded?.Invoke(new ItemStack(item, quantity - remainingQuantity));
         }
 
-        return remainingQuantity == 0;
+        return success;
     }
 
     public bool RemoveItem(Item item, int quantity = 1)
     {
-        if (item == null || quantity <= 0) return false;
-
-        int remainingToRemove = quantity;
-
-        for (int i = inventorySize - 1; i >= 0 && remainingToRemove > 0; i--)
-        {
-            if (!inventory[i].IsEmpty && inventory[i].item == item)
-            {
-                int toRemove = Mathf.Min(remainingToRemove, inventory[i].quantity);
-                inventory[i].quantity -= toRemove;
-                remainingToRemove -= toRemove;
-
-                if (inventory[i].quantity <= 0)
-                {
-                    inventory[i].Clear();
-                }
-
-                UpdateSlot(i);
-            }
-        }
-
-        bool success = remainingToRemove < quantity;
-        if (success)
-        {
-            OnItemRemoved?.Invoke(new ItemStack(item, quantity - remainingToRemove));
-        }
-
-        return remainingToRemove == 0;
+        return container.RemoveItem(item, quantity);
     }
 
     public int GetItemCount(Item item)
     {
-        if (item == null) return 0;
-
-        int count = 0;
-        for (int i = 0; i < inventorySize; i++)
-        {
-            if (!inventory[i].IsEmpty && inventory[i].item == item)
-            {
-                count += inventory[i].quantity;
-            }
-        }
-        return count;
+        return container.GetItemCount(item);
     }
 
     public bool HasItem(Item item, int quantity = 1)
     {
-        return GetItemCount(item) >= quantity;
+        return container.HasItem(item, quantity);
     }
 
     public void ClearInventory()
     {
-        for (int i = 0; i < inventorySize; i++)
-        {
-            inventory[i].Clear();
-            UpdateSlot(i);
-        }
+        container.ClearAll();
     }
 
     // ============================================================================
@@ -404,13 +320,20 @@ public class Inventory : MonoBehaviour, ISaveable
     {
         if (index >= 0 && index < slotUIs.Count && slotUIs[index] != null)
         {
-            slotUIs[index].SetItemStack(inventory[index]);
+            slotUIs[index].SetItemStack(container.GetSlot(index));
+
+            // Update hotbar tracking
+            if (index < hotbarSize)
+            {
+                ItemStack stack = container.GetSlot(index);
+                lastHotbarItems[index] = stack.IsEmpty ? null : stack.item;
+            }
         }
     }
 
     private void UpdateAllSlots()
     {
-        for (int i = 0; i < Mathf.Min(inventory.Length, slotUIs.Count); i++)
+        for (int i = 0; i < Mathf.Min(container.MaxSlots, slotUIs.Count); i++)
         {
             UpdateSlot(i);
         }
@@ -430,7 +353,7 @@ public class Inventory : MonoBehaviour, ISaveable
 
         // Get the dragged item instead of the (now empty) slot
         ItemStack fromStack = fromSlot.GetDraggedItem();
-        ItemStack toStack = inventory[toIndex];
+        ItemStack toStack = container.GetSlot(toIndex);
 
         if (fromStack == null || fromStack.IsEmpty)
         {
@@ -441,7 +364,7 @@ public class Inventory : MonoBehaviour, ISaveable
         if (toStack.IsEmpty)
         {
             // Move entire stack to empty slot
-            inventory[toIndex] = fromStack.Clone();
+            container.SetSlot(toIndex, fromStack.Clone());
             // Don't clear fromIndex - it's already cleared by the drag system
 
             // Consume the dragged item
@@ -450,7 +373,10 @@ public class Inventory : MonoBehaviour, ISaveable
         else if (toStack.CanStack(fromStack.item))
         {
             // Stack compatible items
-            int leftover = toStack.AddQuantity(fromStack.quantity);
+            ItemStack tempStack = toStack.Clone();
+            int leftover = tempStack.AddQuantity(fromStack.quantity);
+            container.SetSlot(toIndex, tempStack);
+
             if (leftover == 0)
             {
                 // All items were stacked - consume the dragged item
@@ -460,19 +386,23 @@ public class Inventory : MonoBehaviour, ISaveable
             {
                 // Some items left over - restore leftover to fromSlot
                 ItemStack leftoverStack = new ItemStack(fromStack.item, leftover);
-                inventory[fromIndex] = leftoverStack; // Put leftover in inventory array
+                container.SetSlot(fromIndex, leftoverStack);
                 fromSlot.MarkDragSuccessful(); // Mark as successful (partial consumption)
             }
         }
         else
         {
             // Swap stacks - put toStack in fromSlot, fromStack in toSlot
-            inventory[fromIndex] = toStack.Clone();
-            inventory[toIndex] = fromStack.Clone();
+            container.SetSlot(fromIndex, toStack.Clone());
+            container.SetSlot(toIndex, fromStack.Clone());
 
             // Consume the dragged item since swap succeeded
             fromSlot.ConsumeDraggedItem();
         }
+
+        // Check for hotbar auto-refill after drop
+        CheckHotbarAutoRefill(fromIndex);
+        CheckHotbarAutoRefill(toIndex);
 
         UpdateSlot(fromIndex);
         UpdateSlot(toIndex);
@@ -484,26 +414,20 @@ public class Inventory : MonoBehaviour, ISaveable
         int slotIndex = slotUIs.IndexOf(slotUI);
         if (slotIndex < 0 || slotIndex >= inventorySize) return;
 
-        ItemStack stack = inventory[slotIndex];
+        ItemStack stack = container.GetSlot(slotIndex);
         if (stack.IsEmpty || stack.quantity <= 1) return;
 
         // Find empty slot for split
-        int emptySlotIndex = -1;
-        for (int i = 0; i < inventorySize; i++)
-        {
-            if (inventory[i].IsEmpty)
-            {
-                emptySlotIndex = i;
-                break;
-            }
-        }
-
+        int emptySlotIndex = container.GetFirstEmptySlotIndex();
         if (emptySlotIndex == -1) return; // No empty slot available
 
         // Split the stack
         int splitAmount = stack.quantity / 2;
-        inventory[emptySlotIndex] = new ItemStack(stack.item, splitAmount);
-        inventory[slotIndex].quantity -= splitAmount;
+        ItemStack originalStack = stack.Clone();
+        originalStack.quantity -= splitAmount;
+
+        container.SetSlot(slotIndex, originalStack);
+        container.SetSlot(emptySlotIndex, new ItemStack(stack.item, splitAmount));
 
         UpdateSlot(slotIndex);
         UpdateSlot(emptySlotIndex);
@@ -526,22 +450,31 @@ public class Inventory : MonoBehaviour, ISaveable
         int slotIndex = slotUIs.IndexOf(slotUI);
         if (slotIndex < 0 || slotIndex >= inventorySize) return;
 
-        ItemStack stack = inventory[slotIndex];
+        ItemStack stack = container.GetSlot(slotIndex);
         if (stack.IsEmpty || !stack.item.isConsumable) return;
 
+        Item usedItem = stack.item;
+
         // Use the item
-        UseItem(stack.item);
+        UseItem(usedItem);
 
         // Remove one from stack
-        stack.quantity--;
-        if (stack.quantity <= 0)
+        ItemStack updatedStack = stack.Clone();
+        updatedStack.quantity--;
+        if (updatedStack.quantity <= 0)
         {
-            stack.Clear();
+            updatedStack.Clear();
+            // Check for auto-refill when hotbar slot empties
+            if (slotIndex < hotbarSize)
+            {
+                CheckHotbarAutoRefill(slotIndex);
+            }
         }
 
+        container.SetSlot(slotIndex, updatedStack);
         UpdateSlot(slotIndex);
         PlaySound(useSound);
-        OnItemUsed?.Invoke(new ItemStack(stack.item, 1));
+        OnItemUsed?.Invoke(new ItemStack(usedItem, 1));
     }
 
     private void UseItem(Item item)
@@ -573,8 +506,8 @@ public class Inventory : MonoBehaviour, ISaveable
             return new ItemStack();
         }
 
-        ItemStack removedStack = inventory[slotIndex].Clone();
-        inventory[slotIndex].Clear();
+        ItemStack removedStack = container.GetSlot(slotIndex).Clone();
+        container.SetSlot(slotIndex, new ItemStack());
         UpdateSlot(slotIndex); // Update the visual slot to show it's empty
         return removedStack;
     }
@@ -585,13 +518,55 @@ public class Inventory : MonoBehaviour, ISaveable
         int slotIndex = slotUIs.IndexOf(slotUI);
         if (slotIndex < 0 || slotIndex >= inventorySize)
         {
-
             return;
         }
 
-        inventory[slotIndex] = itemStack.Clone();
+        container.SetSlot(slotIndex, itemStack.Clone());
         UpdateSlot(slotIndex);
+    }
 
+    // ============================================================================
+    // HOTBAR AUTO-REFILL SYSTEM
+    // ============================================================================
+
+    /// <summary>
+    /// Check if a hotbar slot needs auto-refill and perform it if needed
+    /// Called when a hotbar slot empties (from consumption or drag/drop)
+    /// </summary>
+    private void CheckHotbarAutoRefill(int slotIndex)
+    {
+        // Only refill hotbar slots
+        if (slotIndex < 0 || slotIndex >= hotbarSize) return;
+
+        ItemStack currentStack = container.GetSlot(slotIndex);
+
+        // Only refill if slot is now empty
+        if (!currentStack.IsEmpty) return;
+
+        // Get the last item that was in this slot
+        Item refillItem = lastHotbarItems[slotIndex];
+        if (refillItem == null) return;
+
+        // Search main inventory (slots hotbarSize to end) for matching item
+        for (int i = hotbarSize; i < container.MaxSlots; i++)
+        {
+            ItemStack stack = container.GetSlot(i);
+            if (!stack.IsEmpty && stack.item == refillItem)
+            {
+                // Move entire stack to hotbar
+                container.SetSlot(slotIndex, stack.Clone());
+                container.SetSlot(i, new ItemStack());
+
+                UpdateSlot(slotIndex);
+                UpdateSlot(i);
+
+                Debug.Log($"Hotbar Auto-Refill: Moved {stack.item.itemName} x{stack.quantity} from slot {i} to hotbar slot {slotIndex}");
+                return;
+            }
+        }
+
+        // No matching items found - clear the tracking
+        lastHotbarItems[slotIndex] = null;
     }
 
     // ============================================================================
@@ -652,37 +627,43 @@ public class Inventory : MonoBehaviour, ISaveable
 
     public void SortInventory()
     {
-        // Create a list of non-empty stacks with their indices
-        List<(ItemStack stack, int originalIndex)> nonEmptyStacks = new List<(ItemStack, int)>();
-
-        for (int i = 0; i < inventorySize; i++)
-        {
-            if (!inventory[i].IsEmpty)
-            {
-                nonEmptyStacks.Add((inventory[i].Clone(), i));
-            }
-        }
+        // Get all non-empty stacks
+        List<ItemStack> allStacks = container.GetAllItems();
 
         // Sort by item type, then by name
-        nonEmptyStacks.Sort((a, b) =>
+        allStacks.Sort((a, b) =>
         {
-            int typeCompare = a.stack.item.itemType.CompareTo(b.stack.item.itemType);
+            int typeCompare = a.item.itemType.CompareTo(b.item.itemType);
             if (typeCompare != 0) return typeCompare;
-            return string.Compare(a.stack.item.itemName, b.stack.item.itemName);
+            return string.Compare(a.item.itemName, b.item.itemName);
         });
 
-        // Clear inventory
-        for (int i = 0; i < inventorySize; i++)
+        // Clear main inventory (keep hotbar untouched)
+        for (int i = hotbarSize; i < inventorySize; i++)
         {
-            inventory[i].Clear();
+            container.SetSlot(i, new ItemStack());
         }
 
-        // Place sorted items back, starting from hotbar end
+        // Place sorted items back, starting after hotbar
         int currentIndex = hotbarSize;
-        foreach (var (stack, _) in nonEmptyStacks)
+        foreach (ItemStack stack in allStacks)
         {
+            // Skip items that are already in hotbar
+            bool inHotbar = false;
+            for (int h = 0; h < hotbarSize; h++)
+            {
+                ItemStack hotbarStack = container.GetSlot(h);
+                if (!hotbarStack.IsEmpty && hotbarStack.item == stack.item && hotbarStack.quantity == stack.quantity)
+                {
+                    inHotbar = true;
+                    break;
+                }
+            }
+
+            if (inHotbar) continue;
+
             if (currentIndex >= inventorySize) break;
-            inventory[currentIndex] = stack;
+            container.SetSlot(currentIndex, stack);
             currentIndex++;
         }
 
@@ -691,28 +672,12 @@ public class Inventory : MonoBehaviour, ISaveable
 
     public List<ItemStack> GetAllItems()
     {
-        List<ItemStack> items = new List<ItemStack>();
-        for (int i = 0; i < inventorySize; i++)
-        {
-            if (!inventory[i].IsEmpty)
-            {
-                items.Add(inventory[i].Clone());
-            }
-        }
-        return items;
+        return container.GetAllItems();
     }
 
     public List<ItemStack> GetItemsByType(ItemType itemType)
     {
-        List<ItemStack> items = new List<ItemStack>();
-        for (int i = 0; i < inventorySize; i++)
-        {
-            if (!inventory[i].IsEmpty && inventory[i].item.itemType == itemType)
-            {
-                items.Add(inventory[i].Clone());
-            }
-        }
-        return items;
+        return container.GetItemsByType(itemType);
     }
 
     private void PlaySound(AudioClip clip)
@@ -756,7 +721,7 @@ public class Inventory : MonoBehaviour, ISaveable
 
         for (int i = 0; i < inventorySize; i++)
         {
-            data.items[i] = new InventoryData.ItemStackData(inventory[i]);
+            data.items[i] = new InventoryData.ItemStackData(container.GetSlot(i));
         }
 
         return data;
@@ -766,28 +731,26 @@ public class Inventory : MonoBehaviour, ISaveable
     {
         if (data == null || data.items == null) return;
 
-        // Load items
+        // Load items using ItemDatabase
         for (int i = 0; i < Mathf.Min(data.items.Length, inventorySize); i++)
         {
             var itemData = data.items[i];
             if (string.IsNullOrEmpty(itemData.itemName))
             {
-                inventory[i].Clear();
+                container.SetSlot(i, new ItemStack());
             }
             else
             {
-                // Find item by name (you might want to use a more robust system)
-                Item item = Resources.LoadAll<Item>("Items")
-                    .FirstOrDefault(x => x.itemName == itemData.itemName);
+                // Use ItemDatabase for fast lookup
+                Item item = ItemDatabase.GetItem(itemData.itemName);
 
                 if (item != null)
                 {
-                    inventory[i] = new ItemStack(item, itemData.quantity);
+                    container.SetSlot(i, new ItemStack(item, itemData.quantity));
                 }
                 else
                 {
-                    inventory[i].Clear();
-
+                    container.SetSlot(i, new ItemStack());
                 }
             }
         }
@@ -805,41 +768,33 @@ public class Inventory : MonoBehaviour, ISaveable
 
     public void SaveData(GameData gameData)
     {
-
-
         gameData.inventoryData.selectedSlotIndex = selectedSlotIndex;
         gameData.inventoryData.inventorySize = inventorySize;
         gameData.inventoryData.inventoryItems.Clear();
 
-        // Save all inventory items
+        // Save all inventory items using container
         int itemCount = 0;
-        string itemList = "";
         for (int i = 0; i < inventorySize; i++)
         {
-            gameData.inventoryData.inventoryItems.Add(new InventoryGameData.ItemStackData(inventory[i]));
-            if (!inventory[i].IsEmpty)
+            ItemStack stack = container.GetSlot(i);
+            gameData.inventoryData.inventoryItems.Add(new InventoryGameData.ItemStackData(stack));
+            if (!stack.IsEmpty)
             {
                 itemCount++;
-                itemList += $"[{i}:{inventory[i].item.itemName}x{inventory[i].quantity}] ";
             }
         }
 
-
+        Debug.Log($"Inventory saved: {itemCount} items");
     }
 
     public void LoadData(GameData gameData)
     {
-
         selectedSlotIndex = gameData.inventoryData.selectedSlotIndex;
 
-
         // Clear current inventory
-        for (int i = 0; i < inventorySize; i++)
-        {
-            inventory[i].Clear();
-        }
+        container.ClearAll();
 
-        // Load items from save data
+        // Load items from save data using ItemDatabase
         int foundItems = 0;
         for (int i = 0; i < Mathf.Min(gameData.inventoryData.inventoryItems.Count, inventorySize); i++)
         {
@@ -849,23 +804,21 @@ public class Inventory : MonoBehaviour, ISaveable
             {
                 foundItems++;
 
-                // Find item by name - search all Resources subfolders
-                Item item = Resources.LoadAll<Item>("")
-                    .FirstOrDefault(x => x.itemName == itemData.itemName);
+                // Use ItemDatabase for fast lookup
+                Item item = ItemDatabase.GetItem(itemData.itemName);
 
                 if (item != null)
                 {
-                    inventory[i] = new ItemStack(item, itemData.quantity);
+                    container.SetSlot(i, new ItemStack(item, itemData.quantity));
                 }
                 else
                 {
-
-                    // Debug: List all available items
-                    var allItems = Resources.LoadAll<Item>("");
+                    Debug.LogWarning($"Item not found in database: {itemData.itemName}");
                 }
             }
         }
 
+        Debug.Log($"Inventory loaded: {foundItems} items");
 
         // IMPORTANT: Ensure inventory is closed after loading
         isInventoryOpen = false;
@@ -880,8 +833,249 @@ public class Inventory : MonoBehaviour, ISaveable
         // Update UI and selection
         UpdateAllSlots();
         SelectSlot(Mathf.Clamp(selectedSlotIndex, 0, hotbarSize - 1));
+    }
 
-        int loadedItems = inventory.Count(item => !item.IsEmpty);
+    // ============================================================================
+    // SORTING & FILTERING (Phase 2)
+    // ============================================================================
 
+    /// <summary>
+    /// Sort inventory using specified sort mode
+    /// Sorts only the main inventory (preserves hotbar)
+    /// </summary>
+    public void SortInventoryBy(InventorySorting.SortMode mode, InventorySorting.SortDirection direction = InventorySorting.SortDirection.Ascending)
+    {
+        // Get all items from main inventory (skip hotbar)
+        List<ItemStack> mainInventoryItems = new List<ItemStack>();
+        for (int i = hotbarSize; i < inventorySize; i++)
+        {
+            ItemStack stack = container.GetSlot(i);
+            if (!stack.IsEmpty)
+            {
+                mainInventoryItems.Add(stack.Clone());
+            }
+        }
+
+        // Sort the items
+        InventorySorting.Sort(mainInventoryItems, mode, direction);
+
+        // Clear main inventory
+        for (int i = hotbarSize; i < inventorySize; i++)
+        {
+            container.SetSlot(i, new ItemStack());
+        }
+
+        // Place sorted items back
+        int currentIndex = hotbarSize;
+        foreach (ItemStack stack in mainInventoryItems)
+        {
+            if (currentIndex >= inventorySize) break;
+            container.SetSlot(currentIndex, stack);
+            currentIndex++;
+        }
+
+        UpdateAllSlots();
+        Debug.Log($"Inventory sorted by {mode} ({direction})");
+    }
+
+    /// <summary>
+    /// Sort with multiple criteria
+    /// </summary>
+    public void SortInventoryMultiple(params (InventorySorting.SortMode mode, InventorySorting.SortDirection direction)[] criteria)
+    {
+        List<ItemStack> mainInventoryItems = new List<ItemStack>();
+        for (int i = hotbarSize; i < inventorySize; i++)
+        {
+            ItemStack stack = container.GetSlot(i);
+            if (!stack.IsEmpty)
+            {
+                mainInventoryItems.Add(stack.Clone());
+            }
+        }
+
+        InventorySorting.SortMultiple(mainInventoryItems, criteria);
+
+        for (int i = hotbarSize; i < inventorySize; i++)
+        {
+            container.SetSlot(i, new ItemStack());
+        }
+
+        int currentIndex = hotbarSize;
+        foreach (ItemStack stack in mainInventoryItems)
+        {
+            if (currentIndex >= inventorySize) break;
+            container.SetSlot(currentIndex, stack);
+            currentIndex++;
+        }
+
+        UpdateAllSlots();
+    }
+
+    /// <summary>
+    /// Get filtered view of inventory items
+    /// </summary>
+    public List<ItemStack> GetFilteredItems(InventoryFiltering.IInventoryFilter filter)
+    {
+        List<ItemStack> allItems = container.GetAllItems();
+        return InventoryFiltering.Filter(allItems, filter);
+    }
+
+    /// <summary>
+    /// Get items by tag (convenience method)
+    /// </summary>
+    public List<ItemStack> GetItemsByTagFiltered(string tag)
+    {
+        List<ItemStack> allItems = container.GetAllItems();
+        return InventoryFiltering.FilterByTag(allItems, tag);
+    }
+
+    /// <summary>
+    /// Search items by name
+    /// </summary>
+    public List<ItemStack> SearchItems(string searchTerm)
+    {
+        List<ItemStack> allItems = container.GetAllItems();
+        return InventoryFiltering.SearchByName(allItems, searchTerm);
+    }
+
+    // ============================================================================
+    // INVENTORY UPGRADES (Phase 2)
+    // ============================================================================
+
+    /// <summary>
+    /// Upgrade inventory size (adds more slots)
+    /// </summary>
+    public bool UpgradeInventorySize(int additionalSlots)
+    {
+        if (additionalSlots <= 0)
+        {
+            Debug.LogWarning("Cannot upgrade inventory: additionalSlots must be positive");
+            return false;
+        }
+
+        int oldSize = inventorySize;
+        int newSize = oldSize + additionalSlots;
+
+        // Update the container size
+        container.SetMaxSlots(newSize);
+        inventorySize = newSize;
+
+        // Create new UI slots for the additional space
+        if (slotParent != null && slotPrefab != null)
+        {
+            for (int i = oldSize; i < newSize; i++)
+            {
+                CreateSlotUI(i);
+            }
+        }
+
+        OnInventorySizeChanged?.Invoke(newSize);
+        Debug.Log($"Inventory upgraded: {oldSize} -> {newSize} slots (+{additionalSlots})");
+
+        return true;
+    }
+
+    /// <summary>
+    /// Set inventory size to a specific value
+    /// Warning: Shrinking inventory may lose items!
+    /// </summary>
+    public bool SetInventorySize(int newSize)
+    {
+        if (newSize < hotbarSize)
+        {
+            Debug.LogError($"Cannot set inventory size below hotbar size ({hotbarSize})");
+            return false;
+        }
+
+        int oldSize = inventorySize;
+        if (newSize == oldSize) return true;
+
+        // Warn if shrinking
+        if (newSize < oldSize)
+        {
+            int itemsInDangerZone = 0;
+            for (int i = newSize; i < oldSize; i++)
+            {
+                if (!container.GetSlot(i).IsEmpty)
+                    itemsInDangerZone++;
+            }
+
+            if (itemsInDangerZone > 0)
+            {
+                Debug.LogWarning($"Shrinking inventory will lose {itemsInDangerZone} items!");
+            }
+        }
+
+        // Update container
+        container.SetMaxSlots(newSize);
+        inventorySize = newSize;
+
+        // Handle UI slots
+        if (newSize > oldSize)
+        {
+            // Create new slots
+            if (slotParent != null && slotPrefab != null)
+            {
+                for (int i = oldSize; i < newSize; i++)
+                {
+                    CreateSlotUI(i);
+                }
+            }
+        }
+        else if (newSize < oldSize)
+        {
+            // Remove excess slots
+            for (int i = newSize; i < slotUIs.Count; i++)
+            {
+                if (slotUIs[i] != null && slotUIs[i].gameObject != null)
+                {
+                    Destroy(slotUIs[i].gameObject);
+                }
+            }
+            slotUIs.RemoveRange(newSize, slotUIs.Count - newSize);
+        }
+
+        OnInventorySizeChanged?.Invoke(newSize);
+        UpdateAllSlots();
+
+        return true;
+    }
+
+    /// <summary>
+    /// Get current inventory capacity
+    /// </summary>
+    public int GetInventoryCapacity()
+    {
+        return inventorySize;
+    }
+
+    /// <summary>
+    /// Get number of used slots
+    /// </summary>
+    public int GetUsedSlotCount()
+    {
+        int count = 0;
+        for (int i = 0; i < inventorySize; i++)
+        {
+            if (!container.GetSlot(i).IsEmpty)
+                count++;
+        }
+        return count;
+    }
+
+    /// <summary>
+    /// Get number of empty slots
+    /// </summary>
+    public int GetEmptySlotCount()
+    {
+        return inventorySize - GetUsedSlotCount();
+    }
+
+    /// <summary>
+    /// Check if inventory is full
+    /// </summary>
+    public bool IsFull()
+    {
+        return !container.HasEmptySlot();
     }
 }

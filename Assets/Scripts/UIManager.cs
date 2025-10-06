@@ -308,11 +308,9 @@ public class UIManager : MonoBehaviour
 
     private void LogDebug(string message)
     {
-        #if UNITY_EDITOR
         if (enableDebugLogs)
         {
             Debug.Log($"[UIManager] {message}");
         }
-        #endif
     }
 }

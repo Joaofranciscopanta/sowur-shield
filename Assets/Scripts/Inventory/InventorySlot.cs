@@ -10,7 +10,8 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     IPointerDownHandler, IPointerUpHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
     // Static flag to track if any slot is being dragged
-    public static bool IsAnySlotDragging { get; private set; }
+    public static bool IsAnySlotDragging { get; set; }
+
     [Header("UI References")]
     public Image itemIcon;
     public TextMeshProUGUI quantityText;
@@ -36,9 +37,9 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public Color rarityGlowLegendary = new Color(1f, 0.5f, 0f);
 
     [Header("SellBox Features")]
-    public Image sellableIndicator;      // Shows coin icon for sellable items
-    public TextMeshProUGUI valueText;    // Shows individual item value
-    public Image rejectHighlight;        // Red highlight for non-sellable items
+    public Image sellableIndicator;
+    public TextMeshProUGUI valueText;
+    public Image rejectHighlight;
     public Color sellableColor = Color.green;
     public Color nonSellableColor = Color.red;
 
@@ -52,7 +53,6 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     // State
     private bool isSelected = false;
     private bool isHovered = false;
-    private bool isDragging = false;
 
     // References
     private Inventory inventoryManager;
@@ -64,23 +64,13 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private Image selectionBorder;
     private TextMeshProUGUI slotNumberText;
 
-    // SellBox state
-    public bool isSellBoxMode = false;
-    private float currentSellMultiplier = 0.8f;
-
-    // Animation
-    private Coroutine currentScaleAnimation;
-    private Vector3 targetScale = Vector3.one;
-
-    // Drag system
-    private GameObject dragPreview;
-    private Vector3 originalPosition;
-    public bool wasDroppedOnSlot = false;
-    private ItemStack draggedItemStack = new ItemStack(); // Store the item being dragged
-    private bool dragWasSuccessful = false; // Track if drag was successful
-
     // Slot properties
     public int slotIndex = -1;
+
+    // Component references (new architecture)
+    private SlotVisualController visualController;
+    private SlotDragHandler dragHandler;
+    private SlotSellBoxAdapter sellBoxAdapter;
 
     // ============================================================================
     // PROPERTIES
@@ -89,6 +79,12 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public ItemStack ItemStack => itemStack;
     public bool IsEmpty => itemStack.IsEmpty;
     public bool IsSelected => isSelected;
+    public bool isSellBoxMode => sellBoxAdapter != null && sellBoxAdapter.IsSellBoxMode;
+    public bool wasDroppedOnSlot
+    {
+        get => dragHandler != null && dragHandler.wasDroppedOnSlot;
+        set { if (dragHandler != null) dragHandler.wasDroppedOnSlot = value; }
+    }
 
     // ============================================================================
     // UNITY LIFECYCLE
@@ -98,7 +94,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         InitializeReferences();
         SetupVisualComponents();
-        targetScale = Vector3.one;
+        InitializeComponentArchitecture();
     }
 
     private void Start()
@@ -108,13 +104,13 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private void Update()
     {
-        // Continuously check hover state to prevent stuck states
         CheckHoverState();
     }
 
     private void OnDestroy()
     {
-        CleanupAnimations();
+        if (visualController != null)
+            visualController.CleanupAnimations();
     }
 
     private void OnDisable()
@@ -144,6 +140,26 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         {
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
         }
+    }
+
+    private void InitializeComponentArchitecture()
+    {
+        // Add visual controller component
+        visualController = gameObject.AddComponent<SlotVisualController>();
+        visualController.Initialize(
+            itemIcon, quantityText, backgroundImage, selectionBorder, rarityGlow, slotNumberText,
+            normalColor, selectedColor, emptySlotAlpha,
+            hoverScale, clickScale, animationSpeed, scaleCurve,
+            rarityGlowUncommon, rarityGlowRare, rarityGlowEpic, rarityGlowLegendary
+        );
+
+        // Add drag handler component
+        dragHandler = gameObject.AddComponent<SlotDragHandler>();
+        dragHandler.Initialize(canvas, canvasGroup, inventoryManager, scaleCurve);
+
+        // Add SellBox adapter component
+        sellBoxAdapter = gameObject.AddComponent<SlotSellBoxAdapter>();
+        sellBoxAdapter.Initialize(sellableIndicator, valueText, rejectHighlight, selectionBorder);
     }
 
     private void SetupVisualComponents()
@@ -181,7 +197,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
         backgroundImage.color = normalColor;
         backgroundImage.type = Image.Type.Sliced;
-        backgroundImage.raycastTarget = true; // Only the background should receive events
+        backgroundImage.raycastTarget = true;
     }
 
     private void SetupSelectionBorder()
@@ -372,8 +388,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
         if (sellableIndicator != null)
         {
-            // You can set a coin sprite here if you have one
-            sellableIndicator.color = new Color(1f, 0.84f, 0f, 0.8f); // Gold color
+            sellableIndicator.color = new Color(1f, 0.84f, 0f, 0.8f);
             sellableIndicator.raycastTarget = false;
             sellableIndicator.gameObject.SetActive(false);
         }
@@ -408,7 +423,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         {
             valueText.fontSize = 8;
             valueText.fontStyle = FontStyles.Bold;
-            valueText.color = new Color(1f, 0.84f, 0f); // Gold color
+            valueText.color = new Color(1f, 0.84f, 0f);
             valueText.alignment = TextAlignmentOptions.BottomLeft;
             valueText.raycastTarget = false;
             valueText.text = "";
@@ -442,7 +457,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
         if (rejectHighlight != null)
         {
-            rejectHighlight.color = new Color(1f, 0f, 0f, 0.3f); // Semi-transparent red
+            rejectHighlight.color = new Color(1f, 0f, 0f, 0.3f);
             rejectHighlight.raycastTarget = false;
             rejectHighlight.gameObject.SetActive(false);
         }
@@ -473,13 +488,9 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             itemStack.quantity = stack.quantity;
         }
 
-        if (wasEmpty != willBeEmpty)
+        if (wasEmpty != willBeEmpty && gameObject.activeInHierarchy && enabled && visualController != null)
         {
-            // Only start animation if GameObject is active and enabled
-            if (gameObject.activeInHierarchy && enabled)
-            {
-                StartCoroutine(ItemChangeAnimation());
-            }
+            visualController.StartItemChangeAnimation();
         }
 
         UpdateVisuals();
@@ -497,14 +508,9 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
         isSelected = selected;
 
-        if (selectionBorder != null)
+        if (visualController != null)
         {
-            selectionBorder.gameObject.SetActive(selected);
-
-            if (selected)
-            {
-                StartCoroutine(PulseBorder());
-            }
+            visualController.SetSelected(selected);
         }
 
         UpdateVisuals();
@@ -545,29 +551,25 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         return removed;
     }
 
-    // Method to get the currently dragged item (for SellBox and other systems)
     public ItemStack GetDraggedItem()
     {
-        return draggedItemStack;
+        return dragHandler != null ? dragHandler.DraggedItemStack : new ItemStack();
     }
 
-    // Method to permanently consume the dragged item (called when drop succeeds)
     public void ConsumeDraggedItem()
     {
-        if (!draggedItemStack.IsEmpty)
+        if (dragHandler != null)
         {
-
-            dragWasSuccessful = true; // Mark drag as successful
-            // Don't clear draggedItemStack here - let OnEndDrag handle it
+            dragHandler.ConsumeDraggedItem();
         }
     }
 
-    // Method to mark drag as successful (for partial consumption cases)
     public void MarkDragSuccessful()
     {
-        dragWasSuccessful = true;
-        // Don't clear draggedItemStack here - let OnEndDrag handle it
-
+        if (dragHandler != null)
+        {
+            dragHandler.MarkDragSuccessful();
+        }
     }
 
     // ============================================================================
@@ -576,98 +578,34 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void EnableSellBoxMode(float sellMultiplier = 0.8f)
     {
-        isSellBoxMode = true;
-        currentSellMultiplier = sellMultiplier;
-        UpdateSellBoxDisplay();
+        if (sellBoxAdapter != null)
+        {
+            sellBoxAdapter.EnableSellBoxMode(sellMultiplier);
+            UpdateSellBoxDisplay();
+        }
     }
 
     public void DisableSellBoxMode()
     {
-        isSellBoxMode = false;
-
-        // Hide SellBox-specific UI elements
-        if (sellableIndicator != null)
-            sellableIndicator.gameObject.SetActive(false);
-        if (valueText != null)
-            valueText.text = "";
-        if (rejectHighlight != null)
-            rejectHighlight.gameObject.SetActive(false);
+        if (sellBoxAdapter != null)
+        {
+            sellBoxAdapter.DisableSellBoxMode();
+        }
     }
 
     public void UpdateSellBoxDisplay()
     {
-        if (!isSellBoxMode) return;
-
-        if (itemStack.IsEmpty)
+        if (sellBoxAdapter != null)
         {
-            if (sellableIndicator != null) sellableIndicator.gameObject.SetActive(false);
-            if (valueText != null) valueText.text = "";
-            if (rejectHighlight != null) rejectHighlight.gameObject.SetActive(false);
-            return;
-        }
-
-        bool canSell = itemStack.item.canBeSold;
-
-        // Show/hide sellable indicator
-        if (sellableIndicator != null)
-            sellableIndicator.gameObject.SetActive(canSell);
-
-        // Show item value
-        if (valueText != null)
-        {
-            if (canSell)
-            {
-                int value = Mathf.RoundToInt(itemStack.item.baseValue * currentSellMultiplier * itemStack.quantity);
-                valueText.text = $"{value}c";
-            }
-            else
-            {
-                valueText.text = "";
-            }
-        }
-
-        // Show rejection highlight for non-sellable items (briefly)
-        if (!canSell && rejectHighlight != null)
-        {
-            StartCoroutine(ShowRejectFeedback());
-        }
-        else if (rejectHighlight != null)
-        {
-            rejectHighlight.gameObject.SetActive(false);
+            sellBoxAdapter.UpdateSellBoxDisplay(itemStack, isSelected);
         }
     }
 
     public void ShowAcceptFeedback()
     {
-        if (selectionBorder != null)
+        if (sellBoxAdapter != null)
         {
-            StartCoroutine(ShowAcceptFeedbackCoroutine());
-        }
-    }
-
-    private IEnumerator ShowRejectFeedback()
-    {
-        if (rejectHighlight != null)
-        {
-            rejectHighlight.gameObject.SetActive(true);
-            yield return new WaitForSeconds(0.8f);
-            rejectHighlight.gameObject.SetActive(false);
-        }
-    }
-
-    private IEnumerator ShowAcceptFeedbackCoroutine()
-    {
-        if (selectionBorder != null)
-        {
-            Color originalColor = selectionBorder.color;
-            selectionBorder.color = sellableColor;
-            selectionBorder.gameObject.SetActive(true);
-
-            yield return new WaitForSeconds(0.3f);
-
-            selectionBorder.color = originalColor;
-            if (!isSelected)
-                selectionBorder.gameObject.SetActive(false);
+            sellBoxAdapter.ShowAcceptFeedback(isSelected);
         }
     }
 
@@ -677,7 +615,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private void CheckHoverState()
     {
-        if (canvas == null || isDragging) return;
+        if (canvas == null || (dragHandler != null && dragHandler.IsDragging)) return;
 
         Vector2 mousePos = Mouse.current?.position.ReadValue() ?? Vector2.zero;
         bool mouseOverSlot = RectTransformUtility.RectangleContainsScreenPoint(
@@ -698,11 +636,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private void ForceEnterHover()
     {
-        if (isHovered || isDragging) return;
-
-        //isHovered = true;
-        //SetTargetScale(Vector3.one * hoverScale);
-        //UpdateVisuals();
+        if (isHovered || (dragHandler != null && dragHandler.IsDragging)) return;
 
         ShowTooltip();
     }
@@ -712,7 +646,10 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if (!isHovered) return;
 
         isHovered = false;
-        SetTargetScale(Vector3.one);
+        if (visualController != null)
+        {
+            visualController.SetTargetScale(Vector3.one);
+        }
         UpdateVisuals();
 
         HideTooltip();
@@ -742,295 +679,21 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     private void UpdateVisuals()
     {
-        UpdateItemIcon();
-        UpdateQuantityText();
-        //UpdateBackgroundColor();
-        UpdateRarityGlow();
+        if (visualController != null)
+        {
+            visualController.UpdateVisuals(itemStack, isSelected);
+        }
         UpdateSellBoxDisplay();
-    }
-
-    private void UpdateItemIcon()
-    {
-        if (itemIcon == null) return;
-
-        if (!IsEmpty && itemStack.item != null && itemStack.item.icon != null)
-        {
-            itemIcon.sprite = itemStack.item.icon;
-            itemIcon.color = Color.white;
-            itemIcon.enabled = true;
-        }
-        else
-        {
-            itemIcon.sprite = null;
-            itemIcon.enabled = false;
-        }
-    }
-
-    private void UpdateQuantityText()
-    {
-        if (quantityText == null) return;
-
-        if (!IsEmpty && itemStack.quantity > 1)
-        {
-            quantityText.text = FormatQuantity(itemStack.quantity);
-            quantityText.enabled = true;
-        }
-        else
-        {
-            quantityText.enabled = false;
-        }
-    }
-
-    private void UpdateRarityGlow()
-    {
-        if (rarityGlow == null) return;
-
-        if (!IsEmpty && itemStack.item != null)
-        {
-            Color glowColor = GetRarityGlowColor(itemStack.item.rarity);
-
-            if (glowColor != Color.clear)
-            {
-                glowColor.a = 0.4f;
-                rarityGlow.color = glowColor;
-                rarityGlow.gameObject.SetActive(true);
-
-                if (itemStack.item.rarity >= ItemRarity.Epic)
-                {
-                    StartCoroutine(PulseRarityGlow(glowColor));
-                }
-            }
-            else
-            {
-                rarityGlow.gameObject.SetActive(false);
-            }
-        }
-        else
-        {
-            rarityGlow.gameObject.SetActive(false);
-        }
-    }
-
-    // ============================================================================
-    // ANIMATION SYSTEM
-    // ============================================================================
-
-    private void SetTargetScale(Vector3 newTargetScale)
-    {
-        targetScale = newTargetScale;
-
-        if (currentScaleAnimation != null)
-        {
-            StopCoroutine(currentScaleAnimation);
-            currentScaleAnimation = null;
-        }
-
-        currentScaleAnimation = StartCoroutine(AnimateToTargetScale());
-    }
-
-    private IEnumerator AnimateToTargetScale()
-    {
-        Vector3 startScale = transform.localScale;
-        float elapsed = 0f;
-        float duration = 1f / animationSpeed;
-
-        if (targetScale == Vector3.zero)
-            targetScale = Vector3.one;
-
-        while (elapsed < duration && Vector3.Distance(transform.localScale, targetScale) > 0.01f)
-        {
-            elapsed += Time.deltaTime;
-            float progress = Mathf.Clamp01(elapsed / duration);
-            progress = scaleCurve.Evaluate(progress);
-
-            transform.localScale = Vector3.Lerp(startScale, targetScale, progress);
-            yield return null;
-        }
-
-        transform.localScale = targetScale;
-        currentScaleAnimation = null;
-    }
-
-    private IEnumerator ItemChangeAnimation()
-    {
-        float pulseScale = 1.15f;
-        float duration = 0.2f;
-
-        yield return StartCoroutine(AnimateToScale(Vector3.one * pulseScale, duration * 0.3f));
-        yield return StartCoroutine(AnimateToScale(Vector3.one, duration * 0.7f));
-    }
-
-    private IEnumerator AnimateToScale(Vector3 newScale, float duration)
-    {
-        Vector3 startScale = transform.localScale;
-        float elapsed = 0f;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float progress = elapsed / duration;
-            progress = scaleCurve.Evaluate(progress);
-
-            transform.localScale = Vector3.Lerp(startScale, newScale, progress);
-            yield return null;
-        }
-
-        transform.localScale = newScale;
-    }
-
-    private IEnumerator ClickAnimation()
-    {
-        float clickDuration = 0.1f;
-
-        yield return StartCoroutine(AnimateToScale(Vector3.one * clickScale, clickDuration * 0.5f));
-
-        Vector3 returnScale = isHovered ? Vector3.one * hoverScale : Vector3.one;
-        yield return StartCoroutine(AnimateToScale(returnScale, clickDuration * 0.5f));
-    }
-
-    private IEnumerator PulseBorder()
-    {
-        if (selectionBorder == null) yield break;
-
-        Color baseColor = selectedColor;
-        Color brightColor = new Color(baseColor.r, baseColor.g, baseColor.b, 1f);
-        Color dimColor = new Color(baseColor.r, baseColor.g, baseColor.b, 0.6f);
-
-        while (isSelected && selectionBorder.gameObject.activeInHierarchy)
-        {
-            yield return StartCoroutine(AnimateBorderColor(brightColor, 0.8f));
-            yield return StartCoroutine(AnimateBorderColor(dimColor, 0.8f));
-        }
-    }
-
-    private IEnumerator AnimateBorderColor(Color targetColor, float duration)
-    {
-        if (selectionBorder == null) yield break;
-
-        Color startColor = selectionBorder.color;
-        float elapsed = 0f;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float progress = elapsed / duration;
-            progress = scaleCurve.Evaluate(progress);
-
-            selectionBorder.color = Color.Lerp(startColor, targetColor, progress);
-            yield return null;
-        }
-
-        selectionBorder.color = targetColor;
-    }
-
-    private IEnumerator AnimateBackgroundColor(Color targetColor)
-    {
-        if (backgroundImage == null) yield break;
-
-        Color startColor = backgroundImage.color;
-        float duration = 0.15f;
-        float elapsed = 0f;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float progress = elapsed / duration;
-            progress = scaleCurve.Evaluate(progress);
-
-            backgroundImage.color = Color.Lerp(startColor, targetColor, progress);
-            yield return null;
-        }
-
-        backgroundImage.color = targetColor;
-    }
-
-    private IEnumerator PulseRarityGlow(Color baseColor)
-    {
-        if (rarityGlow == null) yield break;
-
-        Color dimColor = new Color(baseColor.r, baseColor.g, baseColor.b, 0.2f);
-        Color brightColor = new Color(baseColor.r, baseColor.g, baseColor.b, 0.8f);
-
-        while (rarityGlow != null && rarityGlow.gameObject.activeInHierarchy && !IsEmpty)
-        {
-            yield return StartCoroutine(AnimateGlowColor(brightColor, 1f));
-            yield return StartCoroutine(AnimateGlowColor(dimColor, 1f));
-        }
-    }
-
-    private IEnumerator AnimateGlowColor(Color targetColor, float duration)
-    {
-        if (rarityGlow == null) yield break;
-
-        Color startColor = rarityGlow.color;
-        float elapsed = 0f;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float progress = elapsed / duration;
-            progress = scaleCurve.Evaluate(progress);
-
-            rarityGlow.color = Color.Lerp(startColor, targetColor, progress);
-            yield return null;
-        }
-
-        rarityGlow.color = targetColor;
-    }
-
-    // ============================================================================
-    // UTILITY METHODS
-    // ============================================================================
-
-    private string FormatQuantity(int quantity)
-    {
-        if (quantity >= 1000000)
-            return $"{quantity / 1000000f:0.#}M";
-        if (quantity >= 1000)
-            return $"{quantity / 1000f:0.#}K";
-        return quantity.ToString();
-    }
-
-    private Color GetTargetBackgroundColor()
-    {
-        if (IsEmpty) return emptySlotAlpha;
-        if (isSelected) return selectedColor;
-        return normalColor;
-    }
-
-    private Color GetRarityGlowColor(ItemRarity rarity)
-    {
-        return rarity switch
-        {
-            ItemRarity.Common => Color.clear,
-            ItemRarity.Uncommon => rarityGlowUncommon,
-            ItemRarity.Rare => rarityGlowRare,
-            ItemRarity.Epic => rarityGlowEpic,
-            ItemRarity.Legendary => rarityGlowLegendary,
-            _ => Color.clear
-        };
-    }
-
-    private void CleanupAnimations()
-    {
-        if (currentScaleAnimation != null)
-        {
-            StopCoroutine(currentScaleAnimation);
-            currentScaleAnimation = null;
-        }
-
-        transform.localScale = Vector3.one;
     }
 
     private void ResetToNormalState()
     {
         isHovered = false;
-        isDragging = false;
 
-        CleanupAnimations();
-
-        transform.localScale = Vector3.one;
-        targetScale = Vector3.one;
+        if (visualController != null)
+        {
+            visualController.ResetToNormalState();
+        }
 
         if (canvasGroup != null)
             canvasGroup.alpha = 1f;
@@ -1044,13 +707,13 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (isDragging) return;
+        if (dragHandler != null && dragHandler.IsDragging) return;
         ForceEnterHover();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (isDragging) return;
+        if (dragHandler != null && dragHandler.IsDragging) return;
         ForceExitHover();
     }
 
@@ -1058,7 +721,10 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            StartCoroutine(ClickAnimation());
+            if (visualController != null)
+            {
+                visualController.StartClickAnimation(isHovered);
+            }
 
             if (inventoryManager != null)
             {
@@ -1073,13 +739,16 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (isHovered)
+        if (visualController != null)
         {
-            SetTargetScale(Vector3.one * hoverScale);
-        }
-        else
-        {
-            SetTargetScale(Vector3.one);
+            if (isHovered)
+            {
+                visualController.SetTargetScale(Vector3.one * hoverScale);
+            }
+            else
+            {
+                visualController.SetTargetScale(Vector3.one);
+            }
         }
     }
 
@@ -1107,152 +776,55 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         if (IsEmpty || eventData.button != PointerEventData.InputButton.Left) return;
 
-        isDragging = true;
-        wasDroppedOnSlot = false; // Reset drop flag
-        dragWasSuccessful = false; // Reset success flag
-        originalPosition = transform.position;
-
-        // Store the item being dragged and clear from actual inventory
-        draggedItemStack.item = itemStack.item;
-        draggedItemStack.quantity = itemStack.quantity;
-        
-        // Clear from the actual inventory array (not just visually)
-        if (inventoryManager != null && !isSellBoxMode)
+        if (dragHandler != null)
         {
-            // For regular inventory slots, clear from the inventory array
-            ItemStack clearedStack = inventoryManager.ClearSlotForDrag(this);
+            dragHandler.BeginDrag(itemStack, isSellBoxMode, this);
+            HideTooltip();
         }
-        else
-        {
-            // For SellBox slots, just clear visually since SellBox handles its own array
-            ItemStack tempClear = new ItemStack();
-            SetItemStack(tempClear);
-        }
-        
-
-        HideTooltip();
-        CreateDragPreview();
-
-        if (canvasGroup != null)
-        {
-            canvasGroup.alpha = 0.7f; // Less transparent so slots remain more visible
-            canvasGroup.blocksRaycasts = false; // Don't block raycasts for drop detection
-        }
-
-        // Set static flag to indicate dragging is happening
-        IsAnySlotDragging = true;
     }
-
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (!isDragging || dragPreview == null) return;
-
-        if (canvas != null && canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+        if (dragHandler != null)
         {
-            dragPreview.transform.position = eventData.position;
-        }
-        else if (canvas != null)
-        {
-            Vector2 localPoint;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                canvas.transform as RectTransform,
-                eventData.position,
-                canvas.worldCamera,
-                out localPoint
-            );
-
-            dragPreview.transform.localPosition = localPoint;
+            dragHandler.UpdateDrag(eventData);
         }
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        isDragging = false;
-
-        if (canvasGroup != null)
+        if (dragHandler != null)
         {
-            canvasGroup.alpha = 1f;
-            canvasGroup.blocksRaycasts = true; // Restore raycast blocking
+            dragHandler.EndDrag(eventData, isSellBoxMode, this);
         }
-
-        // Check if drag was not successful and we still have the dragged item
-        if (!dragWasSuccessful && !draggedItemStack.IsEmpty)
-        {
-            // Check if this was dropped outside UI (create ground item)
-            bool droppedOutsideUI = !wasDroppedOnSlot;
-            
-            if (droppedOutsideUI)
-            {
-                CreateGroundItemFromDrag(eventData.position);
-            }
-            else
-            {
-                // Drag failed but was dropped on a slot - restore the item
-                
-                if (inventoryManager != null && !isSellBoxMode)
-                {
-                    // For regular inventory slots, restore to the inventory array
-                    inventoryManager.RestoreSlotFromDrag(this, draggedItemStack);
-                }
-                else
-                {
-                    // For SellBox slots, just restore visually
-                    SetItemStack(draggedItemStack);
-                }
-            }
-        }
-
-        // Clear the dragged item data
-        draggedItemStack.Clear();
-
-        if (dragPreview != null)
-        {
-            Destroy(dragPreview);
-            dragPreview = null;
-        }
-
-        if (inventoryManager != null)
-        {
-            inventoryManager.EndDragOperation();
-        }
-
-        // Clear static flag - dragging is done
-        IsAnySlotDragging = false;
     }
 
     public void OnDrop(PointerEventData eventData)
     {
         InventorySlot draggedSlot = eventData.pointerDrag?.GetComponent<InventorySlot>();
-        if (draggedSlot != null && draggedSlot != this)
+        if (draggedSlot != null && draggedSlot != this && draggedSlot.dragHandler != null)
         {
-
-
-            // Mark that the dragged slot was dropped on a valid slot
-            draggedSlot.wasDroppedOnSlot = true;
+            draggedSlot.dragHandler.wasDroppedOnSlot = true;
 
             SellBox sellBox = FindFirstObjectByType<SellBox>();
 
             // Check if dragging FROM SellBox TO inventory
             if (draggedSlot.isSellBoxMode && !isSellBoxMode && sellBox != null && sellBox.IsOpen)
             {
-
                 sellBox.HandleSellBoxToInventoryDrop(draggedSlot, this);
                 return;
             }
 
-            // Check if this is a SellBox-to-SellBox move (internal rearrangement)
+            // Check if this is a SellBox-to-SellBox move
             if (draggedSlot.isSellBoxMode && isSellBoxMode && sellBox != null && sellBox.IsOpen)
             {
-
                 sellBox.HandleSellBoxInternalMove(draggedSlot, this);
                 return;
             }
 
-            // Check if this is a drop TO SellBox slot (from inventory)
+            // Check if this is a drop TO SellBox slot
             if (isSellBoxMode && sellBox != null && sellBox.IsOpen)
             {
-
                 sellBox.HandleSlotDrop(draggedSlot, this);
                 return;
             }
@@ -1260,327 +832,8 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             // Default to regular inventory handling
             if (inventoryManager != null)
             {
-
                 inventoryManager.HandleSlotDrop(draggedSlot, this);
             }
-            else
-            {
-
-            }
-        }
-    }
-
-    private bool IsOverUI(Vector2 screenPosition)
-    {
-        // Check if mouse position is over any UI element
-        List<RaycastResult> results = new List<RaycastResult>();
-        PointerEventData eventData = new PointerEventData(EventSystem.current);
-        eventData.position = screenPosition;
-        EventSystem.current.RaycastAll(eventData, results);
-
-        foreach (RaycastResult result in results)
-        {
-            // If we find any UI elements, we're over UI
-            if (result.gameObject.GetComponent<Canvas>() != null ||
-                result.gameObject.GetComponent<InventorySlot>() != null ||
-                result.gameObject.name.Contains("Panel") ||
-                result.gameObject.name.Contains("UI"))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private void CreateGroundItem(Vector2 screenPosition)
-    {
-        if (IsEmpty) return;
-
-        // Get the main camera to convert screen to world position
-        Camera mainCamera = Camera.main;
-        if (mainCamera == null)
-        {
-
-            return;
-        }
-
-        // Convert screen position to world position
-        Vector3 worldPosition = mainCamera.ScreenToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, mainCamera.nearClipPlane));
-        worldPosition.z = 0; // Ensure it's on the 2D plane
-
-        // Find player position to drop near player
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-        {
-            // Drop item near player (within reasonable distance)
-            Vector3 playerPos = player.transform.position;
-            float maxDropDistance = 2f;
-
-            Vector3 dropDirection = (worldPosition - playerPos).normalized;
-            if (dropDirection.magnitude < 0.1f) // If too close, use random direction
-            {
-                dropDirection = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0).normalized;
-            }
-
-            worldPosition = playerPos + dropDirection * Mathf.Min(maxDropDistance, Vector3.Distance(worldPosition, playerPos));
-        }
-
-        // Load the GroundItem prefab
-        GameObject groundItemPrefab = Resources.Load<GameObject>("Prefabs/GroundItem");
-        if (groundItemPrefab == null)
-        {
-            // Try alternative path
-            groundItemPrefab = Resources.Load<GameObject>("GroundItem");
-        }
-
-        if (groundItemPrefab == null)
-        {
-            // Try to find existing GroundItem in scene as template
-            GroundItem existingGroundItem = FindFirstObjectByType<GroundItem>();
-            if (existingGroundItem != null)
-            {
-                groundItemPrefab = existingGroundItem.gameObject;
-
-            }
-        }
-
-        if (groundItemPrefab == null)
-        {
-
-            return;
-        }
-
-        // Instantiate the ground item
-        GameObject groundItemObj = Instantiate(groundItemPrefab, worldPosition, Quaternion.identity);
-        GroundItem groundItem = groundItemObj.GetComponent<GroundItem>();
-
-        if (groundItem != null)
-        {
-            // Store item info for logging
-            string itemName = itemStack.item.itemName;
-            int quantity = itemStack.quantity;
-
-            // Set the item data (with quantity)
-            groundItem.SetItemStack(itemStack);
-
-
-            // Completely clear the slot
-            ClearSlot();
-
-
-        }
-        else
-        {
-
-            Destroy(groundItemObj);
-        }
-    }
-
-    private void CreateGroundItemFromDrag(Vector2 screenPosition)
-    {
-        if (draggedItemStack.IsEmpty) return;
-
-        // Get the main camera to convert screen to world position
-        Camera mainCamera = Camera.main;
-        if (mainCamera == null)
-        {
-
-            return;
-        }
-
-        // Convert screen position to world position
-        Vector3 worldPosition = mainCamera.ScreenToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, mainCamera.nearClipPlane));
-        worldPosition.z = 0; // Ensure it's on the 2D plane
-
-        // Find player position to drop near player
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-        {
-            // Drop item near player (within reasonable distance)
-            Vector3 playerPos = player.transform.position;
-            float maxDropDistance = 2f;
-
-            Vector3 dropDirection = (worldPosition - playerPos).normalized;
-            if (dropDirection.magnitude < 0.1f) // If too close, use random direction
-            {
-                dropDirection = new Vector3(UnityEngine.Random.Range(-1f, 1f), UnityEngine.Random.Range(-1f, 1f), 0).normalized;
-            }
-
-            worldPosition = playerPos + dropDirection * Mathf.Min(maxDropDistance, Vector3.Distance(worldPosition, playerPos));
-        }
-
-        // Load the GroundItem prefab
-        GameObject groundItemPrefab = Resources.Load<GameObject>("Prefabs/GroundItem");
-        if (groundItemPrefab == null)
-        {
-            // Try alternative path
-            groundItemPrefab = Resources.Load<GameObject>("GroundItem");
-        }
-
-        if (groundItemPrefab == null)
-        {
-            // Try to find existing GroundItem in scene as template
-            GroundItem existingGroundItem = FindFirstObjectByType<GroundItem>();
-            if (existingGroundItem != null)
-            {
-                groundItemPrefab = existingGroundItem.gameObject;
-
-            }
-        }
-
-        if (groundItemPrefab == null)
-        {
-
-            return;
-        }
-
-        // Instantiate the ground item
-        GameObject groundItemObj = Instantiate(groundItemPrefab, worldPosition, Quaternion.identity);
-        GroundItem groundItem = groundItemObj.GetComponent<GroundItem>();
-
-        if (groundItem != null)
-        {
-            // Store item info for logging
-            string itemName = draggedItemStack.item.itemName;
-            int quantity = draggedItemStack.quantity;
-
-            // Set the item data from the dragged item (with quantity)
-            groundItem.SetItemStack(draggedItemStack);
-
-
-
-        }
-        else
-        {
-
-            Destroy(groundItemObj);
-        }
-    }
-
-    private void CreateDragPreview()
-    {
-        if (draggedItemStack.IsEmpty || canvas == null) return;
-
-        dragPreview = new GameObject("DragPreview");
-        dragPreview.transform.SetParent(canvas.transform, false);
-
-        RectTransform previewRect = dragPreview.AddComponent<RectTransform>();
-        previewRect.sizeDelta = new Vector2(64, 64);
-        previewRect.anchorMin = Vector2.zero;
-        previewRect.anchorMax = Vector2.zero;
-        previewRect.pivot = new Vector2(0.5f, 0.5f);
-
-        Canvas previewCanvas = dragPreview.AddComponent<Canvas>();
-        previewCanvas.overrideSorting = true;
-        previewCanvas.sortingOrder = 1000;
-
-        CanvasGroup previewGroup = dragPreview.AddComponent<CanvasGroup>();
-        previewGroup.alpha = 0.8f;
-        previewGroup.blocksRaycasts = false;
-
-        CreateDragPreviewVisuals();
-        PositionDragPreview();
-    }
-
-    private void CreateDragPreviewVisuals()
-    {
-        if (dragPreview == null || draggedItemStack.IsEmpty) return;
-
-        // Background
-        GameObject backgroundObj = new GameObject("Background");
-        backgroundObj.transform.SetParent(dragPreview.transform, false);
-
-        Image backgroundImg = backgroundObj.AddComponent<Image>();
-        backgroundImg.color = new Color(0.1f, 0.1f, 0.15f, 0.3f);
-
-        RectTransform bgRect = backgroundObj.GetComponent<RectTransform>();
-        bgRect.anchorMin = Vector2.zero;
-        bgRect.anchorMax = Vector2.one;
-        bgRect.offsetMin = Vector2.zero;
-        bgRect.offsetMax = Vector2.zero;
-
-        // Item icon
-        if (draggedItemStack.item?.icon != null)
-        {
-            GameObject iconObj = new GameObject("ItemIcon");
-            iconObj.transform.SetParent(dragPreview.transform, false);
-
-            Image iconImg = iconObj.AddComponent<Image>();
-            iconImg.sprite = draggedItemStack.item.icon;
-            iconImg.color = Color.white;
-            iconImg.preserveAspect = true;
-
-            RectTransform iconRect = iconObj.GetComponent<RectTransform>();
-            iconRect.anchorMin = Vector2.zero;
-            iconRect.anchorMax = Vector2.one;
-            iconRect.offsetMin = new Vector2(6, 6);
-            iconRect.offsetMax = new Vector2(-6, -6);
-        }
-
-        // Quantity text
-        if (draggedItemStack.quantity > 1)
-        {
-            GameObject quantityObj = new GameObject("Quantity");
-            quantityObj.transform.SetParent(dragPreview.transform, false);
-
-            TextMeshProUGUI quantityTMP = quantityObj.AddComponent<TextMeshProUGUI>();
-            quantityTMP.text = FormatQuantity(draggedItemStack.quantity);
-            quantityTMP.fontSize = 12;
-            quantityTMP.fontStyle = FontStyles.Bold;
-            quantityTMP.color = Color.white;
-            quantityTMP.alignment = TextAlignmentOptions.BottomRight;
-
-            RectTransform quantityRect = quantityObj.GetComponent<RectTransform>();
-            quantityRect.anchorMin = new Vector2(1, 0);
-            quantityRect.anchorMax = new Vector2(1, 0);
-            quantityRect.anchoredPosition = new Vector2(-5, 5);
-            quantityRect.sizeDelta = new Vector2(30, 20);
-
-            Outline outline = quantityObj.AddComponent<Outline>();
-            outline.effectColor = Color.black;
-            outline.effectDistance = new Vector2(1, -1);
-        }
-
-        // Rarity glow
-        if (draggedItemStack.item != null && draggedItemStack.item.rarity > ItemRarity.Common)
-        {
-            GameObject glowObj = new GameObject("RarityGlow");
-            glowObj.transform.SetParent(dragPreview.transform, false);
-            glowObj.transform.SetSiblingIndex(0);
-
-            Image glowImg = glowObj.AddComponent<Image>();
-            Color glowColor = GetRarityGlowColor(draggedItemStack.item.rarity);
-            glowColor.a = 0.5f;
-            glowImg.color = glowColor;
-
-            RectTransform glowRect = glowObj.GetComponent<RectTransform>();
-            glowRect.anchorMin = Vector2.zero;
-            glowRect.anchorMax = Vector2.one;
-            glowRect.offsetMin = new Vector2(-3, -3);
-            glowRect.offsetMax = new Vector2(3, 3);
-        }
-    }
-
-    private void PositionDragPreview()
-    {
-        if (dragPreview == null) return;
-
-        Vector2 mousePos = Mouse.current?.position.ReadValue() ?? Vector2.zero;
-        if (canvas.renderMode == RenderMode.ScreenSpaceOverlay)
-        {
-            dragPreview.transform.position = mousePos;
-        }
-        else
-        {
-            Vector2 localPoint;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                canvas.transform as RectTransform,
-                mousePos,
-                canvas.worldCamera,
-                out localPoint
-            );
-            dragPreview.transform.localPosition = localPoint;
         }
     }
 }

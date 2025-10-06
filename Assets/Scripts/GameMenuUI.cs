@@ -60,6 +60,10 @@ public class GameMenuUI : MonoBehaviour
     private void Awake()
     {
         menuManager = GetComponent<GameMenuManager>();
+        if (menuManager == null)
+        {
+            Debug.LogError("[GameMenuUI] GameMenuManager component not found on the same GameObject!");
+        }
     }
     
     private void Start()
@@ -188,6 +192,7 @@ public class GameMenuUI : MonoBehaviour
     
     public void ShowMainPanel()
     {
+
         SetPanelActive(mainMenuPanel, true);
         SetPanelActive(settingsPanel, false);
         SetPanelActive(saveInfoPanel, false);
@@ -198,8 +203,11 @@ public class GameMenuUI : MonoBehaviour
     
     public void ShowSettingsPanel()
     {
+
+        
         if (settingsPanel == null)
         {
+
             ShowNotification("Settings panel not configured!", true);
             return;
         }
@@ -214,8 +222,11 @@ public class GameMenuUI : MonoBehaviour
     
     public void ShowSaveInfoPanel()
     {
+
+        
         if (saveInfoPanel == null)
         {
+
             ShowNotification("Save info panel not configured!", true);
             return;
         }
@@ -233,6 +244,11 @@ public class GameMenuUI : MonoBehaviour
         if (panel != null)
         {
             panel.SetActive(active);
+
+        }
+        else if (active)
+        {
+
         }
     }
     

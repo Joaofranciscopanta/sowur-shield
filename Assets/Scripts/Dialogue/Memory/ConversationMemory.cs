@@ -75,6 +75,7 @@ public class ConversationMemory : MonoBehaviour
             {
                 string jsonData = File.ReadAllText(saveFilePath);
                 conversationData = JsonUtility.FromJson<ConversationData>(jsonData);
+                
             }
             else
             {
@@ -83,9 +84,7 @@ public class ConversationMemory : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            #if UNITY_EDITOR
             Debug.LogError($"[ConversationMemory] Failed to load conversation data: {e.Message}");
-            #endif
             conversationData = new ConversationData();
         }
         
@@ -99,17 +98,16 @@ public class ConversationMemory : MonoBehaviour
             conversationData.saveTimestamp = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             string jsonData = JsonUtility.ToJson(conversationData, true);
             File.WriteAllText(saveFilePath, jsonData);
-
+            
             hasUnsavedChanges = false;
             lastAutoSaveTime = Time.time;
-
+            
+                
             OnSaveCompleted?.Invoke(true);
         }
         catch (System.Exception e)
         {
-            #if UNITY_EDITOR
             Debug.LogError($"[ConversationMemory] Failed to save conversation data: {e.Message}");
-            #endif
             OnSaveCompleted?.Invoke(false);
         }
     }
@@ -127,11 +125,9 @@ public class ConversationMemory : MonoBehaviour
         MarkDataChanged();
         
         OnConversationCompleted?.Invoke(conversationId);
-
-        #if UNITY_EDITOR
+        
         if (enableDebugLogs)
             Debug.Log($"[ConversationMemory] Completed conversation: {conversationId}");
-        #endif
     }
     
     /// <summary>
@@ -153,11 +149,9 @@ public class ConversationMemory : MonoBehaviour
         MarkDataChanged();
         
         OnChoiceMade?.Invoke(conversationId, nodeId, choiceText, nextNodeId);
-
-        #if UNITY_EDITOR
+        
         if (enableDebugLogs)
             Debug.Log($"[ConversationMemory] Recorded choice in {conversationId}: {choiceText}");
-        #endif
     }
     
     /// <summary>
@@ -180,11 +174,9 @@ public class ConversationMemory : MonoBehaviour
         MarkDataChanged();
         
         OnRelationshipChanged?.Invoke(npcId, level);
-
-        #if UNITY_EDITOR
+        
         if (enableDebugLogs)
             Debug.Log($"[ConversationMemory] Set relationship with {npcId}: {oldLevel} -> {level}");
-        #endif
     }
     
     /// <summary>
@@ -215,11 +207,9 @@ public class ConversationMemory : MonoBehaviour
         
         conversationData.SetQuestStatus(questId, status);
         MarkDataChanged();
-
-        #if UNITY_EDITOR
+        
         if (enableDebugLogs)
             Debug.Log($"[ConversationMemory] Set quest {questId} status: {status}");
-        #endif
     }
     
     /// <summary>
@@ -239,11 +229,9 @@ public class ConversationMemory : MonoBehaviour
         
         conversationData.SetVariable(key, value);
         MarkDataChanged();
-
-        #if UNITY_EDITOR
+        
         if (enableDebugLogs)
             Debug.Log($"[ConversationMemory] Set variable {key}: {value}");
-        #endif
     }
     
     /// <summary>
@@ -263,11 +251,9 @@ public class ConversationMemory : MonoBehaviour
         
         conversationData.ModifyItemCount(itemId, count);
         MarkDataChanged();
-
-        #if UNITY_EDITOR
+        
         if (enableDebugLogs)
             Debug.Log($"[ConversationMemory] Gave {count} {itemId} to player");
-        #endif
     }
     
     /// <summary>
@@ -279,11 +265,9 @@ public class ConversationMemory : MonoBehaviour
         
         conversationData.ModifyItemCount(itemId, -count);
         MarkDataChanged();
-
-        #if UNITY_EDITOR
+        
         if (enableDebugLogs)
             Debug.Log($"[ConversationMemory] Took {count} {itemId} from player");
-        #endif
     }
     
     /// <summary>
@@ -329,11 +313,9 @@ public class ConversationMemory : MonoBehaviour
         conversationData = new ConversationData();
         MarkDataChanged();
         SaveData();
-
-        #if UNITY_EDITOR
+        
         if (enableDebugLogs)
             Debug.Log("[ConversationMemory] Cleared all conversation data");
-        #endif
     }
     
     private void MarkDataChanged()
