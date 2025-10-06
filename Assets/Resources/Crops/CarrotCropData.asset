@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fe9390976aeace449ceeb0ce9cc35bf, type: 3}
+  m_Name: CarrotCropData
+  m_EditorClassIdentifier: 
+  cropName: Carrot
+  description: Orange but not the fruit.
+  seedItem: {fileID: 11400000, guid: 1d1dc028cd86ee34dae41fd60504525b, type: 2}
+  harvestItem: {fileID: 11400000, guid: 566455dc0cf7a584989abffa663605db, type: 2}
+  daysPerStage: 1
+  totalStages: 4
+  totalGrowthDays: 4
+  growthStages:
+  - {fileID: -8703343332176484395, guid: 45fc2f01bb040d3458f7f86e31c6f2d7, type: 3}
+  - {fileID: -8043259112124260904, guid: 822d04a557ab2794c925cd0fa90cef4b, type: 3}
+  - {fileID: 6831267193280381010, guid: 126139c2252e820458b01a8da81596e1, type: 3}
+  - {fileID: -1221486328538317689, guid: 314d8db87c17de248bd786c2ef7eac6e, type: 3}
+  deadCropSprite: {fileID: 2691049470083966019, guid: baa2a9f013155a8478dbdc3cb4964e5e, type: 3}
+  seedlingSprite: {fileID: -8703343332176484395, guid: 45fc2f01bb040d3458f7f86e31c6f2d7, type: 3}
+  requiresWater: 1
+  maxDaysWithoutWater: 3
+  growsInAllSeasons: 1
+  validSeasons: 
+  minYield: 2
+  maxYield: 5
+  regrowsAfterHarvest: 0
+  regrowthDays: 0
+  maxRegrowths: 0
+  canGrowInWinter: 0
+  needsTrellis: 0
+  spreadsToCells: 0
+  baseValue: 50
+  qualityMultiplier: 1

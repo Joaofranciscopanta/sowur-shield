@@ -24,7 +24,8 @@
       "Bash(awk:*)",
       "Bash(git branch:*)",
       "Bash(git commit:*)",
-      "Bash(git check-ignore:*)"
+      "Bash(git check-ignore:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []

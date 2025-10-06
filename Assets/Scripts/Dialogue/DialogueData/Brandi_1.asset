@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d47869ec709e43a408118c8f642d5a19, type: 3}
+  m_Name: Brandi_1
+  m_EditorClassIdentifier: 
+  dialogue:
+  - "Bok bok! Ol\xE1\xE1\xE1, pessoa bonita! Eu sou a Maricota, a galinha mais charmosa
+    desse galinheiro encantado! "
+  - "Todo dia eu acordo com o cantar do galo (que nunca \xE9 t\xE3o afinado quanto
+    ele pensa \U0001F605), e corro direto pros gr\xE3ozinhos do caf\xE9 da manh\xE3!
+    \u2600"
+  - "Se voc\xEA estiver triste, posso te dar um ovinho fresquinho. Dizem que meus
+    ovos curam at\xE9 cora\xE7\xE3o partido! "
+  - "Adoro tomar banho de sol e me esparramar na palha\u2026 uma vida simples \xE9
+    tudo que eu quero! "
+  - "Ah, e nunca subestime uma galinha, viu? J\xE1 botei um pato pra correr uma vez!
+    Longa hist\xF3ria\u2026 "
+  - 'Meus hobbies incluem: ciscar, tomar banho de terra, fofocar com as outras penosas
+    e... ciscar mais um pouco! '
+  - "Eu amo quando voc\xEA vem me visitar! Voc\xEA tem cheiro de flor-do-campo e
+    de aventura! "
+  - "Se quiser ser meu amigo de verdade, traga milho! Milho \xE9 meu ponto fraco\u2026
+    e meu grande amor. "
+  - "Tem dias que eu finjo ser uma princesa medieval, esperando meu pr\xEDncipe galin\xE1ceo
+    num castelo de feno! "
+  - "At\xE9 logo, humano do cora\xE7\xE3o quente! V\xE1 com cuidado, e se chover,
+    pense em mim aconchegadinha no ninho! "
