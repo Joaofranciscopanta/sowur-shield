@@ -12,19 +12,19 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         WithCrop
     }
 
-    [Header("Solo")]
+    [Header("Soil")]
     public SoilState currentState = SoilState.Regular;
     public Sprite regularSprite;
     public Sprite tilledSprite;
     public Sprite wateredSprite;
 
-    [Header("Tags de Ferramentas")]
+    [Header("Tool Tags")]
     public string hoeTag = "Hoe";
     public string wateringCanTag = "WateringCan";
     public string shovelTag = "Shovel";
     public string scytheTag = "Scythe";
 
-    [Header("Efeitos")]
+    [Header("Effects")]
     public GameObject tillEffect;
     public GameObject waterEffect;
     public GameObject plantEffect;
@@ -38,7 +38,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
     public AudioClip shovelSound;
     public AudioClip harvestSound;
 
-    [Header("Feedback Visual")]
+    [Header("Visual Feedback")]
     public Color highlightColor = new Color(1f, 1f, 0.5f, 1f);
     public bool enableHighlightOnHover = true;
     private Color originalColor;
@@ -46,14 +46,12 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     [Header("Debug")]
 
-    // Componentes
     private SpriteRenderer soilRenderer;
     private CropGrowthManager cropGrowthManager;
     private Inventory playerInventory;
     private Transform playerTransform;
     private Vector3Int gridPosition;
 
-    // Propriedades para acesso externo
     public SoilState CurrentState => currentState;
     public bool HasCrop => cropGrowthManager != null && cropGrowthManager.HasCrop;
     public bool IsReadyForHarvest => cropGrowthManager != null && cropGrowthManager.IsReadyForHarvest;
@@ -73,28 +71,23 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     private void InitializeComponents()
     {
-        // Obtém componentes necessários
         soilRenderer = GetComponent<SpriteRenderer>();
         cropGrowthManager = GetComponent<CropGrowthManager>();
 
-        // Adiciona CropGrowthManager se não estiver presente
         if (cropGrowthManager == null)
             cropGrowthManager = gameObject.AddComponent<CropGrowthManager>();
 
-        // Define sprite padrão
         if (regularSprite == null && soilRenderer != null)
             regularSprite = soilRenderer.sprite;
     }
 
     private void SetupGridPosition()
     {
-        // Calcula posição no grid para rastreamento do cursor controller
         gridPosition = CursorController.GetWorldPosTile(transform.position);
     }
 
     private void EnsureCollider()
     {
-        // Garante que existe um collider para interação
         if (GetComponent<Collider2D>() == null)
         {
             BoxCollider2D collider = gameObject.AddComponent<BoxCollider2D>();
@@ -105,7 +98,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     private void SubscribeToCropEvents()
     {
-        // Inscreve-se nos eventos do gerenciador de cultivo
         if (cropGrowthManager != null)
         {
             cropGrowthManager.OnCropGrown += OnCropGrown;
@@ -117,30 +109,26 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     private void StoreOriginalColor()
     {
-        // Armazena cor original para destacamento visual
         if (soilRenderer != null)
             originalColor = soilRenderer.color;
     }
 
     private void RegisterWithSaveManager()
     {
-        // Register with SaveManager for save/load functionality
         if (SaveManager.Instance != null)
         {
             SaveManager.Instance.RegisterSaveable(this);
         }
         else
         {
-            // Try again in Start() - SaveManager might not be initialized yet
             StartCoroutine(DelayedRegistration());
         }
     }
 
     private System.Collections.IEnumerator DelayedRegistration()
     {
-        // Wait a frame for SaveManager to initialize
         yield return null;
-        
+
         if (SaveManager.Instance != null)
         {
             SaveManager.Instance.RegisterSaveable(this);
@@ -161,7 +149,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     private void UnsubscribeFromEvents()
     {
-        // Desinscreve-se dos eventos
         if (cropGrowthManager != null)
         {
             cropGrowthManager.OnCropGrown -= OnCropGrown;
@@ -173,7 +160,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     private void UnregisterFromCursorController()
     {
-        // Remove do rastreamento do cursor controller
         CursorController cursorController = FindFirstObjectByType<CursorController>();
         if (cursorController != null)
         {
@@ -181,7 +167,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         }
     }
 
-    #region Detecção de Proximidade do Jogador (similar ao GroundItem)
+    #region Player Proximity Detection
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -190,14 +176,12 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             playerInRange = true;
             playerTransform = other.transform;
 
-            // Obtém referências do jogador
             PlayerMove playerMove = other.GetComponent<PlayerMove>();
             if (playerMove != null)
             {
                 playerInventory = playerMove.GetInventory();
             }
 
-            // Aplica destaque visual se habilitado
             if (enableHighlightOnHover && soilRenderer != null)
             {
                 soilRenderer.color = highlightColor;
@@ -211,7 +195,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         {
             playerInRange = false;
 
-            // Remove destaque visual
             if (enableHighlightOnHover && soilRenderer != null)
             {
                 soilRenderer.color = originalColor;
@@ -221,13 +204,11 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     #endregion
 
-    // Inicializa com referência do inventário do jogador
     public void Initialize(Inventory inventory)
     {
         playerInventory = inventory;
     }
 
-    // Chamado quando criado com enxada (já arado)
     public void TillSoilDirectly()
     {
         if (currentState == SoilState.Regular)
@@ -257,7 +238,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     private void EnsurePlayerInventory()
     {
-        // Garante que temos referência do inventário do jogador
         if (playerInventory == null)
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -274,7 +254,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     private void HandleEmptyHandInteraction()
     {
-        // Pode colher com mãos vazias
         if (currentState == SoilState.WithCrop && IsReadyForHarvest)
         {
             HarvestCrop();
@@ -287,9 +266,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     private void HandleItemInteraction(Item selectedItem)
     {
-        // Ordem de prioridade: Colher > Remover > Arar > Regar > Plantar
-
-        // 1. Colher com foice (ou qualquer ferramenta se foice não for obrigatória)
         if (currentState == SoilState.WithCrop && IsReadyForHarvest)
         {
             if (string.IsNullOrEmpty(scytheTag) || HasTag(selectedItem, scytheTag))
@@ -299,21 +275,18 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             }
         }
 
-        // 2. Remover cultivo/resetar solo com pá
         if (HasTag(selectedItem, shovelTag) && currentState != SoilState.Regular)
         {
             ResetSoil();
             return;
         }
 
-        // 3. Arar solo com enxada
         if (currentState == SoilState.Regular && HasTag(selectedItem, hoeTag))
         {
             TillSoil();
             return;
         }
 
-        // 4. Regar solo/cultivo com regador
         if ((currentState == SoilState.Tilled || currentState == SoilState.WithCrop) &&
             HasTag(selectedItem, wateringCanTag))
         {
@@ -321,7 +294,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             return;
         }
 
-        // 5. Plantar sementes
         if ((currentState == SoilState.Tilled || currentState == SoilState.Watered) &&
             selectedItem.itemType == ItemType.Seed)
         {
@@ -329,7 +301,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             return;
         }
 
-        // Se não há interação válida, fornece feedback
         ProvideFeedback(selectedItem);
     }
 
@@ -341,7 +312,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         return item.itemTags.Contains(tag);
     }
 
-    #region Ações do Solo
+    #region Soil Actions
 
     private void TillSoil()
     {
@@ -366,7 +337,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         else if (currentState == SoilState.WithCrop && cropGrowthManager != null)
         {
             cropGrowthManager.WaterCrop();
-            UpdateAppearance(); // Atualiza aparência caso cultivo estivesse morrendo
+            UpdateAppearance();
             PlayEffect(waterEffect);
             PlaySound(waterSound);
         }
@@ -376,7 +347,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
     {
         if (playerInventory == null) return;
 
-        // Encontra dados do cultivo para esta semente
         CropData cropData = CropDatabase.GetCropDataForSeed(seedItem);
 
         if (cropData == null)
@@ -385,27 +355,22 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             return;
         }
 
-        // Verifica requisitos sazonais (se sistema de estações estiver implementado)
         GameTimeController timeController = GameTimeController.instance;
         if (timeController != null)
         {
-            // Aqui você pode implementar verificação de estação se necessário
-            // Por exemplo: if (!cropData.IsValidSeason(GetCurrentSeason())) return;
+            // Season validation can be implemented here if needed
         }
 
-        // Planta o cultivo
         if (cropGrowthManager.PlantCrop(cropData))
         {
-            // If soil was watered, transfer that water to the crop
             if (currentState == SoilState.Watered)
             {
                 cropGrowthManager.WaterCrop();
             }
-            
+
             currentState = SoilState.WithCrop;
             UpdateAppearance();
 
-            // Remove semente do inventário
             playerInventory.Remove(seedItem, 1);
 
             PlayEffect(plantEffect);
@@ -423,19 +388,15 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     private IEnumerator HarvestWithAnimation()
     {
-        // IMPORTANT: Store crop data BEFORE calling HarvestCrop()
-        // because HarvestCrop() might remove the crop (set currentCrop to null)
         CropData cropToHarvest = CurrentCrop;
 
         if (cropToHarvest == null)
             yield break;
 
-        // Get yield from crop manager
         int yield = cropGrowthManager.HarvestCrop();
 
         if (yield > 0)
         {
-            // Use the stored crop data to get harvest item
             Item harvestItem = cropToHarvest.harvestItem;
 
             if (harvestItem == null)
@@ -446,15 +407,12 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
                 SpawnGroundItem(harvestItem, i, yield);
             }
 
-            // Visual and sound effects
             PlayEffect(harvestEffect);
             PlaySound(harvestSound);
 
-            // Small pause for harvest animation
             yield return new WaitForSeconds(0.5f);
         }
 
-        // Update soil state based on whether crop still exists (regrowth)
         if (!HasCrop)
         {
             currentState = SoilState.Tilled;
@@ -468,25 +426,20 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         if (item == null)
             return;
 
-        // Cria um GameObject para o GroundItem
         GameObject groundItemObj = new GameObject($"GroundItem_{item.itemName}");
         groundItemObj.transform.position = transform.position;
 
-        // Adiciona componentes necessários
         SpriteRenderer sr = groundItemObj.AddComponent<SpriteRenderer>();
         sr.sprite = item.icon;
-        sr.sortingOrder = 10; // Garante que fica visível sobre o solo
+        sr.sortingOrder = 10;
 
-        // Adiciona collider
         CircleCollider2D collider = groundItemObj.AddComponent<CircleCollider2D>();
         collider.isTrigger = true;
         collider.radius = 0.3f;
 
-        // Adiciona o componente GroundItem
         GroundItem groundItem = groundItemObj.AddComponent<GroundItem>();
         groundItem.SetItem(item);
 
-        // Posiciona os itens em um pequeno círculo ao redor da planta
         if (totalItems > 1)
         {
             float angle = (360f / totalItems) * index;
@@ -500,7 +453,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         }
         else
         {
-            // Para um único item, adiciona um pequeno offset aleatório
             Vector3 randomOffset = new Vector3(
                 Random.Range(-0.3f, 0.3f),
                 Random.Range(-0.3f, 0.3f),
@@ -514,7 +466,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
     {
         SoilState previousState = currentState;
 
-        // Remove cultivo se presente
         if (HasCrop)
         {
             cropGrowthManager.RemoveCrop();
@@ -525,7 +476,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         PlayEffect(shovelEffect);
         PlaySound(shovelSound);
 
-        // Fornece feedback baseado no que foi removido
         switch (previousState)
         {
             case SoilState.Tilled:
@@ -539,7 +489,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     #endregion
 
-    #region Eventos do Cultivo
+    #region Crop Events
 
     private void OnCropGrown(CropGrowthManager manager)
     {
@@ -558,13 +508,12 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     private void OnCropHarvested(CropGrowthManager manager)
     {
-        // Tratado no método HarvestCrop
         UpdateAppearance();
     }
 
     #endregion
 
-    #region Feedback e Interface
+    #region Feedback and Interface
 
     private void ProvideFeedback(Item selectedItem)
     {
@@ -579,7 +528,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
                     return;
             }
 
-            // Mostra informações do crescimento do cultivo
             if (cropGrowthManager != null)
             {
                 if (CurrentCrop != null && CurrentCrop.requiresWater && !cropGrowthManager.IsWatered)
@@ -590,7 +538,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             return;
         }
 
-        // Feedback para estados do solo
         switch (currentState)
         {
             case SoilState.Regular:
@@ -601,12 +548,10 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
                 break;
         }
 
-        // Feedback adicional para ferramentas inválidas
         if (selectedItem != null)
         {
             if (selectedItem.itemType == ItemType.Seed && currentState == SoilState.Regular)
             {
-                // Feedback for trying to plant on untilled soil
             }
         }
     }
@@ -615,7 +560,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
     {
         if (soilRenderer == null) return;
 
-        // Mantém cor original ou destaque baseado na proximidade do jogador
         Color colorToUse = (enableHighlightOnHover && playerInRange) ? highlightColor : originalColor;
 
         switch (currentState)
@@ -630,7 +574,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
                 soilRenderer.sprite = wateredSprite ?? tilledSprite;
                 break;
             case SoilState.WithCrop:
-                // Mostra sprite molhado se cultivo foi regado recentemente, senão arado
                 bool showWatered = cropGrowthManager != null && cropGrowthManager.IsWatered;
                 soilRenderer.sprite = (showWatered && wateredSprite != null) ? wateredSprite : tilledSprite;
                 break;
@@ -641,7 +584,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     #endregion
 
-    #region Audio e Efeitos
+    #region Audio and Effects
 
     private void PlayEffect(GameObject effectPrefab)
     {
@@ -662,7 +605,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     #endregion
 
-    #region Getters Públicos (para sistemas externos)
+    #region Public Getters
 
     public string GetStatusText()
     {
@@ -673,10 +616,10 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
         return currentState switch
         {
-            SoilState.Regular => "Solo não arado",
-            SoilState.Tilled => "Solo arado - pronto para plantio",
-            SoilState.Watered => "Solo molhado - pronto para plantio",
-            _ => "Estado do solo desconhecido"
+            SoilState.Regular => "Untilled soil",
+            SoilState.Tilled => "Tilled soil - ready for planting",
+            SoilState.Watered => "Watered soil - ready for planting",
+            _ => "Unknown soil state"
         };
     }
 
@@ -701,20 +644,15 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
     }
     #endregion
 
-    // ============================================================================
-    // ISAVEABLE IMPLEMENTATION
-    // ============================================================================
+    #region ISaveable Implementation
 
     public void SaveData(GameData gameData)
     {
         Vector2Int position = new Vector2Int(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
         string positionKey = $"{position.x},{position.y}";
 
-        // Save soil state data
-        // Remove existing entry for this position if it exists
         gameData.farmingData.soilStates.RemoveAll(entry => entry.positionKey == positionKey);
-        
-        // Create new soil state entry
+
         var soilStateEntry = new FarmingGameData.SoilStateEntry
         {
             positionKey = positionKey,
@@ -735,7 +673,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         Vector2Int position = new Vector2Int(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
         string positionKey = $"{position.x},{position.y}";
 
-        // Load soil state data
         var soilStateEntry = gameData.farmingData.soilStates.FirstOrDefault(entry => entry.positionKey == positionKey);
         if (soilStateEntry != null && soilStateEntry.soilData != null)
         {
@@ -744,7 +681,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             {
                 if (soilData.isWatered)
                 {
-                    // Check if we have a crop at this position
                     bool hasCrop = gameData.farmingData.activeCrops.Any(crop => crop.position == position);
                     if (hasCrop)
                     {
@@ -757,7 +693,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
                 }
                 else
                 {
-                    // Check if we have a crop at this position
                     bool hasCrop = gameData.farmingData.activeCrops.Any(crop => crop.position == position);
                     if (hasCrop)
                     {
@@ -777,4 +712,6 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             UpdateAppearance();
         }
     }
+
+    #endregion
 }

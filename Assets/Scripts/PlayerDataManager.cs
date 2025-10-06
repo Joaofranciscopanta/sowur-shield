@@ -25,7 +25,9 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
         if (SaveManager.Instance != null)
         {
             SaveManager.Instance.RegisterSaveable(this);
+            #if UNITY_EDITOR
             LogDebug("PlayerDataManager registered with SaveManager in Awake");
+            #endif
         }
     }
     
@@ -64,28 +66,17 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
         else
         {
             // Default values if PlayerStats component is missing
-            LogDebug("PlayerStats component not found, using default values");
         }
-        
-        LogDebug($"Saved player data: Position {gameData.playerData.position}, Scene {gameData.playerData.currentSceneName}, HasSleptInBed: {gameData.playerData.hasSleptInBed}, BedPosition: {gameData.playerData.lastBedPosition}");
     }
     
     public void LoadData(GameData gameData)
     {
-        // Debug bed spawn data
-        LogDebug($"Loading data - hasSleptInBed: {gameData.playerData.hasSleptInBed}, lastBedPosition: {gameData.playerData.lastBedPosition}, savedPosition: {gameData.playerData.position}");
-
         // Load player position - spawn at bed if they've slept in one
         Vector3 spawnPosition = gameData.playerData.position;
 
         if (gameData.playerData.hasSleptInBed && gameData.playerData.lastBedPosition != Vector3.zero)
         {
             spawnPosition = gameData.playerData.lastBedPosition;
-            LogDebug($"✓ Spawning player at bed position: {spawnPosition}");
-        }
-        else
-        {
-            LogDebug($"✗ Spawning player at saved position: {spawnPosition} (hasSleptInBed: {gameData.playerData.hasSleptInBed}, bedPos: {gameData.playerData.lastBedPosition})");
         }
 
         transform.position = spawnPosition;
@@ -105,14 +96,6 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
         }
         
         // Note: Scene loading should be handled separately by a SceneManager
-        // For now, we just log the scene name that should be loaded
-        string currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        if (gameData.playerData.currentSceneName != currentSceneName)
-        {
-            LogDebug($"Player was saved in scene '{gameData.playerData.currentSceneName}' but currently in '{currentSceneName}'");
-        }
-        
-        LogDebug($"Loaded player data: Position {gameData.playerData.position}, Scene {gameData.playerData.currentSceneName}");
     }
     
     // ============================================================================
@@ -132,7 +115,6 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
                 gameData.playerData.position = transform.position;
                 gameData.playerData.rotation = transform.eulerAngles.z;
                 gameData.playerData.currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-                LogDebug($"Manually saved position: {transform.position}");
             }
         }
     }
@@ -162,6 +144,7 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
         return data;
     }
     
+    #if UNITY_EDITOR
     private void LogDebug(string message)
     {
         if (enableDebugLogs)
@@ -169,6 +152,7 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
             Debug.Log($"[PlayerDataManager] {message}");
         }
     }
+    #endif
     
     // ============================================================================
     // EDITOR/DEBUG METHODS

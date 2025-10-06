@@ -117,15 +117,12 @@ public class MinimapUI : MonoBehaviour
         // Set initial opacity
         if (canvasGroup != null)
             canvasGroup.alpha = 1f;
-
-        LogDebug("UI setup complete");
     }
 
     private void ConnectToMinimapCamera()
     {
         if (minimapImage == null)
         {
-            LogDebug("MinimapImage is null, cannot connect to camera");
             return;
         }
 
@@ -136,16 +133,7 @@ public class MinimapUI : MonoBehaviour
             if (renderTexture != null)
             {
                 minimapImage.texture = renderTexture;
-                LogDebug($"Connected to MinimapCamera RenderTexture: {renderTexture.name}");
             }
-            else
-            {
-                LogDebug("RenderTexture is null - will retry");
-            }
-        }
-        else
-        {
-            LogDebug("MinimapCamera not found - will retry");
         }
     }
 
@@ -154,12 +142,10 @@ public class MinimapUI : MonoBehaviour
         // Check if already connected
         if (minimapImage != null && minimapImage.texture != null)
         {
-            LogDebug("Already connected to RenderTexture");
             return;
         }
 
         // Try to connect again
-        LogDebug("Retrying RenderTexture connection...");
         ConnectToMinimapCamera();
     }
 
@@ -182,8 +168,6 @@ public class MinimapUI : MonoBehaviour
     /// </summary>
     public void TransitionToNormal(float duration, Ease ease)
     {
-        LogDebug("Transitioning to Normal mode");
-
         // CRITICAL FIX: Reset anchors to top-right BEFORE animating
         minimapPanel.anchorMin = new Vector2(1, 1); // Top-right
         minimapPanel.anchorMax = new Vector2(1, 1);
@@ -207,8 +191,6 @@ public class MinimapUI : MonoBehaviour
     /// </summary>
     public void TransitionToSemiTransparent(float opacity, float duration, Ease ease)
     {
-        LogDebug($"Transitioning to Semi-Transparent mode (opacity: {opacity})");
-
         // CRITICAL FIX: Keep anchors at top-right
         minimapPanel.anchorMin = new Vector2(1, 1); // Top-right
         minimapPanel.anchorMax = new Vector2(1, 1);
@@ -232,8 +214,6 @@ public class MinimapUI : MonoBehaviour
     /// </summary>
     public void TransitionToFullscreen(float duration, Ease ease)
     {
-        LogDebug($"Transitioning to Fullscreen mode (target size: {fullscreenSize})");
-
         // Show info panel
         if (infoPanel != null)
             infoPanel.SetActive(true);
@@ -253,8 +233,6 @@ public class MinimapUI : MonoBehaviour
 
         // Update state text
         UpdateStateText("Fullscreen");
-
-        LogDebug($"Fullscreen transition started. Current size: {minimapPanel.sizeDelta}, Target: {fullscreenSize}");
     }
 
     // ============================================================================
@@ -449,7 +427,6 @@ public class MinimapUI : MonoBehaviour
         if (minimapImage != null)
         {
             minimapImage.texture = texture;
-            LogDebug($"RenderTexture manually set: {texture?.name ?? "null"}");
         }
     }
 
@@ -504,6 +481,7 @@ public class MinimapUI : MonoBehaviour
     // DEBUG & LOGGING
     // ============================================================================
 
+    #if UNITY_EDITOR
     private void LogDebug(string message)
     {
         if (enableDebugLogs)
@@ -511,6 +489,7 @@ public class MinimapUI : MonoBehaviour
             Debug.Log($"[MinimapUI] {message}");
         }
     }
+    #endif
 
     // ============================================================================
     // EDITOR HELPERS

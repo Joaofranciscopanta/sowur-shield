@@ -33,10 +33,6 @@ public class MinimapIcon : MonoBehaviour
     private void Awake()
     {
         minimapLayer = LayerMask.NameToLayer(minimapLayerName);
-        if (minimapLayer == -1)
-        {
-            Debug.LogWarning($"[MinimapIcon] Layer '{minimapLayerName}' not found! Please create this layer in the project.");
-        }
     }
 
     private void Start()
@@ -111,8 +107,6 @@ public class MinimapIcon : MonoBehaviour
         {
             iconRenderer.transform.localRotation = Quaternion.identity; // (0, 0, 0) for 2D XY plane
         }
-
-        LogDebug($"Icon created for {gameObject.name} at world Z={iconObject.transform.position.z}");
     }
 
     private Sprite GetDefaultIconSprite()
@@ -330,6 +324,7 @@ public class MinimapIcon : MonoBehaviour
     // DEBUG & LOGGING
     // ============================================================================
 
+    #if UNITY_EDITOR
     private void LogDebug(string message)
     {
         if (enableDebugLogs)
@@ -337,6 +332,7 @@ public class MinimapIcon : MonoBehaviour
             Debug.Log($"[MinimapIcon] {message}");
         }
     }
+    #endif
 
     // ============================================================================
     // EDITOR HELPERS

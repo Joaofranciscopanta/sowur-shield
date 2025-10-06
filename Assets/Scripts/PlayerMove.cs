@@ -33,7 +33,6 @@ public class PlayerMove : MonoBehaviour
     private bool isDashing;
     private bool movementEnabled = true;
 
-    // Referência ao inventário
     private Inventory inventory;
 
     public void Awake()
@@ -42,7 +41,6 @@ public class PlayerMove : MonoBehaviour
         animator = GetComponent<Animator>();
         inventory = GetComponent<Inventory>();
 
-        // Se o interactionPoint não for definido, use a posição do jogador
         if (interactionPoint == null)
             interactionPoint = transform;
     }
@@ -64,9 +62,7 @@ public class PlayerMove : MonoBehaviour
     );
 }
 
-// Atualiza a animação com base no movimento
-animator.SetBool("isWalking", moveInput != Vector2.zero);
-
+        animator.SetBool("isWalking", moveInput != Vector2.zero);
     }
 
     public void FixedUpdate()
@@ -78,7 +74,6 @@ animator.SetBool("isWalking", moveInput != Vector2.zero);
 
         float currentSpeed = isSprinting ? sprintSpeed : walkSpeed;
         rb.linearVelocity = moveInput * currentSpeed;
-
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -149,51 +144,43 @@ animator.SetBool("isWalking", moveInput != Vector2.zero);
 
     private void DetectAndInteract()
     {
-        // Don't interact if any slot is being dragged
         if (InventorySlot.IsAnySlotDragging)
         {
-            return; // Don't interact when dragging items
+            return;
         }
-        
-        // Don't interact if UI is active or if mouse is over UI
+
         if (UIManager.Instance != null && UIManager.Instance.IsAnyPanelOpen())
         {
-            // Check if mouse is over UI element
-            if (UnityEngine.EventSystems.EventSystem.current != null && 
+            if (UnityEngine.EventSystems.EventSystem.current != null &&
                 UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
             {
-                return; // Don't interact when mouse is over UI
+                return;
             }
         }
 
-        // Use InteractionManager for proximity-based E key interactions
-        // Note: This is different from cursor-based left-click interactions
+        // Use InteractionManager for proximity-based E key interactions (not cursor-based clicks)
         if (InteractionManager.Instance != null)
         {
             if (InteractionManager.Instance.CanInteract())
             {
                 InteractionManager.Instance.TriggerInteraction();
-                
-                // Show interaction effect at the current interactable's position
+
                 var currentInteractable = InteractionManager.Instance.GetCurrentInteractable();
                 if (currentInteractable != null && currentInteractable is MonoBehaviour mb)
                 {
                     ShowInteractionEffect(mb.transform.position);
                 }
-                
-                return; // InteractionManager handled the interaction
+
+                return;
             }
         }
 
-        // Fallback to old collision-based system if InteractionManager is not available
-        // Obter o ponto de origem da interação (pode ser o centro do jogador ou um ponto à frente)
+        // Fallback collision-based detection if InteractionManager unavailable
         Vector2 interactionSource = interactionPoint != null ?
             interactionPoint.position : transform.position;
 
-        // Detectar todos os objetos interagíveis dentro do raio
         Collider2D[] colliders = Physics2D.OverlapCircleAll(interactionSource, interactionRadius, interactableLayer);
 
-        // Ordenar por distância (para interagir sempre com o mais próximo primeiro)
         System.Array.Sort(colliders, (a, b) =>
             (Vector2.Distance(interactionSource, a.transform.position)
             .CompareTo(Vector2.Distance(interactionSource, b.transform.position))));
@@ -203,13 +190,8 @@ animator.SetBool("isWalking", moveInput != Vector2.zero);
             IInteractable interactable = collider.GetComponent<IInteractable>();
             if (interactable != null)
             {
-                // Chamar a interação - cada objeto gerencia sua própria lógica
                 interactable.Interact();
-
-                // Mostrar efeito visual de interação (opcional)
                 ShowInteractionEffect(collider.transform.position);
-
-                // Parar após a primeira interação
                 break;
             }
         }
@@ -217,11 +199,10 @@ animator.SetBool("isWalking", moveInput != Vector2.zero);
 
     private void ShowInteractionEffect(Vector3 position)
     {
-        // Se um prefab de efeito estiver configurado, instancia-o
         if (interactionEffectPrefab != null)
         {
             GameObject effect = Instantiate(interactionEffectPrefab, position, Quaternion.identity);
-            Destroy(effect, 1f); // Destroi após 1 segundo
+            Destroy(effect, 1f);
         }
     }
 
@@ -238,15 +219,13 @@ animator.SetBool("isWalking", moveInput != Vector2.zero);
     {
         movementEnabled = false;
         moveInput = Vector2.zero;
-        rb.linearVelocity = Vector2.zero; // Stop immediately
-        
-        // Update animator to idle
+        rb.linearVelocity = Vector2.zero;
+
         if (animator != null)
         {
             animator.SetFloat("Speed", 0f);
             animator.SetBool("IsMoving", false);
         }
-        
     }
 
     public void EnableMovement()
@@ -259,13 +238,11 @@ animator.SetBool("isWalking", moveInput != Vector2.zero);
         return movementEnabled;
     }
 
-    // Método público para obter o inventário
     public Inventory GetInventory()
     {
         return inventory;
     }
 
-    // Método para acessar o item atualmente selecionado
     public Item GetSelectedItem()
     {
         if (inventory != null)
@@ -276,7 +253,6 @@ animator.SetBool("isWalking", moveInput != Vector2.zero);
         return null;
     }
 
-    // Método para acessar o stack completo do item selecionado
     public ItemStack GetSelectedItemStack()
     {
         return inventory != null ? inventory.SelectedItem : new ItemStack();

@@ -104,19 +104,11 @@ public class SleepConfirmationPanel : MonoBehaviour
             confirmButton.onClick.RemoveAllListeners();
             confirmButton.onClick.AddListener(OnConfirmClicked);
         }
-        else
-        {
-            Debug.LogWarning("[SleepConfirmationPanel] Button not assigned");
-        }
-        
+
         if (cancelButton != null)
         {
             cancelButton.onClick.RemoveAllListeners();
             cancelButton.onClick.AddListener(OnCancelClicked);
-        }
-        else
-        {
-            Debug.LogWarning("[SleepConfirmationPanel] Button not assigned");
         }
     }
     
@@ -289,15 +281,13 @@ public class SleepConfirmationPanel : MonoBehaviour
     
     private void OnConfirmClicked()
     {
-        Debug.Log("Sleep confirmed by user");
         PlaySound(confirmSound);
         HideConfirmation();
         OnSleepConfirmed?.Invoke();
     }
-    
+
     private void OnCancelClicked()
     {
-        Debug.Log("Sleep cancelled by user");
         PlaySound(cancelSound);
         HideConfirmation();
         OnSleepCancelled?.Invoke();
@@ -378,22 +368,12 @@ public class SleepConfirmationPanel : MonoBehaviour
         {
             wasTimePaused = timeController.isPaused;
             timeController.isPaused = true;
-            Debug.Log("Game time paused for sleep confirmation");
         }
-        else
-        {
-            Debug.LogWarning("TimeController not found - cannot pause time");
-        }
-        
+
         // Disable player movement
         if (playerMove != null)
         {
             playerMove.DisableMovement();
-            Debug.Log("Player movement disabled for sleep confirmation");
-        }
-        else
-        {
-            Debug.LogWarning("PlayerMove not found - cannot disable movement");
         }
     }
 
@@ -403,14 +383,12 @@ public class SleepConfirmationPanel : MonoBehaviour
         if (timeController != null)
         {
             timeController.isPaused = wasTimePaused;
-            Debug.Log("Game time resumed from sleep confirmation");
         }
-        
+
         // Re-enable player movement
         if (playerMove != null)
         {
             playerMove.EnableMovement();
-            Debug.Log("Player movement re-enabled from sleep confirmation");
         }
     }
     
@@ -421,7 +399,6 @@ public class SleepConfirmationPanel : MonoBehaviour
     {
         if (sleepFadeOverlay == null || sleepFadeCanvasGroup == null)
         {
-            Debug.LogWarning("Sleep fade overlay not configured, skipping fade effect");
             onFadeComplete?.Invoke();
             return;
         }
@@ -454,8 +431,7 @@ public class SleepConfirmationPanel : MonoBehaviour
         // Make sure overlay is active and visible
         sleepFadeOverlay.SetActive(true);
         sleepFadeCanvasGroup.alpha = 0f;
-        
-        Debug.Log("Starting sleep fade to black");
+
         // Fade to black
         float elapsed = 0f;
         while (elapsed < sleepFadeDuration)
@@ -467,20 +443,17 @@ public class SleepConfirmationPanel : MonoBehaviour
             sleepFadeCanvasGroup.alpha = Mathf.Lerp(0f, 1f, curveValue);
             yield return null;
         }
-        
+
         sleepFadeCanvasGroup.alpha = 1f;
-        Debug.Log("Sleep fade to black completed");
         // Hold in black
         yield return new WaitForSecondsRealtime(sleepFadeHoldDuration);
-        
-        Debug.Log("Sleep fade hold period completed");
+
         sleepFadeCoroutine = null;
         onFadeComplete?.Invoke();
     }
     
     private System.Collections.IEnumerator SleepFadeInSequence(System.Action onFadeComplete)
     {
-        Debug.Log("Starting sleep fade in from black");
         // Fade back in
         float elapsed = 0f;
         while (elapsed < sleepFadeDuration)
@@ -498,8 +471,7 @@ public class SleepConfirmationPanel : MonoBehaviour
         
         // ENSURE GAME STATE IS FULLY RESTORED
         ForceGameStateRestore();
-        
-        Debug.Log("Sleep fade in completed");
+
         sleepFadeCoroutine = null;
         onFadeComplete?.Invoke();
     }
@@ -512,22 +484,19 @@ public class SleepConfirmationPanel : MonoBehaviour
         // Force time controller to resume if it's still paused
         if (timeController != null && timeController.isPaused && !wasTimePaused)
         {
-            Debug.Log("Force resuming time controller after sleep");
             timeController.isPaused = false;
         }
-        
+
         // Force player movement to be enabled
         if (playerMove != null && !playerMove.IsMovementEnabled())
         {
-            Debug.Log("Force re-enabling player movement after sleep");
             playerMove.EnableMovement();
         }
-        
+
         #if UNITY_EDITOR
         // In editor, ensure time scale is correct
         if (Time.timeScale != 1f)
         {
-            Debug.Log("Force setting time scale to 1 in editor");
             Time.timeScale = 1f;
         }
         #endif

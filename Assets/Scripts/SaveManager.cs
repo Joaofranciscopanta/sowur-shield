@@ -421,10 +421,12 @@ public class SaveManager : MonoBehaviour
     
     private void LogDebug(string message)
     {
+        #if UNITY_EDITOR
         if (enableDebugLogs)
         {
             Debug.Log($"[SaveManager] {message}");
         }
+        #endif
     }
     
     private void LogError(string message)

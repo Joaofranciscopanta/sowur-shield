@@ -119,27 +119,10 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
 
     public void OnWindowBlocked(string blockedBy)
     {
-        Debug.LogWarning($"[DialogueTreeUI] Cannot start dialogue - blocked by {blockedBy}");
     }
     
     private void ValidateComponents()
     {
-        if (dialoguePanel == null)
-            Debug.LogError("DialogueTreeUI: dialoguePanel is not assigned!");
-        
-        if (dialogueText == null)
-            Debug.LogError("DialogueTreeUI: dialogueText is not assigned!");
-        
-        if (choicePanel == null)
-            Debug.LogError("DialogueTreeUI: choicePanel is not assigned!");
-        
-        if (choiceContainer == null)
-            Debug.LogError("DialogueTreeUI: choiceContainer is not assigned!");
-        
-        if (choiceButtonPrefab == null)
-            Debug.LogError("DialogueTreeUI: choiceButtonPrefab is not assigned!");
-
-        
         if (portraitManager == null)
             portraitManager = GetComponentInChildren<PortraitManager>();
         
@@ -170,8 +153,7 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
             typewriter = GetComponentInChildren<TypewriterEffect>();
         if (typewriter == null)
             typewriter = FindFirstObjectByType<TypewriterEffect>();
-        
-        
+
         // Find ConversationMemory
         conversationMemory = ConversationMemory.Instance;
     }
@@ -183,27 +165,23 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
     {
         if (dialogueTree == null)
         {
-            Debug.LogError("DialogueTreeUI: Cannot start dialogue - dialogueTree is null");
             return;
         }
 
         if (isDialogueActive)
         {
-            Debug.LogWarning("DialogueTreeUI: Cannot start dialogue - dialogue is already active");
             return;
         }
 
         // Use UIManager to try opening this window
         if (UIManager.Instance != null && !UIManager.Instance.TryOpenWindow(this))
         {
-            Debug.LogWarning("DialogueTreeUI: Cannot start dialogue - blocked by another window");
             return;
         }
         
         // Validate tree
         if (!dialogueTree.ValidateTree())
         {
-            Debug.LogError($"DialogueTreeUI: Dialogue tree {dialogueTree.conversationId} failed validation");
             return;
         }
         
@@ -232,7 +210,6 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
         }
         else
         {
-            Debug.LogError($"DialogueTreeUI: Start node '{startNodeId}' not found in dialogue tree");
             EndDialogue();
         }
         
@@ -367,7 +344,6 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
         }
         else
         {
-            Debug.LogWarning("DialogueTreeUI: Choice node has no available choices");
             ContinueToNextNode();
         }
     }
@@ -456,7 +432,6 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
             }
             else
             {
-                Debug.LogError($"DialogueTreeUI: Next node '{choice.nextNodeId}' not found");
                 EndDialogue();
             }
         }

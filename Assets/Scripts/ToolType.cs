@@ -4,10 +4,9 @@ using System.Collections.Generic;
 [CreateAssetMenu(fileName = "New Tool Type", menuName = "Farming/Tool Type")]
 public class ToolType : ScriptableObject
 {
-    public string typeName;       // Ex: "Hoe", "WateringCan"
-    public List<string> itemNames; // Ex: "Bronze Hoe", "Iron Hoe", etc.
+    public string typeName;
+    public List<string> itemNames;
 
-    // Verifica se um item é deste tipo de ferramenta
     public bool MatchesItem(Item item)
     {
         if (item == null || item.itemType != ItemType.Tool)

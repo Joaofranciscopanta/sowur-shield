@@ -174,9 +174,6 @@ public class MinimapController : MonoBehaviour, IUIWindow
         if (panDownAction != null) panDownAction.action.Enable();
         if (panLeftAction != null) panLeftAction.action.Enable();
         if (panRightAction != null) panRightAction.action.Enable();
-
-        // Fallback: keyboard input
-        LogDebug("Input actions setup complete");
     }
 
     private void CleanupInput()
@@ -211,7 +208,6 @@ public class MinimapController : MonoBehaviour, IUIWindow
         if (UIManager.Instance != null)
         {
             UIManager.Instance.RegisterWindow(this);
-            LogDebug("Registered with UIManager");
         }
     }
 
@@ -273,8 +269,6 @@ public class MinimapController : MonoBehaviour, IUIWindow
         MinimapState previousState = currentState;
         currentState = newState;
 
-        LogDebug($"State changing: {previousState} → {newState}");
-
         // Handle state transitions
         switch (newState)
         {
@@ -320,8 +314,6 @@ public class MinimapController : MonoBehaviour, IUIWindow
         {
             UIManager.Instance.TryCloseWindow(this);
         }
-
-        LogDebug("Transitioned to Normal mode");
     }
 
     private void TransitionToSemiTransparent(bool immediate)
@@ -348,8 +340,6 @@ public class MinimapController : MonoBehaviour, IUIWindow
         {
             UIManager.Instance.TryCloseWindow(this);
         }
-
-        LogDebug("Transitioned to Semi-Transparent mode");
     }
 
     private void TransitionToFullscreen(bool immediate)
@@ -360,7 +350,6 @@ public class MinimapController : MonoBehaviour, IUIWindow
             bool success = UIManager.Instance.TryOpenWindow(this);
             if (!success)
             {
-                LogDebug("Fullscreen mode blocked by another window");
                 // Revert to previous state
                 currentState = MinimapState.Normal;
                 return;
@@ -387,8 +376,6 @@ public class MinimapController : MonoBehaviour, IUIWindow
 
         // Disable player movement
         DisablePlayerMovement();
-
-        LogDebug("Transitioned to Fullscreen mode");
     }
 
     // ============================================================================
@@ -520,7 +507,6 @@ public class MinimapController : MonoBehaviour, IUIWindow
         {
             currentZoomIndex++;
             ApplyZoom();
-            LogDebug($"Zoomed in to level {currentZoomIndex} ({zoomLevels[currentZoomIndex]}x)");
         }
     }
 
@@ -536,7 +522,6 @@ public class MinimapController : MonoBehaviour, IUIWindow
         {
             currentZoomIndex--;
             ApplyZoom();
-            LogDebug($"Zoomed out to level {currentZoomIndex} ({zoomLevels[currentZoomIndex]}x)");
         }
     }
 
@@ -562,7 +547,6 @@ public class MinimapController : MonoBehaviour, IUIWindow
         if (playerMove != null)
         {
             playerMove.DisableMovement();
-            LogDebug("Player movement disabled");
         }
     }
 
@@ -571,7 +555,6 @@ public class MinimapController : MonoBehaviour, IUIWindow
         if (playerMove != null)
         {
             playerMove.EnableMovement();
-            LogDebug("Player movement restored");
         }
     }
 
@@ -593,7 +576,6 @@ public class MinimapController : MonoBehaviour, IUIWindow
 
     public void OnWindowBlocked(string blockedBy)
     {
-        LogDebug($"Minimap fullscreen blocked by: {blockedBy}");
         // Could show a message to the user here
     }
 
@@ -621,6 +603,7 @@ public class MinimapController : MonoBehaviour, IUIWindow
     // DEBUG & LOGGING
     // ============================================================================
 
+    #if UNITY_EDITOR
     private void LogDebug(string message)
     {
         if (enableDebugLogs)
@@ -628,6 +611,7 @@ public class MinimapController : MonoBehaviour, IUIWindow
             Debug.Log($"[MinimapController] {message}");
         }
     }
+    #endif
 }
 
 /// <summary>

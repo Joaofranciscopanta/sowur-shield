@@ -110,8 +110,6 @@ public class MinimapCamera : MonoBehaviour
         // Set near/far clip planes for 2D
         minimapCam.nearClipPlane = 0.1f;
         minimapCam.farClipPlane = 1000f;
-
-        LogDebug("Camera setup complete for 2D (XY plane)");
     }
 
     private void CreateRenderTexture()
@@ -130,7 +128,6 @@ public class MinimapCamera : MonoBehaviour
         }
 
         minimapCam.targetTexture = renderTexture;
-        LogDebug($"RenderTexture created: {renderTextureSize}x{renderTextureSize}");
     }
 
     private void InitializePosition()
@@ -151,8 +148,6 @@ public class MinimapCamera : MonoBehaviour
         // Point camera forward (looking at XY plane from -Z direction)
         // For 2D games, camera should have rotation (0, 0, 0) to look forward
         transform.rotation = Quaternion.identity; // (0, 0, 0)
-
-        LogDebug($"Camera initialized at position: {transform.position}, rotation: {transform.rotation.eulerAngles}");
     }
 
     // ============================================================================
@@ -212,8 +207,6 @@ public class MinimapCamera : MonoBehaviour
             // Reset pan offset when returning to follow mode
             panOffset = Vector3.zero;
         }
-
-        LogDebug($"Follow player: {follow}");
     }
 
     /// <summary>
@@ -258,8 +251,6 @@ public class MinimapCamera : MonoBehaviour
                 zoomTransitionDuration
             ).SetEase(zoomEase);
         }
-
-        LogDebug($"Zoom level set to: {zoomLevel} (size: {targetSize})");
     }
 
     /// <summary>
@@ -276,7 +267,6 @@ public class MinimapCamera : MonoBehaviour
     public void SetPlayerTarget(Transform target)
     {
         playerTarget = target;
-        LogDebug($"Player target set: {target?.name ?? "null"}");
     }
 
     /// <summary>
@@ -363,6 +353,7 @@ public class MinimapCamera : MonoBehaviour
     // DEBUG & LOGGING
     // ============================================================================
 
+    #if UNITY_EDITOR
     private void LogDebug(string message)
     {
         if (enableDebugLogs)
@@ -370,6 +361,7 @@ public class MinimapCamera : MonoBehaviour
             Debug.Log($"[MinimapCamera] {message}");
         }
     }
+    #endif
 
     // ============================================================================
     // EDITOR HELPERS
