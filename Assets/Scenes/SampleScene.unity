@@ -18553,7 +18553,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7cded372b4baad4ea6dbdaf070b4930, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animalData: {fileID: 11400000, guid: 51020104a050b50478836d2b7b27248b, type: 2}
+  animalData: {fileID: 11400000, guid: f709c53e82b59d34fa594b131fe94621, type: 2}
   assignedZone: {fileID: 490554983}
   interactionRadius: 0.3
   physicsRadius: 0.11
