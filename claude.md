@@ -852,3 +852,28 @@ find Assets -name "*.meta" -newer .git/FETCH_HEAD
 4. **Asset Management**: Addressable asset system
 5. **Build Pipeline**: Automated build and deployment
 6. **Delete debug logs after a feature is done**
+
+## WebGL Demo Deployment (GitHub Pages)
+
+### Important: Sidebar Styling Maintenance
+
+**CRITICAL**: The `docs/TemplateData/style.css` file contains custom sidebar styling for the release notes panel. This styling MUST be preserved when rebuilding WebGL demos.
+
+**Problem**: Unity's WebGL build process overwrites `style.css` with a minimal default version, removing all custom sidebar styles.
+
+**Solution**: After each WebGL build, the sidebar CSS must be restored to `docs/TemplateData/style.css`.
+
+**Required CSS Features**:
+- Fixed right sidebar (`#release-notes`) with gradient background
+- Responsive layout that adjusts Unity container position
+- Styled release notes sections with color-coded headers
+- Mobile-responsive design with collapsible sidebar
+- Hover effects on footer links
+
+**Workflow**:
+1. Build WebGL demo: Unity overwrites `style.css` with default
+2. Restore sidebar styling to `docs/TemplateData/style.css`
+3. Commit and push updated `docs/` folder to GitHub
+4. GitHub Pages automatically deploys the updated demo
+
+**Reference**: The full sidebar CSS is maintained in the repository. Always restore it after Unity builds to keep the professional demo presentation.
