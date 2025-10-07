@@ -12,6 +12,11 @@
 !docs/Build/
 !docs/Build/*
 
+# Exception: Allow Builds/WebGL_Demo/Build for demo
+!Builds/WebGL_Demo/
+!Builds/WebGL_Demo/Build/
+!Builds/WebGL_Demo/Build/*
+
 
 # Unity Asset store tools
 [Aa]ssets/AssetStoreTools*

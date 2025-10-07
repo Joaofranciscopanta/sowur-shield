@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Sowur Shield - Demo</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+  </head>
+  <body>
+    <div id="release-notes">
+      <h2>🌾 Sowur Shield - Demo</h2>
+      <div class="version">Version 1.0 - October 2024</div>
+
+      <h3>📝 Release Notes</h3>
+      <div class="notes-content">
+        <div class="note-section">
+          <h4>✨ Core Features</h4>
+          <ul>
+            <li>Advanced farming system with multi-stage crop growth</li>
+            <li>Soil state management (Till, Water, Plant, Harvest)</li>
+            <li>36-slot inventory with drag & drop UI</li>
+            <li>Interactive dialogue system with branching conversations</li>
+            <li>NPC memory system - they remember your conversations!</li>
+            <li>Tool-based interaction (Hoe, Watering Can, Shovel)</li>
+            <li>Automatic selling system via SellBox</li>
+            <li>Day/night cycle with time management</li>
+            <li>Sleep system to advance time and trigger sales</li>
+            <li>Dual-grid tilemap rendering system</li>
+          </ul>
+        </div>
+
+        <div class="note-section">
+          <h4>🆕 Recent Updates</h4>
+          <ul>
+            <li><strong>Minimap System:</strong> 3-state minimap (Normal, Semi-transparent, Fullscreen)</li>
+            <li><strong>Animal System:</strong> Chickens with AI behavior and interaction</li>
+            <li><strong>Improved UI:</strong> Enhanced interaction prompts and visual feedback</li>
+            <li><strong>Main Menu:</strong> Professional menu with settings and credits</li>
+            <li><strong>Scene Transitions:</strong> Smooth loading screens with tips</li>
+            <li><strong>Bug Fixes:</strong> Resolved NPC interaction and tool priority issues</li>
+          </ul>
+        </div>
+
+        <div class="note-section">
+          <h4>🎯 Controls</h4>
+          <ul>
+            <li><strong>WASD/Arrows:</strong> Move character</li>
+            <li><strong>E:</strong> Interact with NPCs/objects</li>
+            <li><strong>Left Click:</strong> Use equipped tool/interact</li>
+            <li><strong>I:</strong> Open/close inventory</li>
+            <li><strong>M:</strong> Toggle minimap modes</li>
+            <li><strong>1-9:</strong> Quick select inventory slots</li>
+            <li><strong>ESC:</strong> Open game menu</li>
+            <li><strong>Shift:</strong> Sprint</li>
+          </ul>
+        </div>
+
+        <div class="note-section">
+          <h4>🎮 How to Play</h4>
+          <ul>
+            <li>Use the <strong>Hoe</strong> to till soil (converts ground to farmland)</li>
+            <li>Use <strong>Watering Can</strong> to water tilled soil</li>
+            <li>Plant <strong>seeds</strong> on watered soil</li>
+            <li>Wait for crops to grow over several days</li>
+            <li>Harvest mature crops with <strong>Left Click</strong></li>
+            <li>Sell items by placing them in the <strong>SellBox</strong></li>
+            <li>Sleep in bed to advance time and complete sales</li>
+            <li>Talk to NPCs with <strong>E key</strong> for branching dialogue</li>
+          </ul>
+        </div>
+
+        <div class="note-section">
+          <h4>ℹ️ Demo Notes</h4>
+          <ul>
+            <li>Save/Load functionality disabled in demo build</li>
+            <li>Play session resets on page refresh</li>
+            <li>This is a showcase build - full version in development</li>
+            <li>Built with Unity 2022.3.46f1 LTS</li>
+          </ul>
+        </div>
+
+        <div class="note-section">
+          <h4>👥 Team</h4>
+          <ul>
+            <li><strong>João Francisco Pantaleão</strong> - CTO & Owner</li>
+            <li><strong>Lucas Daniel</strong> - Co-Owner & Lead Developer</li>
+            <li><strong>Isabella Freitas</strong> - Art Director & Character Design</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-links">
+        <a href="https://github.com/Joaofranciscopanta/sowur-shield" target="_blank">📂 View on GitHub</a>
+        <a href="https://github.com/Joaofranciscopanta/sowur-shield/blob/main/README.md" target="_blank">📖 Documentation</a>
+      </div>
+    </div>
+
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+      </div>
+      <div id="unity-warning"> </div>
+      <div id="unity-footer">
+        <div id="unity-logo-title-footer"></div>
+        <div id="unity-fullscreen-button"></div>
+        <div id="unity-build-title">Sowur Shield</div>
+      </div>
+    </div>
+    <script>
+      var canvas = document.querySelector("#unity-canvas");
+
+      // Shows a temporary message banner/ribbon for a few seconds, or
+      // a permanent error message on top of the canvas if type=='error'.
+      // If type=='warning', a yellow highlight color is used.
+      // Modify or remove this function to customize the visually presented
+      // way that non-critical warnings and error messages are presented to the
+      // user.
+      function unityShowBanner(msg, type) {
+        var warningBanner = document.querySelector("#unity-warning");
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/WebGL_Demo.loader.js";
+      var config = {
+        arguments: [],
+        dataUrl: buildUrl + "/WebGL_Demo.data",
+        frameworkUrl: buildUrl + "/WebGL_Demo.framework.js",
+        codeUrl: buildUrl + "/WebGL_Demo.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "Sovl Studios",
+        productName: "Sowur Shield",
+        productVersion: "1.0",
+        showBanner: unityShowBanner,
+      };
+
+      // By default, Unity keeps WebGL canvas render target size matched with
+      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+      // Set this to false if you want to decouple this synchronization from
+      // happening inside the engine, and you would instead like to size up
+      // the canvas DOM size and WebGL render target sizes yourself.
+      // config.matchWebGLToCanvasSize = false;
+
+      // If you would like all file writes inside Unity Application.persistentDataPath
+      // directory to automatically persist so that the contents are remembered when
+      // the user revisits the site the next time, uncomment the following line:
+      // config.autoSyncPersistentDataPath = true;
+      // This autosyncing is currently not the default behavior to avoid regressing
+      // existing user projects that might rely on the earlier manual
+      // JS_FileSystem_Sync() behavior, but in future Unity version, this will be
+      // expected to change.
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+        document.querySelector("#unity-container").className = "unity-mobile";
+        canvas.className = "unity-mobile";
+
+        // To lower canvas resolution on mobile devices to gain some
+        // performance, uncomment the following line:
+        // config.devicePixelRatio = 1;
+
+
+      } else {
+        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
+        canvas.style.width = "960px";
+        canvas.style.height = "600px";
+      }
+
+      document.querySelector("#unity-loading-bar").style.display = "block";
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
+              }).then((unityInstance) => {
+                document.querySelector("#unity-loading-bar").style.display = "none";
+                document.querySelector("#unity-fullscreen-button").onclick = () => {
+                  unityInstance.SetFullscreen(1);
+                };
+
+              }).catch((message) => {
+                alert(message);
+              });
+            };
+
+      document.body.appendChild(script);
+
+    </script>
+  </body>
+</html>
