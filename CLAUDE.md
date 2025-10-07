@@ -23,6 +23,7 @@ This project uses `main` as the primary branch. All references to "master" are d
 - **Time Management**: Day/night cycle with event-driven progression
 - **Save/Load System**: Complete game state persistence
 - **Dual-Grid Tilemap**: Sophisticated 2D world rendering system
+- **Minimap System**: Three-state minimap with zoom/pan controls and icon support
 
 ### Technical Highlights:
 - **Unity Input System**: Modern input handling with customizable bindings
@@ -39,7 +40,7 @@ Assets/
 ├── Scripts/
 │   ├── Core Systems/
 │   │   ├── PlayerMove.cs - Player movement, input handling, interaction
-│   │   ├── InteractionManager.cs - Centralized interaction system  
+│   │   ├── InteractionManager.cs - Centralized interaction system
 │   │   ├── UIManager.cs - UI panel management
 │   │   ├── UIInput.cs - UI input handling and cursor management
 │   │   └── IInteractable.cs - Interface for interactive objects
@@ -83,7 +84,7 @@ Assets/
 │   │   ├── PlayerDataManager.cs - Player data persistence
 │   │   ├── SaveManager.cs - Save/load system
 │   │   ├── PlayerStats.cs - Player statistics (money, etc.)
-│   │   ├── TimeController.cs - Time/day cycle system  
+│   │   ├── TimeController.cs - Time/day cycle system
 │   │   ├── SceneTransitionManager.cs - Scene management
 │   │   └── MainMenuManager.cs - Main menu functionality
 │   │
@@ -93,6 +94,13 @@ Assets/
 │   │   ├── MainMenuUI.cs - Main menu UI
 │   │   ├── SaveGameUI.cs - Save game interface
 │   │   └── SleepConfirmationPanel.cs - Sleep confirmation dialog
+│   │
+│   ├── Minimap/
+│   │   ├── MinimapController.cs - State management and input handling
+│   │   ├── MinimapCamera.cs - Camera following and rendering
+│   │   ├── MinimapUI.cs - UI display and transitions
+│   │   ├── MinimapIcon.cs - Icon system for objects
+│   │   └── MinimapSetupGuide.md - Complete setup instructions
 │   │
 │   └── Utility/
 │       ├── FollowPlayer.cs - Camera following
@@ -105,7 +113,7 @@ Assets/
 
 ### Design Patterns Used:
 - **Singleton Pattern**: Used extensively for managers (UIManager, InteractionManager, SaveManager, GameTimeController)
-- **Component System**: Heavy reliance on Unity's component-based architecture  
+- **Component System**: Heavy reliance on Unity's component-based architecture
 - **Interface-Driven Design**: Consistent use of IInteractable for all interactive objects
 - **Observer Pattern**: Event-driven communication between systems
 - **Strategy Pattern**: Different interaction behaviors based on tool types and item tags
@@ -118,6 +126,20 @@ The project follows excellent separation of concerns with modular script organiz
 - **Farming System**: Sophisticated crop growth and soil management
 - **Dialogue System**: Tree-based branching conversations
 - **Save System**: Comprehensive data persistence with ISaveable interface
+- **Minimap System**: Three-state minimap with zoom/pan and icon support
+
+### Best Practices Observed
+- Comprehensive null checking throughout codebase
+- Debug logging for troubleshooting
+- Modular script organization
+- Clear separation of concerns
+- Extensive inline documentation
+
+### Performance Considerations
+- Object pooling for UI elements
+- Efficient collision detection using LayerMasks
+- Conditional UI updates to avoid unnecessary redraws
+- Distance-based interaction optimization
 
 ## Core Game Systems
 
@@ -178,7 +200,7 @@ The project follows excellent separation of concerns with modular script organiz
 **Features:**
 - **Distance Limiting**: Tools limited to `maxDistance` from player
 - **Tag-Based System**: Tools identified by itemTags (e.g., "Hoe", "WateringCan", "Shovel")
-- **Visual Feedback**: 
+- **Visual Feedback**:
   - Green cursor: Interactable objects present
   - Yellow cursor: Tool can be used
   - White cursor: No interaction available
@@ -224,7 +246,7 @@ The project follows excellent separation of concerns with modular script organiz
 
 **Auto-Close Behavior:**
 - **Movement Detection**: WASD or Arrow keys held for 0.5+ seconds
-- **Interaction Detection**: E key held for 0.5+ seconds  
+- **Interaction Detection**: E key held for 0.5+ seconds
 - **Smart Reset**: Brief key presses won't trigger close (allows responsive UI)
 - **Automatic Recovery**: Movement immediately restored after auto-close
 
@@ -269,11 +291,49 @@ The project follows excellent separation of concerns with modular script organiz
 - Farming data (crops, soil states)
 - Relationship data (NPC interactions)
 
+### 11. Minimap System
+**Three-State Display System:**
+
+**Core Components:**
+- `MinimapController.cs`: State management and input handling
+- `MinimapCamera.cs`: Camera following, zoom, and rendering
+- `MinimapUI.cs`: UI display and smooth transitions
+- `MinimapIcon.cs`: Icon system for objects (NPCs, SellBox, etc.)
+
+**Features:**
+- **Three Display States**: Normal (corner), Semi-Transparent (50% opacity), Fullscreen
+- **Smart Camera Following**: Tracks player in corner modes, manual control in fullscreen
+- **Zoom System**: Three levels (0.5x, 1x, 2x) with smooth transitions
+- **Pan Controls**: Arrow keys or mouse drag in fullscreen mode
+- **Player Movement Control**: Automatically disables movement in fullscreen
+- **UIManager Integration**: Proper window management with ESC key support
+- **Performance Optimized**: RenderTexture rendering on dedicated layer
+- **Icon System**: Customizable icons for NPCs, buildings, quest markers, etc.
+
+**State Behavior:**
+- **Normal**: Top-right corner, 100% opacity, follows player, movement enabled
+- **Semi-Transparent**: Top-right corner, 50% opacity, follows player, movement enabled
+- **Fullscreen**: Center screen, 100% opacity, zoom/pan enabled, movement disabled
+
+**Input Controls:**
+- **M Key**: Cycle through states (Normal → Semi-Transparent → Fullscreen → Normal)
+- **Mouse Scroll**: Zoom in/out (fullscreen only)
+- **Arrow Keys**: Pan map (fullscreen only)
+- **Mouse Drag**: Pan map (fullscreen only)
+- **ESC Key**: Close fullscreen mode
+
+**Technical Implementation:**
+- DOTween transitions for professional animations
+- RenderTexture for optimized rendering
+- Layer-based visibility (Minimap layer)
+- Integration with existing PlayerMove for movement control
+- IUIWindow interface for proper UI coordination
+
 ## Bug Fixes Applied
 
 ### Bug #1: SellBox Interaction (E Key)
 **Issue**: Could not interact with SellBox by pressing E when close
-**Root Causes**: 
+**Root Causes**:
 1. Input action configured with `Hold(duration=0.2)` requiring 0.2s hold instead of press
 2. PlayerControls.cs not regenerated after .inputactions file modification
 3. Possible UI state blocking interactions
@@ -285,7 +345,7 @@ The project follows excellent separation of concerns with modular script organiz
 4. Added comprehensive debug logging to track interaction flow
 5. Enhanced InteractionManager to use SellBox's actual interaction range
 
-**Files Modified**: 
+**Files Modified**:
 - `PlayerControls.inputactions`
 - `PlayerMove.cs:58-62,144-151,152-197`
 - `InteractionManager.cs:176-179,205-214`
@@ -309,7 +369,7 @@ The project follows excellent separation of concerns with modular script organiz
 1. Objects in hex (SellBox, NPCs, Soil) - HIGHEST PRIORITY
 2. Tools in hand (Hoe, WateringCan) - LOWEST PRIORITY
 
-**Files Modified**: 
+**Files Modified**:
 - `CursorController.cs:115-175,217-256,303-312` - Priority system and detection
 - `SellBox.cs:86,112-118,281-286,311-316` - Movement control integration
 
@@ -324,7 +384,7 @@ The project follows excellent separation of concerns with modular script organiz
 
 2. **New Priority System for Left-Click**:
    - **HIGHEST**: Direct mouse cursor collision with sprites (SellBox, NPCs)
-   - **MEDIUM**: Hex-based interaction for grid objects (SoilBlocks, Beds)  
+   - **MEDIUM**: Hex-based interaction for grid objects (SoilBlocks, Beds)
    - **LOWEST**: Tool usage when no objects are present
 
 3. **Visual Feedback Enhancement**:
@@ -356,7 +416,7 @@ The project follows excellent separation of concerns with modular script organiz
 
 2. **Refined Detection Hierarchy**:
    - **Direct Mouse Hit**: Uses raycasting and OverlapPoint for SellBox/NPCs
-   - **Grid Detection**: Uses 0.3f radius only for SoilBlock/Bed components  
+   - **Grid Detection**: Uses 0.3f radius only for SoilBlock/Bed components
    - **Tool Usage**: Only when no objects detected at cursor position
 
 **Files Modified**:
@@ -384,19 +444,6 @@ The project follows excellent separation of concerns with modular script organiz
 - **Interface-Driven**: IInteractable interface for consistent interaction
 - **Singleton Pattern**: Used for managers (UIManager, InteractionManager)
 - **Event System**: Actions and delegates for loose coupling
-
-### Best Practices Observed
-- Comprehensive null checking throughout codebase
-- Debug logging for troubleshooting
-- Modular script organization
-- Clear separation of concerns
-- Extensive inline documentation
-
-### Performance Considerations
-- Object pooling for UI elements
-- Efficient collision detection using LayerMasks
-- Conditional UI updates to avoid unnecessary redraws
-- Distance-based interaction optimization
 
 ## Setup Requirements
 
@@ -463,7 +510,7 @@ The project follows excellent separation of concerns with modular script organiz
 
 **MainMenuUI.cs** - Complete main menu interface:
 - **New Game**: Starts fresh game with save overwrite confirmation
-- **Continue**: Loads existing save (disabled when no save exists) 
+- **Continue**: Loads existing save (disabled when no save exists)
 - **Settings**: Full audio/graphics settings with PlayerPrefs persistence
 - **Credits**: Expandable credits/about section
 - **Quit**: Application quit with confirmation dialog
@@ -543,7 +590,7 @@ GameMenuManager ← "Quit to Main Menu" ← In-Game ESC Menu ←────┘
 
 ### Files Added 📁
 - `MainMenuUI.cs` - Core main menu functionality and UI management
-- `MainMenuManager.cs` - Main menu coordinator and singleton manager  
+- `MainMenuManager.cs` - Main menu coordinator and singleton manager
 - `SceneTransitionManager.cs` - Advanced scene loading with transitions
 
 ### Setup Requirements 🔧
@@ -587,12 +634,12 @@ GameMenuManager ← "Quit to Main Menu" ← In-Game ESC Menu ←────┘
 
 ## Project Synchronization Strategy
 
-### 🔧 **CRITICAL FOR NEW CLAUDE CODE USERS**: 
+### 🔧 **CRITICAL FOR NEW CLAUDE CODE USERS**:
 **If you are joining this project with Claude Code, you MUST immediately replace/merge your CLAUDE.md with THIS one. This repository's CLAUDE.md takes PRIORITY - it contains 6 months of critical project knowledge, bug fixes, and architectural decisions that your Claude instance needs to function effectively on this codebase.**
 
 **DO THIS IMMEDIATELY:**
 1. **Backup your current CLAUDE.md** (if you want to preserve any custom instructions)
-2. **Use THIS repository's CLAUDE.md as the primary source**  
+2. **Use THIS repository's CLAUDE.md as the primary source**
 3. **Only add your custom instructions as additions, never replace existing content**
 
 ### Multi-Developer Workflow
@@ -604,15 +651,15 @@ GameMenuManager ← "Quit to Main Menu" ← In-Game ESC Menu ←────┘
    # Always start with latest main
    git checkout main
    git pull origin main
-   
+
    # Create feature branch
    git checkout -b feature/your-feature-name
-   
+
    # Work on your changes
    git add specific-files
    git commit -m "Descriptive message"
    git push origin feature/your-feature-name
-   
+
    # Create Pull Request for review
    gh pr create --title "Your Feature" --body "Description"
    ```
@@ -635,7 +682,7 @@ GameMenuManager ← "Quit to Main Menu" ← In-Game ESC Menu ←────┘
    - New scripts in Assets/Scripts/
    - Individual ScriptableObjects
    - Art assets and prefabs
-   
+
    # Coordinate before modifying (high conflict risk):
    - MainMenu.unity, SampleScene.unity
    - GameMenuManager.cs, SaveManager.cs
@@ -650,7 +697,7 @@ GameMenuManager ← "Quit to Main Menu" ← In-Game ESC Menu ←────┘
    # Set up persistent GitHub CLI access
    gh auth login
    gh repo set-default YOUR_USERNAME/sowur-shield
-   
+
    # Claude can then always:
    git pull origin main  # Sync latest changes
    git status           # Check project state
@@ -709,14 +756,14 @@ find Assets -name "*.meta" -newer .git/FETCH_HEAD
    ```bash
    # First, pull this repository (contains the authoritative CLAUDE.md)
    git pull origin main
-   
+
    # IMPORTANT: Use THIS repository's CLAUDE.md as your primary file
    # This CLAUDE.md contains critical project context your Claude instance needs:
    # - All bug fixes and solutions (SellBox interaction, Input System issues)
-   # - Complete architecture understanding 
+   # - Complete architecture understanding
    # - Unity setup requirements and component configurations
    # - Performance optimizations and debugging workflows
-   
+
    # If you have custom instructions, ADD them to this file, don't replace it
    ```
 
@@ -731,11 +778,11 @@ find Assets -name "*.meta" -newer .git/FETCH_HEAD
    ```bash
    # Before starting any work session:
    git checkout main && git pull origin main
-   
+
    # Check what teammates are working on:
    git branch -r
    gh pr list
-   
+
    # Share your work frequently:
    git push origin your-branch
    gh pr create --draft  # For work-in-progress sharing
@@ -744,7 +791,7 @@ find Assets -name "*.meta" -newer .git/FETCH_HEAD
 #### **File Ownership & Coordination**
 
 **🔒 High-Conflict Files (One person at a time):**
-- `Assets/Scenes/MainMenu.unity` 
+- `Assets/Scenes/MainMenu.unity`
 - `Assets/Scenes/SampleScene.unity`
 - `PlayerControls.inputactions`
 - `CLAUDE.md` (coordinate merges)
@@ -772,7 +819,7 @@ find Assets -name "*.meta" -newer .git/FETCH_HEAD
 - **Recovery**: Keep backup copies before major scene changes
 
 **CLAUDE.md Conflicts:**
-- **THIS repository's CLAUDE.md takes PRIORITY** 
+- **THIS repository's CLAUDE.md takes PRIORITY**
 - **Preserve all technical knowledge from this version**
 - **Only add new findings/solutions, never remove existing content**
 - **When in doubt, keep the version that has more debugging information**
@@ -804,4 +851,29 @@ find Assets -name "*.meta" -newer .git/FETCH_HEAD
 3. **Code Documentation**: API documentation generation
 4. **Asset Management**: Addressable asset system
 5. **Build Pipeline**: Automated build and deployment
-- delete debug logs after a feature is done
+6. **Delete debug logs after a feature is done**
+
+## WebGL Demo Deployment (GitHub Pages)
+
+### Important: Sidebar Styling Maintenance
+
+**CRITICAL**: The `docs/TemplateData/style.css` file contains custom sidebar styling for the release notes panel. This styling MUST be preserved when rebuilding WebGL demos.
+
+**Problem**: Unity's WebGL build process overwrites `style.css` with a minimal default version, removing all custom sidebar styles.
+
+**Solution**: After each WebGL build, the sidebar CSS must be restored to `docs/TemplateData/style.css`.
+
+**Required CSS Features**:
+- Fixed right sidebar (`#release-notes`) with gradient background
+- Responsive layout that adjusts Unity container position
+- Styled release notes sections with color-coded headers
+- Mobile-responsive design with collapsible sidebar
+- Hover effects on footer links
+
+**Workflow**:
+1. Build WebGL demo: Unity overwrites `style.css` with default
+2. Restore sidebar styling to `docs/TemplateData/style.css`
+3. Commit and push updated `docs/` folder to GitHub
+4. GitHub Pages automatically deploys the updated demo
+
+**Reference**: The full sidebar CSS is maintained in the repository. Always restore it after Unity builds to keep the professional demo presentation.

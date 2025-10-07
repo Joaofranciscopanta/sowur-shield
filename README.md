@@ -221,16 +221,18 @@ Assets/
 ### WebGL Build
 1. Switch platform to WebGL in Build Settings
 2. Build to `docs/` folder for GitHub Pages deployment
-3. **Important**: Restore custom CSS after build (see `DEPLOYMENT_GUIDE.md`)
+3. **Important**: Restore custom CSS after build (see `.documentation/DEPLOYMENT_GUIDE.md`)
 
-For detailed build instructions, see [HOW_TO_BUILD.md](HOW_TO_BUILD.md).
+For detailed build instructions, see [.documentation/HOW_TO_BUILD.md](.documentation/HOW_TO_BUILD.md).
 
 ---
 
 ## 📖 Documentation
 
 - **[CLAUDE.md](CLAUDE.md)** - Comprehensive project documentation and architecture guide
-- **[PATCH_NOTES.md](PATCH_NOTES.md)** - Version history and changelog
+- **[PATCH_NOTES.md](.documentation/PATCH_NOTES.md)** - Version history and changelog
+- **[NPC Canvas Fix Guide](.documentation/NPC_CANVAS_FIX_GUIDE.md)** - Troubleshooting NPC interaction prompts
+- **[Additional Documentation](.documentation/)** - Build guides, deployment instructions, and more
 
 ---
 
