@@ -55,7 +55,7 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
     
     [Header("Game Settings")]
-    [SerializeField] private string gameSceneName = "MainGameScene";
+    [SerializeField] private string gameSceneName = "SampleScene";
     
     // State management
     private bool isNewGameOverwrite = false;

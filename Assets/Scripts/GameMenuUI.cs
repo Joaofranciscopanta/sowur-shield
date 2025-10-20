@@ -285,16 +285,32 @@ public class GameMenuUI : MonoBehaviour
     
     private void OnMasterVolumeChanged(float value)
     {
-        AudioListener.volume = value;
+        // Save to PlayerPrefs
         PlayerPrefs.SetFloat("MasterVolume", value);
+
+        // Apply immediately to Unity's audio system
+        AudioListener.volume = value;
+
+        // Update GameMusicManager's volume in real-time
+        if (GameMusicManager.Instance != null)
+        {
+            GameMusicManager.Instance.UpdateVolume();
+        }
+
         PlayerPrefs.Save();
     }
     
     private void OnMusicVolumeChanged(float value)
     {
-        // Apply to music audio sources (implement as needed)
+        // Save to PlayerPrefs
         PlayerPrefs.SetFloat("MusicVolume", value);
         PlayerPrefs.Save();
+
+        // Update GameMusicManager's volume in real-time
+        if (GameMusicManager.Instance != null)
+        {
+            GameMusicManager.Instance.UpdateVolume();
+        }
     }
     
     private void OnSFXVolumeChanged(float value)

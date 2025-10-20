@@ -29,7 +29,8 @@
       "Bash(git stash pop:*)",
       "Bash(\"C:\\Program Files\\Unity\\Hub\\Editor\\2022.3.46f1\\Editor\\Unity.exe\" -quit -batchmode -projectPath . -executeMethod DemoBuildScript.BuildWebGLDemo -logFile build_log.txt)",
       "Bash(\"/c/Program Files/Unity/Hub/Editor/2022.3.46f1/Editor/Unity.exe\" -quit -batchmode -projectPath . -executeMethod DemoBuildScript.BuildWebGLDemo -logFile build_log.txt)",
-      "Bash(git -c core.autocrlf=true add CLAUDE.md)"
+      "Bash(git -c core.autocrlf=true add CLAUDE.md)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": []

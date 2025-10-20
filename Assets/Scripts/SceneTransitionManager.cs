@@ -329,27 +329,49 @@ public class SceneTransitionManager : MonoBehaviour
     
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        
+        Debug.Log($"[SceneTransitionManager] Scene loaded: {scene.name}");
+
         // You can add scene-specific initialization here
         switch (scene.name)
         {
             case "MainMenu":
+                Debug.Log("[SceneTransitionManager] Loading MainMenu scene");
                 OnMainMenuLoaded();
                 break;
             case "MainGameScene":
+            case "SampleScene": // Actual game scene name
+                Debug.Log("[SceneTransitionManager] Loading game scene");
                 OnGameSceneLoaded();
+                break;
+            default:
+                Debug.Log($"[SceneTransitionManager] Unknown scene: {scene.name}");
                 break;
         }
     }
     
     private void OnMainMenuLoaded()
     {
-        // Add any main menu specific setup here
+        // Stop any game music when returning to main menu
+        if (GameMusicManager.Instance != null)
+        {
+            GameMusicManager.Instance.StopMusic(0.5f);
+        }
     }
     
     private void OnGameSceneLoaded()
     {
-        // Add any game scene specific setup here
+        Debug.Log("[SceneTransitionManager] OnGameSceneLoaded called");
+
+        // Start game music when entering game scene
+        if (GameMusicManager.Instance != null)
+        {
+            Debug.Log("[SceneTransitionManager] GameMusicManager found, calling OnStartGame()");
+            GameMusicManager.Instance.OnStartGame();
+        }
+        else
+        {
+            Debug.LogWarning("[SceneTransitionManager] GameMusicManager.Instance is NULL!");
+        }
     }
     
     // ============================================================================
@@ -374,7 +396,7 @@ public class SceneTransitionManager : MonoBehaviour
     /// </summary>
     public void LoadMainGameScene()
     {
-        LoadScene("MainGameScene", true, true);
+        LoadScene("SampleScene", true, true);
     }
     
     /// <summary>
