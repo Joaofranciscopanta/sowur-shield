@@ -181,6 +181,43 @@ jobs:
           echo "✅ Build extracted to docs_new/"
           ls -la docs_new/
 
+      # Step 4b: Decompress Brotli Files for GitHub Pages
+      - name: 📦 Decompress Brotli Files
+        run: |
+          echo "Checking for Brotli-compressed files..."
+
+          # Install brotli decompression tool
+          sudo apt-get update -qq
+          sudo apt-get install -y brotli
+
+          # Find and decompress all .br files in Build folder
+          if [ -d "docs_new/Build" ]; then
+            BR_FILES=$(find docs_new/Build -name "*.br" -type f)
+
+            if [ -n "$BR_FILES" ]; then
+              echo "Found Brotli files, decompressing for GitHub Pages compatibility..."
+
+              for BR_FILE in $BR_FILES; do
+                # Get filename without .br extension
+                DECOMPRESSED_FILE="${BR_FILE%.br}"
+
+                echo "  Decompressing: $(basename $BR_FILE) -> $(basename $DECOMPRESSED_FILE)"
+
+                # Decompress with brotli
+                brotli -d "$BR_FILE" -o "$DECOMPRESSED_FILE"
+
+                # Remove the .br file
+                rm "$BR_FILE"
+
+                echo "  ✅ $(basename $DECOMPRESSED_FILE)"
+              done
+
+              echo "✅ All Brotli files decompressed successfully"
+            else
+              echo "ℹ️  No Brotli files found, build may use gzip or uncompressed format"
+            fi
+          fi
+
       # Step 5: Restore Custom CSS
       - name: 🎨 Restore Custom CSS
         run: |
