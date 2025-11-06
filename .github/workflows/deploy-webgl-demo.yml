@@ -1,0 +1,338 @@
+name: Deploy WebGL Demo to GitHub Pages
+
+# Automated deployment of Unity Cloud Build WebGL demos to GitHub Pages
+# This workflow downloads the latest Unity Cloud Build, preserves custom CSS,
+# and deploys to the docs/ folder for GitHub Pages hosting.
+
+on:
+  # Scheduled deployment - Weekly on Sunday at 3 AM UTC
+  schedule:
+    - cron: '0 3 * * 0'  # Weekly deployment (Sunday 3 AM UTC)
+    # Alternative schedules (uncomment to use):
+    # - cron: '0 3 * * *'    # Daily at 3 AM UTC
+    # - cron: '0 3 1 * *'    # Monthly on 1st at 3 AM UTC
+
+  # Manual trigger via GitHub Actions UI
+  workflow_dispatch:
+    inputs:
+      build_number:
+        description: 'Unity Cloud Build number (leave empty for latest)'
+        required: false
+        default: ''
+      skip_verification:
+        description: 'Skip build verification (not recommended)'
+        required: false
+        type: boolean
+        default: false
+
+  # Webhook trigger from Unity Cloud Build (optional)
+  repository_dispatch:
+    types: [unity-build-complete]
+
+# Permissions for GitHub Pages deployment
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# Prevent concurrent deployments
+concurrency:
+  group: webgl-deployment
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Download and Deploy WebGL Build
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout repository
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0  # Full history for proper tagging
+
+      # Step 2: Setup Node.js (for potential build tools)
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Step 3: Download Unity Cloud Build
+      - name: 🎮 Download Unity Cloud Build
+        id: download_build
+        env:
+          UNITY_API_KEY: ${{ secrets.UNITY_API_KEY }}
+          UNITY_ORG_ID: ${{ secrets.UNITY_ORG_ID }}
+          UNITY_PROJECT_ID: ${{ secrets.UNITY_PROJECT_ID }}
+          UNITY_BUILD_TARGET_ID: ${{ secrets.UNITY_BUILD_TARGET_ID }}
+        run: |
+          echo "Downloading latest Unity Cloud Build..."
+
+          # Create temp directory
+          mkdir -p temp_build
+
+          # Encode API key for basic auth
+          ENCODED_KEY=$(echo -n "$UNITY_API_KEY:" | base64)
+
+          # Get latest build info
+          BUILD_NUMBER="${{ github.event.inputs.build_number }}"
+          if [ -z "$BUILD_NUMBER" ]; then
+            echo "Fetching latest build number..."
+            BUILD_INFO=$(curl -s -H "Authorization: Basic $ENCODED_KEY" \
+              "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${UNITY_BUILD_TARGET_ID}/builds?per_page=1&buildStatus=success")
+
+            BUILD_NUMBER=$(echo "$BUILD_INFO" | grep -o '"build":[0-9]*' | head -1 | cut -d':' -f2)
+
+            if [ -z "$BUILD_NUMBER" ]; then
+              echo "Error: Could not fetch latest build number"
+              echo "Response: $BUILD_INFO"
+              exit 1
+            fi
+
+            echo "Latest successful build: #$BUILD_NUMBER"
+          else
+            echo "Using specified build number: #$BUILD_NUMBER"
+          fi
+
+          echo "build_number=$BUILD_NUMBER" >> $GITHUB_OUTPUT
+
+          # Get download URL
+          echo "Fetching download URL..."
+          DOWNLOAD_INFO=$(curl -s -H "Authorization: Basic $ENCODED_KEY" \
+            "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${UNITY_BUILD_TARGET_ID}/builds/${BUILD_NUMBER}")
+
+          DOWNLOAD_URL=$(echo "$DOWNLOAD_INFO" | grep -o '"href":"[^"]*"' | grep "primary" | cut -d'"' -f4)
+
+          if [ -z "$DOWNLOAD_URL" ]; then
+            echo "Error: Could not fetch download URL"
+            echo "Response: $DOWNLOAD_INFO"
+            exit 1
+          fi
+
+          echo "Download URL found"
+
+          # Download build
+          echo "Downloading build archive..."
+          curl -L -H "Authorization: Basic $ENCODED_KEY" \
+            "$DOWNLOAD_URL" \
+            -o temp_build/webgl-build.zip
+
+          # Verify download
+          if [ ! -f "temp_build/webgl-build.zip" ]; then
+            echo "Error: Build download failed"
+            exit 1
+          fi
+
+          BUILD_SIZE=$(du -h temp_build/webgl-build.zip | cut -f1)
+          echo "✅ Build downloaded successfully ($BUILD_SIZE)"
+          echo "download_success=true" >> $GITHUB_OUTPUT
+
+      # Step 4: Extract Unity Build
+      - name: 📦 Extract Unity Build
+        run: |
+          echo "Extracting Unity build archive..."
+
+          cd temp_build
+          unzip -q webgl-build.zip
+
+          # Find the WebGL folder (Unity builds are typically in a subfolder)
+          WEBGL_FOLDER=$(find . -type d -name "WebGL" | head -1)
+
+          if [ -z "$WEBGL_FOLDER" ]; then
+            # Sometimes the build is directly in the zip
+            echo "WebGL folder not found, checking root structure..."
+            ls -la
+
+            # Look for Build folder (indicator of WebGL build)
+            if [ -d "Build" ]; then
+              WEBGL_FOLDER="."
+              echo "Found WebGL build in root"
+            else
+              echo "Error: Could not locate WebGL build structure"
+              exit 1
+            fi
+          else
+            echo "Found WebGL build at: $WEBGL_FOLDER"
+          fi
+
+          # Move to proper location
+          cd ..
+          rm -rf docs_new
+          mkdir -p docs_new
+
+          if [ "$WEBGL_FOLDER" = "." ]; then
+            cp -r temp_build/* docs_new/
+          else
+            cp -r temp_build/$WEBGL_FOLDER/* docs_new/
+          fi
+
+          echo "✅ Build extracted to docs_new/"
+          ls -la docs_new/
+
+      # Step 5: Restore Custom CSS
+      - name: 🎨 Restore Custom CSS
+        run: |
+          echo "Restoring custom sidebar CSS..."
+          ./.github/scripts/restore-css.sh .github/templates/style.css docs_new/TemplateData/style.css
+
+      # Step 6: Verify Build
+      - name: ✅ Verify Build
+        if: github.event.inputs.skip_verification != 'true'
+        run: |
+          echo "Running build verification..."
+          ./.github/scripts/verify-build.sh docs_new
+
+      # Step 7: Create Backup Tag
+      - name: 💾 Create Backup Tag
+        run: |
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          TAG_NAME="backup/webgl-demo-$TIMESTAMP"
+
+          echo "Creating backup tag: $TAG_NAME"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git tag -a "$TAG_NAME" -m "Backup before WebGL deployment - Build #${{ steps.download_build.outputs.build_number }}"
+          git push origin "$TAG_NAME" || echo "Warning: Could not push backup tag"
+
+          echo "✅ Backup tag created: $TAG_NAME"
+
+      # Step 8: Replace docs/ folder
+      - name: 🔄 Update docs/ Folder
+        run: |
+          echo "Replacing docs/ folder with new build..."
+
+          # Remove old docs (keep .git if it exists)
+          if [ -d "docs" ]; then
+            rm -rf docs/*
+          else
+            mkdir -p docs
+          fi
+
+          # Copy new build
+          cp -r docs_new/* docs/
+
+          # Cleanup
+          rm -rf docs_new temp_build
+
+          echo "✅ docs/ folder updated"
+
+      # Step 9: Commit and Push
+      - name: 📤 Commit and Push Changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add docs/
+
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit (build is identical)"
+            echo "deployment_skipped=true" >> $GITHUB_ENV
+          else
+            COMMIT_MSG="chore: deploy WebGL demo from Unity Cloud Build #${{ steps.download_build.outputs.build_number }}
+
+Automated deployment via GitHub Actions
+- Build: #${{ steps.download_build.outputs.build_number }}
+- Workflow: ${{ github.workflow }}
+- Run: ${{ github.run_number }}"
+
+            git commit -m "$COMMIT_MSG"
+            git push origin main
+
+            echo "✅ Changes committed and pushed"
+            echo "deployment_skipped=false" >> $GITHUB_ENV
+          fi
+
+      # Step 10: Wait for GitHub Pages Deployment
+      - name: ⏳ Wait for GitHub Pages
+        if: env.deployment_skipped != 'true'
+        run: |
+          echo "Waiting 30 seconds for GitHub Pages to deploy..."
+          sleep 30
+
+      # Step 11: Verify Deployment
+      - name: 🌐 Verify GitHub Pages Deployment
+        if: env.deployment_skipped != 'true'
+        run: |
+          PAGES_URL="https://joaofranciscopanta.github.io/sowur-shield/"
+
+          echo "Checking GitHub Pages at: $PAGES_URL"
+
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$PAGES_URL")
+
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "✅ GitHub Pages is live and accessible"
+          else
+            echo "⚠️ Warning: GitHub Pages returned HTTP $HTTP_STATUS"
+            echo "Deployment may still be processing. Check manually: $PAGES_URL"
+          fi
+
+      # Step 12: Generate Deployment Summary
+      - name: 📊 Generate Summary
+        if: always()
+        run: |
+          echo "## 🎮 WebGL Demo Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.download_build.outputs.download_success }}" = "true" ]; then
+            echo "✅ **Build Downloaded**: Unity Cloud Build #${{ steps.download_build.outputs.build_number }}" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Build Download Failed**" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ env.deployment_skipped }}" = "true" ]; then
+            echo "⏭️ **Deployment**: Skipped (no changes)" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ env.deployment_skipped }}" = "false" ]; then
+            echo "✅ **Deployment**: Completed successfully" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Deployment**: Failed or incomplete" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 Links" >> $GITHUB_STEP_SUMMARY
+          echo "- [Live Demo](https://joaofranciscopanta.github.io/sowur-shield/)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Repository](https://github.com/Joaofranciscopanta/sowur-shield)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Unity Cloud Build](https://build.cloud.unity.com/)" >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "*Automated deployment completed at $(date)*" >> $GITHUB_STEP_SUMMARY
+
+  # Rollback job (manual trigger only)
+  rollback:
+    name: Rollback to Previous Build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.rollback == 'true'
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: ↩️ Rollback to Previous Tag
+        run: |
+          echo "Finding latest backup tag..."
+          LATEST_BACKUP=$(git tag -l "backup/webgl-demo-*" | sort -r | head -1)
+
+          if [ -z "$LATEST_BACKUP" ]; then
+            echo "Error: No backup tags found"
+            exit 1
+          fi
+
+          echo "Rolling back to: $LATEST_BACKUP"
+
+          git checkout "$LATEST_BACKUP" -- docs/
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add docs/
+          git commit -m "chore: rollback WebGL demo to $LATEST_BACKUP"
+          git push origin main
+
+          echo "✅ Rollback completed"
