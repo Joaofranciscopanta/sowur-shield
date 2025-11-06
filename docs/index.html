@@ -3,15 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Sowur Shield - Demo</title>
-    <link rel="shortcut icon" href="oneyedjoe.png">
-    <link rel="icon" type="image/png" href="oneyedjoe.png">
+    <title>Unity Web Player | Sowur Shield</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
   <body>
     <div id="release-notes">
       <h2>🌾 Sowur Shield - Demo</h2>
-      <div class="version">Version 1.0 - October 2024</div>
+      <div class="version">Build #1 - November 2025</div>
 
       <h3>📝 Release Notes</h3>
       <div class="notes-content">
@@ -96,7 +95,6 @@
         <a href="https://github.com/Joaofranciscopanta/sowur-shield/blob/main/README.md" target="_blank">📖 Documentation</a>
       </div>
     </div>
-
     <div id="unity-container" class="unity-desktop">
       <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
       <div id="unity-loading-bar">
@@ -141,17 +139,23 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/WebGL_Demo.loader.js";
+      var loaderUrl = buildUrl + "/Default WebGL.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/WebGL_Demo.data",
-        frameworkUrl: buildUrl + "/WebGL_Demo.framework.js",
-        codeUrl: buildUrl + "/WebGL_Demo.wasm",
+        dataUrl: buildUrl + "/Default WebGL.data",
+        frameworkUrl: buildUrl + "/Default WebGL.framework.js",
+        codeUrl: buildUrl + "/Default WebGL.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "Sovl Studios",
         productName: "Sowur Shield",
         productVersion: "1.0",
         showBanner: unityShowBanner,
+        // errorHandler: function(err, url, line) {
+        //    alert("error " + err + " occurred at line " + line);
+        //    // Return 'true' if you handled this error and don't want Unity
+        //    // to process it further, 'false' otherwise.
+        //    return true;
+        // },
       };
 
       // By default, Unity keeps WebGL canvas render target size matched with
@@ -212,5 +216,7 @@
       document.body.appendChild(script);
 
     </script>
-  </body>
+  <!-- Unity Cloud Build #1 - Deployed: 2025-11-06 21:14 UTC -->
+  <div id="build-info" style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.7); color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 11px; font-family: monospace; z-index: 10000;">Build #1</div>
+</body>
 </html>

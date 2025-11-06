@@ -438,11 +438,11 @@ jobs:
 
           DISCORD_PAYLOAD=$(cat <<EOF
           {
-            "username": "Sowur Shield Deploy Bot",
+            "username": "Clucky (Release Manager)",
             "avatar_url": "https://i.imgur.com/OVBNa8C.png",
             "embeds": [{
               "title": "🎮 WebGL Demo Deployed Successfully!",
-              "description": "A new build of Sowur Shield has been deployed to GitHub Pages.",
+              "description": "We have a new Demo available!!  ",
               "color": 3066993,
               "fields": [
                 {
@@ -457,12 +457,12 @@ jobs:
                 },
                 {
                   "name": "🔗 Links",
-                  "value": "[Play Demo](https://joaofranciscopanta.github.io/sowur-shield/) • [Repository](https://github.com/Joaofranciscopanta/sowur-shield) • [Workflow Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})",
+                  "value": "[Give it a try](https://joaofranciscopanta.github.io/sowur-shield/) • [Repository](https://github.com/Joaofranciscopanta/sowur-shield) • [Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})",
                   "inline": false
                 }
               ],
               "footer": {
-                "text": "Automated Deployment via GitHub Actions"
+                "text": "Automated build"
               },
               "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
             }]
@@ -492,7 +492,7 @@ jobs:
 
           DISCORD_PAYLOAD=$(cat <<EOF
           {
-            "username": "Sowur Shield Deploy Bot",
+            "username": "Clucky",
             "avatar_url": "https://i.imgur.com/OVBNa8C.png",
             "embeds": [{
               "title": "❌ WebGL Deployment Failed",
