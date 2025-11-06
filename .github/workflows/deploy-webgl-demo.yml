@@ -187,6 +187,23 @@ jobs:
           echo "Restoring custom sidebar CSS..."
           ./.github/scripts/restore-css.sh .github/templates/style.css docs_new/TemplateData/style.css
 
+      # Step 5b: Inject Build Number and Update Version Info
+      - name: 🔢 Inject Build Number
+        run: |
+          BUILD_NUM="${{ steps.download_build.outputs.build_number }}"
+          DEPLOY_DATE=$(date +"%B %Y")
+          DEPLOY_TIMESTAMP=$(date +"%Y-%m-%d %H:%M UTC")
+
+          echo "Injecting build number #$BUILD_NUM into index.html..."
+
+          # Update version info in release notes sidebar
+          sed -i "s|<div class=\"version\">Version 1.0 - October 2024</div>|<div class=\"version\">Build #$BUILD_NUM - $DEPLOY_DATE</div>|" docs_new/index.html
+
+          # Add build info badge to bottom-right corner
+          sed -i "s|</body>|<!-- Unity Cloud Build #$BUILD_NUM - Deployed: $DEPLOY_TIMESTAMP -->\n  <div id=\"build-info\" style=\"position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.7); color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 11px; font-family: monospace; z-index: 10000;\">Build #$BUILD_NUM</div>\n</body>|" docs_new/index.html
+
+          echo "✅ Build number and version info updated"
+
       # Step 6: Verify Build
       - name: ✅ Verify Build
         if: github.event.inputs.skip_verification != 'true'
@@ -311,6 +328,114 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
           echo "*Automated deployment completed at $(date)*" >> $GITHUB_STEP_SUMMARY
+
+      # Step 13: Discord Notification - Success
+      - name: 📢 Discord Notification - Success
+        if: success() && env.deployment_skipped != 'true'
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "⚠️ Discord webhook not configured, skipping notification"
+            exit 0
+          fi
+
+          BUILD_NUM="${{ steps.download_build.outputs.build_number }}"
+          DEPLOY_DATE=$(date +"%B %d, %Y at %H:%M UTC")
+
+          DISCORD_PAYLOAD=$(cat <<EOF
+          {
+            "username": "Sowur Shield Deploy Bot",
+            "avatar_url": "https://i.imgur.com/4M34hi2.png",
+            "embeds": [{
+              "title": "🎮 WebGL Demo Deployed Successfully!",
+              "description": "A new build of Sowur Shield has been deployed to GitHub Pages.",
+              "color": 3066993,
+              "fields": [
+                {
+                  "name": "🔢 Build Number",
+                  "value": "#$BUILD_NUM",
+                  "inline": true
+                },
+                {
+                  "name": "📅 Deployed",
+                  "value": "$DEPLOY_DATE",
+                  "inline": true
+                },
+                {
+                  "name": "🔗 Links",
+                  "value": "[Play Demo](https://joaofranciscopanta.github.io/sowur-shield/) • [Repository](https://github.com/Joaofranciscopanta/sowur-shield) • [Workflow Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})",
+                  "inline": false
+                }
+              ],
+              "footer": {
+                "text": "Automated Deployment via GitHub Actions"
+              },
+              "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            }]
+          }
+          EOF
+          )
+
+          curl -H "Content-Type: application/json" \
+               -d "$DISCORD_PAYLOAD" \
+               "$DISCORD_WEBHOOK_URL"
+
+          echo "✅ Discord notification sent"
+
+      # Step 14: Discord Notification - Failure
+      - name: 📢 Discord Notification - Failure
+        if: failure()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "⚠️ Discord webhook not configured, skipping notification"
+            exit 0
+          fi
+
+          BUILD_NUM="${{ steps.download_build.outputs.build_number }}"
+          FAIL_DATE=$(date +"%B %d, %Y at %H:%M UTC")
+
+          DISCORD_PAYLOAD=$(cat <<EOF
+          {
+            "username": "Sowur Shield Deploy Bot",
+            "avatar_url": "https://i.imgur.com/4M34hi2.png",
+            "embeds": [{
+              "title": "❌ WebGL Deployment Failed",
+              "description": "The automated deployment encountered an error.",
+              "color": 15158332,
+              "fields": [
+                {
+                  "name": "🔢 Build Number",
+                  "value": "#$BUILD_NUM",
+                  "inline": true
+                },
+                {
+                  "name": "📅 Failed At",
+                  "value": "$FAIL_DATE",
+                  "inline": true
+                },
+                {
+                  "name": "🔗 Debug",
+                  "value": "[View Workflow Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})",
+                  "inline": false
+                }
+              ],
+              "footer": {
+                "text": "Check workflow logs for details"
+              },
+              "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            }]
+          }
+          EOF
+          )
+
+          curl -H "Content-Type: application/json" \
+               -d "$DISCORD_PAYLOAD" \
+               "$DISCORD_WEBHOOK_URL"
+
+          echo "✅ Discord failure notification sent"
 
   # Rollback job (manual trigger only)
   rollback:

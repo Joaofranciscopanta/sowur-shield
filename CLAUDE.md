@@ -882,8 +882,23 @@ GitHub Pages (docs/ folder on main branch)
 - **Backup System**: Creates git tags before each deployment for rollback
 - **Health Checks**: Verifies GitHub Pages deployment success
 - **Manual Trigger**: Can be triggered manually via GitHub Actions UI
+- **Build Number Display**: Injects Unity Cloud Build number into demo
+- **Discord Notifications**: Sends rich embeds for deployment success/failure
 
 **Workflow File**: `.github/workflows/deploy-webgl-demo.yml`
+
+**Build Number Features**:
+- Updates release notes sidebar version: "Build #X - Month Year"
+- Adds build info badge in bottom-right corner of demo
+- Shows deployment timestamp in HTML comments
+- Dynamically generated from Unity Cloud Build API
+
+**Discord Integration**:
+- Success notifications with build number, date, and demo link
+- Failure notifications with workflow logs link
+- Color-coded rich embeds (green for success, red for failure)
+- Optional feature - works without webhook configured
+- Requires `DISCORD_WEBHOOK_URL` GitHub secret
 
 ### Supporting Scripts
 
@@ -979,13 +994,19 @@ backup/webgl-demo-20250106-030000
 
 For automated deployment to work, configure these secrets in repository settings:
 
+**Required Secrets:**
 1. **UNITY_API_KEY**: Your Unity Cloud Build API key
    - Get from: Unity Cloud Services → Cloud Build Preferences
 2. **UNITY_ORG_ID**: Your Unity organization ID
 3. **UNITY_PROJECT_ID**: Your Unity project ID
 4. **UNITY_BUILD_TARGET_ID**: WebGL build target ID
 
-**To find IDs**:
+**Optional Secrets:**
+5. **DISCORD_WEBHOOK_URL**: Discord webhook URL for deployment notifications
+   - Get from: Discord Server Settings → Integrations → Webhooks
+   - If not configured, workflow continues without notifications
+
+**To find Unity IDs**:
 - Go to Unity Cloud Build dashboard
 - URL format: `https://build.cloud.unity.com/orgs/{ORG_ID}/projects/{PROJECT_ID}/buildtargets/{BUILD_TARGET_ID}/`
 
