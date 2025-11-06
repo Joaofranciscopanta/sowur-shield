@@ -103,7 +103,9 @@ jobs:
           DOWNLOAD_INFO=$(curl -s -H "Authorization: Basic $ENCODED_KEY" \
             "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${UNITY_BUILD_TARGET_ID}/builds/${BUILD_NUMBER}")
 
-          DOWNLOAD_URL=$(echo "$DOWNLOAD_INFO" | grep -o '"href":"[^"]*"' | grep "primary" | cut -d'"' -f4)
+          # Extract download_primary href from JSON response
+          # Look for: "download_primary":{"method":"get","href":"URL"}
+          DOWNLOAD_URL=$(echo "$DOWNLOAD_INFO" | grep -o '"download_primary"[^}]*"href":"[^"]*"' | grep -o 'https://[^"]*' | head -1)
 
           if [ -z "$DOWNLOAD_URL" ]; then
             echo "Error: Could not fetch download URL"
@@ -112,6 +114,7 @@ jobs:
           fi
 
           echo "Download URL found"
+          echo "URL: $DOWNLOAD_URL"
 
           # Download build
           echo "Downloading build archive..."
