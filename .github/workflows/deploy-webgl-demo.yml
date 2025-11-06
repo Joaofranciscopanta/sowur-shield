@@ -192,27 +192,27 @@ jobs:
 
           # Find and decompress all .br files in Build folder
           if [ -d "docs_new/Build" ]; then
-            BR_FILES=$(find docs_new/Build -name "*.br" -type f)
+            # Use find with -print0 and read to handle filenames with spaces
+            while IFS= read -r -d '' BR_FILE; do
+              # Get filename without .br extension
+              DECOMPRESSED_FILE="${BR_FILE%.br}"
 
-            if [ -n "$BR_FILES" ]; then
-              echo "Found Brotli files, decompressing for GitHub Pages compatibility..."
+              echo "  Decompressing: $(basename "$BR_FILE") -> $(basename "$DECOMPRESSED_FILE")"
 
-              for BR_FILE in $BR_FILES; do
-                # Get filename without .br extension
-                DECOMPRESSED_FILE="${BR_FILE%.br}"
+              # Decompress with brotli (quote variables to handle spaces)
+              brotli -d "$BR_FILE" -o "$DECOMPRESSED_FILE"
 
-                echo "  Decompressing: $(basename $BR_FILE) -> $(basename $DECOMPRESSED_FILE)"
+              # Remove the .br file
+              rm "$BR_FILE"
 
-                # Decompress with brotli
-                brotli -d "$BR_FILE" -o "$DECOMPRESSED_FILE"
+              echo "  ✅ $(basename "$DECOMPRESSED_FILE")"
+            done < <(find docs_new/Build -name "*.br" -type f -print0)
 
-                # Remove the .br file
-                rm "$BR_FILE"
-
-                echo "  ✅ $(basename $DECOMPRESSED_FILE)"
-              done
-
+            # Check if any files were processed
+            if [ -n "$(find docs_new/Build -name "*.br" -type f)" ]; then
               echo "✅ All Brotli files decompressed successfully"
+            elif [ -n "$(find docs_new/Build -name "*.data" -o -name "*.wasm" -o -name "*.framework.js" 2>/dev/null | head -1)" ]; then
+              echo "✅ Build files already decompressed or use different compression"
             else
               echo "ℹ️  No Brotli files found, build may use gzip or uncompressed format"
             fi
