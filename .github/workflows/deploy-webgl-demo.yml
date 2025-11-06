@@ -439,7 +439,7 @@ jobs:
           DISCORD_PAYLOAD=$(cat <<EOF
           {
             "username": "Sowur Shield Deploy Bot",
-            "avatar_url": "https://i.imgur.com/4M34hi2.png",
+            "avatar_url": "PASTE_YOUR_DIRECT_IMAGE_URL_HERE",
             "embeds": [{
               "title": "🎮 WebGL Demo Deployed Successfully!",
               "description": "A new build of Sowur Shield has been deployed to GitHub Pages.",
@@ -493,7 +493,7 @@ jobs:
           DISCORD_PAYLOAD=$(cat <<EOF
           {
             "username": "Sowur Shield Deploy Bot",
-            "avatar_url": "https://i.imgur.com/4M34hi2.png",
+            "avatar_url": "PASTE_YOUR_DIRECT_IMAGE_URL_HERE",
             "embeds": [{
               "title": "❌ WebGL Deployment Failed",
               "description": "The automated deployment encountered an error.",
