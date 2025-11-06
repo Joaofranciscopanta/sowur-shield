@@ -140,12 +140,13 @@ jobs:
           cd temp_build
           unzip -q webgl-build.zip
 
-          # Find the WebGL folder (Unity builds are typically in a subfolder)
-          WEBGL_FOLDER=$(find . -type d -name "WebGL" | head -1)
+          # Find the WebGL folder - look for any folder containing "WebGL" or "webgl" in the name
+          echo "Looking for WebGL build folder..."
+          WEBGL_FOLDER=$(find . -maxdepth 2 -type d \( -iname "*webgl*" -o -iname "*WebGL*" \) ! -name "." | head -1)
 
           if [ -z "$WEBGL_FOLDER" ]; then
-            # Sometimes the build is directly in the zip
-            echo "WebGL folder not found, checking root structure..."
+            # Sometimes the build is directly in the zip root
+            echo "WebGL folder not found by name, checking for Build folder structure..."
             ls -la
 
             # Look for Build folder (indicator of WebGL build)
@@ -154,6 +155,8 @@ jobs:
               echo "Found WebGL build in root"
             else
               echo "Error: Could not locate WebGL build structure"
+              echo "Available folders:"
+              find . -maxdepth 2 -type d
               exit 1
             fi
           else
@@ -166,8 +169,12 @@ jobs:
           mkdir -p docs_new
 
           if [ "$WEBGL_FOLDER" = "." ]; then
+            echo "Copying from temp_build root..."
             cp -r temp_build/* docs_new/
+            # Remove the zip file if it got copied
+            rm -f docs_new/webgl-build.zip
           else
+            echo "Copying from $WEBGL_FOLDER..."
             cp -r temp_build/$WEBGL_FOLDER/* docs_new/
           fi
 
