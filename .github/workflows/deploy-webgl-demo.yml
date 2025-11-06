@@ -439,7 +439,7 @@ jobs:
           DISCORD_PAYLOAD=$(cat <<EOF
           {
             "username": "Clucky (Release Manager)",
-            "avatar_url": "https://imgur.com/a/PsEFtxc",
+            "avatar_url": "https://i.imgur.com/OVBNa8C.png",
             "embeds": [{
               "title": "🎮 WebGL Demo Deployed Successfully!",
               "description": "We have a new Demo available!!  ",
@@ -493,7 +493,7 @@ jobs:
           DISCORD_PAYLOAD=$(cat <<EOF
           {
             "username": "Clucky",
-            "avatar_url": "https://imgur.com/a/PsEFtxc",
+            "avatar_url": "https://i.imgur.com/OVBNa8C.png",
             "embeds": [{
               "title": "❌ WebGL Deployment Failed",
               "description": "The automated deployment encountered an error.",
