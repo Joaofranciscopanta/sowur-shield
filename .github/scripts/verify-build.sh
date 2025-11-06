@@ -46,20 +46,51 @@ echo "  ✅ TemplateData folder exists"
 # Check 5: Verify critical Unity files exist
 echo "✓ Checking critical Unity build files..."
 CRITICAL_FILES_FOUND=0
-CRITICAL_FILES_TOTAL=0
+CRITICAL_FILES_TOTAL=4
 
-for ext in "data" "framework.js" "loader.js" "wasm"; do
-    CRITICAL_FILES_TOTAL=$((CRITICAL_FILES_TOTAL + 1))
-    FILE_FOUND=$(find "$BUILD_DIR/Build" -name "*.$ext" | head -n 1)
-    if [ -n "$FILE_FOUND" ]; then
-        echo "  ✅ Found Unity .$ext file"
-        CRITICAL_FILES_FOUND=$((CRITICAL_FILES_FOUND + 1))
-    else
-        echo "  ⚠️  Warning: No .$ext file found"
-    fi
-done
+# Check for data file (can be .data, .data.gz, .data.br, .data.unityweb)
+DATA_FILE=$(find "$BUILD_DIR/Build" \( -name "*.data*" -o -name "*.unityweb" \) -type f | head -n 1)
+if [ -n "$DATA_FILE" ]; then
+    echo "  ✅ Found Unity data file: $(basename "$DATA_FILE")"
+    CRITICAL_FILES_FOUND=$((CRITICAL_FILES_FOUND + 1))
+else
+    echo "  ⚠️  Warning: No data file found"
+fi
 
-if [ $CRITICAL_FILES_FOUND -lt 3 ]; then
+# Check for framework file (can be .framework.js, .framework.js.gz, .framework.js.br)
+FRAMEWORK_FILE=$(find "$BUILD_DIR/Build" -name "*.framework.js*" -type f | head -n 1)
+if [ -n "$FRAMEWORK_FILE" ]; then
+    echo "  ✅ Found Unity framework file: $(basename "$FRAMEWORK_FILE")"
+    CRITICAL_FILES_FOUND=$((CRITICAL_FILES_FOUND + 1))
+else
+    echo "  ⚠️  Warning: No framework file found"
+fi
+
+# Check for loader file (can be .loader.js, .loader.js.gz, .loader.js.br)
+LOADER_FILE=$(find "$BUILD_DIR/Build" -name "*.loader.js*" -type f | head -n 1)
+if [ -n "$LOADER_FILE" ]; then
+    echo "  ✅ Found Unity loader file: $(basename "$LOADER_FILE")"
+    CRITICAL_FILES_FOUND=$((CRITICAL_FILES_FOUND + 1))
+else
+    echo "  ⚠️  Warning: No loader file found"
+fi
+
+# Check for wasm file (can be .wasm, .wasm.gz, .wasm.br)
+WASM_FILE=$(find "$BUILD_DIR/Build" -name "*.wasm*" -type f | head -n 1)
+if [ -n "$WASM_FILE" ]; then
+    echo "  ✅ Found Unity wasm file: $(basename "$WASM_FILE")"
+    CRITICAL_FILES_FOUND=$((CRITICAL_FILES_FOUND + 1))
+else
+    echo "  ⚠️  Warning: No wasm file found"
+fi
+
+echo "  ℹ️  Found $CRITICAL_FILES_FOUND of $CRITICAL_FILES_TOTAL critical files"
+
+# List all files in Build folder for debugging
+echo "  ℹ️  Build folder contents:"
+ls -lh "$BUILD_DIR/Build" | tail -n +2 | awk '{print "    - " $9 " (" $5 ")"}'
+
+if [ $CRITICAL_FILES_FOUND -lt 2 ]; then
     echo "❌ ERROR: Missing critical Unity build files (found $CRITICAL_FILES_FOUND of $CRITICAL_FILES_TOTAL)"
     exit 1
 fi

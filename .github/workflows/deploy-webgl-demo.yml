@@ -103,7 +103,9 @@ jobs:
           DOWNLOAD_INFO=$(curl -s -H "Authorization: Basic $ENCODED_KEY" \
             "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${UNITY_BUILD_TARGET_ID}/builds/${BUILD_NUMBER}")
 
-          DOWNLOAD_URL=$(echo "$DOWNLOAD_INFO" | grep -o '"href":"[^"]*"' | grep "primary" | cut -d'"' -f4)
+          # Extract download_primary href from JSON response
+          # Look for: "download_primary":{"method":"get","href":"URL"}
+          DOWNLOAD_URL=$(echo "$DOWNLOAD_INFO" | grep -o '"download_primary"[^}]*"href":"[^"]*"' | grep -o 'https://[^"]*' | head -1)
 
           if [ -z "$DOWNLOAD_URL" ]; then
             echo "Error: Could not fetch download URL"
@@ -112,6 +114,7 @@ jobs:
           fi
 
           echo "Download URL found"
+          echo "URL: $DOWNLOAD_URL"
 
           # Download build
           echo "Downloading build archive..."
@@ -137,12 +140,13 @@ jobs:
           cd temp_build
           unzip -q webgl-build.zip
 
-          # Find the WebGL folder (Unity builds are typically in a subfolder)
-          WEBGL_FOLDER=$(find . -type d -name "WebGL" | head -1)
+          # Find the WebGL folder - look for any folder containing "WebGL" or "webgl" in the name
+          echo "Looking for WebGL build folder..."
+          WEBGL_FOLDER=$(find . -maxdepth 2 -type d \( -iname "*webgl*" -o -iname "*WebGL*" \) ! -name "." | head -1)
 
           if [ -z "$WEBGL_FOLDER" ]; then
-            # Sometimes the build is directly in the zip
-            echo "WebGL folder not found, checking root structure..."
+            # Sometimes the build is directly in the zip root
+            echo "WebGL folder not found by name, checking for Build folder structure..."
             ls -la
 
             # Look for Build folder (indicator of WebGL build)
@@ -151,6 +155,8 @@ jobs:
               echo "Found WebGL build in root"
             else
               echo "Error: Could not locate WebGL build structure"
+              echo "Available folders:"
+              find . -maxdepth 2 -type d
               exit 1
             fi
           else
@@ -163,9 +169,13 @@ jobs:
           mkdir -p docs_new
 
           if [ "$WEBGL_FOLDER" = "." ]; then
+            echo "Copying from temp_build root..."
             cp -r temp_build/* docs_new/
+            # Remove the zip file if it got copied
+            rm -f docs_new/webgl-build.zip
           else
-            cp -r temp_build/$WEBGL_FOLDER/* docs_new/
+            echo "Copying from $WEBGL_FOLDER..."
+            cp -r "temp_build/$WEBGL_FOLDER"/* docs_new/
           fi
 
           echo "✅ Build extracted to docs_new/"
