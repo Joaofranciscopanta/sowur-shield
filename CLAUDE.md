@@ -918,6 +918,13 @@ GitHub Pages (docs/ folder on main branch)
 - Source of truth for all deployments
 - Preserved across Unity builds
 
+**4. Brotli Decompression** (GitHub Pages Compatibility)
+- Unity 6 uses Brotli compression (.br files) for WebGL builds
+- GitHub Pages doesn't serve .br files with correct Content-Encoding headers
+- Workflow automatically decompresses .br files during deployment
+- Prevents "Unable to parse Build/file.br" errors
+- GitHub Pages then applies its own gzip compression correctly
+
 ### Deployment Triggers
 
 **1. Scheduled Deployment** (Default)
@@ -1046,6 +1053,14 @@ For automated deployment to work, configure these secrets in repository settings
 - Check build structure matches expected format
 - Ensure Unity build target is WebGL (not other platform)
 - Review verification script logs for specific errors
+
+**"Unable to parse Build/file.br" Error on Demo**:
+- This error occurs if Brotli decompression step failed
+- Unity 6 builds use .br compression which GitHub Pages can't serve correctly
+- Check workflow logs for "Decompress Brotli Files" step
+- Verify brotli package was installed successfully
+- Ensure decompressed files (without .br) are in docs/Build folder
+- Re-run deployment if decompression step was skipped
 
 ### Performance Considerations
 
