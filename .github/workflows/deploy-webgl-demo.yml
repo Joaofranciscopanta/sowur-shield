@@ -175,7 +175,7 @@ jobs:
             rm -f docs_new/webgl-build.zip
           else
             echo "Copying from $WEBGL_FOLDER..."
-            cp -r temp_build/$WEBGL_FOLDER/* docs_new/
+            cp -r "temp_build/$WEBGL_FOLDER"/* docs_new/
           fi
 
           echo "✅ Build extracted to docs_new/"
