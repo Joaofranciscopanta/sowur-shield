@@ -49,7 +49,7 @@ CRITICAL_FILES_FOUND=0
 CRITICAL_FILES_TOTAL=4
 
 # Check for data file (can be .data, .data.gz, .data.br, .data.unityweb)
-DATA_FILE=$(find "$BUILD_DIR/Build" -name "*.data*" -o -name "*.unityweb" | head -n 1)
+DATA_FILE=$(find "$BUILD_DIR/Build" \( -name "*.data*" -o -name "*.unityweb" \) -type f | head -n 1)
 if [ -n "$DATA_FILE" ]; then
     echo "  ✅ Found Unity data file: $(basename "$DATA_FILE")"
     CRITICAL_FILES_FOUND=$((CRITICAL_FILES_FOUND + 1))
@@ -58,7 +58,7 @@ else
 fi
 
 # Check for framework file (can be .framework.js, .framework.js.gz, .framework.js.br)
-FRAMEWORK_FILE=$(find "$BUILD_DIR/Build" -name "*.framework.js*" | head -n 1)
+FRAMEWORK_FILE=$(find "$BUILD_DIR/Build" -name "*.framework.js*" -type f | head -n 1)
 if [ -n "$FRAMEWORK_FILE" ]; then
     echo "  ✅ Found Unity framework file: $(basename "$FRAMEWORK_FILE")"
     CRITICAL_FILES_FOUND=$((CRITICAL_FILES_FOUND + 1))
@@ -67,7 +67,7 @@ else
 fi
 
 # Check for loader file (can be .loader.js, .loader.js.gz, .loader.js.br)
-LOADER_FILE=$(find "$BUILD_DIR/Build" -name "*.loader.js*" | head -n 1)
+LOADER_FILE=$(find "$BUILD_DIR/Build" -name "*.loader.js*" -type f | head -n 1)
 if [ -n "$LOADER_FILE" ]; then
     echo "  ✅ Found Unity loader file: $(basename "$LOADER_FILE")"
     CRITICAL_FILES_FOUND=$((CRITICAL_FILES_FOUND + 1))
@@ -76,7 +76,7 @@ else
 fi
 
 # Check for wasm file (can be .wasm, .wasm.gz, .wasm.br)
-WASM_FILE=$(find "$BUILD_DIR/Build" -name "*.wasm*" | head -n 1)
+WASM_FILE=$(find "$BUILD_DIR/Build" -name "*.wasm*" -type f | head -n 1)
 if [ -n "$WASM_FILE" ]; then
     echo "  ✅ Found Unity wasm file: $(basename "$WASM_FILE")"
     CRITICAL_FILES_FOUND=$((CRITICAL_FILES_FOUND + 1))
