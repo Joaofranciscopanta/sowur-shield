@@ -216,6 +216,28 @@ jobs:
             else
               echo "ℹ️  No Brotli files found, build may use gzip or uncompressed format"
             fi
+
+            # Update loader configuration to remove .br extensions
+            echo "Updating Unity loader configuration..."
+            if [ -f "docs_new/index.html" ]; then
+              # Remove .br extensions from file references in index.html
+              sed -i 's/\.br"/"/g' docs_new/index.html
+              sed -i "s/\.br'/'/g" docs_new/index.html
+              echo "  ✅ Updated index.html to reference decompressed files"
+            fi
+
+            # Update loader.js if it exists and contains .br references
+            LOADER_FILE=$(find docs_new/Build -name "*.loader.js" -type f | head -1)
+            if [ -n "$LOADER_FILE" ]; then
+              # Check if loader.js contains .br references
+              if grep -q '\.br' "$LOADER_FILE"; then
+                sed -i 's/\.br"/""/g' "$LOADER_FILE"
+                sed -i "s/\.br'/''/g" "$LOADER_FILE"
+                echo "  ✅ Updated loader.js to reference decompressed files"
+              fi
+            fi
+
+            echo "✅ Loader configuration updated for decompressed builds"
           fi
 
       # Step 5: Restore Custom CSS
