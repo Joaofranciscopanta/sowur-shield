@@ -10,6 +10,8 @@ After following this guide:
 - ✅ Build verification before deployment
 - ✅ Automatic backup system for rollbacks
 - ✅ Manual deployment capability when needed
+- ✅ **Build number tracking** - Each demo shows the Unity Cloud Build number
+- ✅ **Discord notifications** - Get alerted when deployments succeed or fail
 
 ---
 
@@ -83,6 +85,32 @@ Now add these secrets to your GitHub repository:
 - Enter the **Name** (exactly as shown above)
 - Paste the **Value**
 - Click "Add secret"
+
+### Step 3.5: Setup Discord Webhook (Optional but Recommended)
+
+Get notified in Discord when deployments succeed or fail!
+
+1. **Open your Discord server** where you want notifications
+2. **Go to Server Settings** → **Integrations** → **Webhooks**
+3. **Click "New Webhook"** or "Create Webhook"
+4. **Configure the webhook**:
+   - Name: `Sowur Shield Deploy Bot`
+   - Channel: Choose where you want deployment notifications
+   - Avatar: (Optional) Upload a custom image
+5. **Click "Copy Webhook URL"**
+6. **Add to GitHub Secrets**:
+   - Go back to repository **Settings** → **Secrets and variables** → **Actions**
+   - Click "New repository secret"
+   - Name: `DISCORD_WEBHOOK_URL`
+   - Value: Paste the webhook URL you copied
+   - Click "Add secret"
+
+**What you'll get:**
+- ✅ **Success notifications** with build number, deployment date, and links
+- ❌ **Failure notifications** with error details and workflow logs
+- 📊 **Rich embeds** with color-coded status
+
+**Note**: If you skip this step, deployments will still work - Discord notifications are optional.
 
 ### Step 4: Verify GitHub Pages Settings
 
