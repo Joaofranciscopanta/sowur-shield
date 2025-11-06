@@ -438,8 +438,8 @@ jobs:
 
           DISCORD_PAYLOAD=$(cat <<EOF
           {
-            "username": "Sowur Shield Deploy Bot",
-            "avatar_url": "https://i.imgur.com/4M34hi2.png",
+            "username": "Clucky (Release Manager)",
+            "avatar_url": "https://imgur.com/a/PsEFtxc",
             "embeds": [{
               "title": "🎮 WebGL Demo Deployed Successfully!",
               "description": "We have a new Demo available!!  ",
