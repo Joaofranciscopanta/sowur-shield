@@ -232,14 +232,15 @@ jobs:
             echo "No changes to commit (build is identical)"
             echo "deployment_skipped=true" >> $GITHUB_ENV
           else
-            COMMIT_MSG="chore: deploy WebGL demo from Unity Cloud Build #${{ steps.download_build.outputs.build_number }}
+            git commit -m "$(cat <<'EOF'
+          chore: deploy WebGL demo from Unity Cloud Build #${{ steps.download_build.outputs.build_number }}
 
-Automated deployment via GitHub Actions
-- Build: #${{ steps.download_build.outputs.build_number }}
-- Workflow: ${{ github.workflow }}
-- Run: ${{ github.run_number }}"
-
-            git commit -m "$COMMIT_MSG"
+          Automated deployment via GitHub Actions
+          - Build: #${{ steps.download_build.outputs.build_number }}
+          - Workflow: ${{ github.workflow }}
+          - Run: ${{ github.run_number }}
+          EOF
+          )"
             git push origin main
 
             echo "✅ Changes committed and pushed"
