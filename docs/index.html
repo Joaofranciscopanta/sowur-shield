@@ -8,6 +8,93 @@
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
   <body>
+    <div id="release-notes">
+      <h2>🌾 Sowur Shield - Demo</h2>
+      <div class="version">Build #1 - January 2026</div>
+
+      <h3>📝 Release Notes</h3>
+      <div class="notes-content">
+        <div class="note-section">
+          <h4>✨ Core Features</h4>
+          <ul>
+            <li>Advanced farming system with multi-stage crop growth</li>
+            <li>Soil state management (Till, Water, Plant, Harvest)</li>
+            <li>36-slot inventory with drag & drop UI</li>
+            <li>Interactive dialogue system with branching conversations</li>
+            <li>NPC memory system - they remember your conversations!</li>
+            <li>Tool-based interaction (Hoe, Watering Can, Shovel)</li>
+            <li>Automatic selling system via SellBox</li>
+            <li>Day/night cycle with time management</li>
+            <li>Sleep system to advance time and trigger sales</li>
+            <li>Dual-grid tilemap rendering system</li>
+          </ul>
+        </div>
+
+        <div class="note-section">
+          <h4>🆕 Recent Updates</h4>
+          <ul>
+            <li><strong>Minimap System:</strong> 3-state minimap (Normal, Semi-transparent, Fullscreen)</li>
+            <li><strong>Animal System:</strong> Chickens with AI behavior and interaction</li>
+            <li><strong>Improved UI:</strong> Enhanced interaction prompts and visual feedback</li>
+            <li><strong>Main Menu:</strong> Professional menu with settings and credits</li>
+            <li><strong>Scene Transitions:</strong> Smooth loading screens with tips</li>
+            <li><strong>Bug Fixes:</strong> Resolved NPC interaction and tool priority issues</li>
+          </ul>
+        </div>
+
+        <div class="note-section">
+          <h4>🎯 Controls</h4>
+          <ul>
+            <li><strong>WASD/Arrows:</strong> Move character</li>
+            <li><strong>E:</strong> Interact with NPCs/objects</li>
+            <li><strong>Left Click:</strong> Use equipped tool/interact</li>
+            <li><strong>I:</strong> Open/close inventory</li>
+            <li><strong>M:</strong> Toggle minimap modes</li>
+            <li><strong>1-9:</strong> Quick select inventory slots</li>
+            <li><strong>ESC:</strong> Open game menu</li>
+            <li><strong>Shift:</strong> Sprint</li>
+          </ul>
+        </div>
+
+        <div class="note-section">
+          <h4>🎮 How to Play</h4>
+          <ul>
+            <li>Use the <strong>Hoe</strong> to till soil (converts ground to farmland)</li>
+            <li>Use <strong>Watering Can</strong> to water tilled soil</li>
+            <li>Plant <strong>seeds</strong> on watered soil</li>
+            <li>Wait for crops to grow over several days</li>
+            <li>Harvest mature crops with <strong>Left Click</strong></li>
+            <li>Sell items by placing them in the <strong>SellBox</strong></li>
+            <li>Sleep in bed to advance time and complete sales</li>
+            <li>Talk to NPCs with <strong>E key</strong> for branching dialogue</li>
+          </ul>
+        </div>
+
+        <div class="note-section">
+          <h4>ℹ️ Demo Notes</h4>
+          <ul>
+            <li>Save/Load functionality disabled in demo build</li>
+            <li>Play session resets on page refresh</li>
+            <li>This is a showcase build - full version in development</li>
+            <li>Built with Unity 2022.3.46f1 LTS</li>
+          </ul>
+        </div>
+
+        <div class="note-section">
+          <h4>👥 Team</h4>
+          <ul>
+            <li><strong>João Francisco Pantaleão</strong> - CTO & Owner</li>
+            <li><strong>Lucas Daniel</strong> - Co-Owner & Lead Developer</li>
+            <li><strong>Isabella Freitas</strong> - Art Director & Character Design</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-links">
+        <a href="https://github.com/Joaofranciscopanta/sowur-shield" target="_blank">📂 View on GitHub</a>
+        <a href="https://github.com/Joaofranciscopanta/sowur-shield/blob/main/README.md" target="_blank">📖 Documentation</a>
+      </div>
+    </div>
     <div id="unity-container" class="unity-desktop">
       <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
       <div id="unity-loading-bar">
@@ -59,7 +146,7 @@
         frameworkUrl: buildUrl + "/Default WebGL.framework.js",
         codeUrl: buildUrl + "/Default WebGL.wasm",
         streamingAssetsUrl: "StreamingAssets",
-        companyName: "DefaultCompany",
+        companyName: "Sovl Studios",
         productName: "Sowur Shield",
         productVersion: "1.0",
         showBanner: unityShowBanner,
@@ -129,5 +216,7 @@
       document.body.appendChild(script);
 
     </script>
-  </body>
+  <!-- Unity Cloud Build #1 - Deployed: 2026-01-04 04:08 UTC -->
+  <div id="build-info" style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.7); color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 11px; font-family: monospace; z-index: 10000;">Build #1</div>
+</body>
 </html>
