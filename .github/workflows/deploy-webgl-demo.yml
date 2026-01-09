@@ -205,4 +205,201 @@ jobs:
       - name: Inject Custom CSS and Build Number
         run: |
           if [ -f ".github/scripts/restore-css.sh" ]; then
-            echo "Running custom
+            echo "Running custom CSS restoration..."
+            bash .github/scripts/restore-css.sh docs_new
+          else
+            echo "⚠️ Custom CSS script not found, skipping..."
+          fi
+          
+          echo "<!-- Build #${{ steps.download.outputs.build_number }} deployed on $(date -u +"%Y-%m-%d %H:%M UTC") -->" >> docs_new/index.html
+          
+          echo "✅ Custom content injected"
+
+      - name: Verify Build Structure
+        run: |
+          if [ -f ".github/scripts/verify-build.sh" ]; then
+            bash .github/scripts/verify-build.sh docs_new
+          else
+            echo "Basic structure check..."
+            [ -f "docs_new/index.html" ] && echo "✅ index.html found" || exit 1
+            [ -d "docs_new/Build" ] && echo "✅ Build directory found" || exit 1
+          fi
+
+      - name: Create Backup Tag
+        run: |
+          BACKUP_TAG="backup/webgl-demo-$(date +%Y%m%d-%H%M%S)"
+          git tag "$BACKUP_TAG"
+          git push origin "$BACKUP_TAG"
+          echo "✅ Created backup tag: $BACKUP_TAG"
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        run: |
+          if [ -d "docs" ]; then
+            if diff -r docs docs_new > /dev/null 2>&1; then
+              echo "⏭️ No changes detected, skipping deployment"
+              echo "skip_deploy=true" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            rm -rf docs
+          fi
+          
+          mv docs_new docs
+          
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add docs/
+          git commit -m "🎮 Deploy WebGL Demo - Build #${{ steps.download.outputs.build_number }}
+
+          - Unity Cloud Build: #${{ steps.download.outputs.build_number }}
+          - Deployed: $(date -u +"%Y-%m-%d %H:%M UTC")
+          - Workflow: ${{ github.workflow }}
+          - Run: ${{ github.run_number }}"
+          
+          git push origin main
+          
+          echo "✅ Deployed to GitHub Pages"
+          echo "skip_deploy=false" >> $GITHUB_OUTPUT
+
+      - name: Wait for GitHub Pages
+        if: steps.deploy.outputs.skip_deploy != 'true'
+        run: |
+          echo "Waiting 30 seconds for GitHub Pages to update..."
+          sleep 30
+
+      - name: Generate Summary
+        if: always()
+        run: |
+          echo "## 🎮 WebGL Demo Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ steps.download.outputs.download_success }}" = "true" ]; then
+            echo "✅ **Build Downloaded**: Unity Cloud Build #${{ steps.download.outputs.build_number }}" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Build Download Failed**" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ steps.deploy.outputs.skip_deploy }}" = "true" ]; then
+            echo "⏭️ **Deployment**: Skipped (no changes)" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ steps.deploy.outputs.skip_deploy }}" = "false" ]; then
+            echo "✅ **Deployment**: Completed successfully" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **Deployment**: Failed or incomplete" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 Links" >> $GITHUB_STEP_SUMMARY
+          echo "- [Live Demo](https://joaofranciscopanta.github.io/sowur-shield/)" >> $GITHUB_STEP_SUMMARY
+          echo "- [Repository](https://github.com/${{ github.repository }})" >> $GITHUB_STEP_SUMMARY
+          echo "- [Unity Cloud Build](https://build.cloud.unity.com/)" >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "*Automated deployment completed at $(date)*" >> $GITHUB_STEP_SUMMARY
+
+      - name: Send Discord Notification (Success)
+        if: success() && steps.deploy.outputs.skip_deploy != 'true'
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "⚠️ Discord webhook not configured, skipping notification"
+            exit 0
+          fi
+          
+          BUILD_NUM="${{ steps.download.outputs.build_number }}"
+          DEPLOY_DATE=$(date +"%B %d, %Y at %H:%M UTC")
+          
+          DISCORD_PAYLOAD=$(cat <<EOF
+          {
+            "username": "Clucky",
+            "avatar_url": "https://i.imgur.com/OVBNa8C.png",
+            "embeds": [{
+              "title": "✅ WebGL Demo Updated!",
+              "description": "A new build has been deployed to GitHub Pages.",
+              "color": 5763719,
+              "fields": [
+                {
+                  "name": "🔢 Build Number",
+                  "value": "#$BUILD_NUM",
+                  "inline": true
+                },
+                {
+                  "name": "📅 Deployed At",
+                  "value": "$DEPLOY_DATE",
+                  "inline": true
+                },
+                {
+                  "name": "🔗 Play Now",
+                  "value": "[Launch Demo](https://joaofranciscopanta.github.io/sowur-shield/)",
+                  "inline": false
+                }
+              ],
+              "footer": {
+                "text": "Automated deployment via GitHub Actions"
+              },
+              "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            }]
+          }
+          EOF
+          )
+          
+          curl -H "Content-Type: application/json" \
+               -d "$DISCORD_PAYLOAD" \
+               "$DISCORD_WEBHOOK_URL"
+          
+          echo "✅ Discord notification sent"
+
+      - name: Send Discord Notification (Failure)
+        if: failure()
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "⚠️ Discord webhook not configured, skipping notification"
+            exit 0
+          fi
+          
+          BUILD_NUM="${{ steps.download.outputs.build_number }}"
+          FAIL_DATE=$(date +"%B %d, %Y at %H:%M UTC")
+          
+          DISCORD_PAYLOAD=$(cat <<EOF
+          {
+            "username": "Clucky",
+            "avatar_url": "https://i.imgur.com/OVBNa8C.png",
+            "embeds": [{
+              "title": "❌ WebGL Deployment Failed",
+              "description": "The automated deployment encountered an error.",
+              "color": 15158332,
+              "fields": [
+                {
+                  "name": "🔢 Build Number",
+                  "value": "#$BUILD_NUM",
+                  "inline": true
+                },
+                {
+                  "name": "📅 Failed At",
+                  "value": "$FAIL_DATE",
+                  "inline": true
+                },
+                {
+                  "name": "🔗 Debug",
+                  "value": "[View Workflow Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})",
+                  "inline": false
+                }
+              ],
+              "footer": {
+                "text": "Check workflow logs for details"
+              },
+              "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            }]
+          }
+          EOF
+          )
+          
+          curl -H "Content-Type: application/json" \
+               -d "$DISCORD_PAYLOAD" \
+               "$DISCORD_WEBHOOK_URL"
+          
+          echo "✅ Discord failure notification sent"
