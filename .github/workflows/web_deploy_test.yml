@@ -1,0 +1,53 @@
+name: Debug Unity API
+
+on:
+  workflow_dispatch:
+
+jobs:
+  debug:
+    name: Test Unity API Credentials
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔍 Test Unity API Authentication
+        env:
+          UNITY_API_KEY: ${{ secrets.UNITY_API_KEY }}
+          UNITY_ORG_ID: ${{ secrets.UNITY_ORG_ID }}
+          UNITY_PROJECT_ID: ${{ secrets.UNITY_PROJECT_ID }}
+          UNITY_BUILD_TARGET_ID: ${{ secrets.UNITY_BUILD_TARGET_ID }}
+        run: |
+          echo "================================"
+          echo "🎮 Unity API Debug Test"
+          echo "================================"
+          echo ""
+          
+          # Mostra comprimento das secrets (não o valor)
+          echo "📊 Secret Lengths:"
+          echo "  API_KEY length: ${#UNITY_API_KEY} chars"
+          echo "  ORG_ID length: ${#UNITY_ORG_ID} chars"
+          echo "  PROJECT_ID length: ${#UNITY_PROJECT_ID} chars"
+          echo "  BUILD_TARGET_ID length: ${#UNITY_BUILD_TARGET_ID} chars"
+          echo ""
+          
+          # Mostra primeiros e últimos caracteres (mascarado)
+          echo "📝 Secret Previews (masked):"
+          echo "  API_KEY: ${UNITY_API_KEY:0:4}...${UNITY_API_KEY: -4}"
+          echo "  ORG_ID: ${UNITY_ORG_ID:0:4}...${UNITY_ORG_ID: -4}"
+          echo "  PROJECT_ID: ${UNITY_PROJECT_ID:0:4}...${UNITY_PROJECT_ID: -4}"
+          echo "  BUILD_TARGET_ID: ${UNITY_BUILD_TARGET_ID:0:4}...${UNITY_BUILD_TARGET_ID: -4}"
+          echo ""
+          
+          # Encode API Key
+          ENCODED_KEY=$(echo -n "$UNITY_API_KEY:" | base64)
+          echo "🔐 Encoded Key length: ${#ENCODED_KEY} chars"
+          echo ""
+          
+          # Teste 1: Listar Organizations
+          echo "================================"
+          echo "TEST 1: List Organizations"
+          echo "================================"
+          RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" \
+            -H "Authorization: Basic $ENCODED_KEY" \
+            "https://build-api.cloud.unity3d.com/api/v1/orgs")
+          
+          HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE:" | cut
