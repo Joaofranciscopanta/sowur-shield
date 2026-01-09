@@ -2,15 +2,13 @@ name: Deploy WebGL to GitHub Pages
 
 on:
   schedule:
-    - cron: '0 3 * * 0'  # Every Sunday at 3 AM UTC
+    - cron: '0 3 * * 0'
   workflow_dispatch:
     inputs:
       build_number:
         description: 'Unity build number (leave empty for latest)'
         required: false
         type: string
-  repository_dispatch:
-    types: [unity-build-ready]
 
 jobs:
   deploy:
@@ -26,11 +24,6 @@ jobs:
           ref: main
           fetch-depth: 0
       
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      
       - name: Download Unity Build
         id: download
         env:
@@ -45,361 +38,65 @@ jobs:
           
           BUILD_NUMBER="${{ github.event.inputs.build_number }}"
           if [ -z "$BUILD_NUMBER" ]; then
-            echo "Fetching latest build number..."
             BUILD_INFO=$(curl -s -H "Authorization: Basic $ENCODED_KEY" \
               "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${UNITY_BUILD_TARGET_ID}/builds?per_page=1&buildStatus=success")
-          
             BUILD_NUMBER=$(echo "$BUILD_INFO" | grep -o '"build":[0-9]*' | head -1 | cut -d':' -f2)
-          
-            if [ -z "$BUILD_NUMBER" ]; then
-              echo "❌ Error: Could not fetch latest build number"
-              echo "Response: $BUILD_INFO"
-              exit 1
-            fi
-          
+            [ -z "$BUILD_NUMBER" ] && echo "❌ Could not fetch build number" && exit 1
             echo "✅ Latest successful build: #$BUILD_NUMBER"
-          else
-            echo "Using specified build number: #$BUILD_NUMBER"
           fi
           
           echo "build_number=$BUILD_NUMBER" >> $GITHUB_OUTPUT
           
-          echo "Fetching download URL..."
           DOWNLOAD_INFO=$(curl -s -H "Authorization: Basic $ENCODED_KEY" \
             "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${UNITY_BUILD_TARGET_ID}/builds/${BUILD_NUMBER}")
           
           DOWNLOAD_URL=$(echo "$DOWNLOAD_INFO" | grep -o '"download_primary"[^}]*"href":"[^"]*"' | grep -o 'https://[^"]*' | head -1)
+          [ -z "$DOWNLOAD_URL" ] && echo "❌ Could not fetch download URL" && exit 1
           
-          if [ -z "$DOWNLOAD_URL" ]; then
-            echo "❌ Error: Could not fetch download URL"
-            echo "Response: $DOWNLOAD_INFO"
-            exit 1
-          fi
-          
-          echo "✅ Download URL found"
-          echo "URL preview: ${DOWNLOAD_URL:0:60}..."
-          
-          # Try downloading WITHOUT Authorization header first (pre-signed URL)
-          echo "Downloading build archive (without auth header)..."
-          HTTP_CODE=$(curl -L -w "%{http_code}" \
-            "$DOWNLOAD_URL" \
-            -o temp_build/webgl-build.zip \
-            --connect-timeout 30 \
-            --max-time 600)
-          
-          echo "HTTP Response Code: $HTTP_CODE"
-          
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "⚠️ First attempt failed, trying WITH Authorization header..."
-            
-            HTTP_CODE=$(curl -L -w "%{http_code}" \
-              -H "Authorization: Basic $ENCODED_KEY" \
-              "$DOWNLOAD_URL" \
-              -o temp_build/webgl-build.zip \
-              --connect-timeout 30 \
-              --max-time 600)
-            
-            echo "HTTP Response Code (with auth): $HTTP_CODE"
-            
-            if [ "$HTTP_CODE" != "200" ]; then
-              echo "❌ Error: Download failed with HTTP status $HTTP_CODE"
-              echo "File content (first 50 lines):"
-              head -n 50 temp_build/webgl-build.zip
-              exit 1
-            fi
-          fi
-          
-          if [ ! -f "temp_build/webgl-build.zip" ]; then
-            echo "❌ Error: Build file not created"
-            exit 1
-          fi
-          
-          BUILD_SIZE_BYTES=$(stat -c%s "temp_build/webgl-build.zip" 2>/dev/null || stat -f%z "temp_build/webgl-build.zip" 2>/dev/null)
-          echo "Downloaded file size: $BUILD_SIZE_BYTES bytes"
-          
-          if [ "$BUILD_SIZE_BYTES" -lt 1048576 ]; then
-            echo "❌ Error: Downloaded file is too small ($BUILD_SIZE_BYTES bytes)"
-            echo "This likely means an error response was downloaded instead of the build"
-            echo "File content:"
-            head -n 100 temp_build/webgl-build.zip
-            exit 1
-          fi
-          
-          FILE_TYPE=$(file temp_build/webgl-build.zip)
-          echo "File type: $FILE_TYPE"
-          
-          if [[ ! "$FILE_TYPE" == *"Zip archive"* ]] && [[ ! "$FILE_TYPE" == *"zip"* ]]; then
-            echo "❌ Error: Downloaded file is not a valid ZIP archive"
-            echo "File type detected: $FILE_TYPE"
-            echo "File content (first 100 lines):"
-            head -n 100 temp_build/webgl-build.zip
-            exit 1
-          fi
-          
-          echo "Testing ZIP integrity..."
-          if ! unzip -t temp_build/webgl-build.zip > /dev/null 2>&1; then
-            echo "❌ Error: ZIP file is corrupted or invalid"
-            echo "File details:"
-            ls -lh temp_build/webgl-build.zip
-            echo "Attempting to show ZIP contents:"
-            unzip -l temp_build/webgl-build.zip || true
-            exit 1
-          fi
-          
-          BUILD_SIZE=$(du -h temp_build/webgl-build.zip | cut -f1)
-          echo "✅ Build downloaded successfully ($BUILD_SIZE)"
-          echo "✅ ZIP integrity verified"
-          echo "download_success=true" >> $GITHUB_OUTPUT
+          curl -L "$DOWNLOAD_URL" -o temp_build/webgl-build.zip
+          echo "✅ Build downloaded successfully"
 
       - name: Extract Build
         run: |
-          echo "Extracting build..."
-          mkdir -p docs_new
           unzip -q temp_build/webgl-build.zip -d docs_new
           
-          echo "Archive structure:"
-          ls -la docs_new/
-          
-          # Check if files are in a subdirectory
           if [ -d "docs_new/Default WebGL" ]; then
-            echo "Found 'Default WebGL' directory, moving contents up..."
             mv "docs_new/Default WebGL"/* docs_new/
             rmdir "docs_new/Default WebGL"
           elif [ -d "docs_new/WebGL" ]; then
-            echo "Found 'WebGL' directory, moving contents up..."
             mv docs_new/WebGL/* docs_new/
             rmdir docs_new/WebGL
           fi
           
-          if [ ! -d "docs_new/Build" ]; then
-            echo "❌ Error: Build directory not found in archive"
-            echo "Final structure:"
-            ls -la docs_new/
-            exit 1
-          fi
-          
+          [ ! -d "docs_new/Build" ] && echo "❌ Build directory not found" && exit 1
           echo "✅ Build extracted successfully"
-
-      - name: Decompress Brotli Files
-        run: |
-          echo "Decompressing Brotli files..."
-          sudo apt-get update && sudo apt-get install -y brotli
-          
-          find docs_new/Build -name "*.br" -type f -print0 | while IFS= read -r -d '' BR_FILE; do
-            DECOMPRESSED="${BR_FILE%.br}"
-            echo "Decompressing: $BR_FILE -> $DECOMPRESSED"
-            brotli -d "$BR_FILE" -o "$DECOMPRESSED"
-            rm "$BR_FILE"
-          done
-          
-          if [ -f "docs_new/Build/Build.loader.js" ]; then
-            sed -i 's/\.data\.br/.data/g; s/\.wasm\.br/.wasm/g; s/\.framework\.js\.br/.framework.js/g' docs_new/Build/Build.loader.js
-          fi
-          
-          if [ -f "docs_new/index.html" ]; then
-            sed -i 's/\.data\.br/.data/g; s/\.wasm\.br/.wasm/g; s/\.framework\.js\.br/.framework.js/g' docs_new/index.html
-          fi
-          
-          echo "✅ Brotli decompression completed"
-
-      - name: Inject Custom CSS and Build Number
-        run: |
-          if [ -f ".github/scripts/restore-css.sh" ]; then
-            echo "Running custom CSS restoration..."
-            bash .github/scripts/restore-css.sh docs_new
-          else
-            echo "⚠️ Custom CSS script not found, skipping..."
-          fi
-          
-          echo "<!-- Build #${{ steps.download.outputs.build_number }} deployed on $(date -u +"%Y-%m-%d %H:%M UTC") -->" >> docs_new/index.html
-          
-          echo "✅ Custom content injected"
-
-      - name: Verify Build Structure
-        run: |
-          if [ -f ".github/scripts/verify-build.sh" ]; then
-            bash .github/scripts/verify-build.sh docs_new
-          else
-            echo "Basic structure check..."
-            [ -f "docs_new/index.html" ] && echo "✅ index.html found" || exit 1
-            [ -d "docs_new/Build" ] && echo "✅ Build directory found" || exit 1
-          fi
 
       - name: Create Backup Tag
         run: |
           BACKUP_TAG="backup/webgl-demo-$(date +%Y%m%d-%H%M%S)"
           git tag "$BACKUP_TAG"
           git push origin "$BACKUP_TAG"
-          echo "✅ Created backup tag: $BACKUP_TAG"
 
       - name: Deploy to GitHub Pages
-        id: deploy
         run: |
-          if [ -d "docs" ]; then
-            if diff -r docs docs_new > /dev/null 2>&1; then
-              echo "⏭️ No changes detected, skipping deployment"
-              echo "skip_deploy=true" >> $GITHUB_OUTPUT
-              exit 0
-            fi
-            rm -rf docs
-          fi
-          
+          [ -d "docs" ] && rm -rf docs
           mv docs_new docs
           
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
           git add docs/
-          git commit -m "🎮 Deploy WebGL Demo - Build #${{ steps.download.outputs.build_number }}
-
-          - Unity Cloud Build: #${{ steps.download.outputs.build_number }}
-          - Deployed: $(date -u +"%Y-%m-%d %H:%M UTC")
-          - Workflow: ${{ github.workflow }}
-          - Run: ${{ github.run_number }}"
-          
+          git commit -m "🎮 Deploy WebGL Build #${{ steps.download.outputs.build_number }}"
           git push origin main
           
-          echo "✅ Deployed to GitHub Pages"
-          echo "skip_deploy=false" >> $GITHUB_OUTPUT
+          echo "✅ Deployed!"
 
-      - name: Wait for GitHub Pages
-        if: steps.deploy.outputs.skip_deploy != 'true'
-        run: |
-          echo "Waiting 30 seconds for GitHub Pages to update..."
-          sleep 30
-
-      - name: Generate Summary
-        if: always()
-        run: |
-          echo "## 🎮 WebGL Demo Deployment Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          if [ "${{ steps.download.outputs.download_success }}" = "true" ]; then
-            echo "✅ **Build Downloaded**: Unity Cloud Build #${{ steps.download.outputs.build_number }}" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ **Build Download Failed**" >> $GITHUB_STEP_SUMMARY
-          fi
-          
-          if [ "${{ steps.deploy.outputs.skip_deploy }}" = "true" ]; then
-            echo "⏭️ **Deployment**: Skipped (no changes)" >> $GITHUB_STEP_SUMMARY
-          elif [ "${{ steps.deploy.outputs.skip_deploy }}" = "false" ]; then
-            echo "✅ **Deployment**: Completed successfully" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "❌ **Deployment**: Failed or incomplete" >> $GITHUB_STEP_SUMMARY
-          fi
-          
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 🔗 Links" >> $GITHUB_STEP_SUMMARY
-          echo "- [Live Demo](https://joaofranciscopanta.github.io/sowur-shield/)" >> $GITHUB_STEP_SUMMARY
-          echo "- [Repository](https://github.com/${{ github.repository }})" >> $GITHUB_STEP_SUMMARY
-          echo "- [Unity Cloud Build](https://build.cloud.unity.com/)" >> $GITHUB_STEP_SUMMARY
-          
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "---" >> $GITHUB_STEP_SUMMARY
-          echo "*Automated deployment completed at $(date)*" >> $GITHUB_STEP_SUMMARY
-
-      - name: Send Discord Notification (Success)
-        if: success() && steps.deploy.outputs.skip_deploy != 'true'
+      - name: Discord Notification
+        if: success()
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
-          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
-            echo "⚠️ Discord webhook not configured, skipping notification"
-            exit 0
-          fi
-          
-          BUILD_NUM="${{ steps.download.outputs.build_number }}"
-          DEPLOY_DATE=$(date +"%B %d, %Y at %H:%M UTC")
-          
-          DISCORD_PAYLOAD=$(cat <<EOF
-          {
-            "username": "Clucky",
-            "avatar_url": "https://i.imgur.com/OVBNa8C.png",
-            "embeds": [{
-              "title": "✅ WebGL Demo Updated!",
-              "description": "A new build has been deployed to GitHub Pages.",
-              "color": 5763719,
-              "fields": [
-                {
-                  "name": "🔢 Build Number",
-                  "value": "#$BUILD_NUM",
-                  "inline": true
-                },
-                {
-                  "name": "📅 Deployed At",
-                  "value": "$DEPLOY_DATE",
-                  "inline": true
-                },
-                {
-                  "name": "🔗 Play Now",
-                  "value": "[Launch Demo](https://joaofranciscopanta.github.io/sowur-shield/)",
-                  "inline": false
-                }
-              ],
-              "footer": {
-                "text": "Automated deployment via GitHub Actions"
-              },
-              "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-            }]
-          }
-          EOF
-          )
-          
+          [ -z "$DISCORD_WEBHOOK_URL" ] && exit 0
           curl -H "Content-Type: application/json" \
-               -d "$DISCORD_PAYLOAD" \
+               -d "{\"username\":\"Clucky\",\"avatar_url\":\"https://i.imgur.com/OVBNa8C.png\",\"embeds\":[{\"title\":\"✅ Build #${{ steps.download.outputs.build_number }} Deployed!\",\"url\":\"https://joaofranciscopanta.github.io/sowur-shield/\",\"color\":5763719}]}" \
                "$DISCORD_WEBHOOK_URL"
-          
-          echo "✅ Discord notification sent"
-
-      - name: Send Discord Notification (Failure)
-        if: failure()
-        env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        run: |
-          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
-            echo "⚠️ Discord webhook not configured, skipping notification"
-            exit 0
-          fi
-          
-          BUILD_NUM="${{ steps.download.outputs.build_number }}"
-          FAIL_DATE=$(date +"%B %d, %Y at %H:%M UTC")
-          
-          DISCORD_PAYLOAD=$(cat <<EOF
-          {
-            "username": "Clucky",
-            "avatar_url": "https://i.imgur.com/OVBNa8C.png",
-            "embeds": [{
-              "title": "❌ WebGL Deployment Failed",
-              "description": "The automated deployment encountered an error.",
-              "color": 15158332,
-              "fields": [
-                {
-                  "name": "🔢 Build Number",
-                  "value": "#$BUILD_NUM",
-                  "inline": true
-                },
-                {
-                  "name": "📅 Failed At",
-                  "value": "$FAIL_DATE",
-                  "inline": true
-                },
-                {
-                  "name": "🔗 Debug",
-                  "value": "[View Workflow Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})",
-                  "inline": false
-                }
-              ],
-              "footer": {
-                "text": "Check workflow logs for details"
-              },
-              "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-            }]
-          }
-          EOF
-          )
-          
-          curl -H "Content-Type: application/json" \
-               -d "$DISCORD_PAYLOAD" \
-               "$DISCORD_WEBHOOK_URL"
-          
-          echo "✅ Discord failure notification sent"
