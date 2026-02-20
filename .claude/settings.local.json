@@ -32,7 +32,8 @@
       "Bash(git -c core.autocrlf=true add CLAUDE.md)",
       "Bash(cat:*)",
       "Bash(gh pr:*)",
-      "Bash(where:*)"
+      "Bash(where:*)",
+      "Bash(where.exe:*)"
     ],
     "deny": [],
     "ask": []
