@@ -46,6 +46,13 @@ public class AnimalData : ScriptableObject
     public int productionIntervalDays = 1;
     public int minProduceAmount = 1;
     public int maxProduceAmount = 1;
+    [Tooltip("Prefab with a GroundItem component that will be spawned when this animal produces.")]
+    public GameObject groundItemPrefab;
+    [Tooltip("If true, production is skipped on days the animal was not fed.")]
+    public bool produceOnlyIfFed = false;
+    [Tooltip("Fractional bonus applied to produce amount when the animal was both petted AND fed (e.g. 0.5 = +50%).")]
+    [Range(0f, 1f)]
+    public float happinessProductionBonus = 0f;
 
     [Header("Future: Work System")]
     public bool canDoChores = false;

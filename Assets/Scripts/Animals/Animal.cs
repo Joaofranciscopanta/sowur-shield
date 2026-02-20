@@ -2,12 +2,12 @@ using UnityEngine;
 using System;
 
 /// <summary>
-/// Main animal behavior component implementing IInteractable.
-/// Handles petting, feeding, and displays info UI on second pet of the day.
+/// Main animal behavior component implementing IInteractable and ISaveable.
+/// Handles petting, feeding, production, and displays info UI on second pet of the day.
 /// Note: Requires TWO colliders - one trigger for interaction, one non-trigger for physics.
 /// </summary>
 [RequireComponent(typeof(SpriteRenderer))]
-public class Animal : MonoBehaviour, IInteractable
+public class Animal : MonoBehaviour, IInteractable, ISaveable
 {
     [Header("Animal Configuration")]
     [SerializeField] private AnimalData animalData;
@@ -35,14 +35,22 @@ public class Animal : MonoBehaviour, IInteractable
     private int foodEatenToday = 0;
     private bool needsFeeding = true;
 
+    // Production tracking
+    private int lastProductionDay = -1;
+
     // Particle system
     private GameObject currentHeartParticle;
+
+    /// <summary>Event fired when this animal produces items (day, itemName, amount).</summary>
+    public event Action<string, int> OnAnimalProduced;
 
     public AnimalData AnimalData => animalData;
     public AnimalZone AssignedZone => assignedZone;
     public bool HasBeenPetToday => hasBeenPetToday;
     public int FoodEatenToday => foodEatenToday;
     public bool NeedsFeeding => needsFeeding;
+    public int LastProductionDay => lastProductionDay;
+    public int CurrentDay => currentDay;
 
     private void Awake()
     {
@@ -161,6 +169,12 @@ public class Animal : MonoBehaviour, IInteractable
             GameTimeController.instance.OnDayChanged += OnDayChanged;
             currentDay = GameTimeController.instance.currentDay;
         }
+
+        // Register with SaveManager
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.RegisterSaveable(this);
+        }
     }
 
     private void OnDestroy()
@@ -181,6 +195,12 @@ public class Animal : MonoBehaviour, IInteractable
         if (GameTimeController.instance != null)
         {
             GameTimeController.instance.OnDayChanged -= OnDayChanged;
+        }
+
+        // Unregister from SaveManager
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.UnregisterSaveable(this);
         }
     }
 
@@ -382,10 +402,11 @@ public class Animal : MonoBehaviour, IInteractable
         // Check if daily requirements are met
         CheckFoodRequirements();
 
-        // Play eating animation if available
-        if (animator != null)
+        // Trigger eating animation via AnimalAI state machine
+        AnimalAI animalAI = GetComponent<AnimalAI>();
+        if (animalAI != null)
         {
-            animator.SetTrigger("Eat");
+            animalAI.TriggerEating();
         }
 
         // Spawn heart particle as thanks
@@ -436,13 +457,106 @@ public class Animal : MonoBehaviour, IInteractable
 
     private void CheckProduction()
     {
-        // TODO: Implement production system
-        // For now, just log
-        if (animalData.canProduce && currentDay % animalData.productionIntervalDays == 0)
+        if (!animalData.canProduce) return;
+
+        // Only produce on the correct interval day
+        if (currentDay % animalData.productionIntervalDays != 0) return;
+
+        // Skip if already produced today
+        if (lastProductionDay == currentDay) return;
+
+        // Gate production behind feeding requirement if configured
+        if (animalData.produceOnlyIfFed && needsFeeding)
         {
-            int amount = UnityEngine.Random.Range(animalData.minProduceAmount, animalData.maxProduceAmount + 1);
-            Debug.Log($"{animalData.animalName} produced {amount}x {animalData.produceItemName}!");
+            Debug.Log($"{animalData.animalName} skipped production — not fed today.");
+            return;
         }
+
+        // Calculate base amount
+        int amount = UnityEngine.Random.Range(animalData.minProduceAmount, animalData.maxProduceAmount + 1);
+
+        // Apply happiness bonus when both petted AND fed
+        if (animalData.happinessProductionBonus > 0f && hasBeenPetToday && !needsFeeding)
+        {
+            int bonus = Mathf.RoundToInt(amount * animalData.happinessProductionBonus);
+            amount += bonus;
+            Debug.Log($"{animalData.animalName} happiness bonus! +{bonus} extra produce.");
+        }
+
+        lastProductionDay = currentDay;
+        SpawnProduce(amount);
+    }
+
+    private void SpawnProduce(int amount)
+    {
+        if (amount <= 0) return;
+
+        // Look up the item from the database
+        Item produceItem = ItemDatabase.GetItem(animalData.produceItemName);
+        if (produceItem == null)
+        {
+            Debug.LogWarning($"{animalData.animalName}: Item '{animalData.produceItemName}' not found in ItemDatabase!");
+            return;
+        }
+
+        // Prefer designer-assigned prefab; fall back to a scene search for a GroundItem
+        GameObject prefabToUse = animalData.groundItemPrefab;
+
+        if (prefabToUse == null)
+        {
+            Debug.LogWarning($"{animalData.animalName}: No groundItemPrefab assigned in AnimalData. Cannot spawn produce.");
+            return;
+        }
+
+        // Spawn slightly above the animal so it pops out visually
+        Vector3 spawnPos = transform.position + Vector3.up * 0.5f;
+        GameObject spawnedObj = Instantiate(prefabToUse, spawnPos, Quaternion.identity);
+
+        GroundItem groundItem = spawnedObj.GetComponent<GroundItem>();
+        if (groundItem != null)
+        {
+            groundItem.SetItem(produceItem, amount);
+        }
+        else
+        {
+            Debug.LogWarning($"{animalData.animalName}: Spawned prefab has no GroundItem component!");
+        }
+
+        Debug.Log($"{animalData.animalName} produced {amount}x {animalData.produceItemName}!");
+        OnAnimalProduced?.Invoke(animalData.produceItemName, amount);
+    }
+
+    #endregion
+
+    #region ISaveable Implementation
+
+    public void SaveData(GameData gameData)
+    {
+        if (gameData?.worldData == null) return;
+
+        string prefix = $"animal_{gameObject.name}";
+        gameData.worldData.worldFlags[$"{prefix}_petted"] = hasBeenPetToday;
+        gameData.worldData.worldCounters[$"{prefix}_foodEaten"] = foodEatenToday;
+        gameData.worldData.worldCounters[$"{prefix}_lastProductionDay"] = lastProductionDay;
+    }
+
+    public void LoadData(GameData gameData)
+    {
+        if (gameData?.worldData == null) return;
+
+        string prefix = $"animal_{gameObject.name}";
+
+        if (gameData.worldData.worldFlags.TryGetValue($"{prefix}_petted", out bool petted))
+            hasBeenPetToday = petted;
+
+        if (gameData.worldData.worldCounters.TryGetValue($"{prefix}_foodEaten", out int eaten))
+        {
+            foodEatenToday = eaten;
+            CheckFoodRequirements();
+        }
+
+        if (gameData.worldData.worldCounters.TryGetValue($"{prefix}_lastProductionDay", out int prodDay))
+            lastProductionDay = prodDay;
     }
 
     #endregion
