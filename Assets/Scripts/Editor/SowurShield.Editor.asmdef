@@ -1,9 +1,7 @@
 {
-    "name": "SowurShield.Tests.EditMode",
+    "name": "SowurShield.Editor",
     "rootNamespace": "",
     "references": [
-        "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
         "SowurShield.Runtime"
     ],
     "includePlatforms": [
@@ -11,7 +9,7 @@
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": true,
+    "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": false,
     "defineConstraints": [],

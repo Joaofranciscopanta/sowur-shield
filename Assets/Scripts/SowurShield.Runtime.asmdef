@@ -1,16 +1,13 @@
 {
-    "name": "SowurShield.Tests.PlayMode",
+    "name": "SowurShield.Runtime",
     "rootNamespace": "",
-    "references": [
-        "UnityEngine.TestRunner",
-        "SowurShield.Runtime"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": true,
+    "overrideReferences": false,
     "precompiledReferences": [],
-    "autoReferenced": false,
+    "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false

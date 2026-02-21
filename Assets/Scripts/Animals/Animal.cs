@@ -63,6 +63,8 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     public bool NeedsFeeding => needsFeeding;
     public int CurrentDay => currentDay;
     public int LastProductionDay => lastProductionDay;
+    // Fired when the animal produces (itemName, amount)
+    public event Action<string, int> OnAnimalProduced;
 
     private void Awake()
     {
