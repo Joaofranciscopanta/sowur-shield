@@ -1,11 +1,7 @@
 {
-    "name": "SowurShield.Runtime",
+    "name": "DOTween.Modules",
     "rootNamespace": "",
-    "references": [
-        "Unity.TextMeshPro",
-        "Unity.InputSystem",
-        "DOTween.Modules"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
