@@ -707,6 +707,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     public void SaveData(GameData gameData)
     {
+        if (gameData == null) return;
         Vector2Int position = new Vector2Int(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
         string positionKey = $"{position.x},{position.y}";
 
@@ -732,6 +733,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     public void LoadData(GameData gameData)
     {
+        if (gameData == null) return;
         Vector2Int position = new Vector2Int(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
         string positionKey = $"{position.x},{position.y}";
 

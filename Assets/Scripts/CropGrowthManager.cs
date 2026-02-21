@@ -323,6 +323,7 @@ public class CropGrowthManager : MonoBehaviour, ISaveable
 
     public void SaveData(GameData gameData)
     {
+        if (gameData == null) return;
         if (!HasCrop)
             return;
 
@@ -344,6 +345,7 @@ public class CropGrowthManager : MonoBehaviour, ISaveable
 
     public void LoadData(GameData gameData)
     {
+        if (gameData == null) return;
         Vector2Int myPosition = new Vector2Int(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
         
         // Find crop data for this position
