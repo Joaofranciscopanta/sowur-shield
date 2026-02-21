@@ -345,19 +345,19 @@ public class SleepConfirmationPanel : MonoBehaviour
     // Handle keyboard input
     private void Update()
     {
-        if (isVisible && Keyboard.current != null)
+        if (!isVisible || Keyboard.current == null)
+            return;
+
+        // Handle ESC key to cancel
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
-            // Handle ESC key to cancel
-            if (Keyboard.current.escapeKey.wasPressedThisFrame)
-            {
-                OnCancelClicked();
-            }
-            
-            // Handle Enter key to confirm
-            if (Keyboard.current.enterKey.wasPressedThisFrame || Keyboard.current.numpadEnterKey.wasPressedThisFrame)
-            {
-                OnConfirmClicked();
-            }
+            OnCancelClicked();
+        }
+
+        // Handle Enter key to confirm
+        if (Keyboard.current.enterKey.wasPressedThisFrame || Keyboard.current.numpadEnterKey.wasPressedThisFrame)
+        {
+            OnConfirmClicked();
         }
     }
     
@@ -399,7 +399,6 @@ public class SleepConfirmationPanel : MonoBehaviour
     {
         if (sleepFadeOverlay == null || sleepFadeCanvasGroup == null)
         {
-            Debug.LogWarning("Sleep fade overlay not configured, skipping fade effect");
             onFadeComplete?.Invoke();
             return;
         }

@@ -81,26 +81,31 @@ public class MainMenuManager : MonoBehaviour
     private void InitializeMainMenu()
     {
         if (isInitialized) return;
-        
-        
+
+        // Stop any game music that might still be playing
+        if (GameMusicManager.Instance != null)
+        {
+            GameMusicManager.Instance.StopMusic(1f);
+        }
+
         // Setup cursor and input
         SetupCursorAndInput();
-        
+
         // Setup audio
         SetupAudio();
-        
+
         // Setup UI
         SetupUI();
-        
+
         // Pause settings
         SetupTimeAndPause();
-        
+
         // Mark as initialized
         isInitialized = true;
-        
+
         // Trigger event
         OnMenuInitialized?.Invoke();
-        
+
     }
     
     private void SetupCursorAndInput()

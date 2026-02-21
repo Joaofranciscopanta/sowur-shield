@@ -119,25 +119,19 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
 
     public void OnWindowBlocked(string blockedBy)
     {
-        Debug.LogWarning($"[DialogueTreeUI] Cannot start dialogue - blocked by {blockedBy}");
     }
     
     private void ValidateComponents()
     {
         if (dialoguePanel == null)
-            Debug.LogError("DialogueTreeUI: dialoguePanel is not assigned!");
         
         if (dialogueText == null)
-            Debug.LogError("DialogueTreeUI: dialogueText is not assigned!");
         
         if (choicePanel == null)
-            Debug.LogError("DialogueTreeUI: choicePanel is not assigned!");
         
         if (choiceContainer == null)
-            Debug.LogError("DialogueTreeUI: choiceContainer is not assigned!");
         
         if (choiceButtonPrefab == null)
-            Debug.LogError("DialogueTreeUI: choiceButtonPrefab is not assigned!");
 
         
         if (portraitManager == null)
@@ -183,27 +177,23 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
     {
         if (dialogueTree == null)
         {
-            Debug.LogError("DialogueTreeUI: Cannot start dialogue - dialogueTree is null");
             return;
         }
 
         if (isDialogueActive)
         {
-            Debug.LogWarning("DialogueTreeUI: Cannot start dialogue - dialogue is already active");
             return;
         }
 
         // Use UIManager to try opening this window
         if (UIManager.Instance != null && !UIManager.Instance.TryOpenWindow(this))
         {
-            Debug.LogWarning("DialogueTreeUI: Cannot start dialogue - blocked by another window");
             return;
         }
         
         // Validate tree
         if (!dialogueTree.ValidateTree())
         {
-            Debug.LogError($"DialogueTreeUI: Dialogue tree {dialogueTree.conversationId} failed validation");
             return;
         }
         
@@ -232,7 +222,6 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
         }
         else
         {
-            Debug.LogError($"DialogueTreeUI: Start node '{startNodeId}' not found in dialogue tree");
             EndDialogue();
         }
         
@@ -367,7 +356,6 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
         }
         else
         {
-            Debug.LogWarning("DialogueTreeUI: Choice node has no available choices");
             ContinueToNextNode();
         }
     }
@@ -456,7 +444,6 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
             }
             else
             {
-                Debug.LogError($"DialogueTreeUI: Next node '{choice.nextNodeId}' not found");
                 EndDialogue();
             }
         }
@@ -606,11 +593,11 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
     private void HandleInput()
     {
         if (!isDialogueActive) return;
-        
+
         // Handle continue/skip input
-        bool continuePressed = Keyboard.current.zKey.wasPressedThisFrame || 
+        bool continuePressed = (Keyboard.current != null && Keyboard.current.zKey.wasPressedThisFrame) ||
                               (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame) ||
-                              (Mouse.current.leftButton.wasPressedThisFrame && !IsMouseOverChoice());
+                              (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame && !IsMouseOverChoice());
         
         if (continuePressed)
         {
@@ -633,8 +620,11 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
     
     private void HandleChoiceNavigation()
     {
+        if (Keyboard.current == null)
+            return;
+
         bool navigationChanged = false;
-        
+
         // Vertical navigation with W/S keys
         if (Keyboard.current.wKey.wasPressedThisFrame ||
             Keyboard.current.upArrowKey.wasPressedThisFrame ||
@@ -650,7 +640,7 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
             selectedChoiceIndex = (selectedChoiceIndex + 1) % activeChoiceButtons.Count;
             navigationChanged = true;
         }
-        
+
         // Selection with E key
         if (Keyboard.current.eKey.wasPressedThisFrame ||
             Keyboard.current.enterKey.wasPressedThisFrame ||
@@ -683,7 +673,10 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
     {
         if (!isWaitingForChoice || activeChoiceButtons.Count == 0)
             return false;
-        
+
+        if (Mouse.current == null)
+            return false;
+
         // Check if mouse is over any UI element (including choice buttons)
         PointerEventData pointerData = new PointerEventData(EventSystem.current)
         {

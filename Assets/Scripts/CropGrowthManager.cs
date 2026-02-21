@@ -127,14 +127,10 @@ public class CropGrowthManager : MonoBehaviour, ISaveable
     public bool PlantCrop(CropData cropData)
     {
         if (HasCrop)
-        {
             return false;
-        }
 
         if (cropData == null)
-        {
             return false;
-        }
 
         // Initialize crop
         currentCrop = cropData;
@@ -391,7 +387,6 @@ public static class CropDatabase
 
             if (allCrops.Length == 0)
             {
-                Debug.LogWarning("CropDatabase: No crop data found in Resources/Crops folder");
             }
         }
 

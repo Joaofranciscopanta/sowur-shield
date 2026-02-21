@@ -445,43 +445,46 @@ public class MinimapController : MonoBehaviour, IUIWindow
             return;
 
         // Check for mouse drag (left click + drag)
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        if (Mouse.current != null)
         {
-            lastMousePosition = Mouse.current.position.ReadValue();
-            isMouseDragging = true;
-        }
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                lastMousePosition = Mouse.current.position.ReadValue();
+                isMouseDragging = true;
+            }
 
-        if (Mouse.current.leftButton.isPressed && isMouseDragging)
-        {
-            Vector3 currentMousePosition = Mouse.current.position.ReadValue();
-            Vector3 mouseDelta = currentMousePosition - lastMousePosition;
+            if (Mouse.current.leftButton.isPressed && isMouseDragging)
+            {
+                Vector3 currentMousePosition = Mouse.current.position.ReadValue();
+                Vector3 mouseDelta = currentMousePosition - lastMousePosition;
 
-            // Convert screen space delta to world space delta
-            // Invert Y because screen space Y is inverted
-            Vector3 worldDelta = new Vector3(
-                -mouseDelta.x * mousePanSensitivity * 0.01f,
-                -mouseDelta.y * mousePanSensitivity * 0.01f,
-                0
-            );
+                // Convert screen space delta to world space delta
+                // Invert Y because screen space Y is inverted
+                Vector3 worldDelta = new Vector3(
+                    -mouseDelta.x * mousePanSensitivity * 0.01f,
+                    -mouseDelta.y * mousePanSensitivity * 0.01f,
+                    0
+                );
 
-            ApplyPan(worldDelta);
+                ApplyPan(worldDelta);
 
-            lastMousePosition = currentMousePosition;
-        }
+                lastMousePosition = currentMousePosition;
+            }
 
-        if (Mouse.current.leftButton.wasReleasedThisFrame)
-        {
-            isMouseDragging = false;
-        }
+            if (Mouse.current.leftButton.wasReleasedThisFrame)
+            {
+                isMouseDragging = false;
+            }
 
-        // Handle scroll wheel zoom
-        float scroll = Mouse.current.scroll.ReadValue().y;
-        if (Mathf.Abs(scroll) > 0.1f)
-        {
-            if (scroll > 0)
-                ZoomIn();
-            else
-                ZoomOut();
+            // Handle scroll wheel zoom
+            float scroll = Mouse.current.scroll.ReadValue().y;
+            if (Mathf.Abs(scroll) > 0.1f)
+            {
+                if (scroll > 0)
+                    ZoomIn();
+                else
+                    ZoomOut();
+            }
         }
     }
 
@@ -608,7 +611,6 @@ public class MinimapController : MonoBehaviour, IUIWindow
         #if UNITY_EDITOR
         if (enableDebugLogs)
         {
-            Debug.Log($"[MinimapController] {message}");
         }
         #endif
     }

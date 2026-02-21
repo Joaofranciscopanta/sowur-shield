@@ -358,7 +358,6 @@ public class MinimapCamera : MonoBehaviour
     {
         if (enableDebugLogs)
         {
-            Debug.Log($"[MinimapCamera] {message}");
         }
     }
     #endif
@@ -410,7 +409,6 @@ public class MinimapCamera : MonoBehaviour
             transform.position = new Vector3(0, 0, -cameraDistance);
         }
 
-        Debug.Log("[MinimapCamera] Camera reset for 2D XY plane. Rotation: (0, 0, 0), Position Z: " + transform.position.z);
     }
 #endif
 }

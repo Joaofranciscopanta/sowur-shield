@@ -486,7 +486,6 @@ public class MinimapUI : MonoBehaviour
     {
         if (enableDebugLogs)
         {
-            Debug.Log($"[MinimapUI] {message}");
         }
     }
     #endif
@@ -519,28 +518,20 @@ public class MinimapUI : MonoBehaviour
     {
         if (minimapImage == null)
         {
-            Debug.LogError("[MinimapUI] MinimapImage is NULL!");
             return;
         }
 
         if (minimapImage.texture == null)
         {
-            Debug.LogWarning("[MinimapUI] MinimapImage.texture is NULL - minimap will be black!");
         }
         else
         {
-            Debug.Log($"[MinimapUI] Texture connected: {minimapImage.texture.name}");
         }
     }
 
     [ContextMenu("Debug - Check Size Settings")]
     private void DebugSizeSettings()
     {
-        Debug.Log($"[MinimapUI] Normal Size: {normalSize}");
-        Debug.Log($"[MinimapUI] Fullscreen Size: {fullscreenSize}");
-        Debug.Log($"[MinimapUI] Current Size Delta: {minimapPanel.sizeDelta}");
-        Debug.Log($"[MinimapUI] Current Anchors: Min={minimapPanel.anchorMin}, Max={minimapPanel.anchorMax}");
-        Debug.Log($"[MinimapUI] Current Position: {minimapPanel.anchoredPosition}");
     }
 
     [ContextMenu("Debug - Force Fullscreen Size")]
@@ -553,7 +544,6 @@ public class MinimapUI : MonoBehaviour
             minimapPanel.pivot = new Vector2(0.5f, 0.5f);
             minimapPanel.anchoredPosition = Vector2.zero;
             minimapPanel.sizeDelta = fullscreenSize;
-            Debug.Log($"[MinimapUI] Forced fullscreen size to: {fullscreenSize}");
         }
     }
 #endif

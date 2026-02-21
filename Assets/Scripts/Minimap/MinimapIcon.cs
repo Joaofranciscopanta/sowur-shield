@@ -329,7 +329,6 @@ public class MinimapIcon : MonoBehaviour
     {
         if (enableDebugLogs)
         {
-            Debug.Log($"[MinimapIcon] {message}");
         }
     }
     #endif

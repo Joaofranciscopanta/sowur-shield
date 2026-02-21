@@ -53,7 +53,6 @@ public class AnimalAI : MonoBehaviour
     {
         if (animal == null || animal.AnimalData == null)
         {
-            Debug.LogError($"AnimalAI on {gameObject.name} requires Animal component with valid AnimalData!");
             enabled = false;
             return;
         }

@@ -52,7 +52,7 @@ public class NPCInteractable : MonoBehaviour
 
     private void HandleInteraction()
     {
-        if (playerInRange && !isDialogueActive && (Keyboard.current.eKey.wasPressedThisFrame ||
+        if (playerInRange && !isDialogueActive && ((Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame) ||
            (Gamepad.current != null && Gamepad.current.buttonWest.wasPressedThisFrame) // botão quadrado
 ))
 

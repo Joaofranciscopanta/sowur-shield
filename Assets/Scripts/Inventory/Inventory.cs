@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,11 @@ public class Inventory : MonoBehaviour, ISaveable
     public int hotbarSize = 9; // First 9 slots are hotbar
 
     [Header("UI References")]
-    public Transform slotParent; // Parent object containing all slot UI elements
+    public Transform slotParent; // Parent object containing all slot UI elements (DEPRECATED - use hotbarParent and storageParent)
     public GameObject slotPrefab; // Prefab for creating slots
     public ItemTooltip tooltip;
-    public Transform hotbarParent; // Separate parent for hotbar if needed
+    public Transform hotbarParent; // Parent for hotbar slots (first 9 slots)
+    public Transform storageParent; // Parent for storage slots (remaining 27 slots)
 
     [Header("Input Actions")]
     public InputActionReference inventoryToggleAction;
@@ -136,8 +138,51 @@ public class Inventory : MonoBehaviour, ISaveable
         // Clear existing slots
         slotUIs.Clear();
 
-        if (slotParent != null)
+        // NEW SYSTEM: Use hotbarParent and storageParent
+        if (hotbarParent != null && storageParent != null && slotPrefab != null)
         {
+            // RUNTIME FIX: Ensure GridLayoutGroups are properly configured
+            EnsureGridLayoutGroup(hotbarParent, 9, TextAnchor.MiddleCenter);
+            EnsureGridLayoutGroup(storageParent, 9, TextAnchor.UpperCenter);
+
+            // Create 9 hotbar slots
+            for (int i = 0; i < hotbarSize; i++)
+            {
+                GameObject slotObj = Instantiate(slotPrefab, hotbarParent);
+                slotObj.name = $"HotbarSlot_{i}";
+
+                InventorySlot slotUI = slotObj.GetComponent<InventorySlot>();
+                if (slotUI != null)
+                {
+                    slotUIs.Add(slotUI);
+                    slotUI.SetSlotIndex(i);
+                    slotUI.SetItemStack(container.GetSlot(i));
+                }
+            }
+
+            // Create 27 storage slots
+            for (int i = hotbarSize; i < inventorySize; i++)
+            {
+                GameObject slotObj = Instantiate(slotPrefab, storageParent);
+                slotObj.name = $"StorageSlot_{i}";
+
+                InventorySlot slotUI = slotObj.GetComponent<InventorySlot>();
+                if (slotUI != null)
+                {
+                    slotUIs.Add(slotUI);
+                    slotUI.SetSlotIndex(i);
+                    slotUI.SetItemStack(container.GetSlot(i));
+
+                    // Hide storage slots initially
+                    slotObj.SetActive(false);
+                }
+            }
+
+        }
+        // LEGACY SYSTEM: Fall back to old slotParent method if new system not set up
+        else if (slotParent != null)
+        {
+
             // Find existing slot UIs in the scene (from hotbar)
             InventorySlot[] existingSlots = slotParent.GetComponentsInChildren<InventorySlot>(true);
 
@@ -154,15 +199,18 @@ public class Inventory : MonoBehaviour, ISaveable
             {
                 CreateSlotUI(slotUIs.Count);
             }
-        }
 
-        // Initially hide slots beyond hotbar
-        for (int i = hotbarSize; i < slotUIs.Count; i++)
-        {
-            if (slotUIs[i] != null && slotUIs[i].gameObject != null)
+            // Initially hide slots beyond hotbar
+            for (int i = hotbarSize; i < slotUIs.Count; i++)
             {
-                slotUIs[i].gameObject.SetActive(false);
+                if (slotUIs[i] != null && slotUIs[i].gameObject != null)
+                {
+                    slotUIs[i].gameObject.SetActive(false);
+                }
             }
+        }
+        else
+        {
         }
 
         // Update all slot visuals
@@ -189,6 +237,32 @@ public class Inventory : MonoBehaviour, ISaveable
                 slotObj.SetActive(false);
             }
         }
+    }
+
+    /// <summary>
+    /// Ensures the parent Transform has a properly configured GridLayoutGroup
+    /// This fixes the issue where StorageContainer was missing GridLayoutGroup
+    /// </summary>
+    private void EnsureGridLayoutGroup(Transform parent, int columns, TextAnchor alignment)
+    {
+        if (parent == null) return;
+
+        GridLayoutGroup grid = parent.GetComponent<GridLayoutGroup>();
+        if (grid == null)
+        {
+            grid = parent.gameObject.AddComponent<GridLayoutGroup>();
+        }
+
+        // Configure grid settings to match prefab size (60x60) with tight spacing
+        grid.cellSize = new Vector2(60, 60);
+        grid.spacing = new Vector2(5, 5);
+        grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        grid.constraintCount = columns;
+        grid.childAlignment = alignment;
+        grid.startCorner = GridLayoutGroup.Corner.UpperLeft;
+        grid.startAxis = GridLayoutGroup.Axis.Horizontal;
+        grid.padding = new RectOffset(0, 0, 0, 0);
+
     }
 
     // ============================================================================
@@ -560,7 +634,6 @@ public class Inventory : MonoBehaviour, ISaveable
                 UpdateSlot(slotIndex);
                 UpdateSlot(i);
 
-                Debug.Log($"Hotbar Auto-Refill: Moved {stack.item.itemName} x{stack.quantity} from slot {i} to hotbar slot {slotIndex}");
                 return;
             }
         }
@@ -784,7 +857,6 @@ public class Inventory : MonoBehaviour, ISaveable
             }
         }
 
-        Debug.Log($"Inventory saved: {itemCount} items");
     }
 
     public void LoadData(GameData gameData)
@@ -813,12 +885,10 @@ public class Inventory : MonoBehaviour, ISaveable
                 }
                 else
                 {
-                    Debug.LogWarning($"Item not found in database: {itemData.itemName}");
                 }
             }
         }
 
-        Debug.Log($"Inventory loaded: {foundItems} items");
 
         // IMPORTANT: Ensure inventory is closed after loading
         isInventoryOpen = false;
@@ -875,7 +945,6 @@ public class Inventory : MonoBehaviour, ISaveable
         }
 
         UpdateAllSlots();
-        Debug.Log($"Inventory sorted by {mode} ({direction})");
     }
 
     /// <summary>
@@ -949,7 +1018,6 @@ public class Inventory : MonoBehaviour, ISaveable
     {
         if (additionalSlots <= 0)
         {
-            Debug.LogWarning("Cannot upgrade inventory: additionalSlots must be positive");
             return false;
         }
 
@@ -970,7 +1038,6 @@ public class Inventory : MonoBehaviour, ISaveable
         }
 
         OnInventorySizeChanged?.Invoke(newSize);
-        Debug.Log($"Inventory upgraded: {oldSize} -> {newSize} slots (+{additionalSlots})");
 
         return true;
     }
@@ -983,7 +1050,6 @@ public class Inventory : MonoBehaviour, ISaveable
     {
         if (newSize < hotbarSize)
         {
-            Debug.LogError($"Cannot set inventory size below hotbar size ({hotbarSize})");
             return false;
         }
 
@@ -1002,7 +1068,6 @@ public class Inventory : MonoBehaviour, ISaveable
 
             if (itemsInDangerZone > 0)
             {
-                Debug.LogWarning($"Shrinking inventory will lose {itemsInDangerZone} items!");
             }
         }
 

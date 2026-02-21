@@ -172,7 +172,6 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     public void OnWindowBlocked(string blockedBy)
     {
         // Could show a message to player or play a sound
-        Debug.Log($"[SellBox] Cannot open - blocked by {blockedBy}");
     }
 
     private void RegisterWithInteractionManager()

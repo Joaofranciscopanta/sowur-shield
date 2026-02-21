@@ -329,48 +329,31 @@ public class SceneTransitionManager : MonoBehaviour
     
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log($"[SceneTransitionManager] Scene loaded: {scene.name}");
-
+        
         // You can add scene-specific initialization here
         switch (scene.name)
         {
             case "MainMenu":
-                Debug.Log("[SceneTransitionManager] Loading MainMenu scene");
                 OnMainMenuLoaded();
                 break;
             case "MainGameScene":
-            case "SampleScene": // Actual game scene name
-                Debug.Log("[SceneTransitionManager] Loading game scene");
                 OnGameSceneLoaded();
-                break;
-            default:
-                Debug.Log($"[SceneTransitionManager] Unknown scene: {scene.name}");
                 break;
         }
     }
     
     private void OnMainMenuLoaded()
     {
-        // Stop any game music when returning to main menu
-        if (GameMusicManager.Instance != null)
-        {
-            GameMusicManager.Instance.StopMusic(0.5f);
-        }
+        // MainMenuManager will handle stopping game music and starting menu music
+        // in its InitializeMainMenu() method
     }
-    
+
     private void OnGameSceneLoaded()
     {
-        Debug.Log("[SceneTransitionManager] OnGameSceneLoaded called");
-
         // Start game music when entering game scene
         if (GameMusicManager.Instance != null)
         {
-            Debug.Log("[SceneTransitionManager] GameMusicManager found, calling OnStartGame()");
             GameMusicManager.Instance.OnStartGame();
-        }
-        else
-        {
-            Debug.LogWarning("[SceneTransitionManager] GameMusicManager.Instance is NULL!");
         }
     }
     
@@ -396,7 +379,7 @@ public class SceneTransitionManager : MonoBehaviour
     /// </summary>
     public void LoadMainGameScene()
     {
-        LoadScene("SampleScene", true, true);
+        LoadScene("MainGameScene", true, true);
     }
     
     /// <summary>

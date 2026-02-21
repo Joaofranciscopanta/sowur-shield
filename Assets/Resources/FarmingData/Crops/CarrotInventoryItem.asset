@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Carrot
   description: A Carrot
-  icon: {fileID: -4990882527033520353, guid: 8b07b838e32f0434a86046e5013e33d6, type: 3}
+  icon: {fileID: 2166644136731427129, guid: a7597c935d86bf140b56baac0399ecd9, type: 3}
   itemType: 3
   rarity: 0
   isStackable: 1

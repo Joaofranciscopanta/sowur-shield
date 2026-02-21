@@ -304,6 +304,16 @@ public class GameTimeController : MonoBehaviour, ISaveable
     public bool IsEvening() => IsTimeBetween(sunsetTime, 0.9f);
     public bool IsNight() => IsTimeBetween(0.9f, sunriseTime);
 
+    /// <summary>
+    /// Get current season (for future season system)
+    /// </summary>
+    public string GetCurrentSeason()
+    {
+        // TODO: Implement proper season calculation based on day
+        // For now, return Spring as default (will be expanded in future)
+        return "Spring";
+    }
+
     // Método para ajuste manual do tempo (debug)
     public void DebugSetTime(float time)
     {

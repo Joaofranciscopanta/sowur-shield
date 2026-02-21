@@ -24,7 +24,6 @@ public class AnimalZone : MonoBehaviour
 
         if (zoneCollider == null)
         {
-            Debug.LogError($"AnimalZone on {gameObject.name} requires a Collider2D component!");
         }
         else
         {

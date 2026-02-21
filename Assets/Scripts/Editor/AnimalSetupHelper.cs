@@ -121,7 +121,6 @@ public class AnimalSetupHelper : EditorWindow
         Selection.activeGameObject = animalObj;
         EditorGUIUtility.PingObject(animalObj);
 
-        Debug.Log($"Created animal: {animalData.animalName} at {spawnPosition}");
     }
 
     private void CreateAnimalZone()
@@ -140,7 +139,6 @@ public class AnimalSetupHelper : EditorWindow
         Selection.activeGameObject = zoneObj;
         EditorGUIUtility.PingObject(zoneObj);
 
-        Debug.Log("Created new Animal Zone. Configure the collider size to define the wandering area.");
     }
 
     private void CreateAnimalDataAsset()
@@ -165,7 +163,6 @@ public class AnimalSetupHelper : EditorWindow
             EditorUtility.FocusProjectWindow();
             Selection.activeObject = asset;
 
-            Debug.Log($"Created Animal Data asset at: {path}");
         }
     }
 }

@@ -211,7 +211,6 @@ public class InventoryUIManager : MonoBehaviour
         // For now, we'll just highlight matching items
         // Full implementation would require more complex UI management
 
-        Debug.Log($"Filtered to {visibleItems.Count} items");
     }
 
     // ============================================================================
@@ -229,7 +228,6 @@ public class InventoryUIManager : MonoBehaviour
         if (sortModeText != null)
             sortModeText.text = $"Sort: {mode}";
 
-        Debug.Log($"Inventory sorted by {mode}");
     }
 
     // ============================================================================

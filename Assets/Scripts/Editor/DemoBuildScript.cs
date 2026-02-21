@@ -28,19 +28,14 @@ public class DemoBuildScript
     [MenuItem("Build/Demo/Build All Demos")]
     public static void BuildAllDemos()
     {
-        Debug.Log("=== Starting Demo Build Process ===");
 
         bool windowsSuccess = BuildDemo(BuildTarget.StandaloneWindows64, "Windows");
         bool webglSuccess = BuildDemo(BuildTarget.WebGL, "WebGL");
 
-        Debug.Log("=== Demo Build Process Complete ===");
-        Debug.Log($"Windows Build: {(windowsSuccess ? "SUCCESS" : "FAILED")}");
-        Debug.Log($"WebGL Build: {(webglSuccess ? "SUCCESS" : "FAILED")}");
     }
 
     private static bool BuildDemo(BuildTarget target, string platformName)
     {
-        Debug.Log($"\n=== Building {platformName} Demo ===");
 
         // Get current build target group
         BuildTargetGroup targetGroup = BuildPipeline.GetBuildTargetGroup(target);
@@ -57,7 +52,6 @@ public class DemoBuildScript
                 // Switch to WebGL platform first
                 if (EditorUserBuildSettings.activeBuildTarget != BuildTarget.WebGL)
                 {
-                    Debug.Log("Switching to WebGL platform...");
                     EditorUserBuildSettings.SwitchActiveBuildTarget(targetGroup, BuildTarget.WebGL);
                 }
 
@@ -70,7 +64,6 @@ public class DemoBuildScript
                 PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
                 PlayerSettings.defaultIsNativeResolution = false;
 
-                Debug.Log("WebGL: Disabled compression, exceptions, data caching, and auto-fullscreen");
             }
 
             // Windows-specific settings
@@ -79,21 +72,18 @@ public class DemoBuildScript
                 // Switch to Windows platform first
                 if (EditorUserBuildSettings.activeBuildTarget != BuildTarget.StandaloneWindows64)
                 {
-                    Debug.Log("Switching to Windows platform...");
                     EditorUserBuildSettings.SwitchActiveBuildTarget(targetGroup, BuildTarget.StandaloneWindows64);
                 }
 
                 PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
                 PlayerSettings.defaultScreenWidth = 1920;
                 PlayerSettings.defaultScreenHeight = 1080;
-                Debug.Log("Windows: Set to windowed mode, 1920x1080");
             }
 
             // Add DEMO_BUILD define symbol
             string demoDefines = AddDefineSymbol(originalDefines, DEMO_DEFINE);
             PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, demoDefines);
 
-            Debug.Log($"Added {DEMO_DEFINE} scripting define symbol");
 
             // Wait for compilation to finish
             AssetDatabase.Refresh();
@@ -101,7 +91,6 @@ public class DemoBuildScript
             // Check if scripts are compiling
             if (EditorApplication.isCompiling)
             {
-                Debug.LogError("Cannot build: Scripts are still compiling. Please wait for compilation to finish and try again.");
                 return false;
             }
 
@@ -123,8 +112,6 @@ public class DemoBuildScript
                 options = BuildOptions.None
             };
 
-            Debug.Log($"Building to: {buildPath}");
-            Debug.Log($"Scenes: {string.Join(", ", scenes)}");
 
             // Build
             BuildReport report = BuildPipeline.BuildPlayer(buildOptions);
@@ -132,10 +119,6 @@ public class DemoBuildScript
 
             if (summary.result == BuildResult.Succeeded)
             {
-                Debug.Log($"{platformName} Demo Build SUCCEEDED!");
-                Debug.Log($"Build size: {FormatBytes(summary.totalSize)}");
-                Debug.Log($"Build time: {summary.totalTime}");
-                Debug.Log($"Output: {buildPath}");
 
                 // Open build folder
                 EditorUtility.RevealInFinder(buildPath);
@@ -144,14 +127,11 @@ public class DemoBuildScript
             }
             else
             {
-                Debug.LogError($"{platformName} Demo Build FAILED!");
-                Debug.LogError($"Errors: {summary.totalErrors}, Warnings: {summary.totalWarnings}");
                 return false;
             }
         }
         catch (Exception e)
         {
-            Debug.LogError($"Build exception: {e.Message}");
             return false;
         }
         finally
@@ -159,7 +139,6 @@ public class DemoBuildScript
             // Restore original scripting defines
             PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, originalDefines);
             AssetDatabase.Refresh();
-            Debug.Log("Restored original scripting define symbols");
         }
     }
 
@@ -204,7 +183,6 @@ public class DemoBuildScript
 
         if (scenes.Count == 0)
         {
-            Debug.LogWarning("No scenes enabled in Build Settings! Adding all scenes from Assets/Scenes");
 
             // Fallback: find all scenes in Assets/Scenes
             string[] sceneGuids = AssetDatabase.FindAssets("t:Scene", new[] { "Assets/Scenes" });

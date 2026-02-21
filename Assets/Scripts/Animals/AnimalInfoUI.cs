@@ -1,13 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 
 /// <summary>
 /// UI panel that displays detailed information about an animal.
-/// Shows portrait, name, type, food requirements, current status, and live production info.
-/// Implements IUIWindow for proper UIManager integration and ESC key handling.
+/// Shows picture, name, type, food requirements, and current status.
 /// </summary>
-public class AnimalInfoUI : MonoBehaviour, IUIWindow
+public class AnimalInfoUI : MonoBehaviour
 {
     [Header("UI References")]
     [SerializeField] private GameObject infoPanel;
@@ -21,6 +21,19 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
     [SerializeField] private TextMeshProUGUI productionText;
     [SerializeField] private Button closeButton;
 
+    [Header("Combat Stats UI (Optional)")]
+    [SerializeField] private TextMeshProUGUI combatStatsText;
+    [SerializeField] private TextMeshProUGUI combatClassText;
+    [SerializeField] private TextMeshProUGUI growthTrackingText;
+    [SerializeField] private TextMeshProUGUI abilitiesText;
+
+    [Header("Rename System")]
+    [SerializeField] private GameObject renamePanel;
+    [SerializeField] private TMP_InputField renameInputField;
+    [SerializeField] private Button renameConfirmButton;
+    [SerializeField] private Button renameCancelButton;
+    [SerializeField] private Button openRenameButton;
+
     [Header("Colors")]
     [SerializeField] private Color wellFedColor = new Color(0.3f, 0.8f, 0.3f);
     [SerializeField] private Color hungryColor = new Color(0.8f, 0.3f, 0.3f);
@@ -28,138 +41,107 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
 
     private Animal currentAnimal;
 
-    // =========================================================================
-    // IUIWindow Implementation
-    // =========================================================================
-
-    public string WindowName => "AnimalInfo";
-    public int WindowPriority => WindowPriority.Inventory; // Same tier as inventory
-    public bool IsWindowOpen => infoPanel != null && infoPanel.activeSelf;
-    public bool CanCloseWithEsc => true;
-
-    public void OpenWindow()
-    {
-        if (infoPanel != null)
-            infoPanel.SetActive(true);
-
-        DisablePlayerMovement();
-    }
-
-    public void CloseWindow()
-    {
-        if (infoPanel != null)
-            infoPanel.SetActive(false);
-
-        currentAnimal = null;
-        EnablePlayerMovement();
-    }
-
-    public void OnWindowBlocked(string blockedBy)
-    {
-        Debug.Log($"[AnimalInfoUI] Cannot open — blocked by '{blockedBy}'");
-    }
-
-    // =========================================================================
-    // Unity Lifecycle
-    // =========================================================================
-
     private void Awake()
     {
         if (infoPanel != null)
+        {
             infoPanel.SetActive(false);
+        }
 
         if (closeButton != null)
+        {
             closeButton.onClick.AddListener(CloseUI);
+        }
 
-        // Register with UIManager
-        if (UIManager.Instance != null)
-            UIManager.Instance.RegisterWindow(this);
+        // Setup rename panel
+        if (renamePanel != null)
+        {
+            renamePanel.SetActive(false);
+        }
+
+        if (openRenameButton != null)
+        {
+            openRenameButton.onClick.AddListener(OpenRenamePanel);
+        }
+
+        if (renameConfirmButton != null)
+        {
+            renameConfirmButton.onClick.AddListener(ConfirmRename);
+        }
+
+        if (renameCancelButton != null)
+        {
+            renameCancelButton.onClick.AddListener(CloseRenamePanel);
+        }
     }
 
-    private void OnDestroy()
+    private void Update()
     {
-        if (UIManager.Instance != null)
-            UIManager.Instance.UnregisterWindow(this);
+        // Close with ESC key
+        if (Input.GetKeyDown(KeyCode.Escape) && infoPanel != null && infoPanel.activeSelf)
+        {
+            CloseUI();
+        }
     }
 
-    // =========================================================================
-    // Show / Close
-    // =========================================================================
-
-    /// <summary>Show the animal info UI for a specific animal.</summary>
+    /// <summary>
+    /// Show the animal info UI for a specific animal
+    /// </summary>
     public void ShowAnimalInfo(Animal animal)
     {
         if (animal == null || animal.AnimalData == null)
         {
-            Debug.LogWarning("Cannot show info for null animal!");
             return;
         }
 
         currentAnimal = animal;
-        PopulateUI(animal);
-
-        // Use UIManager for proper window management
-        if (UIManager.Instance != null)
-        {
-            UIManager.Instance.TryOpenWindow(this);
-        }
-        else
-        {
-            // Fallback when UIManager is not present
-            OpenWindow();
-        }
-    }
-
-    public void CloseUI()
-    {
-        if (UIManager.Instance != null)
-            UIManager.Instance.TryCloseWindow(this);
-        else
-            CloseWindow();
-    }
-
-    // =========================================================================
-    // UI Population
-    // =========================================================================
-
-    private void PopulateUI(Animal animal)
-    {
         AnimalData data = animal.AnimalData;
 
-        // Portrait
+        // Set portrait
         if (animalPortrait != null && data.idleSprite != null)
         {
             animalPortrait.sprite = data.idleSprite;
             animalPortrait.gameObject.SetActive(true);
         }
 
-        // Name
+        // Set name (use custom name if available, otherwise breed name)
         if (animalNameText != null)
-            animalNameText.text = data.animalName;
+        {
+            animalNameText.text = animal.GetDisplayName();
+        }
 
-        // Type + Classification
+        // Set type with classification
         if (animalTypeText != null)
         {
             string typeInfo = data.animalType;
+
+            // Add family and class if available
             if (!string.IsNullOrEmpty(data.animalFamily) || !string.IsNullOrEmpty(data.animalClass))
             {
                 typeInfo += "\n";
                 if (!string.IsNullOrEmpty(data.animalClass))
+                {
                     typeInfo += $"Class: {data.animalClass}";
+                }
                 if (!string.IsNullOrEmpty(data.animalFamily))
+                {
                     typeInfo += $"\nFamily: {data.animalFamily}";
+                }
             }
+
             animalTypeText.text = typeInfo;
         }
 
-        // Food requirements
+        // Set food requirements
         if (foodRequirementsText != null)
         {
             string requirements = "Daily Food Needs:\n";
             if (data.dailyFoodRequirements != null && data.dailyFoodRequirements.Count > 0)
             {
                 foreach (FoodRequirement req in data.dailyFoodRequirements)
+                {
                     requirements += $"• {req.quantityPerDay}x {req.itemName}\n";
+                }
             }
             else
             {
@@ -168,24 +150,57 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
             foodRequirementsText.text = requirements;
         }
 
-        // Food status
+        // Set food status
         UpdateFoodStatus();
 
-        // Buffs / Status
+        // Set buffs (placeholder for now)
         if (buffsText != null)
         {
             string buffs = "Status:\n";
             if (animal.HasBeenPetToday)
+            {
                 buffs += "• Happy (Petted today)\n";
+            }
             if (!animal.NeedsFeeding)
+            {
                 buffs += "• Well Fed\n";
+            }
             else
+            {
                 buffs += "• Hungry\n";
+            }
+
             buffsText.text = buffs;
         }
 
-        // Production — live status
-        UpdateProductionStatus();
+        // Set production info
+        if (productionText != null)
+        {
+            if (data.canProduce)
+            {
+                string production = $"Produces:\n";
+                production += $"• {data.produceItemName}\n";
+                production += $"• Every {data.productionIntervalDays} day(s)\n";
+                production += $"• Amount: {data.minProduceAmount}-{data.maxProduceAmount}\n";
+                productionText.text = production;
+            }
+            else
+            {
+                productionText.text = "No production";
+            }
+        }
+
+        // Update combat stats display
+        UpdateCombatStatsDisplay();
+
+        // Show panel
+        if (infoPanel != null)
+        {
+            infoPanel.SetActive(true);
+        }
+
+        // Disable player movement
+        DisablePlayerMovement();
     }
 
     private void UpdateFoodStatus()
@@ -194,108 +209,238 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
 
         float foodPercentage = currentAnimal.GetFoodPercentage();
 
+        // Update status text
         if (foodStatusText != null)
         {
             int totalRequired = 0;
             if (currentAnimal.AnimalData.dailyFoodRequirements != null)
             {
                 foreach (FoodRequirement req in currentAnimal.AnimalData.dailyFoodRequirements)
+                {
                     totalRequired += req.quantityPerDay;
+                }
             }
 
             foodStatusText.text = $"Fed Today: {currentAnimal.FoodEatenToday}/{totalRequired}";
 
+            // Color code the text
             if (foodPercentage >= 1f)
+            {
                 foodStatusText.color = wellFedColor;
+            }
             else if (foodPercentage >= 0.5f)
+            {
                 foodStatusText.color = partiallyFedColor;
+            }
             else
+            {
                 foodStatusText.color = hungryColor;
+            }
         }
 
+        // Update progress bar
         if (foodProgressBar != null)
         {
             foodProgressBar.fillAmount = foodPercentage;
 
+            // Color code the bar
             if (foodPercentage >= 1f)
+            {
                 foodProgressBar.color = wellFedColor;
+            }
             else if (foodPercentage >= 0.5f)
+            {
                 foodProgressBar.color = partiallyFedColor;
+            }
             else
+            {
                 foodProgressBar.color = hungryColor;
+            }
         }
     }
 
-    /// <summary>Shows live production status — whether produce dropped today or when it's next due.</summary>
-    private void UpdateProductionStatus()
+    private void UpdateCombatStatsDisplay()
     {
-        if (productionText == null || currentAnimal == null) return;
+        if (currentAnimal == null) return;
 
-        AnimalData data = currentAnimal.AnimalData;
+        AnimalCombatStats combatStats = currentAnimal.GetCombatStats();
+        if (combatStats == null) return;
 
-        if (!data.canProduce)
+        // Combat stats
+        if (combatStatsText != null)
         {
-            productionText.text = "No production";
-            return;
+            combatStatsText.text = $"Combat Stats:\n" +
+                                  $"⚔️ Attack: {combatStats.CurrentAttack:F1}\n" +
+                                  $"🛡️ Defense: {combatStats.CurrentDefense:F1}\n" +
+                                  $"⚡ Speed: {combatStats.CurrentSpeed:F1}\n" +
+                                  $"❤️ Health: {combatStats.MaxHealth:F0}\n" +
+                                  $"🎯 Accuracy: {combatStats.CurrentAccuracy * 100f:F0}%\n" +
+                                  $"😊 Happiness: {combatStats.happiness:F0}/100 (x{combatStats.HappinessMultiplier:F2})";
         }
 
-        string production = $"Produces: {data.produceItemName}\n";
-        production += $"Every {data.productionIntervalDays} day(s) | {data.minProduceAmount}-{data.maxProduceAmount}";
-
-        if (data.happinessProductionBonus > 0f)
-            production += $" (+{(int)(data.happinessProductionBonus * 100)}% if happy)";
-
-        production += "\n";
-
-        // Live status: did we already produce today?
-        int today = currentAnimal.CurrentDay;
-        bool producedToday = currentAnimal.LastProductionDay == today
-                             && today % data.productionIntervalDays == 0;
-
-        if (producedToday)
+        // Combat class
+        if (combatClassText != null && currentAnimal.AnimalData != null)
         {
-            production += "✓ Produced today!";
+            combatClassText.text = $"Class: {currentAnimal.AnimalData.combatClass}\n" +
+                                  $"Family: {currentAnimal.AnimalData.animalFamily}";
         }
-        else
-        {
-            // Find the next production day
-            int daysUntilNext = data.productionIntervalDays - (today % data.productionIntervalDays);
-            if (daysUntilNext == data.productionIntervalDays) daysUntilNext = 0; // today is a production day
 
-            if (daysUntilNext == 0)
-                production += "Ready to produce today";
+        // Growth tracking
+        if (growthTrackingText != null)
+        {
+            var (petted, fed, quality) = currentAnimal.GetGrowthTracking();
+            growthTrackingText.text = $"Growth Tracking:\n" +
+                                     $"• Times Petted: {petted}\n" +
+                                     $"• Proper Feedings: {fed}\n" +
+                                     $"• Quality Products: {quality}\n\n" +
+                                     $"Growth Multipliers:\n" +
+                                     $"• Attack: x{combatStats.attackGrowth:F2}\n" +
+                                     $"• Defense: x{combatStats.defenseGrowth:F2}\n" +
+                                     $"• Speed: x{combatStats.speedGrowth:F2}\n" +
+                                     $"• Health: x{combatStats.healthGrowth:F2}";
+        }
+
+        // Skills (Active + Passive)
+        if (abilitiesText != null)
+        {
+            abilitiesText.text = "";
+
+            // Display active skill
+            AnimalSkill activeSkill = currentAnimal.GetActiveSkill();
+            if (activeSkill != null)
+            {
+                abilitiesText.text += $"<b>⚔️ Active Skill:</b>\n";
+                abilitiesText.text += $"• {activeSkill.skillName}\n";
+                abilitiesText.text += $"  {activeSkill.description}\n\n";
+            }
             else
-                production += $"Next production in {daysUntilNext} day(s)";
+            {
+                abilitiesText.text += "<b>⚔️ Active Skill:</b> None\n\n";
+            }
 
-            if (data.produceOnlyIfFed && currentAnimal.NeedsFeeding)
-                production += "\n⚠ Needs feeding first!";
+            // Display passive skills
+            List<AnimalSkill> passiveSkills = currentAnimal.GetUnlockedPassiveSkills();
+            abilitiesText.text += $"<b>🛡️ Passive Skills ({passiveSkills.Count}/4):</b>\n";
+
+            if (passiveSkills.Count > 0)
+            {
+                foreach (AnimalSkill skill in passiveSkills)
+                {
+                    abilitiesText.text += $"• {skill.skillName}\n";
+                    abilitiesText.text += $"  {skill.description}\n";
+                }
+            }
+            else
+            {
+                abilitiesText.text += "  No passive skills unlocked yet\n";
+            }
+
+            // Show available skills that can be unlocked
+            if (currentAnimal.AnimalData != null && currentAnimal.AnimalData.availablePassiveSkills != null)
+            {
+                int availableCount = currentAnimal.AnimalData.availablePassiveSkills.Count;
+                int lockedCount = availableCount - passiveSkills.Count;
+
+                if (lockedCount > 0)
+                {
+                    abilitiesText.text += $"\n<i>🔒 {lockedCount} skill(s) available to unlock</i>";
+                }
+            }
         }
-
-        productionText.text = production;
     }
 
-    // =========================================================================
-    // Player Movement Helpers
-    // =========================================================================
+    public void CloseUI()
+    {
+        if (infoPanel != null)
+        {
+            infoPanel.SetActive(false);
+        }
+
+        currentAnimal = null;
+
+        // Re-enable player movement
+        EnablePlayerMovement();
+    }
 
     private void DisablePlayerMovement()
     {
         PlayerMove player = FindObjectOfType<PlayerMove>();
         if (player != null)
-            player.DisableMovement();
+        {
+            player.enabled = false;
+        }
     }
 
     private void EnablePlayerMovement()
     {
         PlayerMove player = FindObjectOfType<PlayerMove>();
         if (player != null)
-            player.EnableMovement();
+        {
+            player.enabled = true;
+        }
     }
 
-    // =========================================================================
-    // Legacy
-    // =========================================================================
+    public bool IsOpen()
+    {
+        return infoPanel != null && infoPanel.activeSelf;
+    }
 
-    /// <summary>For backward compatibility — prefer CloseUI().</summary>
-    public bool IsOpen() => IsWindowOpen;
+    // ============================================================================
+    // RENAME SYSTEM
+    // ============================================================================
+
+    private void OpenRenamePanel()
+    {
+        if (renamePanel == null || currentAnimal == null) return;
+
+        // Show rename panel
+        renamePanel.SetActive(true);
+
+        // Pre-fill with current name
+        if (renameInputField != null)
+        {
+            renameInputField.text = currentAnimal.GetDisplayName();
+            renameInputField.Select();
+            renameInputField.ActivateInputField();
+        }
+    }
+
+    private void CloseRenamePanel()
+    {
+        if (renamePanel != null)
+        {
+            renamePanel.SetActive(false);
+        }
+    }
+
+    private void ConfirmRename()
+    {
+        if (currentAnimal == null || renameInputField == null) return;
+
+        string newName = renameInputField.text.Trim();
+
+        // Validate name (not empty, reasonable length)
+        if (string.IsNullOrEmpty(newName))
+        {
+            return;
+        }
+
+        if (newName.Length > 20)
+        {
+            return;
+        }
+
+        // Apply the new name
+        currentAnimal.SetCustomName(newName);
+
+        // Update the display
+        if (animalNameText != null)
+        {
+            animalNameText.text = currentAnimal.GetDisplayName();
+        }
+
+
+        // Close rename panel
+        CloseRenamePanel();
+    }
 }

@@ -310,7 +310,6 @@ public class UIManager : MonoBehaviour
     {
         if (enableDebugLogs)
         {
-            Debug.Log($"[UIManager] {message}");
         }
     }
 }

@@ -33,7 +33,6 @@ public class ItemDatabase : ScriptableObject
 
                 if (instance == null)
                 {
-                    Debug.LogWarning("ItemDatabase not found in Resources folder. Creating temporary instance.");
                     instance = CreateInstance<ItemDatabase>();
                     instance.autoLoadFromResources = true;
                 }
@@ -59,13 +58,11 @@ public class ItemDatabase : ScriptableObject
             // Load all items from Resources folders
             Item[] resourceItems = Resources.LoadAll<Item>("");
             allItems.AddRange(resourceItems);
-            Debug.Log($"ItemDatabase: Auto-loaded {resourceItems.Length} items from Resources");
         }
         else
         {
             // Use manually assigned items
             allItems.AddRange(items);
-            Debug.Log($"ItemDatabase: Loaded {items.Count} manually assigned items");
         }
 
         // Build lookup dictionary
@@ -76,8 +73,6 @@ public class ItemDatabase : ScriptableObject
 
             if (itemLookup.ContainsKey(item.itemName))
             {
-                Debug.LogError($"ItemDatabase: Duplicate item name detected: '{item.itemName}'. " +
-                              $"Only the first item will be used. Please ensure all items have unique names.");
                 duplicateCount++;
                 continue;
             }
@@ -89,10 +84,8 @@ public class ItemDatabase : ScriptableObject
 
         if (duplicateCount > 0)
         {
-            Debug.LogWarning($"ItemDatabase: Found {duplicateCount} duplicate item names. Check console for details.");
         }
 
-        Debug.Log($"ItemDatabase initialized with {itemLookup.Count} unique items");
     }
 
     /// <summary>
@@ -121,7 +114,6 @@ public class ItemDatabase : ScriptableObject
             return item;
         }
 
-        Debug.LogWarning($"ItemDatabase: Item '{itemName}' not found in database");
         return null;
     }
 
@@ -182,17 +174,13 @@ public class ItemDatabase : ScriptableObject
     {
         Initialize();
 
-        Debug.Log("=== ItemDatabase Validation ===");
-        Debug.Log($"Total items: {itemLookup.Count}");
 
         // Check for items with no icon
         var noIconItems = itemLookup.Values.Where(i => i.icon == null).ToList();
         if (noIconItems.Count > 0)
         {
-            Debug.LogWarning($"Items with no icon: {noIconItems.Count}");
             foreach (var item in noIconItems)
             {
-                Debug.LogWarning($"  - {item.itemName}");
             }
         }
 
@@ -200,21 +188,17 @@ public class ItemDatabase : ScriptableObject
         var noDescItems = itemLookup.Values.Where(i => string.IsNullOrEmpty(i.description)).ToList();
         if (noDescItems.Count > 0)
         {
-            Debug.LogWarning($"Items with no description: {noDescItems.Count}");
         }
 
         // Show item type breakdown
-        Debug.Log("Item breakdown by type:");
         foreach (ItemType type in System.Enum.GetValues(typeof(ItemType)))
         {
             int count = itemLookup.Values.Count(i => i.itemType == type);
             if (count > 0)
             {
-                Debug.Log($"  - {type}: {count} items");
             }
         }
 
-        Debug.Log("=== Validation Complete ===");
     }
 
     // Editor-only: Called when the ScriptableObject is loaded

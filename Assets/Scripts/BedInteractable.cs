@@ -35,8 +35,15 @@ public class BedInteractable : MonoBehaviour, IInteractable
 
         // Verifica se encontrou
         if (timeController == null)
-            Debug.LogWarning("[BedInteractable] GameTimeController not found!");
+        {
+            // TimeController is required for sleeping functionality
+        }
 
+        // Try to find confirmation panel if not assigned
+        if (confirmationPanel == null)
+        {
+            confirmationPanel = FindFirstObjectByType<SleepConfirmationPanel>();
+        }
 
         // Setup new confirmation panel events
         if (confirmationPanel != null)
@@ -192,7 +199,6 @@ public class BedInteractable : MonoBehaviour, IInteractable
         {
             SaveManager.Instance.CurrentGameData.playerData.lastBedPosition = transform.position;
             SaveManager.Instance.CurrentGameData.playerData.hasSleptInBed = true;
-            Debug.Log($"[BedInteractable] Stored bed position: {transform.position}");
         }
 
         // TRIGGER AUTO-SAVE AFTER ADVANCING TIME

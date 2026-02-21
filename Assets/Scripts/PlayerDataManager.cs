@@ -166,7 +166,6 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
     {
         if (enableDebugLogs)
         {
-            Debug.Log($"[PlayerDataManager] {message}");
         }
     }
     

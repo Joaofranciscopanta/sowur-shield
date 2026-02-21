@@ -134,8 +134,8 @@ public class DialogueUI : MonoBehaviour
     {
         // Só processa input se o diálogo estiver ativo
         if (!isDialogueActive) return;
-        
-        if (Keyboard.current.zKey.wasPressedThisFrame ||
+
+        if ((Keyboard.current != null && Keyboard.current.zKey.wasPressedThisFrame) ||
            (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)) // botão X
         {
             if (isTyping)

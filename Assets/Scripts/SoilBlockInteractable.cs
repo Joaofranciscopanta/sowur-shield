@@ -401,7 +401,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             {
                 cropGrowthManager.WaterCrop();
             }
-            
+
             currentState = SoilState.WithCrop;
             UpdateAppearance();
 

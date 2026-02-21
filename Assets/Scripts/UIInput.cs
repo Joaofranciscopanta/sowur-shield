@@ -12,7 +12,7 @@ public class UIInput : MonoBehaviour
     private void Update()
     {
         // Handle Escape key to close UI windows
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             HandleEscapeKey();
         }

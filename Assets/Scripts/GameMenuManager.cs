@@ -26,6 +26,9 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
     private bool isMenuOpen = false;
     private float previousTimeScale = 1f;
 
+    public bool IsMapOpen { get; private set;}
+
+
     // References
     private PlayerMove playerMove;
     private GameTimeController timeController;
@@ -114,7 +117,6 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
 
     public void OnWindowBlocked(string blockedBy)
     {
-        Debug.Log($"[GameMenuManager] Cannot open menu - blocked by {blockedBy}");
     }
 
     private void FindGameReferences()
@@ -176,12 +178,19 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
             }
         }
 
+            if (IsMapOpen)
+                return;
         ToggleMenu();
     }
 
     // ============================================================================
     // MENU CONTROL
     // ============================================================================
+
+    public void SetMapOpen(bool value)
+    {
+        IsMapOpen = value;
+    }
 
     public void ToggleMenu()
     {
@@ -238,13 +247,11 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
         // Validate required components
         if (menuPanel == null)
         {
-            Debug.LogError("GameMenuManager: menuPanel is not assigned!");
             return;
         }
 
         if (menuUI == null)
         {
-            Debug.LogError("GameMenuManager: menuUI component not found!");
             return;
         }
 

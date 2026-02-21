@@ -38,25 +38,14 @@ public class GameMusicManager : MonoBehaviour
 
             // Setup audio source
             if (musicSource == null)
-            {
-                Debug.Log("[GameMusicManager] musicSource is null, trying GetComponent");
                 musicSource = GetComponent<AudioSource>();
-            }
 
             if (musicSource == null)
-            {
-                Debug.Log("[GameMusicManager] No AudioSource found, creating one");
                 musicSource = gameObject.AddComponent<AudioSource>();
-            }
-
-            Debug.Log($"[GameMusicManager] AudioSource setup complete: {(musicSource != null ? "SUCCESS" : "FAILED")}");
 
             // Configure audio source
             musicSource.loop = true;
             musicSource.playOnAwake = false;
-
-            // Subscribe to scene loaded events
-            UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -66,54 +55,18 @@ public class GameMusicManager : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
-    {
-        // Unsubscribe from scene events
-        if (Instance == this)
-        {
-            UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
-        }
-    }
-
-    private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
-    {
-        Debug.Log($"[GameMusicManager] OnSceneLoaded: {scene.name}");
-
-        if (scene.name == "SampleScene" || scene.name == "MainGameScene")
-        {
-            Debug.Log("[GameMusicManager] Game scene loaded, starting music");
-            OnStartGame();
-        }
-        else if (scene.name == "MainMenu")
-        {
-            Debug.Log("[GameMusicManager] Main menu loaded, stopping music");
-            OnReturnToMainMenu();
-        }
-    }
-
     private void Start()
     {
-        Debug.Log("[GameMusicManager] Start() called");
+        // This only runs once when GameMusicManager is first created
+        // For subsequent scene loads, we rely on SceneTransitionManager callbacks
 
         // Stop any menu music that might be playing
         StopMenuMusic();
 
-        // Check which scene we're in and play appropriate music
-        string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        Debug.Log($"[GameMusicManager] Current scene: {currentScene}");
-
-        if (currentScene == "SampleScene" || currentScene == "MainGameScene")
+        // Start gameplay music if enabled
+        if (playOnStart && gameplayMusic != null)
         {
-            Debug.Log("[GameMusicManager] In game scene, starting music");
-            // We're in the game scene, start the music
-            if (gameplayMusic != null)
-            {
-                PlayMusic(gameplayMusic, fadeInDuration);
-            }
-            else
-            {
-                Debug.LogWarning("[GameMusicManager] gameplayMusic is NULL! Assign a music clip in the Inspector.");
-            }
+            PlayMusic(gameplayMusic, fadeInDuration);
         }
     }
 
@@ -152,8 +105,14 @@ public class GameMusicManager : MonoBehaviour
     /// </summary>
     public void PlayMusic(AudioClip clip, float fadeTime = 0f)
     {
-        Debug.Log($"[GameMusicManager] PlayMusic called - clip: {(clip != null ? clip.name : "NULL")}, fadeTime: {fadeTime}");
         if (clip == null) return;
+
+
+        // Cancel any ongoing fade operation
+        if (isFading)
+        {
+            isFading = false;
+        }
 
         // Stop current music if different clip
         if (musicSource.clip != clip)
@@ -165,9 +124,10 @@ public class GameMusicManager : MonoBehaviour
         // Calculate target volume
         UpdateTargetVolume();
 
-        // Start playing
+        // Always ensure music is playing
         if (!musicSource.isPlaying)
         {
+            // Not playing - start it
             if (fadeTime > 0f)
             {
                 // Fade in
@@ -182,9 +142,9 @@ public class GameMusicManager : MonoBehaviour
                 musicSource.Play();
             }
         }
-        else
+        else if (musicSource.clip == clip && musicSource.volume > 0.01f && !isFading)
         {
-            // Already playing, just fade to target volume
+            // Already playing same clip at audible volume - just adjust volume if needed
             if (fadeTime > 0f)
             {
                 FadeToVolume(targetVolume, fadeTime);
@@ -192,6 +152,23 @@ public class GameMusicManager : MonoBehaviour
             else
             {
                 musicSource.volume = targetVolume;
+            }
+        }
+        else
+        {
+            // Playing but volume is 0 or very low (from fade out) - restart it
+            musicSource.Stop();
+            musicSource.clip = clip;
+            if (fadeTime > 0f)
+            {
+                musicSource.volume = 0f;
+                musicSource.Play();
+                FadeToVolume(targetVolume, fadeTime);
+            }
+            else
+            {
+                musicSource.volume = targetVolume;
+                musicSource.Play();
             }
         }
     }
@@ -327,17 +304,14 @@ public class GameMusicManager : MonoBehaviour
     /// </summary>
     public void OnStartGame()
     {
-        Debug.Log("[GameMusicManager] OnStartGame() called");
 
         // Play gameplay music
         if (gameplayMusic != null)
         {
-            Debug.Log($"[GameMusicManager] Playing gameplay music: {gameplayMusic.name}");
             PlayMusic(gameplayMusic, fadeInDuration);
         }
         else
         {
-            Debug.LogWarning("[GameMusicManager] gameplayMusic is NULL! Assign a music clip in the Inspector.");
         }
     }
 }

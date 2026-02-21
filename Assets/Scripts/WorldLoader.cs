@@ -33,7 +33,6 @@ public class WorldLoader : MonoBehaviour
             soilBlockPrefab = Resources.Load<GameObject>("Soil");
             if (soilBlockPrefab == null)
             {
-                Debug.LogError("[WorldLoader] Could not load Soil prefab from Resources");
             }
         }
         
@@ -70,7 +69,6 @@ public class WorldLoader : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("[WorldLoader] SaveManager not found after waiting");
         }
     }
     
@@ -97,7 +95,6 @@ public class WorldLoader : MonoBehaviour
     {
         if (soilBlockPrefab == null)
         {
-            Debug.LogError("[WorldLoader] No soil block prefab assigned, cannot recreate world objects");
             return;
         }
         

@@ -12,11 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2df1b3057e07cad45a9e4bdcec3840e0, type: 3}
   m_Name: CarrotSeed
   m_EditorClassIdentifier: 
-  itemTags: []
-  toolLevel: 0
-  itemType: 4
   itemName: CarrotSeed
-  itemDesc: Plants Carrots
-  icon: {fileID: 6831267193280381010, guid: 126139c2252e820458b01a8da81596e1, type: 3}
+  description: A useful item
+  icon: {fileID: 3614151479051087722, guid: a7597c935d86bf140b56baac0399ecd9, type: 3}
+  itemType: 4
+  rarity: 0
   isStackable: 1
   maxStackSize: 99
+  itemTags: []
+  toolLevel: 0
+  durability: -1
+  energyRestore: 0
+  healthRestore: 0
+  isConsumable: 0
+  baseValue: 1
+  canBeSold: 1

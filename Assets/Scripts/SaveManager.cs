@@ -153,7 +153,6 @@ public class SaveManager : MonoBehaviour
     public void SaveGame()
     {
 #if DEMO_BUILD
-        Debug.Log("SaveGame() called but DISABLED in demo build");
         OnSaveCompleted?.Invoke(false);
         return;
 #endif
@@ -263,7 +262,6 @@ public class SaveManager : MonoBehaviour
     public void LoadGame()
     {
 #if DEMO_BUILD
-        Debug.Log("LoadGame() called but DISABLED in demo build");
         OnLoadCompleted?.Invoke(false);
         return;
 #endif
@@ -436,13 +434,11 @@ public class SaveManager : MonoBehaviour
     {
         if (enableDebugLogs)
         {
-            Debug.Log($"[SaveManager] {message}");
         }
     }
     
     private void LogError(string message)
     {
-        Debug.LogError($"[SaveManager] {message}");
     }
     
     // ============================================================================
@@ -474,16 +470,9 @@ public class SaveManager : MonoBehaviour
         var info = GetSaveFileInfo();
         if (info != null)
         {
-            Debug.Log($"Save File Info:\n" +
-                     $"Name: {info.fileName}\n" +
-                     $"Path: {info.filePath}\n" +
-                     $"Created: {info.creationTime}\n" +
-                     $"Modified: {info.lastWriteTime}\n" +
-                     $"Size: {info.fileSizeBytes} bytes");
         }
         else
         {
-            Debug.Log("No save file exists");
         }
     }
     #endif

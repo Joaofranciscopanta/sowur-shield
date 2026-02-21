@@ -154,12 +154,18 @@ animator.SetBool("isWalking", moveInput != Vector2.zero);
         {
             return; // Don't interact when dragging items
         }
-        
+
+        // Don't interact if TeamAssemblerUI is open
+        if (TeamAssemblerUI.Instance != null && TeamAssemblerUI.Instance.IsOpen())
+        {
+            return; // Don't interact when Team Assembler is open
+        }
+
         // Don't interact if UI is active or if mouse is over UI
         if (UIManager.Instance != null && UIManager.Instance.IsAnyPanelOpen())
         {
             // Check if mouse is over UI element
-            if (UnityEngine.EventSystems.EventSystem.current != null && 
+            if (UnityEngine.EventSystems.EventSystem.current != null &&
                 UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
             {
                 return; // Don't interact when mouse is over UI

@@ -62,7 +62,6 @@ public class GameMenuUI : MonoBehaviour
         menuManager = GetComponent<GameMenuManager>();
         if (menuManager == null)
         {
-            Debug.LogError("[GameMenuUI] GameMenuManager component not found on the same GameObject!");
         }
     }
     
