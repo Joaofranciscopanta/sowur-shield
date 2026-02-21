@@ -517,6 +517,7 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         if (!animalData.canProduce) return;
         if (currentDay % animalData.productionIntervalDays != 0) return;
         if (lastProductionDay == currentDay) return; // Already produced today
+        if (animalData.produceOnlyIfFed && needsFeeding) return; // Skip if must be fed but isn't
 
         lastProductionDay = currentDay;
 
@@ -843,6 +844,8 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
 
     public void SaveData(GameData gameData)
     {
+        if (gameData == null) return;
+
         // Create or update AnimalData in CombatGameData
         var existingAnimal = gameData.combatData.ownedAnimals
             .Find(a => a.animalId == uniqueID);
@@ -911,10 +914,26 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         }
         animalSaveData.abilities.AddRange(combatStats.passiveSkillIds); // Then passive skills
 
+        // Save farm tracking flags to worldData (keyed by object name for test access)
+        string prefix = $"animal_{gameObject.name}";
+        gameData.worldData.worldFlags[$"{prefix}_petted"] = hasBeenPetToday;
+        gameData.worldData.worldCounters[$"{prefix}_foodEaten"] = foodEatenToday;
+        gameData.worldData.worldCounters[$"{prefix}_lastProductionDay"] = lastProductionDay;
     }
 
     public void LoadData(GameData gameData)
     {
+        if (gameData == null) return;
+
+        // Restore farm tracking flags from worldData (keyed by object name)
+        string prefix = $"animal_{gameObject.name}";
+        if (gameData.worldData.worldFlags.ContainsKey($"{prefix}_petted"))
+            hasBeenPetToday = gameData.worldData.worldFlags[$"{prefix}_petted"];
+        if (gameData.worldData.worldCounters.ContainsKey($"{prefix}_foodEaten"))
+            foodEatenToday = gameData.worldData.worldCounters[$"{prefix}_foodEaten"];
+        if (gameData.worldData.worldCounters.ContainsKey($"{prefix}_lastProductionDay"))
+            lastProductionDay = gameData.worldData.worldCounters[$"{prefix}_lastProductionDay"];
+
         // Find matching animal data
         var savedAnimal = gameData.combatData.ownedAnimals
             .Find(a => a.animalId == uniqueID);

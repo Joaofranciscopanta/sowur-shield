@@ -38,19 +38,18 @@ public class ItemBoxSprite
     {
         if (checkItem == null) return false;
 
-        // Direct item match has highest priority
-        if (item != null && item == checkItem)
-            return true;
+        // When a direct item reference is specified it is the ONLY criterion —
+        // tag and type are ignored so a different item with a matching tag won't
+        // accidentally satisfy this mapping.
+        if (item != null)
+            return item == checkItem;
 
-        // Tag match has medium priority
-        if (!string.IsNullOrEmpty(itemTag) && checkItem.itemTags.Contains(itemTag))
-            return true;
+        // Tag match has medium priority (only when no direct item is set)
+        if (!string.IsNullOrEmpty(itemTag))
+            return checkItem.itemTags.Contains(itemTag);
 
         // Type match has lowest priority
-        if (item == null && string.IsNullOrEmpty(itemTag) && checkItem.itemType == itemType)
-            return true;
-
-        return false;
+        return checkItem.itemType == itemType;
     }
 }
 
