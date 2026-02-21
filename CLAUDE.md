@@ -855,25 +855,235 @@ find Assets -name "*.meta" -newer .git/FETCH_HEAD
 
 ## WebGL Demo Deployment (GitHub Pages)
 
+### Automated Deployment System ✨
+
+**The project now has an automated GitHub Actions workflow for WebGL demo deployment!**
+
+**Live Demo**: https://joaofranciscopanta.github.io/sowur-shield/
+
+### Deployment Architecture
+
+```
+Unity Cloud Build (WebGL Target)
+    ↓ (REST API)
+GitHub Actions Workflow (.github/workflows/deploy-webgl-demo.yml)
+    ↓ (Download & Process)
+Custom CSS Preservation (.github/templates/style.css)
+    ↓ (Automated Deployment)
+GitHub Pages (docs/ folder on main branch)
+```
+
+### Automated Workflow Features
+
+**Schedule**: Weekly deployment every Sunday at 3 AM UTC
+- **Automatic**: Downloads latest successful Unity Cloud Build
+- **CSS Preservation**: Automatically restores custom sidebar styling
+- **Build Verification**: Validates build integrity before deployment
+- **Backup System**: Creates git tags before each deployment for rollback
+- **Health Checks**: Verifies GitHub Pages deployment success
+- **Manual Trigger**: Can be triggered manually via GitHub Actions UI
+- **Build Number Display**: Injects Unity Cloud Build number into demo
+- **Discord Notifications**: Sends rich embeds for deployment success/failure
+
+**Workflow File**: `.github/workflows/deploy-webgl-demo.yml`
+
+**Build Number Features**:
+- Updates release notes sidebar version: "Build #X - Month Year"
+- Adds build info badge in bottom-right corner of demo
+- Shows deployment timestamp in HTML comments
+- Dynamically generated from Unity Cloud Build API
+
+**Discord Integration**:
+- Success notifications with build number, date, and demo link
+- Failure notifications with workflow logs link
+- Color-coded rich embeds (green for success, red for failure)
+- Optional feature - works without webhook configured
+- Requires `DISCORD_WEBHOOK_URL` GitHub secret
+
+### Supporting Scripts
+
+**1. CSS Restoration Script** (`.github/scripts/restore-css.sh`)
+- Automatically copies custom CSS from template
+- Verifies sidebar styles are present
+- Creates backup of Unity's default CSS
+
+**2. Build Verification Script** (`.github/scripts/verify-build.sh`)
+- Validates Unity build structure
+- Checks for critical files (.data, .framework, .wasm)
+- Confirms CSS preservation
+- Verifies file sizes
+
+**3. CSS Template** (`.github/templates/style.css`)
+- Master copy of custom sidebar styling
+- Source of truth for all deployments
+- Preserved across Unity builds
+
+**4. Brotli Decompression** (GitHub Pages Compatibility)
+- Unity 6 uses Brotli compression (.br files) for WebGL builds
+- GitHub Pages doesn't serve .br files with correct Content-Encoding headers
+- Workflow automatically decompresses .br files during deployment
+- Prevents "Unable to parse Build/file.br" errors
+- GitHub Pages then applies its own gzip compression correctly
+
+### Deployment Triggers
+
+**1. Scheduled Deployment** (Default)
+```yaml
+# Weekly on Sunday at 3 AM UTC
+schedule:
+  - cron: '0 3 * * 0'
+```
+
+**2. Manual Deployment**
+- Go to GitHub Actions → "Deploy WebGL Demo to GitHub Pages"
+- Click "Run workflow"
+- Optionally specify build number or skip verification
+
+**3. Webhook Trigger** (Optional)
+- Unity Cloud Build can trigger deployment via webhook
+- Event type: `repository_dispatch` with `unity-build-complete`
+
+### Manual Deployment Steps
+
+If you need to deploy manually without the workflow:
+
+1. **Build WebGL demo in Unity Cloud Build**
+2. **Download the build** from Unity Cloud Build dashboard
+3. **Extract to docs/** folder in repository
+4. **Restore custom CSS**:
+   ```bash
+   ./.github/scripts/restore-css.sh
+   ```
+5. **Verify build**:
+   ```bash
+   ./.github/scripts/verify-build.sh docs
+   ```
+6. **Commit and push** to main branch
+7. **GitHub Pages** will auto-deploy in 2-5 minutes
+
 ### Important: Sidebar Styling Maintenance
 
 **CRITICAL**: The `docs/TemplateData/style.css` file contains custom sidebar styling for the release notes panel. This styling MUST be preserved when rebuilding WebGL demos.
 
 **Problem**: Unity's WebGL build process overwrites `style.css` with a minimal default version, removing all custom sidebar styles.
 
-**Solution**: After each WebGL build, the sidebar CSS must be restored to `docs/TemplateData/style.css`.
+**Solution**: The automated workflow handles this automatically using `.github/templates/style.css` as the master copy.
 
 **Required CSS Features**:
-- Fixed right sidebar (`#release-notes`) with gradient background
+- Fixed left sidebar (`#release-notes`) with gradient background
 - Responsive layout that adjusts Unity container position
 - Styled release notes sections with color-coded headers
 - Mobile-responsive design with collapsible sidebar
 - Hover effects on footer links
+- Custom scrollbar styling
 
-**Workflow**:
-1. Build WebGL demo: Unity overwrites `style.css` with default
-2. Restore sidebar styling to `docs/TemplateData/style.css`
-3. Commit and push updated `docs/` folder to GitHub
-4. GitHub Pages automatically deploys the updated demo
+**Manual CSS Restoration**:
+```bash
+# If deploying manually, restore CSS with:
+./.github/scripts/restore-css.sh .github/templates/style.css docs/TemplateData/style.css
+```
 
-**Reference**: The full sidebar CSS is maintained in the repository. Always restore it after Unity builds to keep the professional demo presentation.
+### Rollback Strategy
+
+**Automatic Backups**: Every deployment creates a git tag:
+```
+backup/webgl-demo-20250106-030000
+```
+
+**To Rollback**:
+1. Find latest backup tag: `git tag -l "backup/webgl-demo-*" | sort -r | head -1`
+2. Restore docs folder: `git checkout <tag> -- docs/`
+3. Commit and push to main
+
+**Or use the workflow** with rollback flag (future enhancement).
+
+### Required GitHub Secrets
+
+For automated deployment to work, configure these secrets in repository settings:
+
+**Required Secrets:**
+1. **UNITY_API_KEY**: Your Unity Cloud Build API key
+   - Get from: Unity Cloud Services → Cloud Build Preferences
+2. **UNITY_ORG_ID**: Your Unity organization ID
+3. **UNITY_PROJECT_ID**: Your Unity project ID
+4. **UNITY_BUILD_TARGET_ID**: WebGL build target ID
+
+**Optional Secrets:**
+5. **DISCORD_WEBHOOK_URL**: Discord webhook URL for deployment notifications
+   - Get from: Discord Server Settings → Integrations → Webhooks
+   - If not configured, workflow continues without notifications
+
+**To find Unity IDs**:
+- Go to Unity Cloud Build dashboard
+- URL format: `https://build.cloud.unity.com/orgs/{ORG_ID}/projects/{PROJECT_ID}/buildtargets/{BUILD_TARGET_ID}/`
+
+### Monitoring Deployment
+
+**GitHub Actions Dashboard**:
+- View workflow runs: Repository → Actions → "Deploy WebGL Demo to GitHub Pages"
+- Each run shows detailed logs and deployment summary
+- Green checkmark = successful deployment
+- Red X = failed deployment (check logs)
+
+**Deployment Summary** includes:
+- Unity Cloud Build number
+- Download status
+- Deployment status
+- Links to live demo and repository
+- Timestamp of deployment
+
+### Troubleshooting
+
+**Build Download Fails**:
+- Verify GitHub secrets are configured correctly
+- Check Unity Cloud Build has successful WebGL builds
+- Ensure API key has proper permissions
+
+**CSS Not Preserved**:
+- Check `.github/templates/style.css` exists
+- Verify restore-css.sh script ran successfully
+- Manually inspect `docs/TemplateData/style.css` for `#release-notes`
+
+**GitHub Pages Not Updating**:
+- Wait 2-5 minutes for GitHub Pages to rebuild
+- Check repository settings → Pages → Source is set to "main branch /docs folder"
+- Verify workflow pushed changes to main branch
+
+**Build Verification Fails**:
+- Check build structure matches expected format
+- Ensure Unity build target is WebGL (not other platform)
+- Review verification script logs for specific errors
+
+**"Unable to parse Build/file.br" Error on Demo**:
+- This error occurs if Brotli decompression step failed
+- Unity 6 builds use .br compression which GitHub Pages can't serve correctly
+- Check workflow logs for "Decompress Brotli Files" step
+- Verify brotli package was installed successfully
+- Ensure decompressed files (without .br) are in docs/Build folder
+- Re-run deployment if decompression step was skipped
+
+### Performance Considerations
+
+**GitHub Actions Minutes**:
+- Free tier: 2,000 minutes/month
+- Each deployment uses ~5-10 minutes
+- Weekly schedule = ~40 minutes/month (well within limits)
+
+**Unity Cloud Build Minutes**:
+- Separate from GitHub Actions
+- Build in Unity Cloud Build according to your plan
+- Workflow only downloads existing builds (doesn't trigger new builds)
+
+**GitHub Pages Bandwidth**:
+- Free tier: 100 GB/month
+- Monitor if demo becomes very popular
+
+### Future Enhancements
+
+Potential improvements to the deployment system:
+- **Automatic build triggering**: Trigger Unity Cloud Build from GitHub Actions
+- **Multi-environment deploys**: Dev/staging/prod environments
+- **Discord notifications**: Alert on deployment success/failure
+- **Build comparison**: Show diff between deployments
+- **Automatic release notes**: Generate from git commits
+- **Performance monitoring**: Track build size and load times

@@ -200,7 +200,7 @@ public class MainMenuManager : MonoBehaviour
         }
         else
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("MainGameScene");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("SampleScene");
         }
     }
     
@@ -220,7 +220,7 @@ public class MainMenuManager : MonoBehaviour
         }
         else
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("MainGameScene");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("SampleScene");
         }
     }
     

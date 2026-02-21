@@ -1,0 +1,171 @@
+name: Debug Unity API
+
+on:
+  workflow_dispatch:
+
+jobs:
+  debug:
+    name: Test Unity API Credentials
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔍 Test Unity API Authentication
+        env:
+          UNITY_API_KEY: ${{ secrets.UNITY_API_KEY }}
+          UNITY_ORG_ID: ${{ secrets.UNITY_ORG_ID }}
+          UNITY_PROJECT_ID: ${{ secrets.UNITY_PROJECT_ID }}
+          UNITY_BUILD_TARGET_ID: ${{ secrets.UNITY_BUILD_TARGET_ID }}
+        run: |
+          echo "================================"
+          echo "🎮 Unity API Debug Test"
+          echo "================================"
+          echo ""
+          
+          echo "📊 Secret Lengths:"
+          echo "  API_KEY length: ${#UNITY_API_KEY} chars"
+          echo "  ORG_ID length: ${#UNITY_ORG_ID} chars"
+          echo "  PROJECT_ID length: ${#UNITY_PROJECT_ID} chars"
+          echo "  BUILD_TARGET_ID length: ${#UNITY_BUILD_TARGET_ID} chars"
+          echo ""
+          
+          echo "📝 Secret Previews (masked):"
+          echo "  API_KEY: ${UNITY_API_KEY:0:4}...${UNITY_API_KEY: -4}"
+          echo "  ORG_ID: ${UNITY_ORG_ID:0:4}...${UNITY_ORG_ID: -4}"
+          echo "  PROJECT_ID: ${UNITY_PROJECT_ID:0:4}...${UNITY_PROJECT_ID: -4}"
+          echo "  BUILD_TARGET_ID: ${UNITY_BUILD_TARGET_ID:0:4}...${UNITY_BUILD_TARGET_ID: -4}"
+          echo ""
+          
+          ENCODED_KEY=$(echo -n "$UNITY_API_KEY:" | base64)
+          echo "🔐 Encoded Key length: ${#ENCODED_KEY} chars"
+          echo ""
+          
+          echo "================================"
+          echo "TEST 1: List Organizations"
+          echo "================================"
+          RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" \
+            -H "Authorization: Basic $ENCODED_KEY" \
+            "https://build-api.cloud.unity3d.com/api/v1/orgs")
+          
+          HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE:" | cut -d':' -f2)
+          BODY=$(echo "$RESPONSE" | grep -v "HTTP_CODE:")
+          
+          echo "HTTP Status: $HTTP_CODE"
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ SUCCESS: API authentication works!"
+            echo "Organizations found:"
+            echo "$BODY" | grep -o '"name":"[^"]*"' | head -5
+          else
+            echo "❌ FAILED: API authentication failed"
+            echo "Response:"
+            echo "$BODY"
+            exit 1
+          fi
+          echo ""
+          
+          echo "================================"
+          echo "TEST 2: List Projects in Org"
+          echo "================================"
+          RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" \
+            -H "Authorization: Basic $ENCODED_KEY" \
+            "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects")
+          
+          HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE:" | cut -d':' -f2)
+          BODY=$(echo "$RESPONSE" | grep -v "HTTP_CODE:")
+          
+          echo "HTTP Status: $HTTP_CODE"
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ SUCCESS: ORG_ID is valid!"
+            echo "Projects found:"
+            echo "$BODY" | grep -o '"name":"[^"]*"' | head -5
+          else
+            echo "❌ FAILED: ORG_ID may be incorrect"
+            echo "Response:"
+            echo "$BODY"
+            exit 1
+          fi
+          echo ""
+          
+          echo "================================"
+          echo "TEST 3: List Build Targets"
+          echo "================================"
+          RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" \
+            -H "Authorization: Basic $ENCODED_KEY" \
+            "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets")
+          
+          HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE:" | cut -d':' -f2)
+          BODY=$(echo "$RESPONSE" | grep -v "HTTP_CODE:")
+          
+          echo "HTTP Status: $HTTP_CODE"
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ SUCCESS: PROJECT_ID is valid!"
+            echo "Build targets found:"
+            echo "$BODY" | grep -o '"name":"[^"]*","platform":"[^"]*"' | head -5
+          else
+            echo "❌ FAILED: PROJECT_ID may be incorrect"
+            echo "Response:"
+            echo "$BODY"
+            exit 1
+          fi
+          echo ""
+          
+          echo "================================"
+          echo "TEST 4: List Recent Builds"
+          echo "================================"
+          RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" \
+            -H "Authorization: Basic $ENCODED_KEY" \
+            "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${UNITY_BUILD_TARGET_ID}/builds?per_page=5")
+          
+          HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE:" | cut -d':' -f2)
+          BODY=$(echo "$RESPONSE" | grep -v "HTTP_CODE:")
+          
+          echo "HTTP Status: $HTTP_CODE"
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ SUCCESS: BUILD_TARGET_ID is valid!"
+            echo "Recent builds:"
+            echo "$BODY" | grep -o '"build":[0-9]*' | head -5
+          else
+            echo "❌ FAILED: BUILD_TARGET_ID may be incorrect"
+            echo "Response:"
+            echo "$BODY"
+            exit 1
+          fi
+          echo ""
+          
+          echo "================================"
+          echo "TEST 5: Get Download URL"
+          echo "================================"
+          
+          BUILD_NUMBER=$(echo "$BODY" | grep -o '"build":[0-9]*' | head -1 | cut -d':' -f2)
+          echo "Latest build number: #$BUILD_NUMBER"
+          
+          RESPONSE=$(curl -s -w "\nHTTP_CODE:%{http_code}" \
+            -H "Authorization: Basic $ENCODED_KEY" \
+            "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${UNITY_BUILD_TARGET_ID}/builds/${BUILD_NUMBER}")
+          
+          HTTP_CODE=$(echo "$RESPONSE" | grep "HTTP_CODE:" | cut -d':' -f2)
+          BODY=$(echo "$RESPONSE" | grep -v "HTTP_CODE:")
+          
+          echo "HTTP Status: $HTTP_CODE"
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ SUCCESS: Can access build details!"
+            
+            DOWNLOAD_URL=$(echo "$BODY" | grep -o '"download_primary"[^}]*"href":"[^"]*"' | grep -o 'https://[^"]*' | head -1)
+            
+            if [ -n "$DOWNLOAD_URL" ]; then
+              echo "✅ Download URL found!"
+              echo "URL starts with: ${DOWNLOAD_URL:0:50}..."
+            else
+              echo "⚠️  WARNING: No download URL found in response"
+              echo "Build might not be ready or downloadable"
+            fi
+          else
+            echo "❌ FAILED: Cannot access build details"
+            echo "Response:"
+            echo "$BODY"
+            exit 1
+          fi
+          echo ""
+          
+          echo "================================"
+          echo "✅ ALL TESTS PASSED!"
+          echo "================================"

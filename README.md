@@ -248,31 +248,6 @@ We welcome contributions! To contribute:
 
 Please ensure your code follows the existing architecture patterns and includes appropriate documentation.
 
----
-
-## 🎨 Art & Assets
-
-- **2D Pixel Art**: Custom sprite work for characters, crops, and environment
-- **UI Design**: Professional inventory and menu interfaces
-- **Animations**: Smooth character and crop growth animations
-- **Tilemap System**: Dual-grid system for sophisticated world rendering
-
----
-
-## 🐛 Known Issues & Bug Fixes
-
-The project has undergone extensive debugging and refinement:
-
-### Fixed Issues ✅
-- **SellBox Interaction**: E key now properly opens SellBox
-- **Tool Priority**: Objects (SellBox, NPCs) now take priority over tools
-- **Movement Control**: Player movement properly disabled during UI interactions
-- **Input System**: Resolved hold vs press interaction issues
-- **Cursor Detection**: Precise sprite-based collision detection
-
-For detailed bug fix history, see [CLAUDE.md](CLAUDE.md) § Bug Fixes Applied.
-
----
 
 ## 📝 License
 
@@ -283,13 +258,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👥 Team
 
 ### Core Team
-- **[João Francisco Pantaleão](https://www.linkedin.com/in/joaofranciscopantaleao/)** - CTO & Owner
-- **[Lucas Daniel](https://www.linkedin.com/in/enf-lucas-daniel/)** - Co-Owner & Lead Developer
+- **[João Francisco Pantaleão](https://www.linkedin.com/in/joaofranciscopantaleao/)** - Owner & Lead Developer
+- **[Lucas Daniel](https://www.linkedin.com/in/enf-lucas-daniel/)** - Co-Owner & Main Developer
 - **[Isabella Freitas](https://www.linkedin.com/in/isabellafferreira03/)** - Art Director, Dialogue & Character Design
 
 ### Technical Stack
 - **Unity Version**: 2022.3.46f1 LTS
-- **Development Period**: 2024 - Present
+- **Development Period**: 2025 - Present
 
 ---
 
@@ -309,7 +284,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Performance profiling and optimization
 - Unit testing framework
 - Enhanced save system with cloud sync
-- Mod support and API
 - Mobile platform support
 
 ---
@@ -335,8 +309,5 @@ For bugs, feature requests, or questions:
 
 **[⬆ Back to Top](#-sowur-shield)**
 
-Made with ❤️ by [João Francisco](https://www.linkedin.com/in/joaofranciscopantaleao/), [Lucas Daniel](https://www.linkedin.com/in/enf-lucas-daniel/) & [Isabella Freitas](https://www.linkedin.com/in/isabellafferreira03/)
-
-⭐ **Star us on GitHub if you like this project!**
-
+Made with passion by [João Francisco](https://www.linkedin.com/in/joaofranciscopantaleao/), [Lucas Daniel](https://www.linkedin.com/in/enf-lucas-daniel/) & [Isabella Freitas](https://www.linkedin.com/in/isabellafferreira03/)
 </div>

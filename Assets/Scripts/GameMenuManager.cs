@@ -410,6 +410,12 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
         //     SaveManager.Instance.SaveGame();
         // }
 
+        // Stop game music before returning to main menu
+        if (GameMusicManager.Instance != null)
+        {
+            GameMusicManager.Instance.OnReturnToMainMenu();
+        }
+
         // Restore time scale before changing scenes
         Time.timeScale = 1f;
 
