@@ -252,7 +252,7 @@ public class MinimapUI : MonoBehaviour
         }
         else
         {
-            positionTween = minimapPanel.DOAnchorPos(targetPosition, duration)
+            positionTween = DOTween.To(() => minimapPanel.anchoredPosition, x => minimapPanel.anchoredPosition = x, targetPosition, duration)
                 .SetEase(ease)
                 .SetUpdate(true); // Use unscaled time
         }
@@ -271,7 +271,7 @@ public class MinimapUI : MonoBehaviour
         }
         else
         {
-            sizeTween = minimapPanel.DOSizeDelta(targetSize, duration)
+            sizeTween = DOTween.To(() => minimapPanel.sizeDelta, x => minimapPanel.sizeDelta = x, targetSize, duration)
                 .SetEase(ease)
                 .SetUpdate(true);
         }
@@ -293,7 +293,7 @@ public class MinimapUI : MonoBehaviour
         }
         else
         {
-            opacityTween = canvasGroup.DOFade(targetOpacity, duration)
+            opacityTween = DOTween.To(() => canvasGroup.alpha, x => canvasGroup.alpha = x, targetOpacity, duration)
                 .SetEase(ease)
                 .SetUpdate(true);
         }

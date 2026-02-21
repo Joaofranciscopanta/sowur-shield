@@ -225,7 +225,7 @@ public class ChoiceButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         var sequence = DOTween.Sequence();
         
         if (background != null)
-            sequence.Join(background.DOColor(targetColor, animationDuration).SetEase(animationEase));
+            sequence.Join(DOTween.To(() => background.color, x => background.color = x, targetColor, animationDuration).SetEase(animationEase));
         
         sequence.Join(transform.DOScale(targetScale, animationDuration).SetEase(animationEase));
         

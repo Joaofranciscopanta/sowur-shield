@@ -151,14 +151,14 @@ public class PortraitManager : MonoBehaviour
         
         if (needsFadeOut)
         {
-            yield return targetGroup.DOFade(0f, fadeOutDuration).SetEase(fadeEase).WaitForCompletion();
+            yield return DOTween.To(() => targetGroup.alpha, x => targetGroup.alpha = x, 0f, fadeOutDuration).SetEase(fadeEase).WaitForCompletion();
         }
         
         // Set the new sprite
         targetPortrait.sprite = portraitSprite;
         
         // Fade in the portrait
-        yield return targetGroup.DOFade(1f, fadeInDuration).SetEase(fadeEase).WaitForCompletion();
+        yield return DOTween.To(() => targetGroup.alpha, x => targetGroup.alpha = x, 1f, fadeInDuration).SetEase(fadeEase).WaitForCompletion();
         
         // Update active speaker
         if (isActiveSpeaker)
@@ -178,12 +178,12 @@ public class PortraitManager : MonoBehaviour
         
         if (leftPortraitGroup != null && leftPortraitGroup.alpha > 0.1f)
         {
-            sequence.Join(leftPortraitGroup.DOFade(0f, fadeOutDuration).SetEase(fadeEase));
+            sequence.Join(DOTween.To(() => leftPortraitGroup.alpha, x => leftPortraitGroup.alpha = x, 0f, fadeOutDuration).SetEase(fadeEase));
         }
         
         if (rightPortraitGroup != null && rightPortraitGroup.alpha > 0.1f)
         {
-            sequence.Join(rightPortraitGroup.DOFade(0f, fadeOutDuration).SetEase(fadeEase));
+            sequence.Join(DOTween.To(() => rightPortraitGroup.alpha, x => rightPortraitGroup.alpha = x, 0f, fadeOutDuration).SetEase(fadeEase));
         }
         
         yield return sequence.WaitForCompletion();
@@ -205,7 +205,7 @@ public class PortraitManager : MonoBehaviour
             Color targetColor = isActive ? activePortraitColor : inactivePortraitColor;
             Vector3 targetScale = isActive ? activePortraitScale : inactivePortraitScale;
             
-            leftPortrait.DOColor(targetColor, portraitSwitchDuration).SetEase(fadeEase);
+            DOTween.To(() => leftPortrait.color, x => leftPortrait.color = x, targetColor, portraitSwitchDuration).SetEase(fadeEase);
             leftPortrait.transform.DOScale(targetScale, portraitSwitchDuration).SetEase(fadeEase);
         }
         
@@ -216,7 +216,7 @@ public class PortraitManager : MonoBehaviour
             Color targetColor = isActive ? activePortraitColor : inactivePortraitColor;
             Vector3 targetScale = isActive ? activePortraitScale : inactivePortraitScale;
             
-            rightPortrait.DOColor(targetColor, portraitSwitchDuration).SetEase(fadeEase);
+            DOTween.To(() => rightPortrait.color, x => rightPortrait.color = x, targetColor, portraitSwitchDuration).SetEase(fadeEase);
             rightPortrait.transform.DOScale(targetScale, portraitSwitchDuration).SetEase(fadeEase);
         }
     }
