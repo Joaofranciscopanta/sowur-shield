@@ -33,7 +33,11 @@
       "Bash(cat:*)",
       "Bash(gh pr:*)",
       "Bash(where:*)",
-      "Bash(where.exe:*)"
+      "Bash(where.exe:*)",
+      "Bash(git fetch:*)",
+      "Bash(git rebase:*)",
+      "Bash(git stash:*)",
+      "Bash(git merge:*)"
     ],
     "deny": [],
     "ask": []
