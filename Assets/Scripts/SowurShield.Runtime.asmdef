@@ -4,13 +4,15 @@
     "references": [
         "Unity.TextMeshPro",
         "Unity.InputSystem",
-        "DOTween.Modules"
+        "GUID:03e483180e394c289afd6d230e98cac7"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "DOTween.dll"
+    ],
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
