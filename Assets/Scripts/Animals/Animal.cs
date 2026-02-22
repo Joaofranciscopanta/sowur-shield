@@ -38,6 +38,9 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     // Production tracking
     private int lastProductionDay = -1;
 
+    // Happiness tracking (0-100, starts at 50)
+    private float happiness = 50f;
+
     // Particle system
     private GameObject currentHeartParticle;
 
@@ -175,6 +178,12 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         {
             SaveManager.Instance.RegisterSaveable(this);
         }
+
+        // Register with AnimalRoster
+        if (AnimalRoster.Instance != null)
+        {
+            AnimalRoster.Instance.RegisterAnimal(this);
+        }
     }
 
     private void OnDestroy()
@@ -201,6 +210,12 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         if (SaveManager.Instance != null)
         {
             SaveManager.Instance.UnregisterSaveable(this);
+        }
+
+        // Unregister from AnimalRoster
+        if (AnimalRoster.Instance != null)
+        {
+            AnimalRoster.Instance.UnregisterAnimal(this);
         }
     }
 
@@ -312,13 +327,14 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
 
         lastPetTime = Time.time;
 
-        // First pet of the day - show heart particle
+        // First pet of the day - show heart particle, gain happiness
         if (!hasBeenPetToday)
         {
             hasBeenPetToday = true;
+            ModifyHappiness(5f);
             Debug.Log($"[Animal] First pet of the day! Spawning heart particle...");
             SpawnHeartParticle();
-            Debug.Log($"[Animal] Petted {animalData.animalName} for the first time today!");
+            Debug.Log($"[Animal] Petted {animalData.animalName} for the first time today! Happiness +5 → {happiness:F0}");
         }
         // Second pet - open info UI
         else
@@ -397,7 +413,8 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         }
 
         foodEatenToday++;
-        Debug.Log($"{animalData.animalName} ate {food.itemName}! Total food today: {foodEatenToday}");
+        ModifyHappiness(3f);
+        Debug.Log($"{animalData.animalName} ate {food.itemName}! Total food today: {foodEatenToday}, Happiness +3 → {happiness:F0}");
 
         // Check if daily requirements are met
         CheckFoodRequirements();
@@ -441,12 +458,15 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
             currentDay = GameTimeController.instance.currentDay;
         }
 
+        // Apply happiness decay before resetting daily flags
+        ApplyDailyHappinessDecay();
+
         // Reset daily tracking
         hasBeenPetToday = false;
         foodEatenToday = 0;
         needsFeeding = true;
 
-        Debug.Log($"{animalData.animalName} - New day {currentDay}. Daily stats reset.");
+        Debug.Log($"{animalData.animalName} - New day {currentDay}. Daily stats reset. Happiness: {happiness:F0}");
 
         // Check for production (eggs, milk, etc.)
         if (animalData.canProduce)
@@ -538,6 +558,7 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         gameData.worldData.worldFlags[$"{prefix}_petted"] = hasBeenPetToday;
         gameData.worldData.worldCounters[$"{prefix}_foodEaten"] = foodEatenToday;
         gameData.worldData.worldCounters[$"{prefix}_lastProductionDay"] = lastProductionDay;
+        gameData.worldData.worldCounters[$"{prefix}_happiness"] = Mathf.RoundToInt(happiness);
     }
 
     public void LoadData(GameData gameData)
@@ -557,6 +578,48 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
 
         if (gameData.worldData.worldCounters.TryGetValue($"{prefix}_lastProductionDay", out int prodDay))
             lastProductionDay = prodDay;
+
+        if (gameData.worldData.worldCounters.TryGetValue($"{prefix}_happiness", out int savedHappiness))
+            happiness = Mathf.Clamp(savedHappiness, 0f, 100f);
+    }
+
+    #endregion
+
+    #region Happiness System
+
+    /// <summary>Current happiness value (0-100, starts at 50).</summary>
+    public float GetHappiness() => happiness;
+
+    /// <summary>
+    /// Happiness multiplier applied to stat calculations (0.5x at 0 happiness, 1.5x at 100).
+    /// </summary>
+    public float GetHappinessMultiplier() => 0.5f + (happiness / 100f);
+
+    /// <summary>Adjust happiness by amount, clamped to 0-100.</summary>
+    public void ModifyHappiness(float amount)
+    {
+        happiness = Mathf.Clamp(happiness + amount, 0f, 100f);
+    }
+
+    /// <summary>
+    /// Apply daily happiness decay. Called at the start of each new day BEFORE resetting daily flags.
+    /// Not petted yesterday: -0.5 happiness. Not fed yesterday: -1.0 happiness.
+    /// Minimum happiness is 20 (prevents total sadness spiral).
+    /// </summary>
+    private void ApplyDailyHappinessDecay()
+    {
+        float decay = 0f;
+
+        if (!hasBeenPetToday)
+            decay -= 0.5f;
+
+        if (needsFeeding)
+            decay -= 1.0f;
+
+        if (decay < 0f)
+        {
+            happiness = Mathf.Max(20f, happiness + decay);
+        }
     }
 
     #endregion
@@ -585,6 +648,28 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     }
 
     /// <summary>
+    /// Auto-feed the animal from a FeedingTrough (bypasses inventory removal).
+    /// Sets foodEatenToday directly and triggers eating animation.
+    /// </summary>
+    public void AutoFeed(int amount)
+    {
+        if (amount <= 0) return;
+
+        foodEatenToday += amount;
+        ModifyHappiness(3f * amount);
+        CheckFoodRequirements();
+
+        // Trigger eating animation
+        AnimalAI animalAI = GetComponent<AnimalAI>();
+        if (animalAI != null)
+        {
+            animalAI.TriggerEating();
+        }
+
+        Debug.Log($"{animalData.animalName} auto-fed {amount} food from trough. Total: {foodEatenToday}, Happiness: {happiness:F0}");
+    }
+
+    /// <summary>
     /// Set the animal's zone (useful for runtime assignment)
     /// </summary>
     public void SetZone(AnimalZone zone)
@@ -600,6 +685,12 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         {
             assignedZone.RegisterAnimal(this);
         }
+    }
+
+    /// <summary>Get the display name (custom name or data name).</summary>
+    public string GetDisplayName()
+    {
+        return animalData != null ? animalData.animalName : gameObject.name;
     }
 
     #endregion

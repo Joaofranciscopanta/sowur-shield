@@ -21,10 +21,18 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
     [SerializeField] private TextMeshProUGUI productionText;
     [SerializeField] private Button closeButton;
 
+    [Header("Happiness UI")]
+    [SerializeField] private Image happinessProgressBar;
+    [SerializeField] private TextMeshProUGUI happinessText;
+    [SerializeField] private TextMeshProUGUI happinessMultiplierText;
+
     [Header("Colors")]
     [SerializeField] private Color wellFedColor = new Color(0.3f, 0.8f, 0.3f);
     [SerializeField] private Color hungryColor = new Color(0.8f, 0.3f, 0.3f);
     [SerializeField] private Color partiallyFedColor = new Color(0.8f, 0.8f, 0.3f);
+    [SerializeField] private Color happyColor = new Color(0.3f, 0.8f, 0.3f);
+    [SerializeField] private Color neutralColor = new Color(0.8f, 0.8f, 0.3f);
+    [SerializeField] private Color sadColor = new Color(0.8f, 0.3f, 0.3f);
 
     private Animal currentAnimal;
 
@@ -171,6 +179,9 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
         // Food status
         UpdateFoodStatus();
 
+        // Happiness
+        UpdateHappinessStatus();
+
         // Buffs / Status
         if (buffsText != null)
         {
@@ -223,6 +234,43 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
                 foodProgressBar.color = partiallyFedColor;
             else
                 foodProgressBar.color = hungryColor;
+        }
+    }
+
+    private void UpdateHappinessStatus()
+    {
+        if (currentAnimal == null) return;
+
+        float happinessValue = currentAnimal.GetHappiness();
+        float multiplier = currentAnimal.GetHappinessMultiplier();
+
+        // Determine color based on happiness level
+        Color barColor;
+        if (happinessValue >= 70f)
+            barColor = happyColor;
+        else if (happinessValue >= 40f)
+            barColor = neutralColor;
+        else
+            barColor = sadColor;
+
+        // Update progress bar
+        if (happinessProgressBar != null)
+        {
+            happinessProgressBar.fillAmount = happinessValue / 100f;
+            happinessProgressBar.color = barColor;
+        }
+
+        // Update text
+        if (happinessText != null)
+        {
+            happinessText.text = $"Happiness: {happinessValue:F0}/100";
+            happinessText.color = barColor;
+        }
+
+        // Update multiplier display
+        if (happinessMultiplierText != null)
+        {
+            happinessMultiplierText.text = $"Stat Multiplier: {multiplier:F2}x";
         }
     }
 
