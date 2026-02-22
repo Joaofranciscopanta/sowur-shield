@@ -540,8 +540,54 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
             CheckAndUnlockSkills();
         }
 
-        // TODO: Spawn actual items in world (ProductionPoint system - Phase 5)
-        // For now, just log the production
+        // Apply happiness bonus when both petted AND fed
+        if (animalData.happinessProductionBonus > 0f && hasBeenPetToday && !needsFeeding)
+        {
+            int bonus = Mathf.RoundToInt(amount * animalData.happinessProductionBonus);
+            amount += bonus;
+        }
+
+        SpawnProduce(amount);
+        OnAnimalProduced?.Invoke(animalData.produceItemName, amount);
+    }
+
+    /// <summary>
+    /// Instantiate the produce item in the world as a GroundItem pickup.
+    /// Requires AnimalData.groundItemPrefab to be assigned and the item name
+    /// to exist in ItemDatabase.
+    /// </summary>
+    private void SpawnProduce(int amount)
+    {
+        if (amount <= 0) return;
+
+        // Look up the item from the database
+        Item produceItem = ItemDatabase.GetItem(animalData.produceItemName);
+        if (produceItem == null)
+        {
+            Debug.LogWarning($"{animalData.animalName}: Item '{animalData.produceItemName}' not found in ItemDatabase!");
+            return;
+        }
+
+        GameObject prefabToUse = animalData.groundItemPrefab;
+        if (prefabToUse == null)
+        {
+            Debug.LogWarning($"{animalData.animalName}: No groundItemPrefab assigned in AnimalData. Cannot spawn produce.");
+            return;
+        }
+
+        // Spawn slightly above the animal so the item pops out visually
+        Vector3 spawnPos = transform.position + Vector3.up * 0.5f;
+        GameObject spawnedObj = Instantiate(prefabToUse, spawnPos, Quaternion.identity);
+
+        GroundItem groundItem = spawnedObj.GetComponent<GroundItem>();
+        if (groundItem != null)
+        {
+            groundItem.SetItem(produceItem, amount);
+        }
+        else
+        {
+            Debug.LogWarning($"{animalData.animalName}: Spawned prefab has no GroundItem component!");
+        }
     }
 
     #endregion

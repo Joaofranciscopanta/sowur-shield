@@ -102,15 +102,9 @@ public partial class CursorController : MonoBehaviour {
 
         // Process left-click interactions with proper priority
         // Don't process clicks while dragging inventory items or when mouse is over UI
-        if (mouse.leftButton.wasPressedThisFrame && 
-            !InventorySlot.IsAnySlotDragging && 
+        if (mouse.leftButton.wasPressedThisFrame &&
+            !InventorySlot.IsAnySlotDragging &&
             !IsMouseOverUI()) {
-            
-            #if UNITY_EDITOR
-
-
-            #endif
-            
             ProcessHexInteraction(activeTilePos);
         }
     }
@@ -121,59 +115,32 @@ public partial class CursorController : MonoBehaviour {
     /// 2. Tools in hand (Hoe, WateringCan, etc.) - LOWEST PRIORITY
     /// </summary>
     private void ProcessHexInteraction(Vector3Int hexPos) {
-        #if UNITY_EDITOR
-
-        #endif
-        
         // PRIORITY 1: Check for direct mouse collision with interactable objects
         GameObject directHitObject = CheckForDirectMouseHit();
-        
-        #if UNITY_EDITOR
 
-        #endif
-        
         if (directHitObject != null) {
             IInteractable interactable = directHitObject.GetComponent<IInteractable>();
             if (interactable != null) {
-                #if UNITY_EDITOR
-
-                #endif
                 interactable.Interact();
                 return; // Direct hit takes priority - stop here
             }
         }
-        
+
         // PRIORITY 2: Check for grid-based objects only (soil blocks) using precise hex detection
         GameObject soilBlockAtHex = CheckForGridObjectsOnly(hexPos);
-        
-        #if UNITY_EDITOR
 
-        #endif
-        
         if (soilBlockAtHex != null) {
             IInteractable interactable = soilBlockAtHex.GetComponent<IInteractable>();
             if (interactable != null) {
-                #if UNITY_EDITOR
-
-                #endif
                 interactable.Interact();
                 return;
             }
         }
-        
+
         // PRIORITY 3: No objects found, check for tool usage
-        #if UNITY_EDITOR
-
-        bool hasToolResult = HasToolInHand();
-
-        #endif
-        
         if (HasToolInHand()) {
             Item selectedTool = playerInventory.GetSelectedItem();
             if (selectedTool != null) {
-                #if UNITY_EDITOR
-
-                #endif
                 ProcessToolUsage(selectedTool, hexPos);
             }
         }
@@ -183,22 +150,10 @@ public partial class CursorController : MonoBehaviour {
     /// Check if player has any tool in their hand
     /// </summary>
     private bool HasToolInHand() {
-        if (playerInventory == null) {
-            #if UNITY_EDITOR
-
-            #endif
+        if (playerInventory == null)
             return false;
-        }
-        
+
         Item selectedItem = playerInventory.GetSelectedItem();
-        
-        #if UNITY_EDITOR
-
-        if (selectedItem != null) {
-
-        }
-        #endif
-        
         return selectedItem != null && HasToolTag(selectedItem);
     }
     
@@ -206,28 +161,13 @@ public partial class CursorController : MonoBehaviour {
     /// Check if item has any tool-related tags
     /// </summary>
     private bool HasToolTag(Item item) {
-        if (item == null || item.itemTags == null) {
-            #if UNITY_EDITOR
-
-            #endif
+        if (item == null || item.itemTags == null)
             return false;
-        }
-        
-        #if UNITY_EDITOR
 
-        #endif
-        
-        // Check for any tool tags
-        bool hasTool = item.itemTags.Contains("Hoe") || 
-                       item.itemTags.Contains("WateringCan") || 
-                       item.itemTags.Contains("Shovel") ||
-                       item.itemTags.Contains("Tool"); // Generic tool tag
-                       
-        #if UNITY_EDITOR
-
-        #endif
-        
-        return hasTool;
+        return item.itemTags.Contains("Hoe") ||
+               item.itemTags.Contains("WateringCan") ||
+               item.itemTags.Contains("Shovel") ||
+               item.itemTags.Contains("Tool");
     }
     
     /// <summary>

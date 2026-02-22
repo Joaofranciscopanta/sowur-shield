@@ -60,8 +60,6 @@ public class InteractionManager : MonoBehaviour
         if (!registeredInteractables.Contains(interactable))
         {
             registeredInteractables.Add(interactable);
-            string name = interactable is MonoBehaviour mb ? mb.gameObject.name : "Unknown";
-
         }
     }
     
@@ -123,18 +121,14 @@ public class InteractionManager : MonoBehaviour
             if (currentClosestInteractable != null)
             {
                 SetInteractablePromptVisibility(currentClosestInteractable, false);
-                string oldName = currentClosestInteractable is MonoBehaviour oldMb ? oldMb.gameObject.name : "Unknown";
-
             }
-            
+
             currentClosestInteractable = newClosest;
-            
+
             // Notify new interactable that it's now the closest
             if (currentClosestInteractable != null)
             {
                 SetInteractablePromptVisibility(currentClosestInteractable, true);
-                string newName = currentClosestInteractable is MonoBehaviour newMb ? newMb.gameObject.name : "Unknown";
-
             }
             
             OnClosestInteractableChanged?.Invoke(currentClosestInteractable);
