@@ -20,6 +20,7 @@ public class SleepConfirmationPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI timeInfoText;
     [SerializeField] private TextMeshProUGUI sellBoxInfoText;
     [SerializeField] private TextMeshProUGUI saveInfoText;
+    [SerializeField] private TextMeshProUGUI feedingTroughInfoText;
     [SerializeField] private TextMeshProUGUI confirmButtonText;
     [SerializeField] private TextMeshProUGUI cancelButtonText;
     
@@ -207,6 +208,7 @@ public class SleepConfirmationPanel : MonoBehaviour
     {
         UpdateTimeInfo();
         UpdateSellBoxInfo();
+        UpdateFeedingTroughInfo();
         UpdateSaveInfo();
     }
     
@@ -262,6 +264,38 @@ public class SleepConfirmationPanel : MonoBehaviour
         }
     }
     
+    private void UpdateFeedingTroughInfo()
+    {
+        if (feedingTroughInfoText != null)
+        {
+            FeedingTrough[] troughs = FindObjectsByType<FeedingTrough>(FindObjectsSortMode.None);
+            int totalFeedable = 0;
+            int totalTroughs = 0;
+
+            foreach (FeedingTrough trough in troughs)
+            {
+                totalTroughs++;
+                totalFeedable += trough.GetFeedableAnimalCount();
+            }
+
+            if (totalTroughs > 0 && totalFeedable > 0)
+            {
+                feedingTroughInfoText.text = $"Feeding Troughs: {totalFeedable} animal{(totalFeedable != 1 ? "s" : "")} will be fed";
+                feedingTroughInfoText.color = Color.green;
+            }
+            else if (totalTroughs > 0)
+            {
+                feedingTroughInfoText.text = "Feeding Troughs: No food available";
+                feedingTroughInfoText.color = Color.yellow;
+            }
+            else
+            {
+                feedingTroughInfoText.text = "";
+                feedingTroughInfoText.gameObject.SetActive(false);
+            }
+        }
+    }
+
     private void UpdateSaveInfo()
     {
         if (saveInfoText != null)
