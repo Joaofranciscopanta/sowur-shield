@@ -137,7 +137,6 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         if (InteractionManager.Instance != null)
         {
             InteractionManager.Instance.RegisterInteractable(this);
-            Debug.Log($"Registered {animalData.animalName} with InteractionManager");
         }
         else
         {
@@ -247,28 +246,19 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
 
     public void Interact()
     {
-        Debug.Log($"[Animal] Interact() called on {animalData?.animalName ?? gameObject.name}");
-
-        // Face the player
         FacePlayer();
 
-        // Check if player has food
         Inventory playerInventory = FindObjectOfType<PlayerMove>()?.GetComponent<Inventory>();
         if (playerInventory != null)
         {
             Item selectedItem = playerInventory.GetSelectedItem();
-            Debug.Log($"[Animal] Player has item: {selectedItem?.itemName ?? "null"}");
-
             if (selectedItem != null && CanEatFood(selectedItem.itemName))
             {
-                Debug.Log($"[Animal] Feeding {animalData.animalName} with {selectedItem.itemName}");
                 FeedAnimal(selectedItem, playerInventory);
                 return;
             }
         }
 
-        // Otherwise, pet the animal
-        Debug.Log($"[Animal] Petting {animalData.animalName}. HasBeenPetToday: {hasBeenPetToday}");
         PetAnimal();
     }
 
@@ -316,30 +306,19 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     {
         float timeSincePet = Time.time - lastPetTime;
 
-        Debug.Log($"[Animal] PetAnimal - Time since last pet: {timeSincePet}s, Cooldown: {animalData.pettingCooldown}s");
-
-        // Check cooldown
         if (timeSincePet < animalData.pettingCooldown)
-        {
-            Debug.Log($"[Animal] {animalData.animalName} was recently petted. Wait {animalData.pettingCooldown - timeSincePet:F1}s");
             return;
-        }
 
         lastPetTime = Time.time;
 
-        // First pet of the day - show heart particle, gain happiness
         if (!hasBeenPetToday)
         {
             hasBeenPetToday = true;
             ModifyHappiness(5f);
-            Debug.Log($"[Animal] First pet of the day! Spawning heart particle...");
             SpawnHeartParticle();
-            Debug.Log($"[Animal] Petted {animalData.animalName} for the first time today! Happiness +5 → {happiness:F0}");
         }
-        // Second pet - open info UI
         else
         {
-            Debug.Log($"[Animal] Second pet - opening info UI...");
             OpenAnimalInfoUI();
         }
     }
@@ -348,24 +327,29 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     {
         if (animalData.heartParticlePrefab == null)
         {
-            Debug.LogWarning($"No heart particle prefab assigned for {animalData.animalName}");
+            Debug.LogWarning($"[HeartParticle] No heart particle prefab assigned for {animalData.animalName}");
             return;
         }
 
         // Spawn above animal's head
         Vector3 spawnPosition = transform.position + Vector3.up * 1f;
+        spawnPosition.z = 0f;
         currentHeartParticle = Instantiate(animalData.heartParticlePrefab, spawnPosition, Quaternion.identity);
+
+        // Force sorting so particle renders above sprites
+        ParticleSystemRenderer psr = currentHeartParticle.GetComponent<ParticleSystemRenderer>();
+        if (psr != null)
+        {
+            psr.sortingLayerName = "Default";
+            psr.sortingOrder = 9999;
+        }
 
         // Auto-destroy after particle lifetime
         ParticleSystem ps = currentHeartParticle.GetComponent<ParticleSystem>();
         if (ps != null)
-        {
-            Destroy(currentHeartParticle, ps.main.duration);
-        }
+            Destroy(currentHeartParticle, ps.main.duration + ps.main.startLifetime.constantMax);
         else
-        {
             Destroy(currentHeartParticle, 2f);
-        }
     }
 
     private void OpenAnimalInfoUI()
@@ -414,7 +398,6 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
 
         foodEatenToday++;
         ModifyHappiness(3f);
-        Debug.Log($"{animalData.animalName} ate {food.itemName}! Total food today: {foodEatenToday}, Happiness +3 → {happiness:F0}");
 
         // Check if daily requirements are met
         CheckFoodRequirements();
@@ -439,11 +422,6 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         }
 
         needsFeeding = foodEatenToday < totalRequired;
-
-        if (!needsFeeding)
-        {
-            Debug.Log($"{animalData.animalName} has eaten enough food for today!");
-        }
     }
 
     #endregion
@@ -466,7 +444,6 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         foodEatenToday = 0;
         needsFeeding = true;
 
-        Debug.Log($"{animalData.animalName} - New day {currentDay}. Daily stats reset. Happiness: {happiness:F0}");
 
         // Check for production (eggs, milk, etc.)
         if (animalData.canProduce)
@@ -488,7 +465,6 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         // Gate production behind feeding requirement if configured
         if (animalData.produceOnlyIfFed && needsFeeding)
         {
-            Debug.Log($"{animalData.animalName} skipped production — not fed today.");
             return;
         }
 
@@ -500,7 +476,6 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         {
             int bonus = Mathf.RoundToInt(amount * animalData.happinessProductionBonus);
             amount += bonus;
-            Debug.Log($"{animalData.animalName} happiness bonus! +{bonus} extra produce.");
         }
 
         lastProductionDay = currentDay;
@@ -542,7 +517,6 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
             Debug.LogWarning($"{animalData.animalName}: Spawned prefab has no GroundItem component!");
         }
 
-        Debug.Log($"{animalData.animalName} produced {amount}x {animalData.produceItemName}!");
         OnAnimalProduced?.Invoke(animalData.produceItemName, amount);
     }
 
@@ -666,7 +640,6 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
             animalAI.TriggerEating();
         }
 
-        Debug.Log($"{animalData.animalName} auto-fed {amount} food from trough. Total: {foodEatenToday}, Happiness: {happiness:F0}");
     }
 
     /// <summary>
@@ -691,6 +664,29 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     public string GetDisplayName()
     {
         return animalData != null ? animalData.animalName : gameObject.name;
+    }
+
+    /// <summary>
+    /// Get combat stats for this animal.
+    /// Creates a new AnimalCombatStats instance with current happiness and animal data.
+    /// </summary>
+    public AnimalCombatStats GetCombatStats()
+    {
+        if (animalData == null || animalData.baseCombatStats == null)
+        {
+            Debug.LogWarning($"[Animal] {gameObject.name} has no combat stats configured!");
+            return null;
+        }
+
+        // Create a copy of the base combat stats
+        AnimalCombatStats stats = new AnimalCombatStats();
+        stats.Initialize(animalData.baseCombatStats);
+
+        // Apply current happiness from farming system
+        stats.happiness = happiness;
+        stats.currentHealth = stats.MaxHealth;
+
+        return stats;
     }
 
     #endregion

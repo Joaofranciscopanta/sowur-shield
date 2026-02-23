@@ -24,14 +24,19 @@ MonoBehaviour:
   maxIdleTime: 5
   minWalkTime: 1
   maxWalkTime: 3
-  dailyFoodRequirements: []
-  heartParticlePrefab: {fileID: 0}
+  dailyFoodRequirements:
+  - itemName: CarrotSeed
+    quantityPerDay: 1
+  heartParticlePrefab: {fileID: 8335835914115039494, guid: dd1fca26b61cc1141a98509bb88c1e03, type: 3}
   pettingCooldown: 5
   canProduce: 0
   produceItemName: 
   productionIntervalDays: 1
   minProduceAmount: 1
   maxProduceAmount: 1
+  groundItemPrefab: {fileID: 0}
+  produceOnlyIfFed: 0
+  happinessProductionBonus: 0
   baseCombatStats:
     baseAttack: 16
     baseDefense: 16

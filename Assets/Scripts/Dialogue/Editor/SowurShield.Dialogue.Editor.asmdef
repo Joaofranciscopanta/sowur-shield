@@ -1,10 +1,9 @@
 {
-    "name": "SowurShield.Tests.PlayMode",
+    "name": "SowurShield.Dialogue.Editor",
     "rootNamespace": "",
     "references": [
-        "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
-        "SowurShield.Runtime"
+        "SowurShield.Runtime",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [
         "Editor"

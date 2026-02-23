@@ -43,7 +43,7 @@ public class AnimalRosterUI : MonoBehaviour, IUIWindow
     // =========================================================================
 
     public string WindowName => "AnimalRoster";
-    public int WindowPriority => WindowPriority.Inventory; // Same tier as AnimalInfoUI
+    public int WindowPriority => global::WindowPriority.Inventory; // Same tier as AnimalInfoUI
     public bool IsWindowOpen => isOpen;
     public bool CanCloseWithEsc => true;
 

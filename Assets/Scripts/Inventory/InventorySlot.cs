@@ -72,6 +72,11 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     private SlotDragHandler dragHandler;
     private SlotSellBoxAdapter sellBoxAdapter;
 
+    // Trough mode
+    private bool isTroughMode = false;
+    internal InventoryContainer troughContainer = null;
+    public bool IsTroughMode => isTroughMode;
+
     // ============================================================================
     // PROPERTIES
     // ============================================================================
@@ -593,6 +598,12 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
     }
 
+    public void EnableTroughMode(InventoryContainer container)
+    {
+        isTroughMode = true;
+        troughContainer = container;
+    }
+
     public void UpdateSellBoxDisplay()
     {
         if (sellBoxAdapter != null)
@@ -795,6 +806,25 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         if (dragHandler != null)
         {
+            if (isTroughMode && troughContainer != null)
+            {
+                ItemStack dragged = dragHandler.DraggedItemStack;
+                if (!dragged.IsEmpty)
+                {
+                    if (dragHandler.wasDroppedOnSlot)
+                    {
+                        // Successfully dropped on a slot — remove from trough now
+                        troughContainer.RemoveItem(dragged.item, dragged.quantity);
+                    }
+                    else
+                    {
+                        // Dropped on empty space — restore to trough, don't drop on ground
+                        dragHandler.MarkDragSuccessful();
+                        SetItemStack(itemStack); // Refresh visual
+                    }
+                }
+            }
+
             dragHandler.EndDrag(eventData, isSellBoxMode, this);
         }
     }
@@ -826,6 +856,40 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             if (isSellBoxMode && sellBox != null && sellBox.IsOpen)
             {
                 sellBox.HandleSlotDrop(draggedSlot, this);
+                return;
+            }
+
+            // Check if dragging FROM trough TO inventory
+            if (draggedSlot.IsTroughMode && !isTroughMode)
+            {
+                ItemStack dragged = draggedSlot.GetDraggedItem();
+                if (!dragged.IsEmpty && inventoryManager != null)
+                {
+                    bool added = inventoryManager.AddItem(dragged.item, dragged.quantity);
+                    if (added)
+                    {
+                        draggedSlot.MarkDragSuccessful();
+                        // OnEndDrag will handle removing from trough container
+                    }
+                    // If inventory full, OnEndDrag will restore to trough since wasDroppedOnSlot=true but MarkDragSuccessful was not called
+                }
+                return;
+            }
+
+            // Check if this is a drop TO FeedingTrough slot
+            if (isTroughMode && troughContainer != null)
+            {
+                ItemStack dragged = draggedSlot.GetDraggedItem();
+                if (!dragged.IsEmpty)
+                {
+                    bool added = troughContainer.AddItem(dragged.item, dragged.quantity);
+                    if (added)
+                    {
+                        draggedSlot.MarkDragSuccessful();
+                        Inventory inv = FindFirstObjectByType<Inventory>();
+                        if (inv != null) inv.EndDragOperation();
+                    }
+                }
                 return;
             }
 

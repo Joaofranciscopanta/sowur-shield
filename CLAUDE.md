@@ -329,6 +329,118 @@ The project follows excellent separation of concerns with modular script organiz
 - Integration with existing PlayerMove for movement control
 - IUIWindow interface for proper UI coordination
 
+### 12. Animal Husbandry System
+**Data-Driven Animal Management with Visual Feedback:**
+
+**Core Components:**
+- `AnimalData.cs`: ScriptableObject defining all animal configuration (stats, feeding, production, heart particle prefab)
+- `Animal.cs`: Runtime behavior — petting, feeding, happiness, production, save/load
+- `AnimalRoster.cs`: Tracks all registered animals in the scene
+- `AnimalRosterUI.cs`: UI panel displaying animal roster information
+- `AnimalInfoUI.cs`: Detailed per-animal info panel (opened on second pet)
+- `AnimalHappinessIcon.cs`: Visual happiness indicator per animal
+- `FeedingTrough.cs`: Auto-feeds animals in zone without requiring player inventory
+
+**Features:**
+- **Petting System**: First pet of day spawns heart particle and grants +5 happiness; second pet opens AnimalInfoUI
+- **Feeding System**: Player feeds animal with selected inventory item; +3 happiness per food; auto-feed via FeedingTrough
+- **Happiness System**: 0–100 scale (starts at 50); daily decay if not petted (-0.5) or not fed (-1.0); minimum floor of 20
+- **Production System**: Spawns GroundItem produce at configurable intervals; optional happiness bonus when fully cared for
+- **Heart Particle Effect**: Instantiated above animal's head on pet/feed; auto-destroyed after particle lifetime
+- **Save/Load Support**: Persists petted status, food eaten, last production day, and happiness via ISaveable
+
+**Heart Particle Setup:**
+
+1. **Prepare sprite frames**: Export GIF frames as individual PNGs or a single spritesheet
+2. **Import in Unity**: Set `Texture Type → Sprite (2D and UI)`, `Sprite Mode → Multiple`, slice with Sprite Editor
+3. **Create Particle System**: `GameObject → Effects → Particle System`
+4. **Configure Renderer module**:
+   - `Material`: `Default-Particle` (NOT `Default-ParticleSystem` — causes invisible particles)
+   - `Sorting Layer`: match scene sprites (e.g. `Default`)
+   - `Order in Layer`: set higher than animal sprites (e.g. `10`)
+5. **Configure Texture Sheet Animation module**: enable, set `Mode → Sprites`, add frames in order
+6. **Other recommended settings**:
+   - `Loop`: disabled
+   - `Play On Awake`: enabled
+   - `Duration`: 1
+   - `Start Lifetime`: 1
+   - `Start Speed`: 1–2
+   - `Gravity Modifier`: -0.3 (floats upward)
+7. **Save as Prefab**: drag from Hierarchy into `Assets/Prefabs/` folder
+8. **Assign in ScriptableObject**: drag the `.prefab` file into `Heart Particle Prefab` field on the animal's `AnimalData` asset
+
+**Critical Heart Particle Setup Notes:**
+- Always assign the prefab from the **Project window**, never from the Hierarchy — dragging a scene object causes Type Mismatch
+- Use `Default-Particle` material, not `Default-ParticleSystem` — the latter does not render sprites correctly
+- The `heartParticlePrefab` field lives on the **AnimalData ScriptableObject**, not on the Animal GameObject in the scene
+- Sorting order is overridden at runtime via `ParticleSystemRenderer` to ensure the particle renders above all sprites
+
+**Animal Data ScriptableObject Location:**
+- `Assets/Resources/Animals/` — one `.asset` file per animal type (e.g. `chicken.asset`, `duck.asset`)
+
+**Heart Particle Files:**
+- `Assets/Scripts/Animals/Animal.cs` — `SpawnHeartParticle()` handles instantiation and sorting
+- `Assets/Scripts/Animals/AnimalData.cs` — `heartParticlePrefab` field (GameObject)
+- `Assets/Prefabs/Heart_particule.prefab` — the heart particle prefab
+
+---
+
+### FeedingTrough System
+
+`FeedingTrough.cs` is a world-placed object that stores food and auto-feeds animals in its linked `AnimalZone` each day. It implements `IInteractable` (E key), `IUIWindow` (panel management), and `ISaveable` (persistence). Internal food storage uses `InventoryContainer`.
+
+**How It Works:**
+1. Player opens the trough (E key or left-click) and drags food from their inventory into the trough slots
+2. On each new day (`GameTimeController.OnDayChanged`), the trough iterates all animals in the linked zone
+3. For each animal, it looks up food requirements from `AnimalData.dailyFoodRequirements` via `ItemDatabase`
+4. If enough food is available, it removes items from the container and calls `Animal.AutoFeed(amount)`
+5. Trough sprite updates to reflect current fill level (empty/partial/full)
+
+**In-Scene Setup (Step by Step):**
+1. Create a GameObject with a `SpriteRenderer` and the `FeedingTrough` script
+2. Assign **Zone Link** → drag the `AnimalZone` from the scene
+3. Set **Slot Count** (default 12)
+4. Assign **Visual Sprites**: `emptySprite`, `partialSprite`, `fullSprite` art assets
+5. Create a **UI Canvas Panel** with:
+   - A `TextMeshProUGUI` title label
+   - A `TextMeshProUGUI` status label (shows food count + feedable animal count)
+   - A `Transform` as `slotParent` with a **Grid Layout Group** component
+   - A close Button
+   - Use a **InventorySlot prefab** as the `slotPrefab` field
+6. Assign all UI references in the Inspector (`troughPanel`, `slotParent`, `slotPrefab`, `titleText`, `statusText`, `closeButton`)
+
+**AnimalData Configuration:**
+- `dailyFoodRequirements` is a `List<FoodRequirement>` on the `AnimalData` ScriptableObject
+- Each `FoodRequirement` has `itemName` (must match exactly the key in `ItemDatabase`) and `quantityPerDay`
+- If `itemName` doesn't match an `ItemDatabase` entry, the trough logs a warning and skips that requirement
+
+**Drag-and-Drop (InventorySlot TroughMode):**
+- Trough slots use `InventorySlot` with `EnableTroughMode(container)` called during setup
+- `IsTroughMode` flag changes drag/drop behavior:
+  - **Inventory → Trough**: item transferred to `InventoryContainer` via `OnDrop`; removed from player inventory
+  - **Trough → Inventory**: item transferred to player `Inventory`; removed from `InventoryContainer`
+  - **Trough → Ground**: drag cancelled; item restored to trough slot (no ground drop from trough)
+- Item removal from `InventoryContainer` happens in `OnEndDrag` only after a confirmed successful drop (`wasDroppedOnSlot == true`)
+
+**Sprite Fill Logic:**
+- `emptySprite`: shown when total item count == 0
+- `fullSprite`: shown when occupied slot count ≥ `slotCount / 2`
+- `partialSprite`: shown for anything in between
+
+**Status Text Display:**
+- Format: `"Food stored: X items\nCan feed: Y/Z animals tomorrow"`
+- `GetFeedableAnimalCount()` simulates tomorrow's feeding with a temporary item count dictionary using `Item` references (not strings) — must match `TryFeedAnimal` logic
+
+**Save/Load:**
+- Saves each slot as `feedingtrough_{gameObject.name}_slot{i}_item` (string) and `_qty` (int) to `worldData`
+- Loads and restores all slots on `LoadData()`
+
+**Files:**
+- `Assets/Scripts/Animals/FeedingTrough.cs` — main logic
+- `Assets/Scripts/Inventory/InventorySlot.cs` — `EnableTroughMode()`, `IsTroughMode` flag, modified `OnDrop`/`OnEndDrag`
+
+---
+
 ## Bug Fixes Applied
 
 ### Bug #1: SellBox Interaction (E Key)

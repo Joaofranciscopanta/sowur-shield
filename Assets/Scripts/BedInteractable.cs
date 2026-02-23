@@ -25,7 +25,7 @@ public class BedInteractable : MonoBehaviour, IInteractable
     private GameTimeController timeController;
     private PlayerMove playerControls;
     private bool isSleeping = false;
-
+     
     private void Awake()
     {
         // Busca o GameTimeController

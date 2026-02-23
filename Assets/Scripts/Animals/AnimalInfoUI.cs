@@ -41,7 +41,7 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
     // =========================================================================
 
     public string WindowName => "AnimalInfo";
-    public int WindowPriority => WindowPriority.Inventory; // Same tier as inventory
+    public int WindowPriority => global::WindowPriority.Inventory; // Same tier as inventory
     public bool IsWindowOpen => infoPanel != null && infoPanel.activeSelf;
     public bool CanCloseWithEsc => true;
 

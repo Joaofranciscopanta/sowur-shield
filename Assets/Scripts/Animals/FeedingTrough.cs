@@ -41,13 +41,14 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
     private SpriteRenderer spriteRenderer;
     private List<InventorySlot> slotUIs = new List<InventorySlot>();
     private bool isOpen = false;
+    private bool uiSetup = false;
 
     // =========================================================================
     // IUIWindow Implementation
     // =========================================================================
 
     public string WindowName => "FeedingTrough";
-    public int WindowPriority => WindowPriority.SellBox; // Same tier as SellBox (20)
+    public int WindowPriority => global::WindowPriority.SellBox; // Same tier as SellBox (20)
     public bool IsWindowOpen => isOpen;
     public bool CanCloseWithEsc => true;
 
@@ -70,10 +71,7 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         EnablePlayerMovement();
     }
 
-    public void OnWindowBlocked(string blockedBy)
-    {
-        Debug.Log($"[FeedingTrough] Cannot open — blocked by '{blockedBy}'");
-    }
+    public void OnWindowBlocked(string blockedBy) { }
 
     // =========================================================================
     // Unity Lifecycle
@@ -86,6 +84,8 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
 
         container.OnSlotChanged += (index, stack) =>
         {
+            if (index >= 0 && index < slotUIs.Count && slotUIs[index] != null)
+                slotUIs[index].SetItemStack(stack);
             UpdateTroughSprite();
             UpdateStatusText();
         };
@@ -115,7 +115,51 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         if (GameTimeController.instance != null)
             GameTimeController.instance.OnDayChanged += OnDayChanged;
 
+        SetupUI();
         UpdateTroughSprite();
+    }
+
+    private void SetupUI()
+    {
+        if (uiSetup) return;
+        uiSetup = true;
+
+        slotUIs.Clear();
+
+        if (slotParent == null || slotPrefab == null)
+        {
+            Debug.LogWarning("[FeedingTrough] SlotParent or SlotPrefab not assigned — slots won't be created.");
+            return;
+        }
+
+        for (int i = 0; i < slotCount; i++)
+        {
+            GameObject slotObj = Instantiate(slotPrefab, slotParent);
+            slotObj.name = $"TroughSlot_{i}";
+
+            InventorySlot slotUI = slotObj.GetComponent<InventorySlot>();
+            if (slotUI != null)
+            {
+                slotUIs.Add(slotUI);
+                slotUI.SetSlotIndex(i);
+                slotUI.SetItemStack(container.GetSlot(i));
+                slotUI.EnableTroughMode(container);
+            }
+        }
+
+        if (titleText != null)
+            titleText.text = "Feeding Trough";
+
+        UpdateStatusText();
+    }
+
+    private void RefreshSlots()
+    {
+        for (int i = 0; i < slotUIs.Count; i++)
+        {
+            if (slotUIs[i] != null)
+                slotUIs[i].SetItemStack(container.GetSlot(i));
+        }
     }
 
     private void OnDestroy()
@@ -205,12 +249,8 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
             }
         }
 
-        if (totalFed > 0)
-        {
-            Debug.Log($"[FeedingTrough] Auto-fed {totalFed}/{animals.Count} animals in zone '{linkedZone.gameObject.name}'.");
-        }
-
         UpdateTroughSprite();
+        UpdateStatusText();
     }
 
     /// <summary>
@@ -258,17 +298,16 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         List<Animal> animals = linkedZone.GetAnimals();
         int count = 0;
 
-        // Create a temporary copy of item counts for simulation
-        Dictionary<string, int> tempCounts = new Dictionary<string, int>();
+        // Build temp counts using the actual item references from the container
+        Dictionary<Item, int> tempCounts = new Dictionary<Item, int>();
         foreach (var stack in container.GetAllItems())
         {
             if (stack != null && !stack.IsEmpty)
             {
-                string key = stack.item.itemName;
-                if (tempCounts.ContainsKey(key))
-                    tempCounts[key] += stack.quantity;
+                if (tempCounts.ContainsKey(stack.item))
+                    tempCounts[stack.item] += stack.quantity;
                 else
-                    tempCounts[key] = stack.quantity;
+                    tempCounts[stack.item] = stack.quantity;
             }
         }
 
@@ -284,7 +323,11 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
             {
                 if (string.IsNullOrEmpty(req.itemName)) continue;
 
-                int available = tempCounts.ContainsKey(req.itemName) ? tempCounts[req.itemName] : 0;
+                // Resolve via ItemDatabase, same as TryFeedAnimal
+                Item foodItem = ItemDatabase.GetItem(req.itemName);
+                if (foodItem == null) { canFeed = false; break; }
+
+                int available = tempCounts.ContainsKey(foodItem) ? tempCounts[foodItem] : 0;
                 if (available < req.quantityPerDay)
                 {
                     canFeed = false;
@@ -298,8 +341,10 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
                 // Deduct from temp counts
                 foreach (FoodRequirement req in data.dailyFoodRequirements)
                 {
-                    if (!string.IsNullOrEmpty(req.itemName) && tempCounts.ContainsKey(req.itemName))
-                        tempCounts[req.itemName] -= req.quantityPerDay;
+                    if (string.IsNullOrEmpty(req.itemName)) continue;
+                    Item foodItem = ItemDatabase.GetItem(req.itemName);
+                    if (foodItem != null && tempCounts.ContainsKey(foodItem))
+                        tempCounts[foodItem] -= req.quantityPerDay;
                 }
             }
         }
@@ -328,9 +373,13 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
                 totalItems += stack.quantity;
         }
 
+        int occupiedSlots = 0;
+        foreach (var stack in container.GetAllItems())
+            if (stack != null && !stack.IsEmpty) occupiedSlots++;
+
         if (totalItems == 0 && emptySprite != null)
             spriteRenderer.sprite = emptySprite;
-        else if (totalItems > slotCount * 5 && fullSprite != null) // More than half-capacity estimate
+        else if (occupiedSlots >= slotCount / 2 && fullSprite != null)
             spriteRenderer.sprite = fullSprite;
         else if (partialSprite != null)
             spriteRenderer.sprite = partialSprite;

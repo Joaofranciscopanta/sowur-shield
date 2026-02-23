@@ -336,7 +336,7 @@ public class SceneTransitionManager : MonoBehaviour
             case "MainMenu":
                 OnMainMenuLoaded();
                 break;
-            case "MainGameScene":
+            case "SampleScene":
                 OnGameSceneLoaded();
                 break;
         }
@@ -379,7 +379,7 @@ public class SceneTransitionManager : MonoBehaviour
     /// </summary>
     public void LoadMainGameScene()
     {
-        LoadScene("MainGameScene", true, true);
+        LoadScene("SampleScene", true, true);
     }
     
     /// <summary>

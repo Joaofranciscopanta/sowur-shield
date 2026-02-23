@@ -1,2 +1,16 @@
 fileFormatVersion: 2
 guid: a98ad4689e6eaa3448f4580edde09440
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - idleSprite: {instanceID: 0}
+  - animatorController: {instanceID: 0}
+  - heartParticlePrefab: {fileID: 4988454632703891286, guid: d135aca41e3424f44a258c0d1259d5c8, type: 3}
+  - groundItemPrefab: {instanceID: 0}
+  - activeSkill: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
