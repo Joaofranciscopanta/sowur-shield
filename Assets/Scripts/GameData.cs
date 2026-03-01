@@ -10,7 +10,8 @@ using System.Linq;
 public class GameData
 {
     [Header("Save Metadata")]
-    public string saveVersion = "1.0.0";
+    public int saveVersion = 1;
+    public const int CURRENT_SAVE_VERSION = 1;
     public string saveTimestamp;
     public float totalPlayTime = 0f;
     public int saveCount = 0;

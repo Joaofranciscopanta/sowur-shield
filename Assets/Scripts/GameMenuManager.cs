@@ -363,17 +363,24 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
 
     public void LoadGame()
     {
-        if (SaveManager.Instance != null && SaveManager.Instance.HasSaveFile())
+        ShowLoadSlotPicker();
+    }
+
+    public void ShowSaveSlotPicker()
+    {
+        menuUI?.ShowSaveSlotPanel();
+    }
+
+    public void ShowLoadSlotPicker()
+    {
+        if (SaveManager.Instance != null &&
+            System.Linq.Enumerable.Any(SaveManager.Instance.GetAllSlotInfos(), s => !s.isEmpty))
         {
-            CloseMenu(); // Close menu first
-            SaveManager.Instance.LoadGame();
+            menuUI?.ShowLoadSlotPanel();
         }
         else
         {
-            if (menuUI != null)
-            {
-                menuUI.ShowNotification("No save file found!", true);
-            }
+            menuUI?.ShowNotification("No save files found!", true);
         }
     }
 
