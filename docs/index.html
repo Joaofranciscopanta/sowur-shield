@@ -10,48 +10,63 @@
   <body>
     <div id="release-notes">
       <h2>🌾 Sowur Shield - Demo</h2>
-      <div class="version">Build #1 - January 2026</div>
+      <div class="version">Build #1 - February 2026</div>
 
-      <h3>📝 Release Notes</h3>
+      <h3>📝 What's New</h3>
       <div class="notes-content">
+
         <div class="note-section">
-          <h4>✨ Core Features</h4>
+          <h4>🐔 Animal Husbandry</h4>
           <ul>
-            <li>Advanced farming system with multi-stage crop growth</li>
-            <li>Soil state management (Till, Water, Plant, Harvest)</li>
-            <li>36-slot inventory with drag & drop UI</li>
-            <li>Interactive dialogue system with branching conversations</li>
-            <li>NPC memory system - they remember your conversations!</li>
-            <li>Tool-based interaction (Hoe, Watering Can, Shovel)</li>
-            <li>Automatic selling system via SellBox</li>
-            <li>Day/night cycle with time management</li>
-            <li>Sleep system to advance time and trigger sales</li>
-            <li>Dual-grid tilemap rendering system</li>
+            <li>Pet animals daily for happiness bonus &amp; heart particles</li>
+            <li>Feed animals directly or stock the <strong>Feeding Trough</strong></li>
+            <li>Happiness system (0–100) affects production output</li>
+            <li>Animal Roster UI — track all your farm animals at a glance</li>
           </ul>
         </div>
 
         <div class="note-section">
-          <h4>🆕 Recent Updates</h4>
+          <h4>💾 Multiple Save Slots</h4>
           <ul>
-            <li><strong>Minimap System:</strong> 3-state minimap (Normal, Semi-transparent, Fullscreen)</li>
-            <li><strong>Animal System:</strong> Chickens with AI behavior and interaction</li>
-            <li><strong>Improved UI:</strong> Enhanced interaction prompts and visual feedback</li>
-            <li><strong>Main Menu:</strong> Professional menu with settings and credits</li>
-            <li><strong>Scene Transitions:</strong> Smooth loading screens with tips</li>
-            <li><strong>Bug Fixes:</strong> Resolved NPC interaction and tool priority issues</li>
+            <li><strong>4 slots:</strong> AutoSave + Slot 1, 2, 3</li>
+            <li>Play time tracked and displayed per slot</li>
+            <li>Auto-save triggers every time you sleep</li>
+            <li>Delete individual slots from the Load screen</li>
+          </ul>
+        </div>
+
+        <div class="note-section">
+          <h4>⚙️ Game Balance Tuning</h4>
+          <ul>
+            <li>Centralized <strong>GameBalance</strong> ScriptableObject</li>
+            <li>Sell multiplier, interaction ranges, happiness values — all in one place</li>
+          </ul>
+        </div>
+
+        <div class="note-section">
+          <h4>✨ Core Features</h4>
+          <ul>
+            <li>Advanced farming (Till → Water → Plant → Harvest)</li>
+            <li>36-slot inventory with drag &amp; drop</li>
+            <li>Branching NPC dialogue with memory system</li>
+            <li>Tool-based interaction (Hoe, Watering Can, Shovel)</li>
+            <li>Automatic selling via SellBox on sleep</li>
+            <li>Day/night cycle &amp; seasonal calendar</li>
+            <li>3-state Minimap (Normal / Semi-transparent / Fullscreen)</li>
+            <li>Dual-grid tilemap rendering system</li>
           </ul>
         </div>
 
         <div class="note-section">
           <h4>🎯 Controls</h4>
           <ul>
-            <li><strong>WASD/Arrows:</strong> Move character</li>
-            <li><strong>E:</strong> Interact with NPCs/objects</li>
-            <li><strong>Left Click:</strong> Use equipped tool/interact</li>
-            <li><strong>I:</strong> Open/close inventory</li>
-            <li><strong>M:</strong> Toggle minimap modes</li>
-            <li><strong>1-9:</strong> Quick select inventory slots</li>
-            <li><strong>ESC:</strong> Open game menu</li>
+            <li><strong>WASD / Arrows:</strong> Move</li>
+            <li><strong>E:</strong> Interact with NPCs, objects, animals</li>
+            <li><strong>Left Click:</strong> Use equipped tool</li>
+            <li><strong>I:</strong> Open inventory</li>
+            <li><strong>M:</strong> Toggle minimap</li>
+            <li><strong>1–9:</strong> Hotbar quick select</li>
+            <li><strong>ESC:</strong> Game menu / Save &amp; Load</li>
             <li><strong>Shift:</strong> Sprint</li>
           </ul>
         </div>
@@ -59,23 +74,22 @@
         <div class="note-section">
           <h4>🎮 How to Play</h4>
           <ul>
-            <li>Use the <strong>Hoe</strong> to till soil (converts ground to farmland)</li>
-            <li>Use <strong>Watering Can</strong> to water tilled soil</li>
-            <li>Plant <strong>seeds</strong> on watered soil</li>
-            <li>Wait for crops to grow over several days</li>
-            <li>Harvest mature crops with <strong>Left Click</strong></li>
-            <li>Sell items by placing them in the <strong>SellBox</strong></li>
-            <li>Sleep in bed to advance time and complete sales</li>
-            <li>Talk to NPCs with <strong>E key</strong> for branching dialogue</li>
+            <li>Use the <strong>Hoe</strong> to till soil</li>
+            <li>Use the <strong>Watering Can</strong> on tilled soil</li>
+            <li>Plant <strong>seeds</strong> on watered soil and wait for growth</li>
+            <li>Harvest with <strong>Left Click</strong> when crops are ready</li>
+            <li>Drag items into the <strong>SellBox</strong> — earnings collected on sleep</li>
+            <li>Talk to NPCs with <strong>E</strong> for branching dialogue</li>
+            <li>Pet &amp; feed your animals every day to maximize production</li>
+            <li>Sleep in bed to advance the day, auto-save, and collect earnings</li>
           </ul>
         </div>
 
         <div class="note-section">
           <h4>ℹ️ Demo Notes</h4>
           <ul>
-            <li>Save/Load functionality disabled in demo build</li>
-            <li>Play session resets on page refresh</li>
-            <li>This is a showcase build - full version in development</li>
+            <li>This is a showcase build — full game in active development</li>
+            <li>Session resets on page refresh</li>
             <li>Built with Unity 2022.3.46f1 LTS</li>
           </ul>
         </div>
@@ -83,16 +97,16 @@
         <div class="note-section">
           <h4>👥 Team</h4>
           <ul>
-            <li><strong>João Francisco Pantaleão</strong> - CTO & Owner</li>
-            <li><strong>Lucas Daniel</strong> - Co-Owner & Lead Developer</li>
-            <li><strong>Isabella Freitas</strong> - Art Director & Character Design</li>
+            <li><strong>João Francisco Pantaleão</strong> — Owner &amp; Lead Developer</li>
+            <li><strong>Lucas Daniel</strong> — Co-Owner &amp; Main Developer</li>
+            <li><strong>Isabella Freitas</strong> — Art Director &amp; Character Design</li>
           </ul>
         </div>
       </div>
 
       <div class="footer-links">
-        <a href="https://github.com/Joaofranciscopanta/sowur-shield" target="_blank">📂 View on GitHub</a>
-        <a href="https://github.com/Joaofranciscopanta/sowur-shield/blob/main/README.md" target="_blank">📖 Documentation</a>
+        <a href="https://github.com/Joaofranciscopanta/sowur-shield" target="_blank">📂 GitHub</a>
+        <a href="https://github.com/Joaofranciscopanta/sowur-shield/blob/main/README.md" target="_blank">📖 Docs</a>
       </div>
     </div>
     <div id="unity-container" class="unity-desktop">
