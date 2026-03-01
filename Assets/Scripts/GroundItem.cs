@@ -1,8 +1,12 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using SowurShield.Inventory;
 
-public class GroundItem : MonoBehaviour, IInteractable
+namespace SowurShield.Core
+{
+
+public class GroundItem : MonoBehaviour, IInteractable, ISaveable
 {
     public Item item;
     public int quantity = 1; // Add quantity support
@@ -43,12 +47,18 @@ public class GroundItem : MonoBehaviour, IInteractable
 
     // Referência ao jogador e seu inventário
     private Transform playerTransform;
-    private Inventory playerInventory;
+    private SowurShield.Inventory.Inventory playerInventory;
 
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         UpdateVisual();
+        SaveManager.Instance?.RegisterSaveable(this);
+    }
+
+    private void OnDestroy()
+    {
+        SaveManager.Instance?.UnregisterSaveable(this);
     }
 
     private void Start()
@@ -414,6 +424,23 @@ public class GroundItem : MonoBehaviour, IInteractable
         }
     }
 
+    // ============================================================================
+    // ISAVEABLE IMPLEMENTATION
+    // ============================================================================
+
+    public void SaveData(GameData gameData)
+    {
+        if (itemPicked)
+            gameData.worldData.worldFlags[$"grounditem_picked_{gameObject.name}"] = true;
+    }
+
+    public void LoadData(GameData gameData)
+    {
+        string key = $"grounditem_picked_{gameObject.name}";
+        if (gameData.worldData.worldFlags.TryGetValue(key, out bool picked) && picked)
+            Destroy(gameObject);
+    }
+
     // Visualização da área de coleta no editor
     private void OnDrawGizmosSelected()
     {
@@ -427,3 +454,5 @@ public class GroundItem : MonoBehaviour, IInteractable
         }
     }
 }
+
+} // namespace SowurShield.Core

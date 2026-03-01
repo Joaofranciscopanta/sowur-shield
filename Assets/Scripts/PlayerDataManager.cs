@@ -1,5 +1,7 @@
 using UnityEngine;
 
+namespace SowurShield.Core
+{
 /// <summary>
 /// Manages saving and loading of player-specific data like position, stats, and progress
 /// </summary>
@@ -8,19 +10,19 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
     [Header("Components")]
     [SerializeField] private PlayerMove playerMove;
     [SerializeField] private PlayerStats playerStats;
-    
+
     [Header("Debug")]
     [SerializeField] private bool enableDebugLogs = true;
-    
+
     private void Awake()
     {
         // Auto-find components if not assigned
         if (playerMove == null)
             playerMove = GetComponent<PlayerMove>();
-            
+
         if (playerStats == null)
             playerStats = GetComponent<PlayerStats>();
-            
+
         // Register with SaveManager (before SaveManager.Start() runs)
         if (SaveManager.Instance != null)
         {
@@ -28,7 +30,7 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
             LogDebug("PlayerDataManager registered with SaveManager in Awake");
         }
     }
-    
+
     private void OnDestroy()
     {
         // Unregister from SaveManager
@@ -37,18 +39,18 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
             SaveManager.Instance.UnregisterSaveable(this);
         }
     }
-    
+
     // ============================================================================
     // ISAVEABLE IMPLEMENTATION
     // ============================================================================
-    
+
     public void SaveData(GameData gameData)
     {
         // Save player position
         gameData.playerData.position = transform.position;
         gameData.playerData.rotation = transform.eulerAngles.z;
         gameData.playerData.currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        
+
         // Save player stats if available
         if (playerStats != null)
         {
@@ -66,31 +68,15 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
             // Default values if PlayerStats component is missing
             LogDebug("PlayerStats component not found, using default values");
         }
-        
+
         LogDebug($"Saved player data: Position {gameData.playerData.position}, Scene {gameData.playerData.currentSceneName}, HasSleptInBed: {gameData.playerData.hasSleptInBed}, BedPosition: {gameData.playerData.lastBedPosition}");
     }
-    
+
     public void LoadData(GameData gameData)
     {
-        // Debug bed spawn data
-        LogDebug($"Loading data - hasSleptInBed: {gameData.playerData.hasSleptInBed}, lastBedPosition: {gameData.playerData.lastBedPosition}, savedPosition: {gameData.playerData.position}");
-
-        // Load player position - spawn at bed if they've slept in one
-        Vector3 spawnPosition = gameData.playerData.position;
-
-        if (gameData.playerData.hasSleptInBed && gameData.playerData.lastBedPosition != Vector3.zero)
-        {
-            spawnPosition = gameData.playerData.lastBedPosition;
-            LogDebug($"✓ Spawning player at bed position: {spawnPosition}");
-        }
-        else
-        {
-            LogDebug($"✗ Spawning player at saved position: {spawnPosition} (hasSleptInBed: {gameData.playerData.hasSleptInBed}, bedPos: {gameData.playerData.lastBedPosition})");
-        }
-
-        transform.position = spawnPosition;
+        transform.position = gameData.playerData.position;
         transform.rotation = Quaternion.Euler(0, 0, gameData.playerData.rotation);
-        
+
         // Load player stats if available
         if (playerStats != null)
         {
@@ -103,7 +89,7 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
             playerStats.SetExperience(gameData.playerData.experience);
             playerStats.SetExperienceToNextLevel(gameData.playerData.experienceToNextLevel);
         }
-        
+
         // Note: Scene loading should be handled separately by a SceneManager
         // For now, we just log the scene name that should be loaded
         string currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
@@ -111,14 +97,14 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
         {
             LogDebug($"Player was saved in scene '{gameData.playerData.currentSceneName}' but currently in '{currentSceneName}'");
         }
-        
+
         LogDebug($"Loaded player data: Position {gameData.playerData.position}, Scene {gameData.playerData.currentSceneName}");
     }
-    
+
     // ============================================================================
     // UTILITY METHODS
     // ============================================================================
-    
+
     /// <summary>
     /// Manually save player position (useful for checkpoints)
     /// </summary>
@@ -136,7 +122,7 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
             }
         }
     }
-    
+
     /// <summary>
     /// Get current player position data
     /// </summary>
@@ -146,7 +132,7 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
         data.position = transform.position;
         data.rotation = transform.eulerAngles.z;
         data.currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        
+
         if (playerStats != null)
         {
             data.health = playerStats.CurrentHealth;
@@ -158,28 +144,28 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
             data.experience = playerStats.Experience;
             data.experienceToNextLevel = playerStats.ExperienceToNextLevel;
         }
-        
+
         return data;
     }
-    
+
     private void LogDebug(string message)
     {
         if (enableDebugLogs)
         {
         }
     }
-    
+
     // ============================================================================
     // EDITOR/DEBUG METHODS
     // ============================================================================
-    
+
     #if UNITY_EDITOR
     [ContextMenu("Save Current Position")]
     public void DebugSavePosition()
     {
         SavePosition();
     }
-    
+
     [ContextMenu("Show Player Data")]
     public void DebugShowPlayerData()
     {
@@ -187,3 +173,4 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
     }
     #endif
 }
+} // namespace SowurShield.Core

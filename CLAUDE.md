@@ -557,6 +557,49 @@ The project follows excellent separation of concerns with modular script organiz
 - **Singleton Pattern**: Used for managers (UIManager, InteractionManager)
 - **Event System**: Actions and delegates for loose coupling
 
+### Namespace Convention (v0.5+)
+
+**ALL new scripts MUST declare a namespace.** This is mandatory from version 0.5 onwards.
+
+Use the `SowurShield.<System>` pattern matching the script's folder:
+
+| Folder | Namespace |
+|--------|-----------|
+| `Scripts/` (core, managers) | `SowurShield.Core` |
+| `Scripts/Inventory/` | `SowurShield.Inventory` |
+| `Scripts/Animals/` | `SowurShield.Animals` |
+| `Scripts/Combat/` | `SowurShield.Combat` |
+| `Scripts/Dialogue/` | `SowurShield.Dialogue` |
+| `Scripts/Dialogue/Editor/` | `SowurShield.Dialogue.Editor` |
+| `Scripts/Editor/` | `SowurShield.Editor` |
+| `Scripts/DualGridTilemap/`, `Scripts/Farming/` | `SowurShield.Farming` |
+| `Scripts/MapEditor/` | `SowurShield.MapEditor` |
+| `Scripts/Minimap/` | `SowurShield.Minimap` |
+| `Scripts/Worldmap/` | `SowurShield.Worldmap` |
+| `Scripts/UI Systems/` | `SowurShield.UI` |
+| `Scripts/Debugging/` | `SowurShield.Debugging` |
+
+**Template for every new script:**
+```csharp
+using UnityEngine;
+
+namespace SowurShield.<System>
+{
+    public class MyClass : MonoBehaviour
+    {
+        // ...
+    }
+}
+```
+
+**Cross-namespace references** require a `using` directive at the top:
+```csharp
+using SowurShield.Inventory;   // to use Item, Inventory, etc.
+using SowurShield.Core;        // to use SaveManager, PlayerMove, etc.
+```
+
+**Do NOT** create new namespaces outside the pattern above without discussion. If a script genuinely doesn't fit any folder, use `SowurShield.Core` as the fallback.
+
 ## Setup Requirements
 
 ### Scene Setup
