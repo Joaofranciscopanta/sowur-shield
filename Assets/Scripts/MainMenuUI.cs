@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections;
 using System.IO;
+using System.Linq;
 
 /// <summary>
 /// Main menu UI handler for the game's title screen
@@ -11,19 +12,29 @@ using System.IO;
 /// </summary>
 public class MainMenuUI : MonoBehaviour
 {
+    private enum SlotPickerMode { Load, NewGame }
+
     [Header("Main Menu Buttons")]
     [SerializeField] private Button newGameButton;
     [SerializeField] private Button continueButton;
+    [SerializeField] private Button loadGameButton;
     [SerializeField] private Button settingsButton;
     [SerializeField] private Button creditsButton;
     [SerializeField] private Button quitButton;
-    
+
     [Header("Panels")]
     [SerializeField] private GameObject mainPanel;
     [SerializeField] private GameObject settingsPanel;
     [SerializeField] private GameObject creditsPanel;
     [SerializeField] private GameObject confirmationPanel;
     [SerializeField] private GameObject loadingPanel;
+
+    [Header("Slot Picker Panel")]
+    [SerializeField] private GameObject slotPickerPanel;
+    [SerializeField] private Transform slotListParent;
+    [SerializeField] private GameObject saveSlotButtonPrefab;
+    [SerializeField] private Button slotPickerBackButton;
+    [SerializeField] private TextMeshProUGUI slotPickerTitleText;
     
     [Header("Settings Panel (Reuse GameMenuUI components)")]
     [SerializeField] private Slider masterVolumeSlider;
@@ -91,6 +102,11 @@ public class MainMenuUI : MonoBehaviour
             continueButton.onClick.AddListener(OnContinueClicked);
             // Continue button interactable state will be set by CheckSaveFileAvailability
         }
+
+        if (loadGameButton != null)
+        {
+            loadGameButton.onClick.AddListener(OnLoadGameClicked);
+        }
             
         if (settingsButton != null)
         {
@@ -110,6 +126,10 @@ public class MainMenuUI : MonoBehaviour
             quitButton.interactable = true;
         }
         
+        // Setup slot picker back button
+        if (slotPickerBackButton != null)
+            slotPickerBackButton.onClick.AddListener(ShowMainPanel);
+
         // Setup settings panel
         if (settingsBackButton != null)
             settingsBackButton.onClick.AddListener(OnSettingsBackClicked);
@@ -272,52 +292,23 @@ public class MainMenuUI : MonoBehaviour
     private void OnNewGameClicked()
     {
         PlaySound(buttonClickSound);
-        
-        // Check if save file exists
-        if (SaveManager.Instance != null && SaveManager.Instance.HasSaveFile())
-        {
-            // Show overwrite confirmation
-            isNewGameOverwrite = true;
-            ShowConfirmationDialog(
-                "Starting a new game will overwrite your existing save file. Continue?",
-                "New Game Confirmation"
-            );
-        }
-        else
-        {
-            // No save file exists, start directly
-            StartNewGame();
-        }
+        OpenSlotPicker(SlotPickerMode.NewGame);
     }
-    
+
     private void OnContinueClicked()
     {
-
         PlaySound(buttonClickSound);
-        
-        // Check save file existence again
-        bool hasSave = false;
-        if (SaveManager.Instance != null)
-        {
-            hasSave = SaveManager.Instance.HasSaveFile();
-        }
-        else
-        {
-            // Manual check as fallback
-            string saveDirectory = Path.Combine(Application.persistentDataPath, "Saves");
-            string saveFilePath = Path.Combine(saveDirectory, "GameSave.json");
-            hasSave = File.Exists(saveFilePath);
-        }
-        
-        if (hasSave)
-        {
 
-            LoadGame();
-        }
-        else
-        {
+        // Continue loads the most recent save directly — no picker
+        string mostRecent = GetMostRecentSlotFromDisk();
+        if (!string.IsNullOrEmpty(mostRecent))
+            LoadGameFromSlot(mostRecent);
+    }
 
-        }
+    private void OnLoadGameClicked()
+    {
+        PlaySound(buttonClickSound);
+        OpenSlotPicker(SlotPickerMode.Load);
     }
     
     private void OnSettingsClicked()
@@ -346,60 +337,236 @@ public class MainMenuUI : MonoBehaviour
     // GAME FLOW METHODS
     // ============================================================================
     
-    private void StartNewGame()
+    // ============================================================================
+    // SLOT PICKER
+    // ============================================================================
+
+    private SlotPickerMode currentSlotPickerMode;
+
+    private void OpenSlotPicker(SlotPickerMode mode)
     {
-        
-        // Clear any existing save data
+        currentSlotPickerMode = mode;
+
+        if (slotPickerTitleText != null)
+            slotPickerTitleText.text = mode == SlotPickerMode.Load ? "Load Game" : "New Game — Choose Slot";
+
+        PopulateSlotPicker(mode);
+
+        SetPanelActive(mainPanel, false);
+        SetPanelActive(slotPickerPanel, true);
+    }
+
+    private void PopulateSlotPicker(SlotPickerMode mode)
+    {
+        if (slotListParent == null || saveSlotButtonPrefab == null)
+            return;
+
+        // Clear old buttons
+        foreach (Transform child in slotListParent)
+            Destroy(child.gameObject);
+
+        // SaveManager may not exist in the main menu scene yet — read slots directly from disk
+        SaveSlotInfo[] slots;
         if (SaveManager.Instance != null)
         {
+            slots = SaveManager.Instance.GetAllSlotInfos();
+        }
+        else
+        {
+            slots = ReadSlotInfosFromDisk();
+        }
+
+        foreach (var info in slots)
+        {
+            GameObject go = Instantiate(saveSlotButtonPrefab, slotListParent);
+            SaveSlotButton btn = go.GetComponent<SaveSlotButton>();
+            if (btn == null) continue;
+
+            string slotName = info.slotName;
+
+            if (mode == SlotPickerMode.Load)
+            {
+                bool locked = info.isEmpty;
+                btn.Initialize(
+                    info,
+                    locked ? null : (System.Action)(() => OnSlotSelected(slotName)),
+                    // Delete in Load mode: erase save and repopulate list
+                    info.isEmpty || info.isAutoSave ? null : (System.Action)(() => DeleteSlotAndRefresh(slotName)),
+                    locked
+                );
+            }
+            else // NewGame
+            {
+                btn.Initialize(
+                    info,
+                    // Click on slot = start new game in that slot
+                    () => OnSlotSelected(slotName),
+                    // Delete button = only erase, do NOT start game
+                    info.isEmpty || info.isAutoSave ? null : (System.Action)(() => DeleteSlotAndRefresh(slotName)),
+                    false
+                );
+            }
+        }
+    }
+
+    private void OnSlotSelected(string slotName)
+    {
+        if (currentSlotPickerMode == SlotPickerMode.Load)
+        {
+            LoadGameFromSlot(slotName);
+        }
+        else
+        {
+            // NewGame: start directly in chosen slot (overwrite if occupied)
+            StartNewGameInSlot(slotName);
+        }
+    }
+
+    private string _pendingNewGameSlot;
+
+    /// <summary>
+    /// Deletes a slot's files and repopulates the picker — does NOT start the game.
+    /// </summary>
+    private void DeleteSlotAndRefresh(string slotName)
+    {
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.DeleteSlot(slotName);
+        }
+        else
+        {
+            string dir = Path.Combine(Application.persistentDataPath, "Saves", slotName);
+            if (Directory.Exists(dir))
+                foreach (string f in Directory.GetFiles(dir))
+                    File.Delete(f);
+        }
+
+        // Repopulate the list in place so the player can choose another slot
+        PopulateSlotPicker(currentSlotPickerMode);
+        CheckSaveFileAvailability();
+    }
+
+    /// <summary>
+    /// Returns the slot name with the most recent save timestamp, read directly from disk.
+    /// </summary>
+    private string GetMostRecentSlotFromDisk()
+    {
+        var slots = SaveManager.Instance != null
+            ? SaveManager.Instance.GetAllSlotInfos()
+            : ReadSlotInfosFromDisk();
+
+        string best = null;
+        System.DateTime bestTime = System.DateTime.MinValue;
+
+        foreach (var s in slots)
+        {
+            if (s.isEmpty) continue;
+            if (System.DateTime.TryParse(s.saveTimestamp, out System.DateTime t) && t > bestTime)
+            {
+                bestTime = t;
+                best = s.slotName;
+            }
+        }
+
+        return best;
+    }
+
+    /// <summary>
+    /// Reads slot metadata directly from disk when SaveManager is not loaded yet.
+    /// </summary>
+    private SaveSlotInfo[] ReadSlotInfosFromDisk()
+    {
+        string[] slotNames = { "AutoSave", "Slot1", "Slot2", "Slot3" };
+        var result = new SaveSlotInfo[slotNames.Length];
+
+        string savesRoot = Path.Combine(Application.persistentDataPath, "Saves");
+
+        for (int i = 0; i < slotNames.Length; i++)
+        {
+            string slotName = slotNames[i];
+            string metaPath = Path.Combine(savesRoot, slotName, "SlotMeta.json");
+
+            if (File.Exists(metaPath))
+            {
+                try
+                {
+                    var info = JsonUtility.FromJson<SaveSlotInfo>(File.ReadAllText(metaPath));
+                    if (info != null)
+                    {
+                        info.slotName = slotName;
+                        info.isAutoSave = slotName == "AutoSave";
+                        result[i] = info;
+                        continue;
+                    }
+                }
+                catch { }
+            }
+
+            result[i] = new SaveSlotInfo
+            {
+                slotName = slotName,
+                isAutoSave = slotName == "AutoSave",
+                isEmpty = true
+            };
+        }
+
+        return result;
+    }
+
+    private bool SlotHasSaveFile(string slotName)
+    {
+        if (SaveManager.Instance != null)
+            return SaveManager.Instance.HasSaveFile(slotName);
+
+        string path = Path.Combine(Application.persistentDataPath, "Saves", slotName, "GameSave.json");
+        return File.Exists(path);
+    }
+
+    private void LoadGameFromSlot(string slotName)
+    {
+        // Store slot name statically so SaveManager can pick it up after scene load
+        SaveManager.pendingActiveSlot = slotName;
+
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.SetActiveSlot(slotName);
+
+        SaveManager.resetToStartOfDayAfterLoad = true;
+        PlaySound(gameStartSound);
+
+        if (SceneTransitionManager.Instance != null)
+            SceneTransitionManager.Instance.LoadMainGameScene();
+        else
+            StartCoroutine(LoadGameScene(true));
+    }
+
+    private void StartNewGameInSlot(string slotName)
+    {
+        // Store slot name statically so SaveManager can pick it up after scene load
+        SaveManager.pendingActiveSlot = slotName;
+
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.SetActiveSlot(slotName);
             SaveManager.Instance.DeleteSaveFile();
         }
-        
-        // Set flag to initialize new game
+        else
+        {
+            // Delete the save file directly if SaveManager not loaded yet
+            string path = Path.Combine(Application.persistentDataPath, "Saves", slotName, "GameSave.json");
+            if (File.Exists(path)) File.Delete(path);
+            string meta = Path.Combine(Application.persistentDataPath, "Saves", slotName, "SlotMeta.json");
+            if (File.Exists(meta)) File.Delete(meta);
+        }
+
         SaveManager.initializeNewGameAfterLoad = true;
-
-        
-        // Play game start sound
         PlaySound(gameStartSound);
-        
-        // Use SceneTransitionManager if available for smooth loading
-        if (SceneTransitionManager.Instance != null)
-        {
-            SceneTransitionManager.Instance.LoadMainGameScene();
-        }
-        else
-        {
-            // Fallback to manual loading
-            StartCoroutine(LoadGameScene(false)); // false = new game
-        }
-    }
-    
-    private void LoadGame()
-    {
 
-        
-        // Set flag to reset day progress to start of day
-        SaveManager.resetToStartOfDayAfterLoad = true;
-
-        
-        // Play game start sound
-        PlaySound(gameStartSound);
-        
-        // Use SceneTransitionManager if available for smooth loading
         if (SceneTransitionManager.Instance != null)
-        {
             SceneTransitionManager.Instance.LoadMainGameScene();
-            
-            // Note: SaveManager will handle loading the save file in the new scene
-            // and will reset day progress to start of day due to the flag
-        }
         else
-        {
-            // Fallback to manual loading
-            StartCoroutine(LoadGameScene(true)); // true = load existing
-        }
+            StartCoroutine(LoadGameScene(false));
     }
-    
+
     private IEnumerator LoadGameScene(bool loadExistingSave)
     {
         ShowLoadingPanel();
@@ -453,6 +620,7 @@ public class MainMenuUI : MonoBehaviour
         SetPanelActive(creditsPanel, false);
         SetPanelActive(confirmationPanel, false);
         SetPanelActive(loadingPanel, false);
+        SetPanelActive(slotPickerPanel, false);
     }
     
     private void ShowSettingsPanel()
@@ -515,10 +683,13 @@ public class MainMenuUI : MonoBehaviour
     private void OnConfirmationYes()
     {
         PlaySound(buttonClickSound);
-        
+
         if (isNewGameOverwrite)
         {
-            StartNewGame();
+            if (!string.IsNullOrEmpty(_pendingNewGameSlot))
+                StartNewGameInSlot(_pendingNewGameSlot);
+
+            _pendingNewGameSlot = null;
         }
         else
         {
@@ -530,13 +701,13 @@ public class MainMenuUI : MonoBehaviour
             else
             {
                 Application.Quit();
-                
+
                 #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
                 #endif
             }
         }
-        
+
         SetPanelActive(confirmationPanel, false);
     }
     
@@ -730,45 +901,24 @@ public class MainMenuUI : MonoBehaviour
     
     private void CheckSaveFileAvailability()
     {
-        bool hasSave = false;
-        
-        // Check if SaveManager exists, if not try to find or create one
-        if (SaveManager.Instance == null)
-        {
-            // Try to find existing SaveManager in scene
-            SaveManager existingSaveManager = FindObjectOfType<SaveManager>();
-            if (existingSaveManager == null)
-            {
-                // No SaveManager found, check for save file manually
-                string saveDirectory = Path.Combine(Application.persistentDataPath, "Saves");
-                string saveFilePath = Path.Combine(saveDirectory, "GameSave.json");
-                hasSave = File.Exists(saveFilePath);
-            }
-            else
-            {
-                hasSave = existingSaveManager.HasSaveFile();
-            }
-        }
+        bool hasSave;
+
+        if (SaveManager.Instance != null)
+            hasSave = SaveManager.Instance.GetAllSlotInfos().Any(s => !s.isEmpty);
         else
-        {
-            hasSave = SaveManager.Instance.HasSaveFile();
-        }
-        
+            hasSave = ReadSlotInfosFromDisk().Any(s => !s.isEmpty);
+
         if (continueButton != null)
         {
 #if DEMO_BUILD
-            // Hide Continue button in demo builds
             continueButton.gameObject.SetActive(false);
 #else
             continueButton.interactable = hasSave;
 #endif
-            
-            // Visual feedback for disabled continue button
+
             var buttonText = continueButton.GetComponentInChildren<TextMeshProUGUI>();
             if (buttonText != null)
-            {
                 buttonText.color = hasSave ? Color.white : Color.gray;
-            }
         }
     }
     

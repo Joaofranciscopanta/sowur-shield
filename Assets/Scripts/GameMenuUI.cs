@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using System;
 
 /// <summary>
 /// Handles the UI elements and visual aspects of the game menu
@@ -33,6 +34,13 @@ public class GameMenuUI : MonoBehaviour
     [SerializeField] private Button saveInfoBackButton;
     [SerializeField] private Button deleteSaveButton;
     
+    [Header("Save Slot Panel (in-game)")]
+    [SerializeField] private GameObject saveSlotPanel;
+    [SerializeField] private Transform saveSlotListParent;
+    [SerializeField] private GameObject saveSlotButtonPrefab;
+    [SerializeField] private TextMeshProUGUI saveSlotPanelTitle;
+    [SerializeField] private Button saveSlotBackButton;
+
     [Header("Confirmation Dialog")]
     [SerializeField] private GameObject confirmationPanel;
     [SerializeField] private TextMeshProUGUI confirmationText;
@@ -53,6 +61,10 @@ public class GameMenuUI : MonoBehaviour
     // State tracking
     private bool isQuitToDesktop = false;
     private Coroutine notificationCoroutine;
+
+    private enum InGameSlotMode { Save, Load }
+    private InGameSlotMode currentInGameSlotMode;
+    private string pendingInGameSlot;
     
     // References
     private GameMenuManager menuManager;
@@ -94,13 +106,13 @@ public class GameMenuUI : MonoBehaviour
         
         if (saveInfoButton != null)
         {
-            saveInfoButton.onClick.AddListener(() => ShowSaveInfoPanel());
+            saveInfoButton.onClick.AddListener(() => ShowSaveSlotPanel());
             saveInfoButton.interactable = true;
         }
-        
+
         if (loadGameButton != null)
         {
-            loadGameButton.onClick.AddListener(() => menuManager?.LoadGame());
+            loadGameButton.onClick.AddListener(() => ShowLoadSlotPanel());
             loadGameButton.interactable = true;
         }
         
@@ -123,7 +135,14 @@ public class GameMenuUI : MonoBehaviour
             settingsBackButton.onClick.AddListener(ShowMainPanel);
             settingsBackButton.interactable = true;
         }
-        
+
+        // Save slot panel back button
+        if (saveSlotBackButton != null)
+        {
+            saveSlotBackButton.onClick.AddListener(ShowMainPanel);
+            saveSlotBackButton.interactable = true;
+        }
+
         // Save info buttons
         if (saveInfoBackButton != null)
         {
@@ -191,12 +210,12 @@ public class GameMenuUI : MonoBehaviour
     
     public void ShowMainPanel()
     {
-
         SetPanelActive(mainMenuPanel, true);
         SetPanelActive(settingsPanel, false);
         SetPanelActive(saveInfoPanel, false);
         SetPanelActive(confirmationPanel, false);
-        
+        SetPanelActive(saveSlotPanel, false);
+
         UpdateLoadButtonState();
     }
     
@@ -429,7 +448,8 @@ public class GameMenuUI : MonoBehaviour
     {
         if (loadGameButton != null && SaveManager.Instance != null)
         {
-            loadGameButton.interactable = SaveManager.Instance.HasSaveFile();
+            bool anySave = System.Linq.Enumerable.Any(SaveManager.Instance.GetAllSlotInfos(), s => !s.isEmpty);
+            loadGameButton.interactable = anySave;
         }
     }
     
@@ -444,9 +464,139 @@ public class GameMenuUI : MonoBehaviour
     }
     
     // ============================================================================
+    // IN-GAME SAVE/LOAD SLOT PANEL
+    // ============================================================================
+
+    public void ShowSaveSlotPanel()
+    {
+        currentInGameSlotMode = InGameSlotMode.Save;
+
+        if (saveSlotPanelTitle != null)
+            saveSlotPanelTitle.text = "Save Game — Choose Slot";
+
+        PopulateInGameSlotPanel();
+
+        SetPanelActive(mainMenuPanel, false);
+        SetPanelActive(saveSlotPanel, true);
+    }
+
+    public void ShowLoadSlotPanel()
+    {
+        currentInGameSlotMode = InGameSlotMode.Load;
+
+        if (saveSlotPanelTitle != null)
+            saveSlotPanelTitle.text = "Load Game — Choose Slot";
+
+        PopulateInGameSlotPanel();
+
+        SetPanelActive(mainMenuPanel, false);
+        SetPanelActive(saveSlotPanel, true);
+    }
+
+    private void PopulateInGameSlotPanel()
+    {
+        if (saveSlotListParent == null || saveSlotButtonPrefab == null || SaveManager.Instance == null)
+            return;
+
+        foreach (Transform child in saveSlotListParent)
+            Destroy(child.gameObject);
+
+        SaveSlotInfo[] slots = SaveManager.Instance.GetAllSlotInfos();
+
+        foreach (var info in slots)
+        {
+            string slotName = info.slotName;
+
+            if (currentInGameSlotMode == InGameSlotMode.Save)
+            {
+                // AutoSave is hidden entirely in the manual Save panel
+                if (info.isAutoSave) continue;
+
+                GameObject go = Instantiate(saveSlotButtonPrefab, saveSlotListParent);
+                SaveSlotButton btn = go.GetComponent<SaveSlotButton>();
+                if (btn == null) continue;
+
+                btn.Initialize(
+                    info,
+                    (Action)(() => OnInGameSaveSlotSelected(slotName)),
+                    null,
+                    false
+                );
+            }
+            else // Load
+            {
+                GameObject go = Instantiate(saveSlotButtonPrefab, saveSlotListParent);
+                SaveSlotButton btn = go.GetComponent<SaveSlotButton>();
+                if (btn == null) continue;
+
+                bool locked = info.isEmpty;
+                Action deleteAction = info.isEmpty || info.isAutoSave
+                    ? null
+                    : (Action)(() => DeleteSlotAndRefreshInGame(slotName));
+
+                btn.Initialize(
+                    info,
+                    locked ? null : (Action)(() => OnInGameLoadSlotSelected(slotName)),
+                    deleteAction,
+                    locked
+                );
+            }
+        }
+    }
+
+    private void DeleteSlotAndRefreshInGame(string slotName)
+    {
+        SaveManager.Instance?.DeleteSlot(slotName);
+        PopulateInGameSlotPanel();
+    }
+
+    private void OnInGameSaveSlotSelected(string slotName)
+    {
+        if (SaveManager.Instance != null && SaveManager.Instance.HasSaveFile(slotName))
+        {
+            // Confirm overwrite
+            pendingInGameSlot = slotName;
+            SetPanelActive(confirmationPanel, true);
+            if (confirmationText != null)
+                confirmationText.text = $"Overwrite save in {slotName}?";
+        }
+        else
+        {
+            ExecuteInGameSave(slotName);
+        }
+    }
+
+    private void OnInGameLoadSlotSelected(string slotName)
+    {
+        pendingInGameSlot = slotName;
+        SetPanelActive(confirmationPanel, true);
+        if (confirmationText != null)
+            confirmationText.text = "Load this save? Unsaved progress will be lost.";
+    }
+
+    private void ExecuteInGameSave(string slotName)
+    {
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.SaveToSlot(slotName);
+            ShowNotification($"Saved to {slotName}!", false);
+        }
+        ShowMainPanel();
+    }
+
+    private void ExecuteInGameLoad(string slotName)
+    {
+        if (SaveManager.Instance != null)
+        {
+            menuManager?.CloseMenu();
+            SaveManager.Instance.LoadFromSlot(slotName);
+        }
+    }
+
+    // ============================================================================
     // CONFIRMATION DIALOGS
     // ============================================================================
-    
+
     public void ShowQuitConfirmation(bool quitToDesktop)
     {
         isQuitToDesktop = quitToDesktop;
@@ -478,7 +628,20 @@ public class GameMenuUI : MonoBehaviour
     private void OnConfirmYes()
     {
         SetPanelActive(confirmationPanel, false);
-        
+
+        // In-game slot action (save overwrite or load confirmation)
+        if (!string.IsNullOrEmpty(pendingInGameSlot))
+        {
+            string slot = pendingInGameSlot;
+            pendingInGameSlot = null;
+
+            if (currentInGameSlotMode == InGameSlotMode.Save)
+                ExecuteInGameSave(slot);
+            else
+                ExecuteInGameLoad(slot);
+            return;
+        }
+
         if (confirmationText != null && confirmationText.text.Contains("Delete"))
         {
             // Delete save confirmation
@@ -494,13 +657,9 @@ public class GameMenuUI : MonoBehaviour
         {
             // Quit confirmation
             if (isQuitToDesktop)
-            {
                 menuManager?.DoQuitToDesktop();
-            }
             else
-            {
                 menuManager?.DoQuitToMainMenu();
-            }
         }
     }
     
