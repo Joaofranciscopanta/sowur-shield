@@ -239,6 +239,10 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         }
     }
 
+    public string GetInteractionPrompt() => HasCrop && IsReadyForHarvest ? "Harvest" : "Interact";
+    public bool CanInteract() => true;
+    public float GetInteractionRange() => 2f;
+
     public void Interact()
     {
         EnsurePlayerInventory();

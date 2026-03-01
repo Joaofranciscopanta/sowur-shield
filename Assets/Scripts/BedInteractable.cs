@@ -72,6 +72,10 @@ public class BedInteractable : MonoBehaviour, IInteractable
             sleepConfirmUI.SetActive(false);
     }
 
+    public string GetInteractionPrompt() => "Sleep";
+    public bool CanInteract() => !isSleeping;
+    public float GetInteractionRange() => 2f;
+
     public void Interact()
     {
         if (timeController == null)

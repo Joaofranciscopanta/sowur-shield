@@ -144,47 +144,19 @@ public class InteractionManager : MonoBehaviour
     {
         if (interactable == null) return false;
 
-        // Check NPCDialogueInteractable
+        // NPCs have an extra guard: active dialogue blocks re-interaction
         if (interactable is NPCDialogueInteractable npc)
-        {
             return npc.isActiveAndEnabled && !npc.IsDialogueActive();
-        }
 
-        // Check SellBox
-        if (interactable is SellBox sellBox)
-        {
-            return sellBox.isActiveAndEnabled;
-        }
-
-        // Check Animal
-        if (interactable is Animal animal)
-        {
-            return animal.isActiveAndEnabled && animal.CanInteract();
-        }
-
-        // Check other interactable types
         if (interactable is MonoBehaviour mb)
-        {
-            return mb.isActiveAndEnabled;
-        }
+            return mb.isActiveAndEnabled && interactable.CanInteract();
 
-        return true;
+        return interactable.CanInteract();
     }
     
     private float GetInteractionRange(IInteractable interactable)
     {
-        float defaultRange = balance != null ? balance.defaultInteractionRange : 2f;
-
-        if (interactable is NPCDialogueInteractable npc)
-            return npc.GetInteractionRange();
-
-        if (interactable is SellBox sellBox)
-            return sellBox.GetInteractionRange();
-
-        if (interactable is Animal animal)
-            return animal.GetInteractionRange();
-
-        return defaultRange;
+        return interactable.GetInteractionRange();
     }
     
     private void SetInteractablePromptVisibility(IInteractable interactable, bool visible)

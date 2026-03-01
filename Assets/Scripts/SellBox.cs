@@ -1103,6 +1103,9 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     }
 
     // Methods for InteractionManager compatibility
+    public string GetInteractionPrompt() => "Open Sell Box";
+    public bool CanInteract() => !isSellBoxOpen;
+
     public float GetInteractionRange()
     {
         return balance != null ? balance.sellBoxInteractionRange : maxInteractionDistance;

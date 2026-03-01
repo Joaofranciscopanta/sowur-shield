@@ -138,6 +138,8 @@ public class WorldMapTriggerZone : MonoBehaviour, IInteractable
         return transform;
     }
 
+    public string GetInteractionPrompt() => $"Enter {zoneName}";
+
     public float GetInteractionRange()
     {
         return interactionRange;

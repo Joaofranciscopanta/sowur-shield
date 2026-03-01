@@ -188,12 +188,12 @@ public class NPCDialogueInteractable : MonoBehaviour, IInteractable
         }
     }
     
-    private bool CanInteract()
+    public bool CanInteract()
     {
         // Check cooldown
         if (Time.time - lastInteractionTime < cooldownBetweenInteractions)
             return false;
-        
+
         // Check if any dialogue is available
         return GetBestAvailableDialogue() != null;
     }
@@ -408,6 +408,8 @@ public class NPCDialogueInteractable : MonoBehaviour, IInteractable
     }
     
     // Methods for InteractionManager
+    public string GetInteractionPrompt() => $"Talk to {npcDisplayName}";
+
     public float GetInteractionRange()
     {
         return interactionRange;

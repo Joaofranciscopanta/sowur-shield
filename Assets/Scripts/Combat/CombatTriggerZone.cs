@@ -134,6 +134,8 @@ public class CombatTriggerZone : MonoBehaviour, IInteractable
         return transform;
     }
 
+    public string GetInteractionPrompt() => $"Enter {zoneName}";
+
     public float GetInteractionRange()
     {
         return interactionRange;

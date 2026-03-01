@@ -133,6 +133,10 @@ public class GroundItem : MonoBehaviour, IInteractable
         }
     }
 
+    public string GetInteractionPrompt() => item != null ? $"Pick up {item.itemName}" : "Pick up";
+    public bool CanInteract() => !itemPicked && playerInRange;
+    public float GetInteractionRange() => collectionRadius;
+
     public void Interact()
     {
         if (!itemPicked && playerTransform != null && playerInventory != null)
