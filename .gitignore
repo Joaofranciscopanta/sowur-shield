@@ -86,3 +86,6 @@ Desktop.ini
 DEVELOPMENT_LOG.md
 FULL_GAME_PROJECT_AUDIT.md
 GAME_DEVELOPMENT_PLAN.md
+
+# Claude Code internals (worktrees, session data)
+.claude/
