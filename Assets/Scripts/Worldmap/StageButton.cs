@@ -11,7 +11,6 @@ public class StageButton : MonoBehaviour
 
     public void OnClick()
     {
-        Debug.Log("Teste");
         TeamAssemblerUI.Instance.OpenAssembler();
         WorldMap.SetActive(false);
     }

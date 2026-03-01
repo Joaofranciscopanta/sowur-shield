@@ -68,7 +68,7 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
 
     public void OnWindowBlocked(string blockedBy)
     {
-        Debug.Log($"[AnimalInfoUI] Cannot open — blocked by '{blockedBy}'");
+        Debug.LogWarning($"[AnimalInfoUI] Cannot open — blocked by '{blockedBy}'");
     }
 
     // =========================================================================
