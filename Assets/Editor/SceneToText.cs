@@ -9,7 +9,7 @@ public class SceneToText
     {
         StringBuilder sb = new StringBuilder();
 
-        foreach (GameObject go in Object.FindObjectsOfType<GameObject>())
+        foreach (GameObject go in Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
         {
             if (go.transform.parent == null)
                 DumpGameObject(go.transform, sb, 0);

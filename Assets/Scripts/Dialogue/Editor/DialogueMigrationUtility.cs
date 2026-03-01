@@ -11,16 +11,20 @@ public class DialogueMigrationUtility : EditorWindow
 {
     private Vector2 scrollPosition;
     private string csvFilePath = "";
+#pragma warning disable CS0414
     private bool includePortraits = true;
     private bool generateChoices = false;
+#pragma warning restore CS0414
     private string defaultSpeakerName = "Unknown";
     private string outputFolderPath = "Assets/Data/Dialogue";
-    
+
     // Legacy migration disabled - DialogueObject class removed
     // private List<DialogueObject> foundLegacyDialogues = new List<DialogueObject>();
     // Legacy NPC migration disabled - NPCInteractable class removed
     // private List<NPCInteractable> foundLegacyNPCs = new List<NPCInteractable>();
+#pragma warning disable CS0414
     private bool hasScannedForLegacy = false;
+#pragma warning restore CS0414
     
     [MenuItem("Window/Dialogue/Migration Utility")]
     public static void ShowWindow()

@@ -57,7 +57,9 @@ public class TeamAssemblerUI : MonoBehaviour
     [Header("DEBUG: Visibility Fixes")]
     [SerializeField] private bool disableViewportMask = false; // Set to true to disable RectMask2D for testing
     [SerializeField] private bool autoExpandViewport = true; // Auto-expand viewport to fit content (RECOMMENDED)
+#pragma warning disable CS0414
     [SerializeField] private bool showVisualDebugBorders = false; // Draw colored debug borders for debugging
+#pragma warning restore CS0414
 
     // Runtime data
     private List<AnimalSelectionCard> animalCards = new List<AnimalSelectionCard>();
@@ -146,7 +148,7 @@ public class TeamAssemblerUI : MonoBehaviour
         availableAnimals.Clear();
 
         // Find all Animal components in scene
-        Animal[] allAnimals = FindObjectsOfType<Animal>();
+        Animal[] allAnimals = FindObjectsByType<Animal>(FindObjectsSortMode.None);
 
         foreach (Animal animal in allAnimals)
         {
@@ -643,7 +645,7 @@ public class TeamAssemblerUI : MonoBehaviour
     /// </summary>
     private void DisablePlayerMovement()
     {
-        PlayerMove player = FindObjectOfType<PlayerMove>();
+        PlayerMove player = FindFirstObjectByType<PlayerMove>();
         if (player != null)
         {
             // Use DisableMovement() instead of disabling the component
@@ -657,7 +659,7 @@ public class TeamAssemblerUI : MonoBehaviour
     /// </summary>
     private void EnablePlayerMovement()
     {
-        PlayerMove player = FindObjectOfType<PlayerMove>();
+        PlayerMove player = FindFirstObjectByType<PlayerMove>();
         if (player != null)
         {
             player.EnableMovement();

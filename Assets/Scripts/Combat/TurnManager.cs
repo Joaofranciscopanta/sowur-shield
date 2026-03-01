@@ -34,7 +34,9 @@ public class TurnManager : MonoBehaviour
     // ATB system tracking
     private int totalActionsExecuted = 0;
     private bool isProcessingActions = false;
+#pragma warning disable CS0414
     private float timeSinceLastActionBatch = 0f;
+#pragma warning restore CS0414
 
     [Header("Combat State")]
     [Tooltip("Is combat currently active?")]

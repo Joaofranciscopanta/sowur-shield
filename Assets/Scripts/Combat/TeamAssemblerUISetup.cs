@@ -25,7 +25,9 @@ public class TeamAssemblerUISetup : MonoBehaviour
     public TeamAssemblerUI assemblerUI;
 
     [Header("Status")]
+#pragma warning disable CS0414
     [SerializeField] private string statusMessage = "Right-click on this component → Auto-Setup UI (or use context menu)";
+#pragma warning restore CS0414
 
 #if UNITY_EDITOR
     /// <summary>
@@ -592,7 +594,7 @@ public class TeamAssemblerUISetup : MonoBehaviour
     private void EnsureEventSystem()
     {
         // Check if EventSystem exists in scene
-        UnityEngine.EventSystems.EventSystem eventSystem = FindObjectOfType<UnityEngine.EventSystems.EventSystem>();
+        UnityEngine.EventSystems.EventSystem eventSystem = FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>();
 
         if (eventSystem == null)
         {

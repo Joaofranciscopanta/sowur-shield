@@ -14,7 +14,9 @@ public class DialogueTreeEditor : UnityEditor.Editor
     private Vector2 scrollPosition;
     private bool showAdvancedOptions = false;
     private bool showNodeDetails = true;
+#pragma warning disable CS0414
     private bool showValidationResults = false;
+#pragma warning restore CS0414
     private string newNodeId = "";
     private NodeType newNodeType = NodeType.Dialogue;
     private List<bool> nodeFoldouts = new List<bool>();

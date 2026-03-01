@@ -286,7 +286,7 @@ public class CombatTeamSpawner : MonoBehaviour
             GridManager.Instance.ClearAllUnits();
 
             // Also destroy GameObjects
-            CombatUnit[] allUnits = FindObjectsOfType<CombatUnit>();
+            CombatUnit[] allUnits = FindObjectsByType<CombatUnit>(FindObjectsSortMode.None);
             foreach (CombatUnit unit in allUnits)
             {
                 Destroy(unit.gameObject);

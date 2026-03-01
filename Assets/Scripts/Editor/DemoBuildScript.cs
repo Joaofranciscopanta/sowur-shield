@@ -1,4 +1,5 @@
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 using System;
@@ -40,11 +41,12 @@ public class DemoBuildScript
     private static bool BuildDemo(BuildTarget target, string platformName)
     {
 
-        // Get current build target group
+        // Get current build target
         BuildTargetGroup targetGroup = BuildPipeline.GetBuildTargetGroup(target);
+        NamedBuildTarget namedTarget = NamedBuildTarget.FromBuildTargetGroup(targetGroup);
 
         // Store original scripting defines
-        string originalDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroup);
+        string originalDefines = PlayerSettings.GetScriptingDefineSymbols(namedTarget);
 
         try
         {
@@ -85,7 +87,7 @@ public class DemoBuildScript
 
             // Add DEMO_BUILD define symbol
             string demoDefines = AddDefineSymbol(originalDefines, DEMO_DEFINE);
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, demoDefines);
+            PlayerSettings.SetScriptingDefineSymbols(namedTarget, demoDefines);
 
 
             // Wait for compilation to finish
@@ -133,14 +135,14 @@ public class DemoBuildScript
                 return false;
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return false;
         }
         finally
         {
             // Restore original scripting defines
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, originalDefines);
+            PlayerSettings.SetScriptingDefineSymbols(namedTarget, originalDefines);
             AssetDatabase.Refresh();
         }
     }

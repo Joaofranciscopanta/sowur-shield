@@ -119,7 +119,7 @@ namespace SowurShield.Editor
         {
 
             // Count canvases
-            Canvas[] canvases = GameObject.FindObjectsOfType<Canvas>();
+            Canvas[] canvases = GameObject.FindObjectsByType<Canvas>(FindObjectsSortMode.None);
             foreach (Canvas c in canvases)
             {
             }
@@ -206,7 +206,7 @@ namespace SowurShield.Editor
 
             if (GUILayout.Button("Select All Canvases"))
             {
-                Selection.objects = GameObject.FindObjectsOfType<Canvas>();
+                Selection.objects = GameObject.FindObjectsByType<Canvas>(FindObjectsSortMode.None);
             }
         }
     }

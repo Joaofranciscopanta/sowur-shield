@@ -13,7 +13,7 @@ public class GridDebugHelper : MonoBehaviour
     {
 
         // Check for GridManager
-        GridManager gm = FindObjectOfType<GridManager>();
+        GridManager gm = FindFirstObjectByType<GridManager>();
         if (gm == null)
         {
         }
@@ -36,7 +36,7 @@ public class GridDebugHelper : MonoBehaviour
 
     private void CheckGridAfterStart()
     {
-        GridManager gm = FindObjectOfType<GridManager>();
+        GridManager gm = FindFirstObjectByType<GridManager>();
 
         if (gm == null) return;
 
@@ -77,7 +77,7 @@ public class GridDebugHelper : MonoBehaviour
         }
 
         // List all grid-related objects
-        Transform[] allTransforms = FindObjectsOfType<Transform>();
+        Transform[] allTransforms = FindObjectsByType<Transform>(FindObjectsSortMode.None);
         int gridObjectCount = 0;
         foreach (Transform t in allTransforms)
         {
