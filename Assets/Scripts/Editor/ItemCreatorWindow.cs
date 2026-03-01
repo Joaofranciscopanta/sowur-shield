@@ -2,6 +2,11 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using System.IO;
+using SowurShield.Inventory;
+using SowurShield.Core;
+
+namespace SowurShield.Editor
+{
 
 /// <summary>
 /// Editor window for creating Item ScriptableObjects and their matching GroundItem prefabs.
@@ -580,3 +585,5 @@ public class ItemCreatorWindow : EditorWindow
         }
     }
 }
+
+} // namespace SowurShield.Editor

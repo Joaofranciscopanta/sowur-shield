@@ -1,5 +1,8 @@
 using UnityEngine;
 
+namespace SowurShield.Core
+{
+
 public class FollowPlayer : MonoBehaviour
 {
     public Transform player;  // Drag your player here
@@ -12,3 +15,5 @@ public class FollowPlayer : MonoBehaviour
         transform.position = player.position + offset;
     }
 }
+
+} // namespace SowurShield.Core

@@ -4,6 +4,9 @@ using TMPro;
 using System.Collections.Generic;
 using System.Linq;
 
+namespace SowurShield.Combat
+{
+
 /// <summary>
 /// Displays battle status information including turn counter, team info, and turn order.
 /// Updates in real-time during combat.
@@ -219,3 +222,5 @@ public class BattleStatusUI : MonoBehaviour
         icon.color = originalColor;
     }
 }
+
+} // namespace SowurShield.Combat

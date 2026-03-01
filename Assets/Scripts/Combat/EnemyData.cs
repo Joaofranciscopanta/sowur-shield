@@ -1,5 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
+using SowurShield.Animals;
+
+namespace SowurShield.Combat
+{
 
 /// <summary>
 /// Enemy type classification for combat behavior
@@ -162,3 +166,5 @@ public class EnemyData : ScriptableObject
         return (scaledExp, scaledGold);
     }
 }
+
+} // namespace SowurShield.Combat

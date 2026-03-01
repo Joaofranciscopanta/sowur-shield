@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using SowurShield.Farming;
+
+namespace SowurShield.MapEditor
+{
 
 public class ExtendedDualGridTilemap : MonoBehaviour
 {
@@ -357,3 +361,4 @@ public class TileLibrary
     public AudioClip stepSound;
     public AudioClip interactSound;
 }
+} // namespace SowurShield.MapEditor

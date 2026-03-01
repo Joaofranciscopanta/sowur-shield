@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+namespace SowurShield.Animals
+{
+
 /// <summary>
 /// Combat statistics for animals used in autobattler combat scenes.
 /// Stats are influenced by farming activities (petting, feeding, production).
@@ -299,3 +302,5 @@ public class AnimalCombatStats
                $"Speed: x{speedGrowth:F2} | Health: x{healthGrowth:F2}";
     }
 }
+
+} // namespace SowurShield.Animals

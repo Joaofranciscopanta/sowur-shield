@@ -1,6 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using SowurShield.Dialogue;
+
+namespace SowurShield.Core
+{
 
 public class InteractionManager : MonoBehaviour
 {
@@ -231,3 +235,5 @@ public class InteractionManager : MonoBehaviour
         return names;
     }
 }
+
+} // namespace SowurShield.Core

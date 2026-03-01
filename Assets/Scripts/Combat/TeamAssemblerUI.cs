@@ -4,6 +4,12 @@ using TMPro;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.SceneManagement;
+using SowurShield.Animals;
+using SowurShield.Core;
+using SowurShield.Inventory;
+
+namespace SowurShield.Combat
+{
 
 /// <summary>
 /// Main controller for the Team Assembler pre-combat screen.
@@ -488,7 +494,7 @@ public class TeamAssemblerUI : MonoBehaviour
             return;
         }
 
-        Inventory playerInventory = player.GetComponent<Inventory>();
+        SowurShield.Inventory.Inventory playerInventory = player.GetComponent<SowurShield.Inventory.Inventory>();
         if (playerInventory == null)
         {
             return;
@@ -666,3 +672,5 @@ public class TeamAssemblerUI : MonoBehaviour
         return gridSlots.Find(slot => slot.gridPosition == position);
     }
 }
+
+} // namespace SowurShield.Combat

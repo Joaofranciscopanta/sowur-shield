@@ -1,5 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
+using SowurShield.Inventory;
+using SowurShield.Core;
 
 /// <summary>
 /// Edit Mode tests for Item ScriptableObject and related helpers.

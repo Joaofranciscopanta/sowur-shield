@@ -3,6 +3,10 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
 using System;
+using SowurShield.Animals;
+
+namespace SowurShield.Core
+{
 
 /// <summary>
 /// Manages the sleep confirmation panel UI
@@ -541,9 +545,11 @@ public class SleepConfirmationPanel : MonoBehaviour
         // Clean up coroutines
         if (sleepFadeCoroutine != null)
             StopCoroutine(sleepFadeCoroutine);
-            
+
         // Clean up events
         OnSleepConfirmed = null;
         OnSleepCancelled = null;
     }
 }
+
+} // namespace SowurShield.Core

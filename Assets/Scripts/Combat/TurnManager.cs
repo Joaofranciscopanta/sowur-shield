@@ -2,6 +2,9 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
+namespace SowurShield.Combat
+{
+
 /// <summary>
 /// Manages combat turns using a Turn Gauge System.
 /// Units with higher speed fill their gauge faster and act more frequently.
@@ -396,3 +399,5 @@ public class TurnManager : MonoBehaviour
         combatActive = false;
     }
 }
+
+} // namespace SowurShield.Combat

@@ -2,6 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using SowurShield.Animals;
+
+namespace SowurShield.Combat
+{
 
 /// <summary>
 /// Represents a grid cell in the Team Assembler where animals can be positioned.
@@ -265,3 +269,5 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
         return assignedAnimal;
     }
 }
+
+} // namespace SowurShield.Combat

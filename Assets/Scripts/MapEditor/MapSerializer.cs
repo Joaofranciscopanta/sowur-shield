@@ -2,6 +2,9 @@ using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
 
+namespace SowurShield.MapEditor
+{
+
 public class MapSerializer : MonoBehaviour
 {
     public static MapSerializer Instance { get; private set; }
@@ -489,3 +492,4 @@ public class MapDataJSON
     public string lastModified;
     public int versionNumber;
 }
+} // namespace SowurShield.MapEditor

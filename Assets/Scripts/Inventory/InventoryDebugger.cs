@@ -1,59 +1,58 @@
 using UnityEngine;
 
-[System.Serializable]
-public class InventoryDebugger : MonoBehaviour
+namespace SowurShield.Inventory
 {
-    [Header("Debug Settings")]
-    public bool enableDebugging = true;
-    public KeyCode debugKey = KeyCode.F1;
-    
-    private Inventory inventory;
-    
-    private void Start()
+    [System.Serializable]
+    public class InventoryDebugger : MonoBehaviour
     {
-        inventory = FindFirstObjectByType<Inventory>();
-        if (inventory == null)
+        [Header("Debug Settings")]
+        public bool enableDebugging = true;
+        public KeyCode debugKey = KeyCode.F1;
+
+        private SowurShield.Inventory.Inventory inventory;
+
+        private void Start()
         {
+            inventory = FindFirstObjectByType<SowurShield.Inventory.Inventory>();
+            if (inventory == null)
+            {
+
+            }
+        }
+
+        private void Update()
+        {
+            if (enableDebugging && Input.GetKeyDown(debugKey))
+            {
+                DebugInventoryState();
+            }
+        }
+
+        public void DebugInventoryState()
+        {
+            if (inventory == null)
+            {
+
+                return;
+            }
+
+
+
+
+            ItemStack selectedItem = inventory.SelectedItem;
+            if (!selectedItem.IsEmpty)
+            {
+
+            }
+            else
+            {
+
+            }
+
+            // Count non-empty slots
+            var allItems = inventory.GetAllItems();
+
 
         }
     }
-    
-    private void Update()
-    {
-        if (enableDebugging && Input.GetKeyDown(debugKey))
-        {
-            DebugInventoryState();
-        }
-    }
-    
-    public void DebugInventoryState()
-    {
-        if (inventory == null)
-        {
-
-            return;
-        }
-        
-
-
-
-
-
-        
-        ItemStack selectedItem = inventory.SelectedItem;
-        if (!selectedItem.IsEmpty)
-        {
-
-        }
-        else
-        {
-
-        }
-        
-        // Count non-empty slots
-        var allItems = inventory.GetAllItems();
-
-        
-
-    }
-}
+} // namespace SowurShield.Inventory

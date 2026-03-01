@@ -2,6 +2,8 @@ using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Reflection;
+using SowurShield.Animals;
+using SowurShield.Core;
 
 /// <summary>
 /// Edit Mode tests for Animal.

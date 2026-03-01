@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+namespace SowurShield.Core
+{
+
 /// <summary>
 /// Simple script for quit buttons that return to the main menu
 /// Can be used in any scene (sample scene, test scenes, etc.)
@@ -201,3 +204,5 @@ public class QuitToMainMenuButton : MonoBehaviour
         mainMenuSceneName = sceneName;
     }
 }
+
+} // namespace SowurShield.Core

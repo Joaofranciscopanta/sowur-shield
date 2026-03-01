@@ -1,5 +1,9 @@
 using UnityEngine;
 using TMPro;
+using SowurShield.Animals;
+
+namespace SowurShield.Combat
+{
 
 /// <summary>
 /// Wrapper component that connects Animal data to the combat system.
@@ -506,3 +510,5 @@ public class CombatUnit : MonoBehaviour
     /// </summary>
     public Animal GetSourceAnimal() => animal;
 }
+
+} // namespace SowurShield.Combat

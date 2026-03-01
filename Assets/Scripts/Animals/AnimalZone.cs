@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+namespace SowurShield.Animals
+{
+
 /// <summary>
 /// Defines a zone where animals can wander and move around.
 /// Attach this to a GameObject with a Collider2D to define the boundaries.
@@ -203,3 +206,5 @@ public class AnimalZone : MonoBehaviour
         }
     }
 }
+
+} // namespace SowurShield.Animals

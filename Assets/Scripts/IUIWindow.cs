@@ -1,5 +1,8 @@
 using UnityEngine;
 
+namespace SowurShield.Core
+{
+
 /// <summary>
 /// Interface for all UI windows that need to be managed by the UIManager
 /// Provides standardized window management, priority handling, and ESC key behavior
@@ -65,3 +68,5 @@ public static class WindowPriority
     public const int Dialogue = 30;         // Important conversations
     public const int CriticalDialog = 100;  // System dialogs that can't be interrupted
 }
+
+} // namespace SowurShield.Core

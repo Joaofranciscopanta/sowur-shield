@@ -2,9 +2,13 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using System.Linq;
+using SowurShield.Dialogue;
+
+namespace SowurShield.Dialogue.Editor
+{
 
 [CustomEditor(typeof(DialogueTree))]
-public class DialogueTreeEditor : Editor
+public class DialogueTreeEditor : UnityEditor.Editor
 {
     private DialogueTree dialogueTree;
     private Vector2 scrollPosition;
@@ -501,3 +505,5 @@ public class DialogueTreeEditor : Editor
         }
     }
 }
+
+} // namespace SowurShield.Dialogue.Editor

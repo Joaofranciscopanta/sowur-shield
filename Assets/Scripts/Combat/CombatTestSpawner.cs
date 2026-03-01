@@ -1,5 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
+using SowurShield.Animals;
+
+namespace SowurShield.Combat
+{
 
 /// <summary>
 /// TEST SCRIPT - Spawns test units on the combat grid
@@ -329,3 +333,5 @@ public class CombatTestSpawner : MonoBehaviour
         Invoke(nameof(SpawnTestUnits), 0.1f);
     }
 }
+
+} // namespace SowurShield.Combat

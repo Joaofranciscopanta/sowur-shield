@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using UnityEditor;
 #endif
 
+namespace SowurShield.Combat
+{
+
 /// <summary>
 /// Factory class for mass-producing Stage data structures.
 /// Provides both runtime and editor-time stage generation.
@@ -369,3 +372,5 @@ public struct StageConfig
         this.loot = null;
     }
 }
+
+} // namespace SowurShield.Combat

@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+namespace SowurShield.Animals
+{
+
 /// <summary>
 /// Unlock condition types for animal skills
 /// </summary>
@@ -212,3 +215,5 @@ public enum SkillType
     Active,
     Passive
 }
+
+} // namespace SowurShield.Animals

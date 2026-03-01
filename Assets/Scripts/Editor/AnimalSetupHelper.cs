@@ -1,5 +1,9 @@
 using UnityEngine;
 using UnityEditor;
+using SowurShield.Animals;
+
+namespace SowurShield.Editor
+{
 
 /// <summary>
 /// Editor helper for quickly setting up animals in the scene
@@ -171,7 +175,7 @@ public class AnimalSetupHelper : EditorWindow
 /// Custom inspector for Animal component to make setup easier
 /// </summary>
 [CustomEditor(typeof(Animal))]
-public class AnimalEditor : Editor
+public class AnimalEditor : UnityEditor.Editor
 {
     public override void OnInspectorGUI()
     {
@@ -233,3 +237,5 @@ public class AnimalEditor : Editor
         }
     }
 }
+
+} // namespace SowurShield.Editor

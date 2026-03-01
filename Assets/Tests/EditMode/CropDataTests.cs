@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using UnityEngine;
+using SowurShield.Core;
 
 /// <summary>
 /// Edit Mode tests for CropData ScriptableObject.

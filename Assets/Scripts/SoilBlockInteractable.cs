@@ -1,6 +1,11 @@
 using UnityEngine;
 using System.Collections;
 using System.Linq;
+using SowurShield.Inventory;
+using SowurShield.Farming;
+
+namespace SowurShield.Core
+{
 
 public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 {
@@ -49,7 +54,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
     // Componentes
     private SpriteRenderer soilRenderer;
     private CropGrowthManager cropGrowthManager;
-    private Inventory playerInventory;
+    private SowurShield.Inventory.Inventory playerInventory;
     private Transform playerTransform;
     private Vector3Int gridPosition;
 
@@ -222,7 +227,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
     #endregion
 
     // Inicializa com referência do inventário do jogador
-    public void Initialize(Inventory inventory)
+    public void Initialize(SowurShield.Inventory.Inventory inventory)
     {
         playerInventory = inventory;
     }
@@ -784,3 +789,5 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         }
     }
 }
+
+} // namespace SowurShield.Core

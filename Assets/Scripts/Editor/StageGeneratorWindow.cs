@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using SowurShield.Combat;
+
+namespace SowurShield.Editor
+{
 
 /// <summary>
 /// Editor window for mass-producing Stage assets.
@@ -301,3 +305,5 @@ public class StageGeneratorWindow : EditorWindow
         previewStages.Clear();
     }
 }
+
+} // namespace SowurShield.Editor

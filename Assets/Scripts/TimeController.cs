@@ -2,6 +2,9 @@ using UnityEngine;
 using System;
 using UnityEngine.UI;
 
+namespace SowurShield.Core
+{
+
 public class GameTimeController : MonoBehaviour, ISaveable
 {
     [Header("Configurações de Tempo")]
@@ -442,3 +445,5 @@ public class GameTimeController : MonoBehaviour, ISaveable
     }
 
 }
+
+} // namespace SowurShield.Core

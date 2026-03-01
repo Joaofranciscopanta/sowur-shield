@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using SowurShield.Core;
+
+namespace SowurShield.Animals
+{
 
 /// <summary>
 /// UI panel that displays detailed information about an animal.
@@ -41,7 +45,7 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
     // =========================================================================
 
     public string WindowName => "AnimalInfo";
-    public int WindowPriority => global::WindowPriority.Inventory; // Same tier as inventory
+    public int WindowPriority => SowurShield.Core.WindowPriority.Inventory; // Same tier as inventory
     public bool IsWindowOpen => infoPanel != null && infoPanel.activeSelf;
     public bool CanCloseWithEsc => true;
 
@@ -347,3 +351,5 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
     /// <summary>For backward compatibility — prefer CloseUI().</summary>
     public bool IsOpen() => IsWindowOpen;
 }
+
+} // namespace SowurShield.Animals

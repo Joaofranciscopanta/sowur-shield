@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
+using SowurShield.Animals;
 
 /// <summary>
 /// Edit Mode tests for AnimalData ScriptableObject.

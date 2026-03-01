@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+namespace SowurShield.Combat
+{
+
 /// <summary>
 /// Manages the 9x5 combat grid for auto-chess battles.
 /// Creates grid cells, handles unit placement, and provides grid query methods.
@@ -406,3 +409,5 @@ public class GridManager : MonoBehaviour
         }
     }
 }
+
+} // namespace SowurShield.Combat

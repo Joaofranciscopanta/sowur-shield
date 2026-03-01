@@ -1,5 +1,8 @@
 using UnityEngine;
 
+namespace SowurShield.Core
+{
+
 /// <summary>
 /// Manages background music during gameplay
 /// Singleton pattern with DontDestroyOnLoad to persist between scenes
@@ -315,3 +318,5 @@ public class GameMusicManager : MonoBehaviour
         }
     }
 }
+
+} // namespace SowurShield.Core

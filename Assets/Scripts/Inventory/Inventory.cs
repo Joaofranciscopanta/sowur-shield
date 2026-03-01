@@ -3,6 +3,10 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Linq;
+using SowurShield.Core;
+
+namespace SowurShield.Inventory
+{
 
 public class Inventory : MonoBehaviour, ISaveable
 {
@@ -1144,3 +1148,5 @@ public class Inventory : MonoBehaviour, ISaveable
         return !container.HasEmptySlot();
     }
 }
+
+} // namespace SowurShield.Inventory

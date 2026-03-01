@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+namespace SowurShield.MapEditor
+{
+
 [RequireComponent(typeof(LineRenderer))]
 public class GridOverlay : MonoBehaviour
 {
@@ -499,10 +502,10 @@ public class GridOverlay : MonoBehaviour
     private void OnDrawGizmos()
     {
         if (!showGrid || Application.isPlaying) return;
-        
+
         // Draw a simplified version in editor
         Gizmos.color = majorGridColor;
-        
+
         // Draw a few sample grid lines
         for (int x = -5; x <= 5; x++)
         {
@@ -513,7 +516,7 @@ public class GridOverlay : MonoBehaviour
                 Gizmos.DrawLine(start, end);
             }
         }
-        
+
         for (int y = -5; y <= 5; y++)
         {
             if (y % majorGridInterval == 0)
@@ -525,3 +528,4 @@ public class GridOverlay : MonoBehaviour
         }
     }
 }
+} // namespace SowurShield.MapEditor

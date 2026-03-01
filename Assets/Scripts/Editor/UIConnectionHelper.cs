@@ -3,6 +3,10 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
 using TMPro;
+using SowurShield.Core;
+
+namespace SowurShield.Editor
+{
 
 /// <summary>
 /// Editor tool to help connect UI elements to PlayerStats automatically
@@ -179,4 +183,6 @@ public class UIConnectionHelper : EditorWindow
         }
     }
 }
+
+} // namespace SowurShield.Editor
 #endif

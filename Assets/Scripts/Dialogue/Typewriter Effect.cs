@@ -2,6 +2,9 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 
+namespace SowurShield.Dialogue
+{
+
 public class TypewriterEffect : MonoBehaviour
 {
     [Header("Configurações")]
@@ -87,3 +90,5 @@ public class TypewriterEffect : MonoBehaviour
         textLabel.text = baseText;
     }
 }
+
+} // namespace SowurShield.Dialogue

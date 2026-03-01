@@ -1,5 +1,10 @@
 using UnityEngine;
 using System;
+using SowurShield.Core;
+using SowurShield.Inventory;
+
+namespace SowurShield.Animals
+{
 
 /// <summary>
 /// Main animal behavior component implementing IInteractable and ISaveable.
@@ -28,7 +33,7 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     private Animator animator;
 
     // Cached scene references
-    private Inventory playerInventory;
+    private SowurShield.Inventory.Inventory playerInventory;
     private AnimalInfoUI animalInfoUI;
 
     // Interaction tracking
@@ -168,7 +173,7 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         // Cache scene references
         PlayerMove playerMove = FindObjectOfType<PlayerMove>();
         if (playerMove != null)
-            playerInventory = playerMove.GetComponent<Inventory>();
+            playerInventory = playerMove.GetComponent<SowurShield.Inventory.Inventory>();
         animalInfoUI = FindObjectOfType<AnimalInfoUI>();
 
         // Set initial sprite
@@ -401,7 +406,7 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         return false;
     }
 
-    private void FeedAnimal(Item food, Inventory playerInventory)
+    private void FeedAnimal(Item food, SowurShield.Inventory.Inventory playerInventory)
     {
         // Remove food from inventory
         if (!playerInventory.RemoveItem(food, 1))
@@ -718,3 +723,5 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
 
     #endregion
 }
+
+} // namespace SowurShield.Animals

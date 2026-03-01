@@ -6,6 +6,9 @@ using TMPro;
 using UnityEditor;
 #endif
 
+namespace SowurShield.Combat
+{
+
 /// <summary>
 /// Editor utility script to automatically organize and setup Team Assembler UI.
 ///
@@ -906,3 +909,5 @@ public class TeamAssemblerUISetup : MonoBehaviour
     }
 #endif
 }
+
+} // namespace SowurShield.Combat

@@ -2,6 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using SowurShield.Animals;
+
+namespace SowurShield.Combat
+{
 
 /// <summary>
 /// UI card representing an available animal for combat.
@@ -375,3 +379,5 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
         return animal;
     }
 }
+
+} // namespace SowurShield.Combat

@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using SowurShield.Dialogue;
+
+namespace SowurShield.Debugging
+{
 
 /// <summary>
 /// Debug tool to diagnose and fix NPC interaction prompt visibility issues
@@ -174,3 +178,5 @@ public class NPCCanvasDebugger : MonoBehaviour
         }
     }
 }
+
+} // namespace SowurShield.Debugging

@@ -1,6 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using SowurShield.Farming;
+
+namespace SowurShield.MapEditor
+{
 
 public class BrushTool : MonoBehaviour
 {
@@ -533,3 +537,4 @@ public class BrushTool : MonoBehaviour
         }
     }
 }
+} // namespace SowurShield.MapEditor

@@ -2,6 +2,9 @@ using UnityEngine;
 using System.Collections;
 using System.Linq;
 
+namespace SowurShield.Core
+{
+
 public class WorldLoader : MonoBehaviour
 {
     [Header("Prefabs")]
@@ -183,10 +186,12 @@ public class WorldLoader : MonoBehaviour
         {
             SaveManager.Instance.OnLoadCompleted -= OnGameLoaded;
         }
-        
+
         if (Instance == this)
         {
             Instance = null;
         }
     }
 }
+
+} // namespace SowurShield.Core

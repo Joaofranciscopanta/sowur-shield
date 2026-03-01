@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.InputSystem;
+using SowurShield.Core;
+using SowurShield.Inventory;
+using SowurShield.Dialogue;
+
+namespace SowurShield.Farming
+{
 
 public partial class CursorController : MonoBehaviour {
     public DualGridTilemap dualGridTilemap;
@@ -24,7 +30,7 @@ public partial class CursorController : MonoBehaviour {
     private SpriteRenderer cursorRenderer;
     private Dictionary<Vector3Int, GameObject> soilBlocks = new Dictionary<Vector3Int, GameObject>();
     private GameObject currentInteractableObject;
-    private Inventory playerInventory;
+    private SowurShield.Inventory.Inventory playerInventory;
     private DialogueTreeUI dialogueUI;
 
     void Start() {
@@ -46,7 +52,7 @@ public partial class CursorController : MonoBehaviour {
         // Encontrar o inventário do jogador
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) {
-            playerInventory = player.GetComponent<Inventory>();
+            playerInventory = player.GetComponent<SowurShield.Inventory.Inventory>();
         }
         
         // Encontrar o DialogueTreeUI
@@ -424,3 +430,5 @@ public partial class CursorController : MonoBehaviour {
         return false;
     }
 }
+
+} // namespace SowurShield.Farming

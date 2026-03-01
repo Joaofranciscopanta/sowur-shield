@@ -3,6 +3,9 @@ using UnityEngine.UI;
 using System.Collections;
 using DG.Tweening;
 
+namespace SowurShield.Dialogue
+{
+
 public class PortraitManager : MonoBehaviour
 {
     [Header("Portrait UI Elements")]
@@ -242,7 +245,7 @@ public class PortraitManager : MonoBehaviour
         CanvasGroup targetGroup = position == SpeakerPosition.Left ? leftPortraitGroup : rightPortraitGroup;
         return targetGroup != null && targetGroup.alpha > 0.1f;
     }
-    
+
     /// <summary>
     /// Instantly sets portrait without animation (useful for initialization)
     /// </summary>
@@ -253,28 +256,28 @@ public class PortraitManager : MonoBehaviour
             StopCoroutine(currentAnimation);
             currentAnimation = null;
         }
-        
+
         Image targetPortrait = position == SpeakerPosition.Left ? leftPortrait : rightPortrait;
         CanvasGroup targetGroup = position == SpeakerPosition.Left ? leftPortraitGroup : rightPortraitGroup;
-        
+
         if (targetPortrait == null || targetGroup == null) return;
-        
+
         targetPortrait.sprite = portraitSprite;
         targetGroup.alpha = portraitSprite != null ? 1f : 0f;
-        
+
         if (position == SpeakerPosition.Left)
             currentLeftSprite = portraitSprite;
         else
             currentRightSprite = portraitSprite;
-        
+
         if (isActiveSpeaker && portraitSprite != null)
         {
             currentActiveSpeaker = position;
         }
-        
+
         UpdatePortraitStatesImmediate();
     }
-    
+
     private void UpdatePortraitStatesImmediate()
     {
         // Update left portrait
@@ -284,7 +287,7 @@ public class PortraitManager : MonoBehaviour
             leftPortrait.color = isActive ? activePortraitColor : inactivePortraitColor;
             leftPortrait.transform.localScale = isActive ? activePortraitScale : inactivePortraitScale;
         }
-        
+
         // Update right portrait
         if (rightPortraitGroup != null && rightPortraitGroup.alpha > 0.1f)
         {
@@ -294,3 +297,5 @@ public class PortraitManager : MonoBehaviour
         }
     }
 }
+
+} // namespace SowurShield.Dialogue

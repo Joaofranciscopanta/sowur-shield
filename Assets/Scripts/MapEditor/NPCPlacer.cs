@@ -1,6 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using SowurShield.Dialogue;
+
+namespace SowurShield.MapEditor
+{
 
 public class NPCPlacer : MonoBehaviour
 {
@@ -588,3 +592,4 @@ public class NPCTemplate
     [Header("Custom Data")]
     public string customData;
 }
+} // namespace SowurShield.MapEditor

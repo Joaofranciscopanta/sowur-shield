@@ -4,6 +4,9 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 
+namespace SowurShield.Core
+{
+
 /// <summary>
 /// Manages smooth scene transitions with loading screens, fade effects, and progress tracking
 /// Singleton pattern for easy access from anywhere in the game
@@ -399,3 +402,5 @@ public class SceneTransitionManager : MonoBehaviour
         LoadScene(currentSceneName, true, true);
     }
 }
+
+} // namespace SowurShield.Core

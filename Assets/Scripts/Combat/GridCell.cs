@@ -1,5 +1,8 @@
 using UnityEngine;
 
+namespace SowurShield.Combat
+{
+
 /// <summary>
 /// Represents a single cell in the 9x5 combat grid.
 /// Each cell can hold one CombatUnit (animal or enemy) and displays visual feedback.
@@ -213,3 +216,5 @@ public class GridCell : MonoBehaviour
         return DistanceTo(other) == 1;
     }
 }
+
+} // namespace SowurShield.Combat

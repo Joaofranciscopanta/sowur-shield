@@ -3,6 +3,9 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 
+namespace SowurShield.Minimap
+{
+
 /// <summary>
 /// Manages the minimap UI display and transitions
 /// Handles RawImage display, opacity changes, position/scale animations
@@ -548,3 +551,5 @@ public class MinimapUI : MonoBehaviour
     }
 #endif
 }
+
+} // namespace SowurShield.Minimap

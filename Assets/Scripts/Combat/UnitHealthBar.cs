@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+namespace SowurShield.Combat
+{
+
 /// <summary>
 /// Manages the health bar display above a combat unit.
 /// Shows current/max HP and updates in real-time during combat.
@@ -187,3 +190,5 @@ public class UnitHealthBar : MonoBehaviour
         return healthBar;
     }
 }
+
+} // namespace SowurShield.Combat

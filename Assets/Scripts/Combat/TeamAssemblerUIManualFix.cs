@@ -6,6 +6,9 @@ using TMPro;
 using UnityEditor;
 #endif
 
+namespace SowurShield.Combat
+{
+
 /// <summary>
 /// Simple script to manually assign references to TeamAssemblerUI.
 /// Attach to TeamAssemblerUI GameObject and click "Assign References" in Inspector.
@@ -102,3 +105,5 @@ public class TeamAssemblerUIManualFix : MonoBehaviour
     }
 #endif
 }
+
+} // namespace SowurShield.Combat

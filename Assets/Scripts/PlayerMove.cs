@@ -1,7 +1,11 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using SowurShield.Inventory;
+using SowurShield.Combat;
 
+namespace SowurShield.Core
+{
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Animator))]
 public class PlayerMove : MonoBehaviour
@@ -34,13 +38,13 @@ public class PlayerMove : MonoBehaviour
     private bool movementEnabled = true;
 
     // Referência ao inventário
-    private Inventory inventory;
+    private SowurShield.Inventory.Inventory inventory;
 
     public void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        inventory = GetComponent<Inventory>();
+        inventory = GetComponent<SowurShield.Inventory.Inventory>();
 
         // Se o interactionPoint não for definido, use a posição do jogador
         if (interactionPoint == null)
@@ -88,7 +92,7 @@ animator.SetBool("isWalking", moveInput != Vector2.zero);
         moveInput = Vector2.zero;
         return;
     }
-    
+
     moveInput = context.ReadValue<Vector2>();
     if (moveInput != Vector2.zero)
     {
@@ -110,7 +114,7 @@ animator.SetBool("isWalking", moveInput != Vector2.zero);
     {
         if (!movementEnabled || !context.started || !canDash)
             return;
-            
+
         StartCoroutine(Dash());
     }
 
@@ -179,14 +183,14 @@ animator.SetBool("isWalking", moveInput != Vector2.zero);
             if (InteractionManager.Instance.CanInteract())
             {
                 InteractionManager.Instance.TriggerInteraction();
-                
+
                 // Show interaction effect at the current interactable's position
                 var currentInteractable = InteractionManager.Instance.GetCurrentInteractable();
                 if (currentInteractable != null && currentInteractable is MonoBehaviour mb)
                 {
                     ShowInteractionEffect(mb.transform.position);
                 }
-                
+
                 return; // InteractionManager handled the interaction
             }
         }
@@ -245,14 +249,14 @@ animator.SetBool("isWalking", moveInput != Vector2.zero);
         movementEnabled = false;
         moveInput = Vector2.zero;
         rb.linearVelocity = Vector2.zero; // Stop immediately
-        
+
         // Update animator to idle
         if (animator != null)
         {
             animator.SetFloat("Speed", 0f);
             animator.SetBool("IsMoving", false);
         }
-        
+
     }
 
     public void EnableMovement()
@@ -266,7 +270,7 @@ animator.SetBool("isWalking", moveInput != Vector2.zero);
     }
 
     // Método público para obter o inventário
-    public Inventory GetInventory()
+    public SowurShield.Inventory.Inventory GetInventory()
     {
         return inventory;
     }
@@ -288,3 +292,4 @@ animator.SetBool("isWalking", moveInput != Vector2.zero);
         return inventory != null ? inventory.SelectedItem : new ItemStack();
     }
 }
+} // namespace SowurShield.Core

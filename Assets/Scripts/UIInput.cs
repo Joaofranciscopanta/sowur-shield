@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
 
+namespace SowurShield.Core
+{
+
 public class UIInput : MonoBehaviour
 {
     private void Start()
@@ -112,3 +115,5 @@ public class UIInput : MonoBehaviour
         }
     }
 }
+
+} // namespace SowurShield.Core

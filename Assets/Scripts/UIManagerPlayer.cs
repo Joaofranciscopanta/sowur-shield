@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+namespace SowurShield.Core
+{
+
 public class UIManagerPlayer : MonoBehaviour
 {
     [Header("Referências UI")]
@@ -234,3 +237,5 @@ public class UIManagerPlayer : MonoBehaviour
 
     }
 }
+
+} // namespace SowurShield.Core

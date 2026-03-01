@@ -4,6 +4,9 @@ using TMPro;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
+namespace SowurShield.Dialogue
+{
+
 public class ChoiceButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, ISelectHandler, IDeselectHandler
 {
     [Header("UI Components")]
@@ -285,3 +288,5 @@ public class ChoiceButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         StopCurrentAnimation();
     }
 }
+
+} // namespace SowurShield.Dialogue

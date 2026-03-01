@@ -1,9 +1,12 @@
 using UnityEngine;
 
-public interface IInteractable
+namespace SowurShield.Core
 {
-    void Interact();
-    string GetInteractionPrompt();
-    bool CanInteract();
-    float GetInteractionRange();
+    public interface IInteractable
+    {
+        void Interact();
+        string GetInteractionPrompt();
+        bool CanInteract();
+        float GetInteractionRange();
+    }
 }

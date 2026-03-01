@@ -1,6 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using SowurShield.Inventory;
+
+namespace SowurShield.Core
+{
 
 /// <summary>
 /// Master data structure containing all persistent game state
@@ -15,31 +19,31 @@ public class GameData
     public string saveTimestamp;
     public float totalPlayTime = 0f;
     public int saveCount = 0;
-    
+
     [Header("Player Data")]
     public PlayerGameData playerData;
-    
+
     [Header("World Data")]
     public WorldGameData worldData;
-    
+
     [Header("Time Data")]
     public TimeGameData timeData;
-    
+
     [Header("Inventory Data")]
     public InventoryGameData inventoryData;
-    
+
     [Header("Farming Data")]
     public FarmingGameData farmingData;
-    
+
     [Header("Relationship Data")]
     public RelationshipGameData relationshipData;
-    
+
     [Header("Combat Data")]
     public CombatGameData combatData;
-    
+
     [Header("Progress Data")]
     public ProgressGameData progressData;
-    
+
     public GameData()
     {
         // Initialize all data structures
@@ -51,7 +55,7 @@ public class GameData
         relationshipData = new RelationshipGameData();
         combatData = new CombatGameData();
         progressData = new ProgressGameData();
-        
+
         // Set metadata
         saveTimestamp = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
     }
@@ -72,7 +76,7 @@ public class PlayerGameData
     [Header("Bed Spawn")]
     public Vector3 lastBedPosition = Vector3.zero;
     public bool hasSleptInBed = false;
-    
+
     [Header("Stats")]
     public float health = 100f;
     public float maxHealth = 100f;
@@ -81,15 +85,15 @@ public class PlayerGameData
     public int playerLevel = 1;
     public float experience = 0f;
     public float experienceToNextLevel = 100f;
-    
+
     [Header("Currency")]
     public int money = 100;
     public int premiumCurrency = 0;
-    
+
     [Header("Skills")]
     public Dictionary<string, int> skillLevels = new Dictionary<string, int>();
     public Dictionary<string, float> skillExperience = new Dictionary<string, float>();
-    
+
     public PlayerGameData()
     {
         // Initialize default skills
@@ -97,7 +101,7 @@ public class PlayerGameData
         skillLevels["Combat"] = 1;
         skillLevels["Social"] = 1;
         skillLevels["Cooking"] = 1;
-        
+
         skillExperience["Farming"] = 0f;
         skillExperience["Combat"] = 0f;
         skillExperience["Social"] = 0f;
@@ -116,15 +120,15 @@ public class WorldGameData
     public Dictionary<string, bool> worldFlags = new Dictionary<string, bool>();
     public Dictionary<string, int> worldCounters = new Dictionary<string, int>();
     public Dictionary<string, string> worldStrings = new Dictionary<string, string>();
-    
+
     [Header("Discovered Locations")]
     public List<string> discoveredAreas = new List<string>();
     public List<string> unlockedFeatures = new List<string>();
-    
+
     [Header("Weather")]
     public string currentWeather = "Sunny";
     public int weatherDuration = 0;
-    
+
     public WorldGameData()
     {
         // Initialize with starting area
@@ -144,11 +148,11 @@ public class TimeGameData
     public float dayProgress = 0.25f; // 6:00 AM start
     public string season = "Spring";
     public int year = 1;
-    
+
     [Header("Time Settings")]
     public bool timeFlowEnabled = true;
     public float minutesPerRealSecond = 10f;
-    
+
     [Header("Special Events")]
     public Dictionary<string, bool> completedEvents = new Dictionary<string, bool>();
     public List<string> scheduledEvents = new List<string>();
@@ -165,25 +169,25 @@ public class InventoryGameData
     public List<ItemStackData> inventoryItems = new List<ItemStackData>();
     public int selectedSlotIndex = 0;
     public int inventorySize = 36;
-    
+
     [Header("Storage")]
     public Dictionary<string, List<ItemStackData>> storageContainers = new Dictionary<string, List<ItemStackData>>();
-    
+
     [System.Serializable]
     public class ItemStackData
     {
         public string itemName = "";
         public int quantity = 0;
         public Dictionary<string, string> itemData = new Dictionary<string, string>(); // For special item properties
-        
+
         public ItemStackData() { }
-        
+
         public ItemStackData(string itemName, int quantity)
         {
             this.itemName = itemName;
             this.quantity = quantity;
         }
-        
+
         // Convert from existing ItemStack
         public ItemStackData(ItemStack itemStack)
         {
@@ -193,10 +197,10 @@ public class InventoryGameData
                 quantity = itemStack.quantity;
             }
         }
-        
+
         public bool IsEmpty => string.IsNullOrEmpty(itemName) || quantity <= 0;
     }
-    
+
     public InventoryGameData()
     {
         // Initialize with empty inventory
@@ -216,13 +220,13 @@ public class FarmingGameData
 {
     [Header("Crops")]
     public List<CropSaveData> activeCrops = new List<CropSaveData>();
-    
+
     [Header("Soil State")]
     public List<SoilStateEntry> soilStates = new List<SoilStateEntry>();
-    
+
     [Header("Farm Buildings")]
     public List<BuildingData> farmBuildings = new List<BuildingData>();
-    
+
     [System.Serializable]
     public class CropSaveData
     {
@@ -235,14 +239,14 @@ public class FarmingGameData
         public int quality = 1; // 1-5 star quality system
         public string plantedDate = "";
     }
-    
+
     [System.Serializable]
     public class SoilStateEntry
     {
         public string positionKey = "";
         public SoilData soilData = new SoilData();
     }
-    
+
     [System.Serializable]
     public class SoilData
     {
@@ -255,7 +259,7 @@ public class FarmingGameData
         public float phosphorus = 1.0f;
         public float potassium = 1.0f;
     }
-    
+
     [System.Serializable]
     public class BuildingData
     {
@@ -276,14 +280,14 @@ public class RelationshipGameData
 {
     [Header("NPC Relationships")]
     public Dictionary<string, NPCRelationshipData> npcRelationships = new Dictionary<string, NPCRelationshipData>();
-    
+
     [Header("Dialogue Progress")]
     public Dictionary<string, DialogueProgressData> dialogueProgress = new Dictionary<string, DialogueProgressData>();
-    
+
     [Header("Romance")]
     public string currentRomancePartner = "";
     public Dictionary<string, bool> romanceFlags = new Dictionary<string, bool>();
-    
+
     [System.Serializable]
     public class NPCRelationshipData
     {
@@ -298,7 +302,7 @@ public class RelationshipGameData
         public List<string> receivedGifts = new List<string>(); // Track daily gifts
         public string lastGiftDate = "";
     }
-    
+
     [System.Serializable]
     public class DialogueProgressData
     {
@@ -317,20 +321,20 @@ public class RelationshipGameData
 public class CombatGameData
 {
     [Header("Animals")]
-    public List<AnimalData> ownedAnimals = new List<AnimalData>();
-    
+    public List<AnimalSaveData> ownedAnimals = new List<AnimalSaveData>();
+
     [Header("Combat Stats")]
     public int battlesWon = 0;
     public int battlesLost = 0;
     public int enemiesDefeated = 0;
     public int farmDefended = 0;
-    
+
     [Header("Combat Unlocks")]
     public List<string> unlockedAnimalTypes = new List<string>();
     public Dictionary<string, bool> combatFeatures = new Dictionary<string, bool>();
-    
+
     [System.Serializable]
-    public class AnimalData
+    public class AnimalSaveData
     {
         public string animalId = "";
         public string animalType = "";
@@ -344,11 +348,11 @@ public class CombatGameData
         public Dictionary<string, string> animalData = new Dictionary<string, string>(); // special properties
         public bool isActive = true;
         public Vector2Int barnPosition = Vector2Int.zero;
-        
-        public AnimalData()
+
+        public AnimalSaveData()
         {
             animalId = System.Guid.NewGuid().ToString();
-            
+
             // Initialize base stats
             stats["attack"] = 10f;
             stats["defense"] = 10f;
@@ -368,29 +372,29 @@ public class ProgressGameData
     [Header("Achievements")]
     public Dictionary<string, bool> achievementsUnlocked = new Dictionary<string, bool>();
     public Dictionary<string, float> achievementProgress = new Dictionary<string, float>();
-    
+
     [Header("Game Milestones")]
     public Dictionary<string, bool> milestonesReached = new Dictionary<string, bool>();
     public Dictionary<string, int> statisticCounters = new Dictionary<string, int>();
-    
+
     [Header("Tutorial Progress")]
     public Dictionary<string, bool> tutorialSteps = new Dictionary<string, bool>();
     public bool hasCompletedTutorial = false;
-    
+
     [Header("Settings")]
     public Dictionary<string, float> gameSettings = new Dictionary<string, float>();
     public Dictionary<string, bool> gamePreferences = new Dictionary<string, bool>();
-    
+
     public ProgressGameData()
     {
         // Initialize default settings
         gameSettings["masterVolume"] = 1.0f;
         gameSettings["musicVolume"] = 0.8f;
         gameSettings["sfxVolume"] = 1.0f;
-        
+
         gamePreferences["showTutorialTips"] = true;
         gamePreferences["autoSave"] = true;
-        
+
         // Initialize stat counters
         statisticCounters["cropsHarvested"] = 0;
         statisticCounters["itemsCrafted"] = 0;
@@ -412,7 +416,7 @@ public static class GameDataExtensions
     {
         return gameData.worldData.worldFlags.ContainsKey(flagName) && gameData.worldData.worldFlags[flagName];
     }
-    
+
     /// <summary>
     /// Set a world flag value
     /// </summary>
@@ -420,7 +424,7 @@ public static class GameDataExtensions
     {
         gameData.worldData.worldFlags[flagName] = value;
     }
-    
+
     /// <summary>
     /// Get a world counter value, returns 0 if not found
     /// </summary>
@@ -428,7 +432,7 @@ public static class GameDataExtensions
     {
         return gameData.worldData.worldCounters.ContainsKey(counterName) ? gameData.worldData.worldCounters[counterName] : 0;
     }
-    
+
     /// <summary>
     /// Set a world counter value
     /// </summary>
@@ -436,7 +440,7 @@ public static class GameDataExtensions
     {
         gameData.worldData.worldCounters[counterName] = value;
     }
-    
+
     /// <summary>
     /// Increment a world counter
     /// </summary>
@@ -446,3 +450,5 @@ public static class GameDataExtensions
         gameData.SetWorldCounter(counterName, currentValue + amount);
     }
 }
+
+} // namespace SowurShield.Core

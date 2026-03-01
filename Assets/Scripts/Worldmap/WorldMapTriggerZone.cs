@@ -1,4 +1,9 @@
 using UnityEngine;
+using SowurShield.Core;
+using SowurShield.Combat;
+
+namespace SowurShield.Worldmap
+{
 
 /// <summary>
 /// Trigger zone in farm scene that opens the Team Assembler UI.
@@ -177,3 +182,5 @@ public class WorldMapTriggerZone : MonoBehaviour, IInteractable
         #endif
     }
 }
+
+} // namespace SowurShield.Worldmap

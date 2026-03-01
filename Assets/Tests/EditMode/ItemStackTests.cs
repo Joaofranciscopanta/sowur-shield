@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using UnityEngine;
+using SowurShield.Inventory;
 
 /// <summary>
 /// Edit Mode tests for ItemStack — a pure C# class with no MonoBehaviour dependencies.

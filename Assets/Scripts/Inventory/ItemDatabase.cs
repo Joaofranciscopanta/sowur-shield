@@ -2,6 +2,9 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
+namespace SowurShield.Inventory
+{
+
 /// <summary>
 /// Centralized item database for fast item lookups
 /// Eliminates slow Resources.LoadAll calls during save/load
@@ -210,3 +213,5 @@ public class ItemDatabase : ScriptableObject
         }
     }
 }
+
+} // namespace SowurShield.Inventory

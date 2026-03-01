@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+namespace SowurShield.Core
+{
+
 /// <summary>
 /// Main menu manager that coordinates the main menu UI, settings, and scene transitions
 /// Singleton pattern for easy access and consistency with GameMenuManager
@@ -377,3 +380,5 @@ public class MainMenuManager : MonoBehaviour
         #endif
     }
 }
+
+} // namespace SowurShield.Core

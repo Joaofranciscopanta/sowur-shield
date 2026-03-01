@@ -1,4 +1,8 @@
 using UnityEngine;
+using SowurShield.Core;
+
+namespace SowurShield.Worldmap
+{
 
 public class WorldMapUIController : MonoBehaviour
 {
@@ -19,3 +23,5 @@ public class WorldMapUIController : MonoBehaviour
         GameMenuManager.Instance.SetMapOpen(false);
     }
 }
+
+} // namespace SowurShield.Worldmap

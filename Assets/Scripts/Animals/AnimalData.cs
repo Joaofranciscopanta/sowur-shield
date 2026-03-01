@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+namespace SowurShield.Animals
+{
+
 [System.Serializable]
 public class FoodRequirement
 {
@@ -106,3 +109,5 @@ public class AnimalData : ScriptableObject
     public bool canDoChores = false;
     public string choreType; // "Watering", "Harvesting", etc. - for future implementation
 }
+
+} // namespace SowurShield.Animals

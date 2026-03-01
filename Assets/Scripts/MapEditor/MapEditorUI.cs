@@ -2,6 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using SowurShield.Farming;
+
+namespace SowurShield.MapEditor
+{
 
 public class MapEditorUI : MonoBehaviour
 {
@@ -511,3 +515,4 @@ public class TileButton : MonoBehaviour
         }
     }
 }
+} // namespace SowurShield.MapEditor

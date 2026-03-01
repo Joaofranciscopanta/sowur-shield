@@ -1,5 +1,9 @@
 using UnityEngine;
 using DG.Tweening;
+using SowurShield.Core;
+
+namespace SowurShield.Minimap
+{
 
 /// <summary>
 /// Manages the minimap camera behavior for 2D games (XY plane)
@@ -412,3 +416,5 @@ public class MinimapCamera : MonoBehaviour
     }
 #endif
 }
+
+} // namespace SowurShield.Minimap

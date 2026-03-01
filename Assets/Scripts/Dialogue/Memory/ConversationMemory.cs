@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.IO;
 
+namespace SowurShield.Dialogue
+{
+
 public class ConversationMemory : MonoBehaviour
 {
     [Header("Save Settings")]
@@ -328,3 +331,5 @@ public class ConversationMemory : MonoBehaviour
         }
     }
 }
+
+} // namespace SowurShield.Dialogue

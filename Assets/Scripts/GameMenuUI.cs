@@ -3,6 +3,10 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System;
+using SowurShield.UI;
+
+namespace SowurShield.Core
+{
 
 /// <summary>
 /// Handles the UI elements and visual aspects of the game menu
@@ -739,3 +743,5 @@ public class GameMenuUI : MonoBehaviour
     }
     #endif
 }
+
+} // namespace SowurShield.Core

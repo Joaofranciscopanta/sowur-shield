@@ -2,6 +2,11 @@ using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
+using SowurShield.Core;
+using SowurShield.Inventory;
+
+namespace SowurShield.Animals
+{
 
 /// <summary>
 /// A placeable world object that stores food and auto-feeds animals in its linked AnimalZone.
@@ -48,7 +53,7 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
     // =========================================================================
 
     public string WindowName => "FeedingTrough";
-    public int WindowPriority => global::WindowPriority.SellBox; // Same tier as SellBox (20)
+    public int WindowPriority => SowurShield.Core.WindowPriority.SellBox; // Same tier as SellBox (20)
     public bool IsWindowOpen => isOpen;
     public bool CanCloseWithEsc => true;
 
@@ -481,3 +486,5 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
     /// <summary>The linked AnimalZone.</summary>
     public AnimalZone LinkedZone => linkedZone;
 }
+
+} // namespace SowurShield.Animals

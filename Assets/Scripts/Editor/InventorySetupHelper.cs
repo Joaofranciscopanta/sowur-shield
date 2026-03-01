@@ -1,5 +1,9 @@
 using UnityEngine;
 using UnityEditor;
+using SowurShield.Inventory;
+
+namespace SowurShield.Editor
+{
 
 [System.Serializable]
 public class InventorySetupHelper : EditorWindow
@@ -78,7 +82,7 @@ public class InventorySetupHelper : EditorWindow
         }
 
         // Check if Inventory component already exists
-        Inventory existingInventory = playerObject.GetComponent<Inventory>();
+        SowurShield.Inventory.Inventory existingInventory = playerObject.GetComponent<SowurShield.Inventory.Inventory>();
         if (existingInventory != null)
         {
 
@@ -86,7 +90,7 @@ public class InventorySetupHelper : EditorWindow
         }
 
         // Add Inventory component
-        Inventory inventory = playerObject.AddComponent<Inventory>();
+        SowurShield.Inventory.Inventory inventory = playerObject.AddComponent<SowurShield.Inventory.Inventory>();
         
         // Configure default values
         inventory.inventorySize = 36;
@@ -153,7 +157,7 @@ public class InventorySetupHelper : EditorWindow
         }
         else
         {
-            Inventory inv = playerObject.GetComponent<Inventory>();
+            SowurShield.Inventory.Inventory inv = playerObject.GetComponent<SowurShield.Inventory.Inventory>();
             if (inv == null)
             {
 
@@ -212,7 +216,7 @@ public class InventorySetupHelper : EditorWindow
             return;
         }
 
-        Inventory inventory = playerObject.GetComponent<Inventory>();
+        SowurShield.Inventory.Inventory inventory = playerObject.GetComponent<SowurShield.Inventory.Inventory>();
         if (inventory == null)
         {
 
@@ -274,3 +278,5 @@ public class InventorySetupHelper : EditorWindow
         }
     }
 }
+
+} // namespace SowurShield.Editor

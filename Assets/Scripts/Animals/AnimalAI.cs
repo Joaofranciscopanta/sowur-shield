@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections;
 
+namespace SowurShield.Animals
+{
+
 /// <summary>
 /// Handles animal AI behaviors: wandering, idle states, and animations.
 /// Works in conjunction with Animal.cs for complete animal behavior.
@@ -305,3 +308,5 @@ public class AnimalAI : MonoBehaviour
 
     #endregion
 }
+
+} // namespace SowurShield.Animals

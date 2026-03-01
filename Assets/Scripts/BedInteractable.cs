@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using SowurShield.Animals;
+
+namespace SowurShield.Core
+{
 
 public class BedInteractable : MonoBehaviour, IInteractable
 {
@@ -269,16 +273,16 @@ public class BedInteractable : MonoBehaviour, IInteractable
     {
         // Find all SellBox components in the scene
         SellBox[] sellBoxes = FindObjectsByType<SellBox>(FindObjectsSortMode.None);
-        
+
         if (sellBoxes.Length == 0)
         {
 
             return;
         }
-        
+
         int totalEarningsFromAllBoxes = 0;
         int boxesWithItems = 0;
-        
+
         foreach (SellBox sellBox in sellBoxes)
         {
             if (sellBox.HasItemsToSell())
@@ -286,15 +290,15 @@ public class BedInteractable : MonoBehaviour, IInteractable
                 boxesWithItems++;
                 int earnings = sellBox.SellAllItemsAutomatically();
                 totalEarningsFromAllBoxes += earnings;
-                
+
 
             }
         }
-        
+
         if (totalEarningsFromAllBoxes > 0)
         {
 
-            
+
             // Play sell sound effect if any items were sold
             if (sellBoxes.Length > 0 && sellBoxes[0].sellSound != null)
             {
@@ -307,3 +311,5 @@ public class BedInteractable : MonoBehaviour, IInteractable
         }
     }
 }
+
+} // namespace SowurShield.Core

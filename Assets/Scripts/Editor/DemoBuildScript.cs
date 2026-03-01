@@ -4,6 +4,9 @@ using UnityEngine;
 using System;
 using System.IO;
 
+namespace SowurShield.Editor
+{
+
 /// <summary>
 /// Build script for creating demo builds (Windows & WebGL)
 /// Disables save/load functionality for demo purposes
@@ -224,3 +227,5 @@ public class DemoBuildScript
         return $"{len:0.##} {sizes[order]}";
     }
 }
+
+} // namespace SowurShield.Editor

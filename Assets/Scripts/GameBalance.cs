@@ -1,5 +1,8 @@
 using UnityEngine;
 
+namespace SowurShield.Core
+{
+
 /// <summary>
 /// Central ScriptableObject for all gameplay balance constants.
 /// Create one instance at Assets/Resources/GameBalance.asset and assign it
@@ -54,3 +57,5 @@ public class GameBalance : ScriptableObject
     [Tooltip("Maximum distance the cursor tool can reach from the player.")]
     public float maxToolDistance = 2f;
 }
+
+} // namespace SowurShield.Core

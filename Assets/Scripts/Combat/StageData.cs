@@ -1,5 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
+using SowurShield.Inventory;
+
+namespace SowurShield.Combat
+{
 
 /// <summary>
 /// Defines the theme/visual style of a stage
@@ -200,3 +204,5 @@ public class StageData : ScriptableObject
         };
     }
 }
+
+} // namespace SowurShield.Combat

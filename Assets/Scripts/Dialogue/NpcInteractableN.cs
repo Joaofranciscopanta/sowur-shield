@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+namespace SowurShield.Dialogue
+{
+
 public class NPCInteractable : MonoBehaviour
 {
     [Header("Configurações do NPC")]
@@ -115,3 +118,5 @@ public class NPCInteractable : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, interactionRange);
     }
 }
+
+} // namespace SowurShield.Dialogue

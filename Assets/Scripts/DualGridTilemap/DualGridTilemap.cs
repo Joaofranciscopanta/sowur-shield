@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+
+namespace SowurShield.Farming
+{
 using static TileType;
 
 public class DualGridTilemap : MonoBehaviour {
@@ -97,3 +100,5 @@ public enum TileType {
     Grass,
     Dirt
 }
+
+} // namespace SowurShield.Farming

@@ -6,6 +6,10 @@ using TMPro;
 using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.EventSystems;
+using SowurShield.Core;
+
+namespace SowurShield.Dialogue
+{
 
 public class DialogueTreeUI : MonoBehaviour, IUIWindow
 {
@@ -682,17 +686,19 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
         {
             position = Mouse.current.position.ReadValue()
         };
-        
+
         List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(pointerData, results);
-        
+
         // Check if any of the raycast results are choice buttons
         foreach (var result in results)
         {
             if (result.gameObject.GetComponentInParent<ChoiceButton>() != null)
                 return true;
         }
-        
+
         return false;
     }
 }
+
+} // namespace SowurShield.Dialogue

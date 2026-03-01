@@ -2,6 +2,10 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using System.IO;
+using SowurShield.Dialogue;
+
+namespace SowurShield.Dialogue.Editor
+{
 
 public class DialogueMigrationUtility : EditorWindow
 {
@@ -370,7 +374,7 @@ public class DialogueMigrationUtility : EditorWindow
     private void GenerateDocumentation()
     {
         string docPath = Path.Combine(Application.dataPath, "DialogueSystemDocumentation.md");
-        
+
         var doc = new System.Text.StringBuilder();
         doc.AppendLine("# Enhanced Dialogue System Documentation");
         doc.AppendLine();
@@ -399,11 +403,13 @@ public class DialogueMigrationUtility : EditorWindow
         doc.AppendLine();
         doc.AppendLine("## Migration Guide");
         doc.AppendLine("Use the Migration Utility (Window → Dialogue → Migration Utility) to convert existing DialogueObject assets to the new format.");
-        
+
         File.WriteAllText(docPath, doc.ToString());
         AssetDatabase.Refresh();
-        
-        EditorUtility.DisplayDialog("Documentation Generated", 
+
+        EditorUtility.DisplayDialog("Documentation Generated",
             $"Documentation saved to {docPath}", "OK");
     }
 }
+
+} // namespace SowurShield.Dialogue.Editor

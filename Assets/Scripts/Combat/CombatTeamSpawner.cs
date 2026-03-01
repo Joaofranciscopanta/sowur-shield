@@ -1,5 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
+using SowurShield.Animals;
+
+namespace SowurShield.Combat
+{
 
 /// <summary>
 /// Spawns player and enemy teams on the combat grid at the start of battle.
@@ -303,3 +307,5 @@ public class CombatTeamSpawner : MonoBehaviour
         SpawnTeams();
     }
 }
+
+} // namespace SowurShield.Combat

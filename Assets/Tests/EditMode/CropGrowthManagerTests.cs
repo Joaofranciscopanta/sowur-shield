@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System.Reflection;
 using UnityEngine;
+using SowurShield.Core;
 
 /// <summary>
 /// Edit Mode unit tests for CropGrowthManager.

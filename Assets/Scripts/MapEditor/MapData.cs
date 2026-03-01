@@ -2,6 +2,9 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
+namespace SowurShield.MapEditor
+{
+
 [CreateAssetMenu(fileName = "New Map", menuName = "Sowur Shield/Map Data")]
 public class MapData : ScriptableObject
 {
@@ -197,3 +200,4 @@ public enum InteractionZoneType
     Farm,
     Custom
 }
+} // namespace SowurShield.MapEditor

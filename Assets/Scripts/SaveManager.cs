@@ -3,584 +3,588 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 
-public class SaveManager : MonoBehaviour
+namespace SowurShield.Core
 {
-    [Header("Save Settings")]
-    [SerializeField] private string saveFileName = "GameSave";
-    [SerializeField] private string saveFileExtension = ".json";
-    [SerializeField] private bool enableAutoSave = true;
-    [SerializeField] private bool enableBackupSaves = true;
-    [SerializeField] private int maxBackupSaves = 5;
-    [SerializeField] private int manualSlotCount = 3;
-
-    [Header("Debug")]
-    [SerializeField] private bool enableDebugLogs = true;
-
-    // Singleton instance
-    public static SaveManager Instance { get; private set; }
-
-    // Events
-    public System.Action<bool> OnSaveCompleted;
-    public System.Action<bool> OnLoadCompleted;
-    public System.Action OnSaveStarted;
-    public System.Action OnLoadStarted;
-
-    // Save data
-    private GameData currentGameData;
-    public GameData CurrentGameData => currentGameData;
-    private string saveDirectoryPath;
-
-    // Slot management
-    private const string AUTO_SAVE_SLOT_NAME = "AutoSave";
-    private string activeSlotName = AUTO_SAVE_SLOT_NAME;
-    public string ActiveSlotName => activeSlotName;
-
-    // Registered saveable objects
-    private List<ISaveable> saveableObjects = new List<ISaveable>();
-
-    // Continue from start of day flag
-    public static bool resetToStartOfDayAfterLoad = false;
-
-    // New game initialization flag
-    public static bool initializeNewGameAfterLoad = false;
-
-    // Slot chosen in main menu before SaveManager was loaded
-    public static string pendingActiveSlot = null;
-
-    private void Awake()
+    public class SaveManager : MonoBehaviour
     {
-        if (Instance == null)
+        [Header("Save Settings")]
+        [SerializeField] private string saveFileName = "GameSave";
+        [SerializeField] private string saveFileExtension = ".json";
+        [SerializeField] private bool enableAutoSave = true;
+        [SerializeField] private bool enableBackupSaves = true;
+        [SerializeField] private int maxBackupSaves = 5;
+        [SerializeField] private int manualSlotCount = 3;
+
+        [Header("Debug")]
+        [SerializeField] private bool enableDebugLogs = true;
+
+        // Singleton instance
+        public static SaveManager Instance { get; private set; }
+
+        // Events
+        public System.Action<bool> OnSaveCompleted;
+        public System.Action<bool> OnLoadCompleted;
+        public System.Action OnSaveStarted;
+        public System.Action OnLoadStarted;
+
+        // Save data
+        private GameData currentGameData;
+        public GameData CurrentGameData => currentGameData;
+        private string saveDirectoryPath;
+
+        // Slot management
+        private const string AUTO_SAVE_SLOT_NAME = "AutoSave";
+        private string activeSlotName = AUTO_SAVE_SLOT_NAME;
+        public string ActiveSlotName => activeSlotName;
+
+        // Registered saveable objects
+        private List<ISaveable> saveableObjects = new List<ISaveable>();
+
+        // Continue from start of day flag
+        public static bool resetToStartOfDayAfterLoad = false;
+
+        // New game initialization flag
+        public static bool initializeNewGameAfterLoad = false;
+
+        // Slot chosen in main menu before SaveManager was loaded
+        public static string pendingActiveSlot = null;
+
+        private void Awake()
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            InitializeSaveManager();
-        }
-        else if (Instance != this)
-        {
-            Destroy(gameObject);
-        }
-    }
-
-    private void InitializeSaveManager()
-    {
-        saveDirectoryPath = Path.Combine(Application.persistentDataPath, "Saves");
-
-        // Create saves directory if needed
-        if (!Directory.Exists(saveDirectoryPath))
-            Directory.CreateDirectory(saveDirectoryPath);
-
-        // Create slot sub-directories
-        CreateSlotDirectory(AUTO_SAVE_SLOT_NAME);
-        for (int i = 1; i <= manualSlotCount; i++)
-            CreateSlotDirectory($"Slot{i}");
-
-        // Migrate legacy flat save file
-        string legacySavePath = Path.Combine(saveDirectoryPath, saveFileName + saveFileExtension);
-        if (File.Exists(legacySavePath))
-        {
-            string autoSavePath = GetSlotSaveFilePath(AUTO_SAVE_SLOT_NAME);
-            if (!File.Exists(autoSavePath))
+            if (Instance == null)
             {
-                File.Move(legacySavePath, autoSavePath);
-                LogDebug("Migrated legacy save file to AutoSave slot.");
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+                InitializeSaveManager();
             }
-            else
+            else if (Instance != this)
             {
-                File.Delete(legacySavePath);
+                Destroy(gameObject);
             }
         }
-    }
 
-    private void CreateSlotDirectory(string slotName)
-    {
-        string dir = GetSlotDirectory(slotName);
-        if (!Directory.Exists(dir))
-            Directory.CreateDirectory(dir);
-    }
-
-    private void Update()
-    {
-        // Accumulate play time only while the game scene is active
-        if (currentGameData != null && GameTimeController.instance != null)
-            currentGameData.totalPlayTime += Time.unscaledDeltaTime;
-    }
-
-    private void Start()
-    {
-        // Apply slot chosen in main menu before this instance was created
-        if (!string.IsNullOrEmpty(pendingActiveSlot))
+        private void InitializeSaveManager()
         {
-            activeSlotName = pendingActiveSlot;
-            pendingActiveSlot = null;
-        }
+            saveDirectoryPath = Path.Combine(Application.persistentDataPath, "Saves");
 
-        LogDebug($"SaveManager Start() - slot: {activeSlotName}, resetToStartOfDayAfterLoad: {resetToStartOfDayAfterLoad}, initializeNewGameAfterLoad: {initializeNewGameAfterLoad}");
+            // Create saves directory if needed
+            if (!Directory.Exists(saveDirectoryPath))
+                Directory.CreateDirectory(saveDirectoryPath);
 
-        if (initializeNewGameAfterLoad)
-        {
-            if (GameTimeController.instance != null)
-                GameTimeController.instance.ResetForNewGame();
+            // Create slot sub-directories
+            CreateSlotDirectory(AUTO_SAVE_SLOT_NAME);
+            for (int i = 1; i <= manualSlotCount; i++)
+                CreateSlotDirectory($"Slot{i}");
 
-            currentGameData = new GameData();
-            initializeNewGameAfterLoad = false;
-            LogDebug("New game initialized successfully");
-        }
-        else if (HasSaveFile())
-        {
-            LogDebug("Save file detected, calling LoadGame()");
-            LoadGame();
-        }
-        else
-        {
-            currentGameData = new GameData();
-            LogDebug("No save file found. Created new game data.");
-        }
-    }
-
-    // ============================================================================
-    // REGISTRATION SYSTEM
-    // ============================================================================
-
-    public void RegisterSaveable(ISaveable saveable)
-    {
-        if (saveable != null && !saveableObjects.Contains(saveable))
-        {
-            saveableObjects.Add(saveable);
-        }
-    }
-
-    public void UnregisterSaveable(ISaveable saveable)
-    {
-        if (saveableObjects.Contains(saveable))
-            saveableObjects.Remove(saveable);
-    }
-
-    // ============================================================================
-    // SLOT MANAGEMENT
-    // ============================================================================
-
-    public void SetActiveSlot(string slotName)
-    {
-        activeSlotName = slotName;
-        LogDebug($"Active slot set to: {slotName}");
-    }
-
-    /// <summary>Save to a specific slot without changing the activeSlotName.</summary>
-    public void SaveToSlot(string slotName)
-    {
-        string prev = activeSlotName;
-        activeSlotName = slotName;
-        SaveGame();
-        activeSlotName = prev;
-    }
-
-    /// <summary>Set active slot and load the game from it.</summary>
-    public void LoadFromSlot(string slotName)
-    {
-        activeSlotName = slotName;
-        LoadGame();
-    }
-
-    /// <summary>Delete all files in a slot directory. AutoSave cannot be deleted.</summary>
-    public bool DeleteSlot(string slotName)
-    {
-        if (slotName == AUTO_SAVE_SLOT_NAME)
-        {
-            LogDebug("Cannot delete AutoSave slot.");
-            return false;
-        }
-
-        string dir = GetSlotDirectory(slotName);
-        if (!Directory.Exists(dir))
-            return false;
-
-        foreach (string file in Directory.GetFiles(dir))
-            File.Delete(file);
-
-        LogDebug($"Slot '{slotName}' deleted.");
-        return true;
-    }
-
-    public SaveSlotInfo GetSlotInfo(string slotName)
-    {
-        return ReadSlotMeta(slotName);
-    }
-
-    public SaveSlotInfo[] GetAllSlotInfos()
-    {
-        var list = new List<SaveSlotInfo>();
-        list.Add(ReadSlotMeta(AUTO_SAVE_SLOT_NAME));
-        for (int i = 1; i <= manualSlotCount; i++)
-            list.Add(ReadSlotMeta($"Slot{i}"));
-        return list.ToArray();
-    }
-
-    /// <summary>Returns the slot name with the most recent saveTimestamp, or AUTO_SAVE_SLOT_NAME if all empty.</summary>
-    public string GetMostRecentSlotName()
-    {
-        string best = AUTO_SAVE_SLOT_NAME;
-        System.DateTime bestTime = System.DateTime.MinValue;
-
-        foreach (var info in GetAllSlotInfos())
-        {
-            if (info.isEmpty) continue;
-            if (System.DateTime.TryParse(info.saveTimestamp, out System.DateTime t) && t > bestTime)
+            // Migrate legacy flat save file
+            string legacySavePath = Path.Combine(saveDirectoryPath, saveFileName + saveFileExtension);
+            if (File.Exists(legacySavePath))
             {
-                bestTime = t;
-                best = info.slotName;
-            }
-        }
-        return best;
-    }
-
-    // ============================================================================
-    // SAVE OPERATIONS
-    // ============================================================================
-
-    public void SaveGame()
-    {
-#if DEMO_BUILD
-        OnSaveCompleted?.Invoke(false);
-        return;
-#endif
-        OnSaveStarted?.Invoke();
-        LogDebug($"SaveGame() to slot '{activeSlotName}' - registered objects: {saveableObjects.Count}");
-
-        try
-        {
-            if (currentGameData == null)
-                currentGameData = new GameData();
-            else
-            {
-                currentGameData.saveTimestamp = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                currentGameData.saveCount++;
-            }
-
-            foreach (var saveable in saveableObjects.ToList())
-            {
-                if (saveable != null)
+                string autoSavePath = GetSlotSaveFilePath(AUTO_SAVE_SLOT_NAME);
+                if (!File.Exists(autoSavePath))
                 {
-                    try { saveable.SaveData(currentGameData); }
-                    catch (System.Exception e) { LogError($"Error saving data from {saveable.GetType().Name}: {e.Message}"); }
+                    File.Move(legacySavePath, autoSavePath);
+                    LogDebug("Migrated legacy save file to AutoSave slot.");
                 }
-            }
-
-            string savePath = CurrentSaveFilePath;
-
-            if (enableBackupSaves && File.Exists(savePath))
-                CreateBackupSave();
-
-            string jsonData = JsonUtility.ToJson(currentGameData, true);
-            File.WriteAllText(savePath, jsonData);
-
-            WriteSlotMeta(activeSlotName, currentGameData);
-
-            OnSaveCompleted?.Invoke(true);
-        }
-        catch (System.Exception e)
-        {
-            LogError($"Failed to save game: {e.Message}");
-            OnSaveCompleted?.Invoke(false);
-        }
-    }
-
-    private void CreateBackupSave()
-    {
-        try
-        {
-            string slotDir = GetSlotDirectory(activeSlotName);
-            string backupFileName = $"{saveFileName}_backup_{System.DateTime.Now:yyyyMMdd_HHmmss}{saveFileExtension}";
-            string backupFilePath = Path.Combine(slotDir, backupFileName);
-            File.Copy(CurrentSaveFilePath, backupFilePath);
-            CleanOldBackups();
-        }
-        catch (System.Exception e)
-        {
-            LogError($"Failed to create backup: {e.Message}");
-        }
-    }
-
-    private void CleanOldBackups()
-    {
-        try
-        {
-            string slotDir = GetSlotDirectory(activeSlotName);
-            var backupFiles = Directory.GetFiles(slotDir, $"{saveFileName}_backup_*{saveFileExtension}")
-                .OrderByDescending(f => File.GetCreationTime(f))
-                .ToArray();
-
-            for (int i = maxBackupSaves; i < backupFiles.Length; i++)
-                File.Delete(backupFiles[i]);
-        }
-        catch (System.Exception e)
-        {
-            LogError($"Failed to clean old backups: {e.Message}");
-        }
-    }
-
-    // ============================================================================
-    // LOAD OPERATIONS
-    // ============================================================================
-
-    public void LoadGame()
-    {
-#if DEMO_BUILD
-        OnLoadCompleted?.Invoke(false);
-        return;
-#endif
-        if (!HasSaveFile())
-        {
-            LogError("No save file found to load!");
-            OnLoadCompleted?.Invoke(false);
-            return;
-        }
-
-        OnLoadStarted?.Invoke();
-        LogDebug($"Loading from slot '{activeSlotName}'...");
-
-        try
-        {
-            string jsonData = File.ReadAllText(CurrentSaveFilePath);
-            currentGameData = JsonUtility.FromJson<GameData>(jsonData);
-
-            if (currentGameData == null)
-                throw new System.Exception("Failed to parse save file JSON");
-
-            if (currentGameData.saveVersion < GameData.CURRENT_SAVE_VERSION)
-                currentGameData = MigrateSave(currentGameData);
-
-            LogDebug($"Loading data into {saveableObjects.Count} registered objects");
-            foreach (var saveable in saveableObjects.ToList())
-            {
-                if (saveable != null)
-                {
-                    try { saveable.LoadData(currentGameData); }
-                    catch (System.Exception e) { LogError($"Error loading data into {saveable.GetType().Name}: {e.Message}"); }
-                }
-            }
-
-            if (resetToStartOfDayAfterLoad)
-            {
-                if (GameTimeController.instance != null)
-                    GameTimeController.instance.ResetToStartOfDay();
                 else
                 {
-                    GameTimeController tc = FindObjectOfType<GameTimeController>();
-                    tc?.ResetToStartOfDay();
+                    File.Delete(legacySavePath);
                 }
-                resetToStartOfDayAfterLoad = false;
+            }
+        }
+
+        private void CreateSlotDirectory(string slotName)
+        {
+            string dir = GetSlotDirectory(slotName);
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+        }
+
+        private void Update()
+        {
+            // Accumulate play time only while the game scene is active
+            if (currentGameData != null && GameTimeController.instance != null)
+                currentGameData.totalPlayTime += Time.unscaledDeltaTime;
+        }
+
+        private void Start()
+        {
+            // Apply slot chosen in main menu before this instance was created
+            if (!string.IsNullOrEmpty(pendingActiveSlot))
+            {
+                activeSlotName = pendingActiveSlot;
+                pendingActiveSlot = null;
             }
 
-            OnLoadCompleted?.Invoke(true);
+            LogDebug($"SaveManager Start() - slot: {activeSlotName}, resetToStartOfDayAfterLoad: {resetToStartOfDayAfterLoad}, initializeNewGameAfterLoad: {initializeNewGameAfterLoad}");
+
+            if (initializeNewGameAfterLoad)
+            {
+                if (GameTimeController.instance != null)
+                    GameTimeController.instance.ResetForNewGame();
+
+                currentGameData = new GameData();
+                initializeNewGameAfterLoad = false;
+                LogDebug("New game initialized successfully");
+            }
+            else if (HasSaveFile())
+            {
+                LogDebug("Save file detected, calling LoadGame()");
+                LoadGame();
+            }
+            else
+            {
+                currentGameData = new GameData();
+                LogDebug("No save file found. Created new game data.");
+            }
         }
-        catch (System.Exception e)
+
+        // ============================================================================
+        // REGISTRATION SYSTEM
+        // ============================================================================
+
+        public void RegisterSaveable(ISaveable saveable)
         {
-            LogError($"Failed to load game: {e.Message}");
-            OnLoadCompleted?.Invoke(false);
-            currentGameData = new GameData();
+            if (saveable != null && !saveableObjects.Contains(saveable))
+            {
+                saveableObjects.Add(saveable);
+            }
         }
-    }
 
-    // ============================================================================
-    // SAVE MIGRATION
-    // ============================================================================
-
-    private GameData MigrateSave(GameData data)
-    {
-        data.saveVersion = GameData.CURRENT_SAVE_VERSION;
-        return data;
-    }
-
-    // ============================================================================
-    // UTILITY METHODS
-    // ============================================================================
-
-    public bool HasSaveFile() => HasSaveFile(activeSlotName);
-
-    public bool HasSaveFile(string slotName)
-    {
-#if DEMO_BUILD
-        return false;
-#endif
-        return File.Exists(GetSlotSaveFilePath(slotName));
-    }
-
-    public void DeleteSaveFile()
-    {
-        string path = CurrentSaveFilePath;
-        if (File.Exists(path))
-            File.Delete(path);
-
-        // Also remove the meta file
-        string metaPath = GetSlotMetaFilePath(activeSlotName);
-        if (File.Exists(metaPath))
-            File.Delete(metaPath);
-    }
-
-    public SaveFileInfo GetSaveFileInfo()
-    {
-        if (!HasSaveFile()) return null;
-
-        FileInfo fileInfo = new FileInfo(CurrentSaveFilePath);
-        return new SaveFileInfo
+        public void UnregisterSaveable(ISaveable saveable)
         {
-            fileName = Path.GetFileName(CurrentSaveFilePath),
-            filePath = CurrentSaveFilePath,
-            creationTime = fileInfo.CreationTime,
-            lastWriteTime = fileInfo.LastWriteTime,
-            fileSizeBytes = fileInfo.Length
-        };
-    }
+            if (saveableObjects.Contains(saveable))
+                saveableObjects.Remove(saveable);
+        }
 
-    public GameData GetCurrentGameData() => currentGameData;
+        // ============================================================================
+        // SLOT MANAGEMENT
+        // ============================================================================
 
-    // ============================================================================
-    // AUTO SAVE SYSTEM
-    // ============================================================================
+        public void SetActiveSlot(string slotName)
+        {
+            activeSlotName = slotName;
+            LogDebug($"Active slot set to: {slotName}");
+        }
 
-    public void TriggerAutoSave()
-    {
-        LogDebug("TriggerAutoSave() called");
-
-        if (enableAutoSave)
+        /// <summary>Save to a specific slot without changing the activeSlotName.</summary>
+        public void SaveToSlot(string slotName)
         {
             string prev = activeSlotName;
-            activeSlotName = AUTO_SAVE_SLOT_NAME;
+            activeSlotName = slotName;
             SaveGame();
             activeSlotName = prev;
         }
-        else
+
+        /// <summary>Set active slot and load the game from it.</summary>
+        public void LoadFromSlot(string slotName)
         {
-            LogDebug("Auto save is disabled - skipping save");
+            activeSlotName = slotName;
+            LoadGame();
         }
-    }
 
-    // ============================================================================
-    // PRIVATE HELPERS
-    // ============================================================================
-
-    private string CurrentSaveFilePath => GetSlotSaveFilePath(activeSlotName);
-
-    private string GetSlotDirectory(string slotName) =>
-        Path.Combine(saveDirectoryPath, slotName);
-
-    private string GetSlotSaveFilePath(string slotName) =>
-        Path.Combine(GetSlotDirectory(slotName), saveFileName + saveFileExtension);
-
-    private string GetSlotMetaFilePath(string slotName) =>
-        Path.Combine(GetSlotDirectory(slotName), "SlotMeta.json");
-
-    private void WriteSlotMeta(string slotName, GameData data)
-    {
-        try
+        /// <summary>Delete all files in a slot directory. AutoSave cannot be deleted.</summary>
+        public bool DeleteSlot(string slotName)
         {
-            var info = new SaveSlotInfo
+            if (slotName == AUTO_SAVE_SLOT_NAME)
+            {
+                LogDebug("Cannot delete AutoSave slot.");
+                return false;
+            }
+
+            string dir = GetSlotDirectory(slotName);
+            if (!Directory.Exists(dir))
+                return false;
+
+            foreach (string file in Directory.GetFiles(dir))
+                File.Delete(file);
+
+            LogDebug($"Slot '{slotName}' deleted.");
+            return true;
+        }
+
+        public SaveSlotInfo GetSlotInfo(string slotName)
+        {
+            return ReadSlotMeta(slotName);
+        }
+
+        public SaveSlotInfo[] GetAllSlotInfos()
+        {
+            var list = new List<SaveSlotInfo>();
+            list.Add(ReadSlotMeta(AUTO_SAVE_SLOT_NAME));
+            for (int i = 1; i <= manualSlotCount; i++)
+                list.Add(ReadSlotMeta($"Slot{i}"));
+            return list.ToArray();
+        }
+
+        /// <summary>Returns the slot name with the most recent saveTimestamp, or AUTO_SAVE_SLOT_NAME if all empty.</summary>
+        public string GetMostRecentSlotName()
+        {
+            string best = AUTO_SAVE_SLOT_NAME;
+            System.DateTime bestTime = System.DateTime.MinValue;
+
+            foreach (var info in GetAllSlotInfos())
+            {
+                if (info.isEmpty) continue;
+                if (System.DateTime.TryParse(info.saveTimestamp, out System.DateTime t) && t > bestTime)
+                {
+                    bestTime = t;
+                    best = info.slotName;
+                }
+            }
+            return best;
+        }
+
+        // ============================================================================
+        // SAVE OPERATIONS
+        // ============================================================================
+
+        public void SaveGame()
+        {
+#if DEMO_BUILD
+            OnSaveCompleted?.Invoke(false);
+            return;
+#endif
+            OnSaveStarted?.Invoke();
+            LogDebug($"SaveGame() to slot '{activeSlotName}' - registered objects: {saveableObjects.Count}");
+
+            try
+            {
+                if (currentGameData == null)
+                    currentGameData = new GameData();
+                else
+                {
+                    currentGameData.saveTimestamp = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    currentGameData.saveCount++;
+                }
+
+                foreach (var saveable in saveableObjects.ToList())
+                {
+                    if (saveable != null)
+                    {
+                        try { saveable.SaveData(currentGameData); }
+                        catch (System.Exception e) { LogError($"Error saving data from {saveable.GetType().Name}: {e.Message}"); }
+                    }
+                }
+
+                string savePath = CurrentSaveFilePath;
+
+                if (enableBackupSaves && File.Exists(savePath))
+                    CreateBackupSave();
+
+                string jsonData = JsonUtility.ToJson(currentGameData, true);
+                File.WriteAllText(savePath, jsonData);
+
+                WriteSlotMeta(activeSlotName, currentGameData);
+
+                OnSaveCompleted?.Invoke(true);
+            }
+            catch (System.Exception e)
+            {
+                LogError($"Failed to save game: {e.Message}");
+                OnSaveCompleted?.Invoke(false);
+            }
+        }
+
+        private void CreateBackupSave()
+        {
+            try
+            {
+                string slotDir = GetSlotDirectory(activeSlotName);
+                string backupFileName = $"{saveFileName}_backup_{System.DateTime.Now:yyyyMMdd_HHmmss}{saveFileExtension}";
+                string backupFilePath = Path.Combine(slotDir, backupFileName);
+                File.Copy(CurrentSaveFilePath, backupFilePath);
+                CleanOldBackups();
+            }
+            catch (System.Exception e)
+            {
+                LogError($"Failed to create backup: {e.Message}");
+            }
+        }
+
+        private void CleanOldBackups()
+        {
+            try
+            {
+                string slotDir = GetSlotDirectory(activeSlotName);
+                var backupFiles = Directory.GetFiles(slotDir, $"{saveFileName}_backup_*{saveFileExtension}")
+                    .OrderByDescending(f => File.GetCreationTime(f))
+                    .ToArray();
+
+                for (int i = maxBackupSaves; i < backupFiles.Length; i++)
+                    File.Delete(backupFiles[i]);
+            }
+            catch (System.Exception e)
+            {
+                LogError($"Failed to clean old backups: {e.Message}");
+            }
+        }
+
+        // ============================================================================
+        // LOAD OPERATIONS
+        // ============================================================================
+
+        public void LoadGame()
+        {
+#if DEMO_BUILD
+            OnLoadCompleted?.Invoke(false);
+            return;
+#endif
+            if (!HasSaveFile())
+            {
+                LogError("No save file found to load!");
+                OnLoadCompleted?.Invoke(false);
+                return;
+            }
+
+            OnLoadStarted?.Invoke();
+            LogDebug($"Loading from slot '{activeSlotName}'...");
+
+            try
+            {
+                string jsonData = File.ReadAllText(CurrentSaveFilePath);
+                currentGameData = JsonUtility.FromJson<GameData>(jsonData);
+
+                if (currentGameData == null)
+                    throw new System.Exception("Failed to parse save file JSON");
+
+                if (currentGameData.saveVersion < GameData.CURRENT_SAVE_VERSION)
+                    currentGameData = MigrateSave(currentGameData);
+
+                LogDebug($"Loading data into {saveableObjects.Count} registered objects");
+                foreach (var saveable in saveableObjects.ToList())
+                {
+                    if (saveable != null)
+                    {
+                        try { saveable.LoadData(currentGameData); }
+                        catch (System.Exception e) { LogError($"Error loading data into {saveable.GetType().Name}: {e.Message}"); }
+                    }
+                }
+
+                if (resetToStartOfDayAfterLoad)
+                {
+                    if (GameTimeController.instance != null)
+                        GameTimeController.instance.ResetToStartOfDay();
+                    else
+                    {
+                        GameTimeController tc = FindObjectOfType<GameTimeController>();
+                        tc?.ResetToStartOfDay();
+                    }
+                    resetToStartOfDayAfterLoad = false;
+                }
+
+                OnLoadCompleted?.Invoke(true);
+            }
+            catch (System.Exception e)
+            {
+                LogError($"Failed to load game: {e.Message}");
+                OnLoadCompleted?.Invoke(false);
+                currentGameData = new GameData();
+            }
+        }
+
+        // ============================================================================
+        // SAVE MIGRATION
+        // ============================================================================
+
+        private GameData MigrateSave(GameData data)
+        {
+            data.saveVersion = GameData.CURRENT_SAVE_VERSION;
+            return data;
+        }
+
+        // ============================================================================
+        // UTILITY METHODS
+        // ============================================================================
+
+        public bool HasSaveFile() => HasSaveFile(activeSlotName);
+
+        public bool HasSaveFile(string slotName)
+        {
+#if DEMO_BUILD
+            return false;
+#endif
+            return File.Exists(GetSlotSaveFilePath(slotName));
+        }
+
+        public void DeleteSaveFile()
+        {
+            string path = CurrentSaveFilePath;
+            if (File.Exists(path))
+                File.Delete(path);
+
+            // Also remove the meta file
+            string metaPath = GetSlotMetaFilePath(activeSlotName);
+            if (File.Exists(metaPath))
+                File.Delete(metaPath);
+        }
+
+        public SaveFileInfo GetSaveFileInfo()
+        {
+            if (!HasSaveFile()) return null;
+
+            FileInfo fileInfo = new FileInfo(CurrentSaveFilePath);
+            return new SaveFileInfo
+            {
+                fileName = Path.GetFileName(CurrentSaveFilePath),
+                filePath = CurrentSaveFilePath,
+                creationTime = fileInfo.CreationTime,
+                lastWriteTime = fileInfo.LastWriteTime,
+                fileSizeBytes = fileInfo.Length
+            };
+        }
+
+        public GameData GetCurrentGameData() => currentGameData;
+
+        // ============================================================================
+        // AUTO SAVE SYSTEM
+        // ============================================================================
+
+        public void TriggerAutoSave()
+        {
+            LogDebug("TriggerAutoSave() called");
+
+            if (enableAutoSave)
+            {
+                string prev = activeSlotName;
+                activeSlotName = AUTO_SAVE_SLOT_NAME;
+                SaveGame();
+                activeSlotName = prev;
+            }
+            else
+            {
+                LogDebug("Auto save is disabled - skipping save");
+            }
+        }
+
+        // ============================================================================
+        // PRIVATE HELPERS
+        // ============================================================================
+
+        private string CurrentSaveFilePath => GetSlotSaveFilePath(activeSlotName);
+
+        private string GetSlotDirectory(string slotName) =>
+            Path.Combine(saveDirectoryPath, slotName);
+
+        private string GetSlotSaveFilePath(string slotName) =>
+            Path.Combine(GetSlotDirectory(slotName), saveFileName + saveFileExtension);
+
+        private string GetSlotMetaFilePath(string slotName) =>
+            Path.Combine(GetSlotDirectory(slotName), "SlotMeta.json");
+
+        private void WriteSlotMeta(string slotName, GameData data)
+        {
+            try
+            {
+                var info = new SaveSlotInfo
+                {
+                    slotName = slotName,
+                    isAutoSave = slotName == AUTO_SAVE_SLOT_NAME,
+                    isEmpty = false,
+                    currentDay = data.timeData?.currentDay ?? 1,
+                    season = data.timeData?.season ?? "Spring",
+                    year = data.timeData?.year ?? 1,
+                    money = data.playerData?.money ?? 0,
+                    totalPlayTime = data.totalPlayTime,
+                    saveTimestamp = data.saveTimestamp,
+                    fileSizeBytes = new FileInfo(GetSlotSaveFilePath(slotName)).Length
+                };
+
+                string json = JsonUtility.ToJson(info, true);
+                File.WriteAllText(GetSlotMetaFilePath(slotName), json);
+            }
+            catch (System.Exception e)
+            {
+                LogError($"Failed to write slot meta for '{slotName}': {e.Message}");
+            }
+        }
+
+        private SaveSlotInfo ReadSlotMeta(string slotName)
+        {
+            try
+            {
+                string metaPath = GetSlotMetaFilePath(slotName);
+                if (File.Exists(metaPath))
+                {
+                    string json = File.ReadAllText(metaPath);
+                    var info = JsonUtility.FromJson<SaveSlotInfo>(json);
+                    if (info != null)
+                    {
+                        info.slotName = slotName;
+                        info.isAutoSave = slotName == AUTO_SAVE_SLOT_NAME;
+                        return info;
+                    }
+                }
+            }
+            catch (System.Exception e)
+            {
+                LogError($"Failed to read slot meta for '{slotName}': {e.Message}");
+            }
+
+            return new SaveSlotInfo
             {
                 slotName = slotName,
                 isAutoSave = slotName == AUTO_SAVE_SLOT_NAME,
-                isEmpty = false,
-                currentDay = data.timeData?.currentDay ?? 1,
-                season = data.timeData?.season ?? "Spring",
-                year = data.timeData?.year ?? 1,
-                money = data.playerData?.money ?? 0,
-                totalPlayTime = data.totalPlayTime,
-                saveTimestamp = data.saveTimestamp,
-                fileSizeBytes = new FileInfo(GetSlotSaveFilePath(slotName)).Length
+                isEmpty = true
             };
-
-            string json = JsonUtility.ToJson(info, true);
-            File.WriteAllText(GetSlotMetaFilePath(slotName), json);
-        }
-        catch (System.Exception e)
-        {
-            LogError($"Failed to write slot meta for '{slotName}': {e.Message}");
-        }
-    }
-
-    private SaveSlotInfo ReadSlotMeta(string slotName)
-    {
-        try
-        {
-            string metaPath = GetSlotMetaFilePath(slotName);
-            if (File.Exists(metaPath))
-            {
-                string json = File.ReadAllText(metaPath);
-                var info = JsonUtility.FromJson<SaveSlotInfo>(json);
-                if (info != null)
-                {
-                    info.slotName = slotName;
-                    info.isAutoSave = slotName == AUTO_SAVE_SLOT_NAME;
-                    return info;
-                }
-            }
-        }
-        catch (System.Exception e)
-        {
-            LogError($"Failed to read slot meta for '{slotName}': {e.Message}");
         }
 
-        return new SaveSlotInfo
+        // ============================================================================
+        // DEBUG AND LOGGING
+        // ============================================================================
+
+        private void LogDebug(string message)
         {
-            slotName = slotName,
-            isAutoSave = slotName == AUTO_SAVE_SLOT_NAME,
-            isEmpty = true
-        };
-    }
+            if (enableDebugLogs) { }
+        }
 
-    // ============================================================================
-    // DEBUG AND LOGGING
-    // ============================================================================
+        private void LogError(string message)
+        {
+            Debug.LogError($"[SaveManager] {message}");
+        }
 
-    private void LogDebug(string message)
-    {
-        if (enableDebugLogs) { }
-    }
-
-    private void LogError(string message)
-    {
-        Debug.LogError($"[SaveManager] {message}");
-    }
-
-    // ============================================================================
-    // EDITOR/DEBUG METHODS
-    // ============================================================================
+        // ============================================================================
+        // EDITOR/DEBUG METHODS
+        // ============================================================================
 
 #if UNITY_EDITOR
-    [ContextMenu("Force Save Game")]
-    public void DebugSaveGame() => SaveGame();
+        [ContextMenu("Force Save Game")]
+        public void DebugSaveGame() => SaveGame();
 
-    [ContextMenu("Force Load Game")]
-    public void DebugLoadGame() => LoadGame();
+        [ContextMenu("Force Load Game")]
+        public void DebugLoadGame() => LoadGame();
 
-    [ContextMenu("Delete Save File")]
-    public void DebugDeleteSave() => DeleteSaveFile();
+        [ContextMenu("Delete Save File")]
+        public void DebugDeleteSave() => DeleteSaveFile();
 
-    [ContextMenu("Show Save File Info")]
-    public void DebugShowSaveInfo()
-    {
-        var info = GetSaveFileInfo();
-        if (info != null)
-            Debug.Log($"[SaveManager] Save: {info.fileName} | Size: {info.fileSizeBytes}B | Last saved: {info.lastWriteTime}");
-    }
+        [ContextMenu("Show Save File Info")]
+        public void DebugShowSaveInfo()
+        {
+            var info = GetSaveFileInfo();
+            if (info != null)
+                Debug.Log($"[SaveManager] Save: {info.fileName} | Size: {info.fileSizeBytes}B | Last saved: {info.lastWriteTime}");
+        }
 #endif
-}
+    }
 
-// ============================================================================
-// DATA STRUCTURES
-// ============================================================================
+    // ============================================================================
+    // DATA STRUCTURES
+    // ============================================================================
 
-public interface ISaveable
-{
-    void SaveData(GameData gameData);
-    void LoadData(GameData gameData);
-}
+    public interface ISaveable
+    {
+        void SaveData(GameData gameData);
+        void LoadData(GameData gameData);
+    }
 
-[System.Serializable]
-public class SaveFileInfo
-{
-    public string fileName;
-    public string filePath;
-    public System.DateTime creationTime;
-    public System.DateTime lastWriteTime;
-    public long fileSizeBytes;
-}
+    [System.Serializable]
+    public class SaveFileInfo
+    {
+        public string fileName;
+        public string filePath;
+        public System.DateTime creationTime;
+        public System.DateTime lastWriteTime;
+        public long fileSizeBytes;
+    }
+
+} // namespace SowurShield.Core

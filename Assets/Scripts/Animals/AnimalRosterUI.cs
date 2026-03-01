@@ -3,6 +3,10 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using System.Linq;
+using SowurShield.Core;
+
+namespace SowurShield.Animals
+{
 
 /// <summary>
 /// UI panel displaying all registered animals from AnimalRoster.
@@ -43,7 +47,7 @@ public class AnimalRosterUI : MonoBehaviour, IUIWindow
     // =========================================================================
 
     public string WindowName => "AnimalRoster";
-    public int WindowPriority => global::WindowPriority.Inventory; // Same tier as AnimalInfoUI
+    public int WindowPriority => SowurShield.Core.WindowPriority.Inventory; // Same tier as AnimalInfoUI
     public bool IsWindowOpen => isOpen;
     public bool CanCloseWithEsc => true;
 
@@ -443,3 +447,5 @@ public class AnimalRosterUI : MonoBehaviour, IUIWindow
             player.EnableMovement();
     }
 }
+
+} // namespace SowurShield.Animals

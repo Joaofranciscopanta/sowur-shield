@@ -2,6 +2,10 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using System.Linq;
+using SowurShield.Dialogue;
+
+namespace SowurShield.Dialogue.Editor
+{
 
 public class DialogueNodeEditorWindow : EditorWindow
 {
@@ -336,7 +340,7 @@ public class DialogueNodeEditorWindow : EditorWindow
     private void HandleNodeInteraction(Rect canvasRect)
     {
         var e = Event.current;
-        
+
         // Handle node dragging
         if (draggedNode != null)
         {
@@ -355,7 +359,7 @@ public class DialogueNodeEditorWindow : EditorWindow
                 e.Use();
             }
         }
-        
+
         // Handle canvas clicks (deselect nodes)
         if (e.type == EventType.MouseDown && e.button == 0 && !isDragging)
         {
@@ -363,51 +367,51 @@ public class DialogueNodeEditorWindow : EditorWindow
             Repaint();
         }
     }
-    
+
     private void DrawInspector()
     {
         if (selectedNode == null) return;
-        
+
         EditorGUILayout.BeginVertical(GUI.skin.box, GUILayout.Width(300));
         EditorGUILayout.LabelField("Node Inspector", EditorStyles.boldLabel);
-        
+
         EditorGUILayout.Space();
-        
+
         // Basic properties
         selectedNode.nodeId = EditorGUILayout.TextField("Node ID", selectedNode.nodeId);
         selectedNode.nodeType = (NodeType)EditorGUILayout.EnumPopup("Type", selectedNode.nodeType);
-        
+
         EditorGUILayout.Space();
-        
+
         // Speaker info
         EditorGUILayout.LabelField("Speaker", EditorStyles.boldLabel);
         selectedNode.speakerName = EditorGUILayout.TextField("Name", selectedNode.speakerName);
         selectedNode.speakerPortrait = (Sprite)EditorGUILayout.ObjectField("Portrait", selectedNode.speakerPortrait, typeof(Sprite), false);
         selectedNode.speakerEmotion = (EmotionType)EditorGUILayout.EnumPopup("Emotion", selectedNode.speakerEmotion);
         selectedNode.speakerPosition = (SpeakerPosition)EditorGUILayout.EnumPopup("Position", selectedNode.speakerPosition);
-        
+
         EditorGUILayout.Space();
-        
+
         // Dialogue text
         EditorGUILayout.LabelField("Dialogue Text", EditorStyles.boldLabel);
         selectedNode.dialogueText = EditorGUILayout.TextArea(selectedNode.dialogueText, GUILayout.Height(80));
-        
+
         EditorGUILayout.Space();
-        
+
         // Navigation
         EditorGUILayout.LabelField("Navigation", EditorStyles.boldLabel);
         selectedNode.nextNodeId = EditorGUILayout.TextField("Next Node ID", selectedNode.nextNodeId);
         selectedNode.autoAdvanceDelay = EditorGUILayout.FloatField("Auto Advance Delay", selectedNode.autoAdvanceDelay);
-        
+
         EditorGUILayout.Space();
-        
+
         // Quick actions
         if (GUILayout.Button("Set as Start Node"))
         {
             dialogueTree.startNodeId = selectedNode.nodeId;
             EditorUtility.SetDirty(dialogueTree);
         }
-        
+
         if (GUILayout.Button("Delete Node"))
         {
             if (EditorUtility.DisplayDialog("Confirm Delete", $"Delete node '{selectedNode.nodeId}'?", "Yes", "No"))
@@ -419,12 +423,14 @@ public class DialogueNodeEditorWindow : EditorWindow
                 EditorUtility.SetDirty(dialogueTree);
             }
         }
-        
+
         EditorGUILayout.EndVertical();
-        
+
         if (GUI.changed)
         {
             EditorUtility.SetDirty(dialogueTree);
         }
     }
 }
+
+} // namespace SowurShield.Dialogue.Editor

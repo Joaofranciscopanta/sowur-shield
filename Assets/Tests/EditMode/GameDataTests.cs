@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using SowurShield.Core;
 
 /// <summary>
 /// Edit Mode tests for GameData and GameDataExtensions.

@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
+namespace SowurShield.Core
+{
+
 /// <summary>
 /// Manages the main game menu that opens with ESC key
 /// Handles pausing, settings, save management, and quitting
@@ -571,3 +574,5 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
     }
     #endif
 }
+
+} // namespace SowurShield.Core

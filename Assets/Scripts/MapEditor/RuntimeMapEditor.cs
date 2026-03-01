@@ -2,6 +2,11 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using System.Collections;
+using SowurShield.Core;
+using SowurShield.Farming;
+
+namespace SowurShield.MapEditor
+{
 
 public class RuntimeMapEditor : MonoBehaviour
 {
@@ -404,3 +409,4 @@ public enum BrushType
     Circle,
     Eraser
 }
+} // namespace SowurShield.MapEditor

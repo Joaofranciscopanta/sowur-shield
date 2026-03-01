@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+namespace SowurShield.Core
+{
+
 /// <summary>
 /// Ensures UI elements are properly connected to PlayerStats data
 /// Add this component to ensure UI updates work correctly
@@ -181,3 +184,5 @@ public class MoneyTextUpdater : MonoBehaviour
             playerStats.OnMoneyChanged -= UpdateMoneyText;
     }
 }
+
+} // namespace SowurShield.Core

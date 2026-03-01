@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using DG.Tweening;
+using SowurShield.Core;
+
+namespace SowurShield.Minimap
+{
 
 /// <summary>
 /// Main controller for the minimap system
@@ -625,3 +629,5 @@ public enum MinimapState
     SemiTransparent, // Top-right corner, 50% opacity
     Fullscreen       // Center screen, 100% opacity, zoom/pan enabled
 }
+
+} // namespace SowurShield.Minimap

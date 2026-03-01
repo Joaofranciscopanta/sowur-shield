@@ -1,6 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using SowurShield.Inventory;
+
+namespace SowurShield.Core
+{
 
 public class UIManager : MonoBehaviour
 {
@@ -45,7 +49,7 @@ public class UIManager : MonoBehaviour
         // Auto-find panels if not assigned
         if (inventoryPanel == null)
         {
-            var inventory = FindFirstObjectByType<Inventory>();
+            var inventory = FindFirstObjectByType<SowurShield.Inventory.Inventory>();
             if (inventory != null)
             {
                 // Try to find inventory UI panel
@@ -313,3 +317,5 @@ public class UIManager : MonoBehaviour
         }
     }
 }
+
+} // namespace SowurShield.Core

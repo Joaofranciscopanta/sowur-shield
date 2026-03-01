@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+namespace SowurShield.Combat
+{
+
 /// <summary>
 /// Manages stage selection, completion status, and progression.
 /// Persists between scenes and integrates with save system.
@@ -216,3 +219,5 @@ public class StageProgressData
     public List<string> completedStages = new List<string>();
     public string selectedStageName = "";
 }
+
+} // namespace SowurShield.Combat

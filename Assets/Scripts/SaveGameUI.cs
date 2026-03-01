@@ -3,6 +3,9 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 
+namespace SowurShield.Core
+{
+
 /// <summary>
 /// UI component for managing save/load operations and displaying save feedback to the player
 /// </summary>
@@ -347,3 +350,5 @@ public class SaveGameUI : MonoBehaviour
     }
     #endif
 }
+
+} // namespace SowurShield.Core

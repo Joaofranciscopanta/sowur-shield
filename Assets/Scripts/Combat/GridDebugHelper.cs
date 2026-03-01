@@ -1,5 +1,8 @@
 using UnityEngine;
 
+namespace SowurShield.Combat
+{
+
 /// <summary>
 /// DEBUG HELPER: Attach this to GridManager to verify setup is correct
 /// This will help diagnose why the grid isn't appearing
@@ -86,3 +89,5 @@ public class GridDebugHelper : MonoBehaviour
 
     }
 }
+
+} // namespace SowurShield.Combat

@@ -1,5 +1,8 @@
 using UnityEngine;
 
+namespace SowurShield.Minimap
+{
+
 /// <summary>
 /// Component for GameObjects to appear on the minimap
 /// Attach to any object that should be visible on the minimap (NPCs, SellBox, Beds, etc.)
@@ -385,3 +388,5 @@ public enum MinimapIconType
     Enemy,
     Collectible
 }
+
+} // namespace SowurShield.Minimap

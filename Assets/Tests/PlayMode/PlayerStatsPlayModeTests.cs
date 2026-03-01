@@ -2,6 +2,7 @@ using System.Collections;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using SowurShield.Core;
 
 /// <summary>
 /// Play Mode integration tests for PlayerStats.

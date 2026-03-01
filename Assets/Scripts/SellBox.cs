@@ -2,6 +2,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Linq;
+using SowurShield.Inventory;
+
+namespace SowurShield.Core
+{
 
 /*
  * SELLBOX SETUP INSTRUCTIONS:
@@ -83,7 +87,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     private List<InventorySlot> sellBoxSlotUIs = new List<InventorySlot>();
     private bool isSellBoxOpen = false;
     private PlayerStats playerStats;
-    private Inventory playerInventory;
+    private SowurShield.Inventory.Inventory playerInventory;
     private Transform playerTransform;
     private PlayerMove playerMove;
 
@@ -124,7 +128,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
 
         SetupUI();
         playerStats = FindFirstObjectByType<PlayerStats>();
-        playerInventory = FindFirstObjectByType<Inventory>();
+        playerInventory = FindFirstObjectByType<SowurShield.Inventory.Inventory>();
 
         // Find player transform and PlayerMove component for distance checking and movement control
         var player = GameObject.FindWithTag("Player");
@@ -307,7 +311,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
             // Fallback: Close inventory if it's open
             if (playerInventory != null)
             {
-                var inventory = playerInventory.GetComponent<Inventory>();
+                var inventory = playerInventory.GetComponent<SowurShield.Inventory.Inventory>();
                 if (inventory != null)
                 {
                     var closeMethod = inventory.GetType().GetMethod("CloseInventory") ??
@@ -1116,3 +1120,5 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         return gameObject.activeInHierarchy && enabled;
     }
 }
+
+} // namespace SowurShield.Core

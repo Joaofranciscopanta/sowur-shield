@@ -3,6 +3,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
 
+namespace SowurShield.Dialogue
+{
+
 public class DialogueUI : MonoBehaviour
 {
     [SerializeField] public TMPro.TextMeshProUGUI dialogueText;
@@ -151,3 +154,5 @@ public class DialogueUI : MonoBehaviour
         }
     }
 }
+
+} // namespace SowurShield.Dialogue

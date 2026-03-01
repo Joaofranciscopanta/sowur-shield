@@ -2,6 +2,11 @@
 using UnityEngine;
 using UnityEditor;
 using System.Reflection;
+using SowurShield.Animals;
+using SowurShield.Core;
+
+namespace SowurShield.Editor
+{
 
 /// <summary>
 /// Editor window for testing the animal production system at runtime.
@@ -340,4 +345,6 @@ public class AnimalSystemTester : EditorWindow
         Debug.Log($"[AnimalTester] Simulated day change on {animal.AnimalData?.animalName}. New day: {currentDay + 1}");
     }
 }
+
+} // namespace SowurShield.Editor
 #endif

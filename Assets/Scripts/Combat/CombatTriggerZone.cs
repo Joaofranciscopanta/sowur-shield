@@ -1,4 +1,8 @@
 using UnityEngine;
+using SowurShield.Core;
+
+namespace SowurShield.Combat
+{
 
 /// <summary>
 /// Trigger zone in farm scene that opens the Team Assembler UI.
@@ -173,3 +177,5 @@ public class CombatTriggerZone : MonoBehaviour, IInteractable
         #endif
     }
 }
+
+} // namespace SowurShield.Combat

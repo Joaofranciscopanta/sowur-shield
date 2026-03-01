@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+namespace SowurShield.Animals
+{
+
 /// <summary>
 /// Centralized singleton registry tracking all owned animals in the scene.
 /// Animals register/unregister themselves on Start/OnDestroy.
@@ -143,3 +146,5 @@ public class AnimalRoster : MonoBehaviour
         return new List<AnimalZone>(zones);
     }
 }
+
+} // namespace SowurShield.Animals

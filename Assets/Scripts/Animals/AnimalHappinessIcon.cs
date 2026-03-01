@@ -1,5 +1,8 @@
 using UnityEngine;
 
+namespace SowurShield.Animals
+{
+
 /// <summary>
 /// Lightweight floating icon above an animal showing its happiness mood.
 /// Displays one of 3 sprites: happy (≥70), neutral (40-69), or sad (<40).
@@ -122,3 +125,5 @@ public class AnimalHappinessIcon : MonoBehaviour
             Destroy(iconObject);
     }
 }
+
+} // namespace SowurShield.Animals

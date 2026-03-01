@@ -5,6 +5,10 @@ using TMPro;
 using System.Collections;
 using System.IO;
 using System.Linq;
+using SowurShield.UI;
+
+namespace SowurShield.Core
+{
 
 /// <summary>
 /// Main menu UI handler for the game's title screen
@@ -1011,3 +1015,5 @@ public class MainMenuUI : MonoBehaviour
         }
     }
 }
+
+} // namespace SowurShield.Core

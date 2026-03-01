@@ -1,4 +1,8 @@
 using UnityEngine;
+using SowurShield.Inventory;
+
+namespace SowurShield.Core
+{
 
 public class InventorySpacingFix : MonoBehaviour
 {
@@ -19,7 +23,7 @@ public class InventorySpacingFix : MonoBehaviour
         else
         {
             // Try to find the hotbar automatically
-            var inventory = FindFirstObjectByType<Inventory>();
+            var inventory = FindFirstObjectByType<SowurShield.Inventory.Inventory>();
             if (inventory != null && inventory.slotParent != null)
             {
                 inventoryParent = inventory.slotParent;
@@ -68,22 +72,24 @@ public class InventorySpacingFix : MonoBehaviour
     public void ResetPositions()
     {
         if (inventoryParent == null) return;
-        
+
         for (int i = 0; i < inventoryParent.childCount; i++)
         {
             Transform slot = inventoryParent.GetChild(i);
             RectTransform slotRect = slot.GetComponent<RectTransform>();
-            
+
             if (slotRect == null) continue;
-            
+
             // Reset to original grid position without spacing
             int row = i / slotsPerRow;
             int col = i % slotsPerRow;
-            
+
             Vector2 basePosition = new Vector2(col * 64, -row * 64); // Assuming 64px slot size
             slotRect.anchoredPosition = basePosition;
         }
-        
+
 
     }
 }
+
+} // namespace SowurShield.Core

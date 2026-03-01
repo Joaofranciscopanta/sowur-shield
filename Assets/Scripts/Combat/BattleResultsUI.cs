@@ -2,6 +2,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using SowurShield.Animals;
+using SowurShield.Core;
+
+namespace SowurShield.Combat
+{
 
 /// <summary>
 /// Manages the victory/defeat UI display at the end of combat.
@@ -306,3 +311,5 @@ public class BattleResultsUI : MonoBehaviour
         enemiesDefeated = 0;
     }
 }
+
+} // namespace SowurShield.Combat

@@ -2,6 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using SowurShield.Core;
+
+namespace SowurShield.UI
+{
 
 /// <summary>
 /// UI component for a single save slot row in the slot picker panel.
@@ -114,3 +118,5 @@ public class SaveSlotButton : MonoBehaviour
             group.SetActive(active);
     }
 }
+
+} // namespace SowurShield.UI

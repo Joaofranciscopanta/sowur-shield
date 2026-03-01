@@ -1,5 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
+using SowurShield.Animals;
+
+namespace SowurShield.Combat
+{
 
 /// <summary>
 /// Stores the team composition assembled by the player.
@@ -293,3 +297,5 @@ public class TeamAssemblerData
         return team.Count > 0 && AreAllAnimalsFed();
     }
 }
+
+} // namespace SowurShield.Combat

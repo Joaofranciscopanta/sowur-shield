@@ -1,4 +1,8 @@
 using UnityEngine;
+using SowurShield.Combat;
+
+namespace SowurShield.Worldmap
+{
 
 public class StageButton : MonoBehaviour
 {
@@ -12,3 +16,5 @@ public class StageButton : MonoBehaviour
         WorldMap.SetActive(false);
     }
 }
+
+} // namespace SowurShield.Worldmap
