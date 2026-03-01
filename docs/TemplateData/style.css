@@ -1,6 +1,10 @@
-body { padding: 0; margin: 0 }
+/* =============================================
+   BASE UNITY STYLES
+   ============================================= */
+body { padding: 0; margin: 0; background: #1a1a1a; font-family: arial, sans-serif; }
+
 #unity-container { position: absolute }
-#unity-container.unity-desktop { left: 50%; top: 50%; transform: translate(-50%, -50%) }
+#unity-container.unity-desktop { left: calc(50% + 160px); top: 50%; transform: translate(-50%, -50%) }
 #unity-container.unity-mobile { position: fixed; width: 100%; height: 100% }
 #unity-canvas { background: #1F1F20 }
 .unity-mobile #unity-canvas { width: 100%; height: 100% }
@@ -11,6 +15,109 @@ body { padding: 0; margin: 0 }
 #unity-footer { position: relative }
 .unity-mobile #unity-footer { display: none }
 #unity-logo-title-footer { float:left; width: 102px; height: 38px; background: url('unity-logo-title-footer.png') no-repeat center }
-#unity-build-title { float: right; margin-right: 10px; line-height: 38px; font-family: arial; font-size: 18px }
+#unity-build-title { float: right; margin-right: 10px; line-height: 38px; font-family: arial; font-size: 18px; color: #ccc; }
 #unity-fullscreen-button { cursor:pointer; float: right; width: 38px; height: 38px; background: url('fullscreen-button.png') no-repeat center }
 #unity-warning { position: absolute; left: 50%; top: 5%; transform: translate(-50%); background: white; padding: 10px; display: none }
+
+/* =============================================
+   SIDEBAR — RELEASE NOTES
+   ============================================= */
+#release-notes {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 300px;
+  height: 100vh;
+  background: linear-gradient(180deg, #1a2a1a 0%, #0d1a0d 100%);
+  border-right: 1px solid #2d4a2d;
+  overflow-y: auto;
+  padding: 20px 16px;
+  box-sizing: border-box;
+  z-index: 100;
+  color: #d4e8d4;
+}
+
+#release-notes h2 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  color: #7ec87e;
+  line-height: 1.3;
+}
+
+#release-notes .version {
+  font-size: 11px;
+  color: #5a8a5a;
+  margin-bottom: 14px;
+  font-style: italic;
+}
+
+#release-notes h3 {
+  font-size: 13px;
+  color: #9ed49e;
+  margin: 0 0 10px 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #2d4a2d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.note-section {
+  margin-bottom: 14px;
+}
+
+.note-section h4 {
+  font-size: 12px;
+  color: #7ec87e;
+  margin: 0 0 6px 0;
+}
+
+.note-section ul {
+  margin: 0;
+  padding-left: 16px;
+  list-style: none;
+}
+
+.note-section ul li {
+  font-size: 11px;
+  color: #b8d4b8;
+  margin-bottom: 4px;
+  line-height: 1.4;
+  position: relative;
+}
+
+.note-section ul li::before {
+  content: '▸';
+  color: #5a8a5a;
+  position: absolute;
+  left: -13px;
+  font-size: 10px;
+}
+
+.note-section ul li strong {
+  color: #9ed49e;
+}
+
+.footer-links {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #2d4a2d;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.footer-links a {
+  font-size: 11px;
+  color: #5a8a5a;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: #7ec87e;
+}
+
+/* Scrollbar */
+#release-notes::-webkit-scrollbar { width: 4px; }
+#release-notes::-webkit-scrollbar-track { background: #0d1a0d; }
+#release-notes::-webkit-scrollbar-thumb { background: #2d4a2d; border-radius: 2px; }
