@@ -81,3 +81,8 @@ crashlytics-build.properties
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# Personal notes
+DEVELOPMENT_LOG.md
+FULL_GAME_PROJECT_AUDIT.md
+GAME_DEVELOPMENT_PLAN.md
