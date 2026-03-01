@@ -125,7 +125,7 @@ public class MapSerializer : MonoBehaviour
 
             
         }
-        catch (System.Exception e)
+        catch (System.Exception)
         {
             string errorMsg = $"Failed to save map: {e.Message}";
             OnError?.Invoke(errorMsg);
@@ -168,7 +168,7 @@ public class MapSerializer : MonoBehaviour
             
             return mapData;
         }
-        catch (System.Exception e)
+        catch (System.Exception)
         {
             string errorMsg = $"Failed to load map: {e.Message}";
             OnError?.Invoke(errorMsg);
@@ -193,7 +193,7 @@ public class MapSerializer : MonoBehaviour
                 }
             }
         }
-        catch (System.Exception e)
+        catch (System.Exception)
         {
 
         }
@@ -227,7 +227,7 @@ public class MapSerializer : MonoBehaviour
             
 
         }
-        catch (System.Exception e)
+        catch (System.Exception)
         {
             string errorMsg = $"Failed to delete map: {e.Message}";
             OnError?.Invoke(errorMsg);
@@ -252,7 +252,7 @@ public class MapSerializer : MonoBehaviour
             OnBackupCreated?.Invoke(backupFileName);
 
         }
-        catch (System.Exception e)
+        catch (System.Exception)
         {
 
         }
@@ -278,7 +278,7 @@ public class MapSerializer : MonoBehaviour
                 }
             }
         }
-        catch (System.Exception e)
+        catch (System.Exception)
         {
 
         }
@@ -314,7 +314,7 @@ public class MapSerializer : MonoBehaviour
                 }
             }
         }
-        catch (System.Exception e)
+        catch (System.Exception)
         {
 
         }
@@ -352,7 +352,7 @@ public class MapSerializer : MonoBehaviour
             string json = JsonUtility.ToJson(jsonData, true);
             File.WriteAllText(path, json);
         }
-        catch (System.Exception e)
+        catch (System.Exception)
         {
 
         }
@@ -368,7 +368,7 @@ public class MapSerializer : MonoBehaviour
             MapDataJSON jsonData = JsonUtility.FromJson<MapDataJSON>(json);
             return ConvertFromJSON(jsonData);
         }
-        catch (System.Exception e)
+        catch (System.Exception)
         {
 
             return null;
@@ -446,7 +446,7 @@ public class MapSerializer : MonoBehaviour
             
 
         }
-        catch (System.Exception e)
+        catch (System.Exception)
         {
             OnError?.Invoke($"Export failed: {e.Message}");
         }
@@ -464,7 +464,7 @@ public class MapSerializer : MonoBehaviour
             
             return LoadFromJSON(importPath);
         }
-        catch (System.Exception e)
+        catch (System.Exception)
         {
             OnError?.Invoke($"Import failed: {e.Message}");
             return null;

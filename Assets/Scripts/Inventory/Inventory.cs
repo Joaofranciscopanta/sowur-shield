@@ -39,10 +39,6 @@ public class Inventory : MonoBehaviour, ISaveable
     private InventorySlot selectedSlot;
     private bool isInventoryOpen = false;
 
-    // Drag operation tracking
-    private ItemStack draggedStack;
-    private InventorySlot draggedFromSlot;
-
     // Hotbar auto-refill tracking
     private Item[] lastHotbarItems; // Track last item in each hotbar slot for refill
 
@@ -514,9 +510,6 @@ public class Inventory : MonoBehaviour, ISaveable
     public void EndDragOperation()
     {
         // Called when drag operation ends without a valid drop
-        // Reset any temporary states if needed
-        draggedStack = null;
-        draggedFromSlot = null;
     }
 
     // ============================================================================

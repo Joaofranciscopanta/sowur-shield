@@ -427,7 +427,7 @@ public class TeamAssemblerUISetup : MonoBehaviour
             tmp.fontStyle = style;
             tmp.alignment = TextAlignmentOptions.TopLeft;
             tmp.color = Color.white;
-            tmp.enableWordWrapping = true;
+            tmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
 
             LayoutElement le = textObj.AddComponent<LayoutElement>();
             le.preferredHeight = 50;

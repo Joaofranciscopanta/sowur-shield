@@ -332,14 +332,14 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
 
     private void DisablePlayerMovement()
     {
-        PlayerMove player = FindObjectOfType<PlayerMove>();
+        PlayerMove player = Object.FindFirstObjectByType<PlayerMove>();
         if (player != null)
             player.DisableMovement();
     }
 
     private void EnablePlayerMovement()
     {
-        PlayerMove player = FindObjectOfType<PlayerMove>();
+        PlayerMove player = Object.FindFirstObjectByType<PlayerMove>();
         if (player != null)
             player.EnableMovement();
     }

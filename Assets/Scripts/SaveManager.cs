@@ -367,7 +367,7 @@ namespace SowurShield.Core
                         GameTimeController.instance.ResetToStartOfDay();
                     else
                     {
-                        GameTimeController tc = FindObjectOfType<GameTimeController>();
+                        GameTimeController tc = Object.FindFirstObjectByType<GameTimeController>();
                         tc?.ResetToStartOfDay();
                     }
                     resetToStartOfDayAfterLoad = false;

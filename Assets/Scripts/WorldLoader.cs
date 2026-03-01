@@ -10,9 +10,6 @@ public class WorldLoader : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private GameObject soilBlockPrefab;
     
-    [Header("Debug")]
-    [SerializeField] private bool enableDebugLogs = true;
-    
     public static WorldLoader Instance { get; private set; }
     
     private void Awake()

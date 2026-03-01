@@ -12,9 +12,6 @@ public class ConversationMemory : MonoBehaviour
     [SerializeField] private bool autoSaveOnChanges = true;
     [SerializeField] private float autoSaveInterval = 30f; // Save every 30 seconds
     
-    [Header("Debug")]
-    [SerializeField] private bool enableDebugLogs = false;
-    
     // Singleton instance
     public static ConversationMemory Instance { get; private set; }
     
@@ -85,7 +82,7 @@ public class ConversationMemory : MonoBehaviour
                 conversationData = new ConversationData();
             }
         }
-        catch (System.Exception e)
+        catch (System.Exception)
         {
             conversationData = new ConversationData();
         }
@@ -107,7 +104,7 @@ public class ConversationMemory : MonoBehaviour
                 
             OnSaveCompleted?.Invoke(true);
         }
-        catch (System.Exception e)
+        catch (System.Exception)
         {
             OnSaveCompleted?.Invoke(false);
         }

@@ -36,8 +36,6 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
     [SerializeField] private AudioSource uiAudioSource;
     
     [Header("Animation Settings")]
-    [SerializeField] private float panelFadeInDuration = 0.3f;
-    [SerializeField] private float panelFadeOutDuration = 0.2f;
     [SerializeField] private float choiceStaggerDelay = 0.1f;
     
     // Core components

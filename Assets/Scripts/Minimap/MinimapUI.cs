@@ -24,7 +24,6 @@ public class MinimapUI : MonoBehaviour
 
     [Header("Visual Settings")]
     [SerializeField] private Color borderColor = Color.white;
-    [SerializeField] private float borderWidth = 2f;
     [SerializeField] private Image borderImage;
 
     [Header("Info Display")]

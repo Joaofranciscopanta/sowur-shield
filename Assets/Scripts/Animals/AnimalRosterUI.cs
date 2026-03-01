@@ -381,7 +381,7 @@ public class AnimalRosterUI : MonoBehaviour, IUIWindow
         CloseRoster();
 
         // Open AnimalInfoUI for this animal
-        AnimalInfoUI infoUI = FindObjectOfType<AnimalInfoUI>();
+        AnimalInfoUI infoUI = Object.FindFirstObjectByType<AnimalInfoUI>();
         if (infoUI != null)
         {
             infoUI.ShowAnimalInfo(animal);
@@ -435,14 +435,14 @@ public class AnimalRosterUI : MonoBehaviour, IUIWindow
 
     private void DisablePlayerMovement()
     {
-        PlayerMove player = FindObjectOfType<PlayerMove>();
+        PlayerMove player = Object.FindFirstObjectByType<PlayerMove>();
         if (player != null)
             player.DisableMovement();
     }
 
     private void EnablePlayerMovement()
     {
-        PlayerMove player = FindObjectOfType<PlayerMove>();
+        PlayerMove player = Object.FindFirstObjectByType<PlayerMove>();
         if (player != null)
             player.EnableMovement();
     }

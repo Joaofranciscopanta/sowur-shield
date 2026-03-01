@@ -176,8 +176,8 @@ public class MainMenuUI : MonoBehaviour
         bool fullscreen = PlayerPrefs.GetInt("Fullscreen", 1) == 1; // Default to fullscreen
         int savedWidth = PlayerPrefs.GetInt("ResolutionWidth", Screen.currentResolution.width);
         int savedHeight = PlayerPrefs.GetInt("ResolutionHeight", Screen.currentResolution.height);
-        int savedRefreshRate = PlayerPrefs.GetInt("RefreshRate", Screen.currentResolution.refreshRate);
-        
+        int savedRefreshRateNumerator = PlayerPrefs.GetInt("RefreshRate", (int)Screen.currentResolution.refreshRateRatio.numerator);
+
         // Apply graphics settings
         try
         {
@@ -185,14 +185,15 @@ public class MainMenuUI : MonoBehaviour
             {
                 Screen.fullScreen = fullscreen;
             }
-            
+
             // Only change resolution if it's different from current
             if (Screen.currentResolution.width != savedWidth || Screen.currentResolution.height != savedHeight)
             {
-                Screen.SetResolution(savedWidth, savedHeight, fullscreen, savedRefreshRate);
+                var refreshRate = new RefreshRate { numerator = (uint)savedRefreshRateNumerator, denominator = 1 };
+                Screen.SetResolution(savedWidth, savedHeight, fullscreen ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed, refreshRate);
             }
         }
-        catch (System.Exception e)
+        catch (System.Exception)
         {
         }
         
@@ -795,7 +796,7 @@ public class MainMenuUI : MonoBehaviour
             PlaySound(buttonClickSound);
             
         }
-        catch (System.Exception e)
+        catch (System.Exception)
         {
         }
     }
@@ -829,18 +830,18 @@ public class MainMenuUI : MonoBehaviour
             try
             {
                 // Apply the resolution change
-                Screen.SetResolution(selectedResolution.width, selectedResolution.height, Screen.fullScreen, selectedResolution.refreshRate);
-                
+                Screen.SetResolution(selectedResolution.width, selectedResolution.height, Screen.fullScreen ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed, selectedResolution.refreshRateRatio);
+
                 // Save the resolution choice
                 PlayerPrefs.SetInt("ResolutionWidth", selectedResolution.width);
                 PlayerPrefs.SetInt("ResolutionHeight", selectedResolution.height);
-                PlayerPrefs.SetInt("RefreshRate", selectedResolution.refreshRate);
+                PlayerPrefs.SetInt("RefreshRate", (int)selectedResolution.refreshRateRatio.numerator);
                 
                 // Play feedback sound
                 PlaySound(buttonClickSound);
                 
             }
-            catch (System.Exception e)
+            catch (System.Exception)
             {
             }
         }

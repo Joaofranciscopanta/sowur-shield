@@ -15,7 +15,6 @@ public class NPCCanvasDebugger : MonoBehaviour
 {
     [Header("Debug Settings")]
     [SerializeField] private bool autoFixOnStart = true;
-    [SerializeField] private bool showDebugLogs = true;
 
     private NPCDialogueInteractable npcScript;
     private Canvas promptCanvas;
