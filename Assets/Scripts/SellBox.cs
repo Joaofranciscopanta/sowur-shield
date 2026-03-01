@@ -723,20 +723,18 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
             return;
         }
 
-        // Get the inventory manager
-        Inventory inventory = FindFirstObjectByType<Inventory>();
-        if (inventory == null)
+        if (playerInventory == null)
         {
             return;
         }
 
         // Check if inventory can accept the item
-        bool canAdd = inventory.CanAdd(itemToMove, quantityToMove);
+        bool canAdd = playerInventory.CanAdd(itemToMove, quantityToMove);
 
         if (canAdd)
         {
             // Add to inventory
-            bool success = inventory.Add(itemToMove, quantityToMove);
+            bool success = playerInventory.Add(itemToMove, quantityToMove);
             if (success)
             {
                 // Remove from sellbox inventory

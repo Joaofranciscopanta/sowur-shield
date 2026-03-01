@@ -27,6 +27,10 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     private CircleCollider2D physicsCollider;
     private Animator animator;
 
+    // Cached scene references
+    private Inventory playerInventory;
+    private AnimalInfoUI animalInfoUI;
+
     // Interaction tracking
     private bool hasBeenPetToday = false;
     private float lastPetTime = -999f;
@@ -161,6 +165,12 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         // Apply initial happiness from balance config
         happiness = balance != null ? balance.initialHappiness : 50f;
 
+        // Cache scene references
+        PlayerMove playerMove = FindObjectOfType<PlayerMove>();
+        if (playerMove != null)
+            playerInventory = playerMove.GetComponent<Inventory>();
+        animalInfoUI = FindObjectOfType<AnimalInfoUI>();
+
         // Set initial sprite
         if (animalData.idleSprite != null)
         {
@@ -230,8 +240,6 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
 
     public string GetInteractionPrompt()
     {
-        // Check if player has valid food in hand
-        Inventory playerInventory = FindObjectOfType<PlayerMove>()?.GetComponent<Inventory>();
         if (playerInventory != null)
         {
             Item selectedItem = playerInventory.GetSelectedItem();
@@ -256,7 +264,6 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     {
         FacePlayer();
 
-        Inventory playerInventory = FindObjectOfType<PlayerMove>()?.GetComponent<Inventory>();
         if (playerInventory != null)
         {
             Item selectedItem = playerInventory.GetSelectedItem();
@@ -362,10 +369,9 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
 
     private void OpenAnimalInfoUI()
     {
-        AnimalInfoUI infoUI = FindObjectOfType<AnimalInfoUI>();
-        if (infoUI != null)
+        if (animalInfoUI != null)
         {
-            infoUI.ShowAnimalInfo(this);
+            animalInfoUI.ShowAnimalInfo(this);
         }
         else
         {
