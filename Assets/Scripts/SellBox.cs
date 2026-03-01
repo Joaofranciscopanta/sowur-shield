@@ -57,8 +57,10 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
 {
     [Header("Sell Box Settings")]
     public int boxInventorySize = 12;
-    public float sellMultiplier = 0.8f;
+    [SerializeField] private GameBalance balance;
     public float maxInteractionDistance = 3f; // Auto-close if player moves farther than this
+
+    private float sellMultiplier => balance != null ? balance.sellMultiplier : 0.8f;
 
     [Header("UI References")]
     public GameObject sellBoxMainPanel; // Main SellBox UI panel
@@ -115,6 +117,11 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
 
     private void Start()
     {
+        if (balance == null)
+            balance = Resources.Load<GameBalance>("GameBalance");
+        if (balance != null)
+            maxInteractionDistance = balance.sellBoxInteractionRange;
+
         SetupUI();
         playerStats = FindFirstObjectByType<PlayerStats>();
         playerInventory = FindFirstObjectByType<Inventory>();
@@ -1100,7 +1107,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     // Methods for InteractionManager compatibility
     public float GetInteractionRange()
     {
-        return maxInteractionDistance;
+        return balance != null ? balance.sellBoxInteractionRange : maxInteractionDistance;
     }
 
     public bool IsActive()

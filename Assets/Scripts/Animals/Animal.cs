@@ -11,6 +11,7 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
 {
     [Header("Animal Configuration")]
     [SerializeField] private AnimalData animalData;
+    [SerializeField] private GameBalance balance;
 
     [Header("Zone Assignment")]
     [SerializeField] private AnimalZone assignedZone;
@@ -38,7 +39,7 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     // Production tracking
     private int lastProductionDay = -1;
 
-    // Happiness tracking (0-100, starts at 50)
+    // Happiness tracking — initial value set in Start() from GameBalance
     private float happiness = 50f;
 
     // Particle system
@@ -153,6 +154,13 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
             Debug.LogWarning($"Animal {animalData.animalName} has no zone assigned!");
         }
 
+        // Load GameBalance from Resources if not assigned in Inspector
+        if (balance == null)
+            balance = Resources.Load<GameBalance>("GameBalance");
+
+        // Apply initial happiness from balance config
+        happiness = balance != null ? balance.initialHappiness : 50f;
+
         // Set initial sprite
         if (animalData.idleSprite != null)
         {
@@ -264,7 +272,7 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
 
     public float GetInteractionRange()
     {
-        return 2f; // Standard interaction range
+        return balance != null ? balance.defaultInteractionRange : 2f;
     }
 
     public bool CanInteract()
@@ -314,7 +322,7 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         if (!hasBeenPetToday)
         {
             hasBeenPetToday = true;
-            ModifyHappiness(5f);
+            ModifyHappiness(balance != null ? balance.petHappinessBonus : 5f);
             SpawnHeartParticle();
         }
         else
@@ -397,7 +405,7 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         }
 
         foodEatenToday++;
-        ModifyHappiness(3f);
+        ModifyHappiness(balance != null ? balance.feedHappinessBonus : 3f);
 
         // Check if daily requirements are met
         CheckFoodRequirements();
@@ -554,7 +562,10 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
             lastProductionDay = prodDay;
 
         if (gameData.worldData.worldCounters.TryGetValue($"{prefix}_happiness", out int savedHappiness))
-            happiness = Mathf.Clamp(savedHappiness, 0f, 100f);
+        {
+            float ceil = balance != null ? balance.happinessCeiling : 100f;
+            happiness = Mathf.Clamp(savedHappiness, 0f, ceil);
+        }
     }
 
     #endregion
@@ -567,12 +578,19 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     /// <summary>
     /// Happiness multiplier applied to stat calculations (0.5x at 0 happiness, 1.5x at 100).
     /// </summary>
-    public float GetHappinessMultiplier() => 0.5f + (happiness / 100f);
+    public float GetHappinessMultiplier()
+    {
+        float min = balance != null ? balance.happinessMultiplierMin : 0.5f;
+        float max = balance != null ? balance.happinessMultiplierMax : 1.5f;
+        float ceil = balance != null ? balance.happinessCeiling : 100f;
+        return min + (happiness / ceil) * (max - min);
+    }
 
     /// <summary>Adjust happiness by amount, clamped to 0-100.</summary>
     public void ModifyHappiness(float amount)
     {
-        happiness = Mathf.Clamp(happiness + amount, 0f, 100f);
+        float ceil = balance != null ? balance.happinessCeiling : 100f;
+        happiness = Mathf.Clamp(happiness + amount, 0f, ceil);
     }
 
     /// <summary>
@@ -582,18 +600,20 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     /// </summary>
     private void ApplyDailyHappinessDecay()
     {
+        float decayNoPet  = balance != null ? balance.dailyDecayNoPet  : 0.5f;
+        float decayNoFeed = balance != null ? balance.dailyDecayNoFeed : 1.0f;
+        float floor       = balance != null ? balance.happinessFloor   : 20f;
+
         float decay = 0f;
 
         if (!hasBeenPetToday)
-            decay -= 0.5f;
+            decay -= decayNoPet;
 
         if (needsFeeding)
-            decay -= 1.0f;
+            decay -= decayNoFeed;
 
         if (decay < 0f)
-        {
-            happiness = Mathf.Max(20f, happiness + decay);
-        }
+            happiness = Mathf.Max(floor, happiness + decay);
     }
 
     #endregion
@@ -630,7 +650,8 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         if (amount <= 0) return;
 
         foodEatenToday += amount;
-        ModifyHappiness(3f * amount);
+        float bonusPerUnit = balance != null ? balance.autoFeedHappinessBonusPerUnit : 3f;
+        ModifyHappiness(bonusPerUnit * amount);
         CheckFoodRequirements();
 
         // Trigger eating animation

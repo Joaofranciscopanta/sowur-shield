@@ -5,9 +5,10 @@ using System.Linq;
 public class InteractionManager : MonoBehaviour
 {
     public static InteractionManager Instance { get; private set; }
-    
+
     [Header("Settings")]
     [SerializeField] private float interactionCheckInterval = 0.1f;
+    [SerializeField] private GameBalance balance;
     
     private List<IInteractable> registeredInteractables = new List<IInteractable>();
     private IInteractable currentClosestInteractable = null;
@@ -26,7 +27,11 @@ public class InteractionManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
+
+        if (balance == null)
+            balance = Resources.Load<GameBalance>("GameBalance");
     }
     
     private void Start()
@@ -168,23 +173,18 @@ public class InteractionManager : MonoBehaviour
     
     private float GetInteractionRange(IInteractable interactable)
     {
-        if (interactable is NPCDialogueInteractable npc)
-        {
-            return npc.GetInteractionRange();
-        }
+        float defaultRange = balance != null ? balance.defaultInteractionRange : 2f;
 
-        if (interactable is SellBox)
-        {
-            return 2.0f; // Default SellBox interaction range
-        }
+        if (interactable is NPCDialogueInteractable npc)
+            return npc.GetInteractionRange();
+
+        if (interactable is SellBox sellBox)
+            return sellBox.GetInteractionRange();
 
         if (interactable is Animal animal)
-        {
             return animal.GetInteractionRange();
-        }
 
-        // Default range for other interactables
-        return 2.0f;
+        return defaultRange;
     }
     
     private void SetInteractablePromptVisibility(IInteractable interactable, bool visible)

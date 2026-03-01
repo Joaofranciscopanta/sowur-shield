@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 public partial class CursorController : MonoBehaviour {
     public DualGridTilemap dualGridTilemap;
     public Transform playerTransform;
+    [SerializeField] private GameBalance balance;
     public float maxDistance = 2f;
 
     [Header("Solo")]
@@ -27,6 +28,11 @@ public partial class CursorController : MonoBehaviour {
     private DialogueTreeUI dialogueUI;
 
     void Start() {
+        if (balance == null)
+            balance = Resources.Load<GameBalance>("GameBalance");
+        if (balance != null)
+            maxDistance = balance.maxToolDistance;
+
         mouse = Mouse.current;
         mainCamera = Camera.main;
 
