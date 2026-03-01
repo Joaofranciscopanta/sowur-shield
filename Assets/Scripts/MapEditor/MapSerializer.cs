@@ -125,7 +125,7 @@ public class MapSerializer : MonoBehaviour
 
             
         }
-        catch (System.Exception)
+        catch (System.Exception e)
         {
             string errorMsg = $"Failed to save map: {e.Message}";
             OnError?.Invoke(errorMsg);
@@ -168,7 +168,7 @@ public class MapSerializer : MonoBehaviour
             
             return mapData;
         }
-        catch (System.Exception)
+        catch (System.Exception e)
         {
             string errorMsg = $"Failed to load map: {e.Message}";
             OnError?.Invoke(errorMsg);
@@ -197,7 +197,7 @@ public class MapSerializer : MonoBehaviour
         {
 
         }
-        
+
         return mapFiles;
     }
     
@@ -227,7 +227,7 @@ public class MapSerializer : MonoBehaviour
             
 
         }
-        catch (System.Exception)
+        catch (System.Exception e)
         {
             string errorMsg = $"Failed to delete map: {e.Message}";
             OnError?.Invoke(errorMsg);
@@ -257,7 +257,7 @@ public class MapSerializer : MonoBehaviour
 
         }
     }
-    
+
     private void CleanupOldBackups(string mapName)
     {
         try
@@ -283,7 +283,7 @@ public class MapSerializer : MonoBehaviour
 
         }
     }
-    
+
     private void AutoSaveCurrentMap()
     {
         if (mapEditor?.CurrentMapData == null) return;
@@ -319,7 +319,7 @@ public class MapSerializer : MonoBehaviour
 
         }
     }
-    
+
     private void SaveAsScriptableObject(MapData mapData, string path)
     {
 #if UNITY_EDITOR
@@ -357,7 +357,7 @@ public class MapSerializer : MonoBehaviour
 
         }
     }
-    
+
     private MapData LoadFromJSON(string path)
     {
         try
@@ -370,7 +370,6 @@ public class MapSerializer : MonoBehaviour
         }
         catch (System.Exception)
         {
-
             return null;
         }
     }
@@ -446,7 +445,7 @@ public class MapSerializer : MonoBehaviour
             
 
         }
-        catch (System.Exception)
+        catch (System.Exception e)
         {
             OnError?.Invoke($"Export failed: {e.Message}");
         }
@@ -464,7 +463,7 @@ public class MapSerializer : MonoBehaviour
             
             return LoadFromJSON(importPath);
         }
-        catch (System.Exception)
+        catch (System.Exception e)
         {
             OnError?.Invoke($"Import failed: {e.Message}");
             return null;

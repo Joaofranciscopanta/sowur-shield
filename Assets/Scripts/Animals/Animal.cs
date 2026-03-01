@@ -171,10 +171,10 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         happiness = balance != null ? balance.initialHappiness : 50f;
 
         // Cache scene references
-        PlayerMove playerMove = Object.FindFirstObjectByType<PlayerMove>();
+        PlayerMove playerMove = UnityEngine.Object.FindFirstObjectByType<PlayerMove>();
         if (playerMove != null)
             playerInventory = playerMove.GetComponent<SowurShield.Inventory.Inventory>();
-        animalInfoUI = Object.FindFirstObjectByType<AnimalInfoUI>();
+        animalInfoUI = UnityEngine.Object.FindFirstObjectByType<AnimalInfoUI>();
 
         // Set initial sprite
         if (animalData.idleSprite != null)
