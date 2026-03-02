@@ -127,7 +127,7 @@ public class BattleResultsUI : MonoBehaviour
         // Set title
         if (victoryTitleText != null)
         {
-            victoryTitleText.text = "🎉 VICTORY! 🎉";
+            victoryTitleText.text = "*** VICTORY! ***";
         }
 
         // Display battle stats
@@ -159,7 +159,7 @@ public class BattleResultsUI : MonoBehaviour
         // Set title
         if (defeatTitleText != null)
         {
-            defeatTitleText.text = "💀 DEFEAT 💀";
+            defeatTitleText.text = "-- DEFEAT --";
         }
 
         // Display battle stats

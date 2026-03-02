@@ -11,6 +11,14 @@ public class StageButton : MonoBehaviour
 
     public void OnClick()
     {
+        StageManager.LoadAllStages();
+
+        StageData stage = StageManager.GetStageByName(stageName);
+        if (stage != null)
+            StageManager.SetSelectedStage(stage);
+        else
+            Debug.LogWarning($"[StageButton] Stage '{stageName}' not found in StageManager.");
+
         TeamAssemblerUI.Instance.OpenAssembler();
         WorldMap.SetActive(false);
     }

@@ -250,11 +250,14 @@ animator.SetBool("isWalking", moveInput != Vector2.zero);
         moveInput = Vector2.zero;
         rb.linearVelocity = Vector2.zero; // Stop immediately
 
-        // Update animator to idle
+        // Update animator to idle (guard against missing parameters)
         if (animator != null)
         {
-            animator.SetFloat("Speed", 0f);
-            animator.SetBool("IsMoving", false);
+            foreach (var param in animator.parameters)
+            {
+                if (param.name == "Speed")    animator.SetFloat("Speed", 0f);
+                if (param.name == "IsMoving") animator.SetBool("IsMoving", false);
+            }
         }
 
     }

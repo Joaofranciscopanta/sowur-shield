@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e0cf74c453b9f84c9be5ffb4f05d783, type: 3}
+  m_Name: Stage_002_FlowerGarden
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
+  stageName: Flower Garden
+  stageNumber: 2
+  description: Colourful flowers hide small but persistent pests.
+  theme: 9
+  backgroundSprite: {fileID: 3713572094689839458, guid: 6810e0b877b2a3d45a5d957a943f8a60, type: 3}
+  ambientColor: {r: 0.6, g: 0.85, b: 0.4, a: 1}
+  difficulty: 1
+  recommendedTeamSize: 1
+  enemyStatMultiplier: 1
+  enemySpawns:
+  - enemy: {fileID: 11400000, guid: 7b26a801f968b604caa747154c569112, type: 2}
+    minCount: 1
+    maxCount: 2
+    spawnWeight: 2
+  - enemy: {fileID: 11400000, guid: 67824cc8fff4674479374452b6e9a06e, type: 2}
+    minCount: 1
+    maxCount: 2
+    spawnWeight: 2
+  minTotalEnemies: 1
+  maxTotalEnemies: 3
+  bossEnemy: {fileID: 0}
+  lootTable: []
+  baseGoldReward: 70
+  goldVariance: 0.2
+  baseExperienceReward: 35
+  prerequisiteStage: {fileID: 0}
+  minimumPlayerLevel: 1
+  unlockedByDefault: 0
+  weatherEffect: None
+  timeOfDay: Day

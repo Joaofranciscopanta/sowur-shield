@@ -102,14 +102,21 @@ public class TeamAssemblerUI : MonoBehaviour
     /// </summary>
     public void OpenAssembler()
     {
-        // Set zone info
-        TeamAssemblerData.Instance.zoneName = "Forest";
-        TeamAssemblerData.Instance.zoneDifficulty = 1;
+        // Clear previous team data so animals can be placed fresh
+        TeamAssemblerData.Instance.ClearTeam();
 
-        // if (zoneNameText != null)
-        // {
-        //     zoneNameText.text = $"Assemble Team - {this.zoneName}";
-        // }
+        // Set zone info from StageManager (set by StageButton.OnClick)
+        StageData selectedStage = StageManager.GetSelectedStage();
+        if (selectedStage != null)
+        {
+            TeamAssemblerData.Instance.zoneName = selectedStage.stageName;
+            TeamAssemblerData.Instance.zoneDifficulty = selectedStage.difficulty;
+        }
+
+        if (zoneNameText != null)
+        {
+            zoneNameText.text = $"Zone: {TeamAssemblerData.Instance.zoneName}";
+        }
 
         // Find all animals in the scene
         FindAvailableAnimals();
@@ -125,9 +132,6 @@ public class TeamAssemblerUI : MonoBehaviour
         {
             assemblerPanel.SetActive(true);
         }
-        else
-        {
-        }
 
         // Show cursor and unlock it for UI interaction
         Cursor.visible = true;
@@ -138,6 +142,65 @@ public class TeamAssemblerUI : MonoBehaviour
 
         // Update UI
         UpdateInfoDisplay();
+    }
+
+    /// <summary>
+    /// Fix panel layout so AnimalSelectionPanel is on the left half
+    /// and GridPanel is on the right half, both filling the AssemblerPanel.
+    /// </summary>
+    private void FixPanelLayout()
+    {
+        if (assemblerPanel == null) return;
+
+        // AssemblerPanel — full screen stretch
+        SetAnchors(assemblerPanel, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
+
+        // AnimalSelectionPanel — left 42%
+        if (animalSelectionPanel != null)
+            SetAnchors(animalSelectionPanel, new Vector2(0f, 0f), new Vector2(0.42f, 1f),
+                       new Vector2(10, 55), new Vector2(-5, -10));
+
+        // GridPanel — middle 30% (grid slots go here)
+        if (gridPanel != null)
+            SetAnchors(gridPanel, new Vector2(0.42f, 0f), new Vector2(0.72f, 1f),
+                       new Vector2(5, 55), new Vector2(-5, -10));
+
+        // GridContainer — centered inside GridPanel, fixed size, no ContentSizeFitter
+        if (gridContainer != null)
+        {
+            ContentSizeFitter csf = gridContainer.GetComponent<ContentSizeFitter>();
+            if (csf != null) csf.enabled = false;
+
+            RectTransform r = gridContainer as RectTransform;
+            if (r != null)
+            {
+                r.anchorMin = new Vector2(0.5f, 0.5f);
+                r.anchorMax = new Vector2(0.5f, 0.5f);
+                r.pivot = new Vector2(0.5f, 0.5f);
+                r.anchoredPosition = Vector2.zero;
+                // Size set later by SetupGrid after we know slot count
+            }
+        }
+
+        // InfoPanel — right 28%
+        if (gridPanel != null)
+        {
+            // Find InfoPanel as sibling of gridPanel
+            Transform info = assemblerPanel.transform.Find("InfoPanel");
+            if (info != null)
+                SetAnchors(info.gameObject, new Vector2(0.72f, 0f), new Vector2(1f, 1f),
+                           new Vector2(5, 55), new Vector2(-10, -10));
+        }
+    }
+
+    private void SetAnchors(GameObject go, Vector2 anchorMin, Vector2 anchorMax, Vector2 offsetMin, Vector2 offsetMax)
+    {
+        RectTransform r = go.GetComponent<RectTransform>();
+        if (r == null) return;
+        r.anchorMin = anchorMin;
+        r.anchorMax = anchorMax;
+        r.offsetMin = offsetMin;
+        r.offsetMax = offsetMax;
     }
 
     /// <summary>
@@ -181,16 +244,46 @@ public class TeamAssemblerUI : MonoBehaviour
         }
         gridSlots.Clear();
 
+        // Ensure GridContainer has a Grid Layout Group
+        GridLayoutGroup glg = gridContainer.GetComponent<GridLayoutGroup>();
+        if (glg == null) glg = gridContainer.gameObject.AddComponent<GridLayoutGroup>();
+        glg.cellSize = new Vector2(80, 80);
+        glg.spacing = new Vector2(5, 5);
+        glg.startCorner = GridLayoutGroup.Corner.UpperLeft;
+        glg.startAxis = GridLayoutGroup.Axis.Horizontal;
+        glg.childAlignment = TextAnchor.UpperLeft;
+        glg.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        glg.constraintCount = playerColumns; // 3 columns
+
+        // Resize GridContainer to fit all slots
+        RectTransform containerRect = gridContainer as RectTransform;
+        if (containerRect != null)
+        {
+            float totalWidth = playerColumns * 80 + (playerColumns - 1) * 5;
+            float totalHeight = gridHeight * 80 + (gridHeight - 1) * 5;
+            containerRect.sizeDelta = new Vector2(totalWidth, totalHeight);
+        }
+
         // Create grid slots (only player side - columns 6-8)
+        // Player columns are the rightmost ones: from (gridWidth - playerColumns) to (gridWidth - 1)
         int playerStartColumn = gridWidth - playerColumns;
 
-        for (int y = 0; y < gridHeight; y++)
+        for (int y = gridHeight - 1; y >= 0; y--) // top to bottom so Grid Layout Group rows are correct
         {
             for (int x = playerStartColumn; x < gridWidth; x++)
             {
                 GameObject slotObj = Instantiate(gridSlotPrefab, gridContainer);
-                GridPositionSlot slot = slotObj.GetComponent<GridPositionSlot>();
+                slotObj.name = $"Slot_{x}_{y}";
 
+                // Ensure LayoutElement so Grid Layout Group sizes the slot correctly
+                LayoutElement le = slotObj.GetComponent<LayoutElement>();
+                if (le == null) le = slotObj.AddComponent<LayoutElement>();
+                le.preferredWidth = 80;
+                le.preferredHeight = 80;
+                le.minWidth = 80;
+                le.minHeight = 80;
+
+                GridPositionSlot slot = slotObj.GetComponent<GridPositionSlot>();
                 if (slot != null)
                 {
                     slot.Initialize(new Vector2Int(x, y));
@@ -287,13 +380,12 @@ public class TeamAssemblerUI : MonoBehaviour
                 }
             }
 
-            // ALWAYS set a proper width for the container (400px for animal cards)
-            containerRect.sizeDelta = new Vector2(400f, containerRect.sizeDelta.y);
-
-            // Set anchor/pivot for top-left positioning
+            // Content stretches full width of viewport, grows downward
             containerRect.anchorMin = new Vector2(0, 1);
-            containerRect.anchorMax = new Vector2(0, 1);
-            containerRect.pivot = new Vector2(0, 1);
+            containerRect.anchorMax = new Vector2(1, 1);
+            containerRect.pivot = new Vector2(0.5f, 1);
+            containerRect.anchoredPosition = Vector2.zero;
+            containerRect.sizeDelta = new Vector2(0, containerRect.sizeDelta.y); // width 0 = stretch
 
             UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
 
@@ -485,71 +577,78 @@ public class TeamAssemblerUI : MonoBehaviour
     /// </summary>
     private void OnFeedAllClicked()
     {
+        if (TeamAssemblerData.Instance.team.Count == 0)
+        {
+            Debug.LogWarning("[TeamAssembler] No animals in team — drag animals to the grid first.");
+            return;
+        }
 
-        // Get food requirements
+        // Get food requirements for unfed animals in team
         Dictionary<string, int> requirements = TeamAssemblerData.Instance.GetTotalFoodRequirements();
 
-        // Find player inventory (on Player GameObject)
+        // If no food needed (all already fed), just update UI
+        if (requirements.Count == 0)
+        {
+            foreach (var positioned in TeamAssemblerData.Instance.team)
+                positioned.isFed = true;
+            UpdateInfoDisplay();
+            return;
+        }
+
+        // Find player inventory
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player == null)
         {
+            Debug.LogWarning("[TeamAssembler] Player not found.");
             return;
         }
 
         SowurShield.Inventory.Inventory playerInventory = player.GetComponent<SowurShield.Inventory.Inventory>();
         if (playerInventory == null)
         {
+            Debug.LogWarning("[TeamAssembler] Player has no Inventory component.");
             return;
         }
 
-        // Get all items from inventory to find by name
+        // Resolve item references and validate stock
         Dictionary<string, Item> foodItems = new Dictionary<string, Item>();
-
-        // Validate we have all required food
         bool hasAllFood = true;
+
         foreach (var req in requirements)
         {
-            // Find item by name from all loaded items
             Item foodItem = FindItemByName(req.Key);
-
             if (foodItem == null)
             {
+                Debug.LogWarning($"[TeamAssembler] Item not found: '{req.Key}'. Check that itemName in AnimalData matches exactly.");
                 hasAllFood = false;
                 continue;
             }
 
-            foodItems[req.Key] = foodItem;
-
             int count = playerInventory.GetItemCount(foodItem);
             if (count < req.Value)
             {
+                Debug.LogWarning($"[TeamAssembler] Not enough '{req.Key}': need {req.Value}, have {count}.");
                 hasAllFood = false;
+            }
+            else
+            {
+                foodItems[req.Key] = foodItem;
             }
         }
 
         if (!hasAllFood)
-        {
-            // TODO: Show error message to player
             return;
-        }
 
-        // Deduct food from inventory and mark animals as fed
+        // Deduct food and mark all as fed
         foreach (var req in requirements)
         {
             if (foodItems.ContainsKey(req.Key))
-            {
                 playerInventory.RemoveItem(foodItems[req.Key], req.Value);
-            }
         }
 
-        // Mark all animals as fed
         foreach (var positioned in TeamAssemblerData.Instance.team)
-        {
             positioned.isFed = true;
-        }
 
-
-        // Update UI
         UpdateInfoDisplay();
     }
 
@@ -558,14 +657,23 @@ public class TeamAssemblerUI : MonoBehaviour
     /// </summary>
     private Item FindItemByName(string itemName)
     {
-        // Load all InventoryItem assets
-        Item[] allItems = Resources.LoadAll<Item>("");
-
-        foreach (Item item in allItems)
+        // Search all known resource subfolders
+        string[] searchPaths = new string[]
         {
-            if (item.itemName == itemName)
+            "FarmingData/Seeds",
+            "FarmingData/Crops",
+            "Items",
+            "FarmingData",
+            ""
+        };
+
+        foreach (string path in searchPaths)
+        {
+            Item[] items = Resources.LoadAll<Item>(path);
+            foreach (Item item in items)
             {
-                return item;
+                if (item.itemName == itemName)
+                    return item;
             }
         }
 
@@ -600,19 +708,25 @@ public class TeamAssemblerUI : MonoBehaviour
     /// </summary>
     private void OnStartBattleClicked()
     {
-        if (!TeamAssemblerData.Instance.IsTeamValid())
+        int teamSize = TeamAssemblerData.Instance.team.Count;
+        bool allFed  = TeamAssemblerData.Instance.AreAllAnimalsFed();
+        bool valid   = TeamAssemblerData.Instance.IsTeamValid();
+
+        Debug.Log($"[TeamAssembler] Start Battle clicked — team={teamSize}, allFed={allFed}, valid={valid}");
+
+        foreach (var p in TeamAssemblerData.Instance.team)
+            Debug.Log($"  • {p.GetDisplayName()} at {p.gridPosition}, isFed={p.isFed}, animalData={p.animalData?.animalName ?? "NULL"}");
+
+        if (!valid)
         {
+            if (teamSize == 0)
+                Debug.LogWarning("[TeamAssembler] Cannot start: no animals in team.");
+            else if (!allFed)
+                Debug.LogWarning("[TeamAssembler] Cannot start: not all animals are fed. Use Feed All or feed manually.");
             return;
         }
 
-
-        // DEBUG: Check team before scene transition
-        foreach (var positioned in TeamAssemblerData.Instance.team)
-        {
-            string animalName = positioned.GetDisplayName();
-        }
-
-        // Load combat scene
+        Debug.Log($"[TeamAssembler] Loading scene '{combatSceneName}'...");
         SceneManager.LoadScene(combatSceneName);
     }
 

@@ -131,6 +131,19 @@ public static class StageManager
     }
 
     /// <summary>
+    /// Get a stage by name (searches the cache)
+    /// </summary>
+    public static StageData GetStageByName(string name)
+    {
+        foreach (StageData stage in stageCache.Values)
+        {
+            if (stage != null && stage.stageName == name)
+                return stage;
+        }
+        return null;
+    }
+
+    /// <summary>
     /// Get total registered stages
     /// </summary>
     public static int GetTotalStages()

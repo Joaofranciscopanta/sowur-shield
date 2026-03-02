@@ -105,7 +105,7 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
             AnimalCombatStats stats = animal.GetCombatStats();
             if (stats != null)
             {
-                happinessText.text = $"❤️ {stats.happiness:F0}%";
+                happinessText.text = $"Happiness: {stats.happiness:F0}%";
             }
         }
 

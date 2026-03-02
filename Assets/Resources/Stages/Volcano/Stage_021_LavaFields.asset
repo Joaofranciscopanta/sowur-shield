@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e0cf74c453b9f84c9be5ffb4f05d783, type: 3}
+  m_Name: Stage_021_LavaFields
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
+  stageName: Lava Fields
+  stageNumber: 21
+  description: The ground burns. Lava Salamanders are the least of your worries.
+  theme: 7
+  backgroundSprite: {fileID: 0}
+  ambientColor: {r: 0.8, g: 0.3, b: 0.1, a: 1}
+  difficulty: 9
+  recommendedTeamSize: 4
+  enemyStatMultiplier: 2.2
+  enemySpawns:
+  - enemy: {fileID: 11400000, guid: c3ddba54ffebcb448af8cfe6a340d0fe, type: 2}
+    minCount: 1
+    maxCount: 3
+    spawnWeight: 3
+  - enemy: {fileID: 11400000, guid: 07a759d6b1af677499dafcd003e39564, type: 2}
+    minCount: 1
+    maxCount: 1
+    spawnWeight: 1
+  minTotalEnemies: 2
+  maxTotalEnemies: 3
+  bossEnemy: {fileID: 0}
+  lootTable: []
+  baseGoldReward: 370
+  goldVariance: 0.2
+  baseExperienceReward: 185
+  prerequisiteStage: {fileID: 0}
+  minimumPlayerLevel: 16
+  unlockedByDefault: 0
+  weatherEffect: None
+  timeOfDay: Day

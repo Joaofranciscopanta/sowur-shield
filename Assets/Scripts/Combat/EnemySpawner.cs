@@ -1,0 +1,245 @@
+using UnityEngine;
+using System.Collections.Generic;
+
+namespace SowurShield.Combat
+{
+
+/// <summary>
+/// Spawns enemy units on the combat grid at battle start.
+/// Reads enemy configuration from StageManager.GetSelectedStage().
+/// Falls back to 2 hardcoded test enemies if no stage is selected.
+///
+/// SETUP IN UNITY:
+/// 1. Add this script to any GameObject in the Combat scene
+/// 2. No additional configuration required
+/// 3. Enemies spawn at 0.6s (after player team at 0.5s, before TurnManager at 1.0s)
+/// </summary>
+public class EnemySpawner : MonoBehaviour
+{
+    [Header("Debug")]
+    [SerializeField] private bool showDebugLogs = true;
+
+    // Pre-defined enemy spawn positions (columns 0-5, left side)
+    private static readonly Vector2Int[] EnemyPositions = new Vector2Int[]
+    {
+        new Vector2Int(2, 2),
+        new Vector2Int(4, 2),
+        new Vector2Int(1, 1),
+        new Vector2Int(3, 3),
+        new Vector2Int(5, 1),
+        new Vector2Int(0, 2),
+        new Vector2Int(2, 0),
+        new Vector2Int(4, 4),
+    };
+
+    private void Start()
+    {
+        // 0.6f: after player team (0.5f), before TurnManager (1.0f)
+        Invoke(nameof(SpawnEnemies), 0.6f);
+    }
+
+    private void SpawnEnemies()
+    {
+        Debug.Log("[EnemySpawner] SpawnEnemies() called");
+
+        if (GridManager.Instance == null)
+        {
+            Debug.LogError("[EnemySpawner] GridManager.Instance is null!");
+            return;
+        }
+
+        StageData stage = StageManager.GetSelectedStage();
+        if (stage == null || stage.enemySpawns == null || stage.enemySpawns.Count == 0)
+        {
+            Debug.LogWarning("[EnemySpawner] No stage selected or stage has no enemy spawns — using fallback test enemies.");
+            SpawnFallbackEnemies();
+            return;
+        }
+
+        SpawnFromStage(stage);
+    }
+
+    private void SpawnFromStage(StageData stage)
+    {
+        int totalEnemies = Random.Range(stage.minTotalEnemies, stage.maxTotalEnemies + 1);
+        totalEnemies = Mathf.Clamp(totalEnemies, 1, EnemyPositions.Length);
+
+        if (showDebugLogs)
+            Debug.Log($"[EnemySpawner] Stage '{stage.stageName}' — spawning {totalEnemies} enemies (difficulty {stage.difficulty})");
+
+        // Build weighted spawn pool
+        List<EnemyData> pool = BuildSpawnPool(stage.enemySpawns, totalEnemies);
+
+        int posIndex = 0;
+        int spawned = 0;
+        foreach (EnemyData enemyData in pool)
+        {
+            if (posIndex >= EnemyPositions.Length) break;
+
+            Vector2Int pos = GetNextEmptyEnemyPosition(ref posIndex);
+            if (pos.x < 0) break; // No free positions
+
+            bool ok = SpawnEnemy(enemyData, pos, stage.difficulty);
+            if (ok) spawned++;
+        }
+
+        if (showDebugLogs)
+            Debug.Log($"[EnemySpawner] Spawned {spawned}/{pool.Count} enemies from stage data.");
+    }
+
+    /// <summary>
+    /// Build a flat list of EnemyData to spawn, respecting weights and min/max counts.
+    /// </summary>
+    private List<EnemyData> BuildSpawnPool(List<EnemySpawn> spawns, int totalCount)
+    {
+        List<EnemyData> result = new List<EnemyData>();
+
+        // First, respect minimum counts
+        foreach (var spawn in spawns)
+        {
+            if (spawn.enemy == null) continue;
+            int min = Mathf.Clamp(spawn.minCount, 0, totalCount - result.Count);
+            for (int i = 0; i < min && result.Count < totalCount; i++)
+                result.Add(spawn.enemy);
+        }
+
+        // Then fill remaining slots by weight
+        float totalWeight = 0f;
+        foreach (var spawn in spawns)
+        {
+            if (spawn.enemy != null) totalWeight += spawn.spawnWeight;
+        }
+
+        while (result.Count < totalCount && totalWeight > 0f)
+        {
+            float roll = Random.Range(0f, totalWeight);
+            float cumulative = 0f;
+            foreach (var spawn in spawns)
+            {
+                if (spawn.enemy == null) continue;
+                cumulative += spawn.spawnWeight;
+                if (roll <= cumulative)
+                {
+                    // Respect max count for this enemy type
+                    int currentCount = result.FindAll(e => e == spawn.enemy).Count;
+                    if (currentCount < spawn.maxCount)
+                        result.Add(spawn.enemy);
+                    break;
+                }
+            }
+
+            // Safety: if we can't fill any more (all at max), break
+            bool anyAvailable = false;
+            foreach (var spawn in spawns)
+            {
+                if (spawn.enemy == null) continue;
+                int c = result.FindAll(e => e == spawn.enemy).Count;
+                if (c < spawn.maxCount) { anyAvailable = true; break; }
+            }
+            if (!anyAvailable) break;
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Spawn 2 generic test enemies when no stage data is available.
+    /// </summary>
+    private void SpawnFallbackEnemies()
+    {
+        SpawnGenericEnemy("Enemy_1", new Vector2Int(2, 2), 100f, 10f, 5f, 10f);
+        SpawnGenericEnemy("Enemy_2", new Vector2Int(4, 2), 80f, 12f, 4f, 12f);
+    }
+
+    private bool SpawnEnemy(EnemyData enemyData, Vector2Int pos, int difficulty)
+    {
+        Debug.Log($"[EnemySpawner] Spawning '{enemyData.enemyName}' at {pos}");
+
+        GameObject unitObj = new GameObject(enemyData.enemyName);
+        unitObj.transform.localScale = Vector3.one;
+
+        // ── SpriteRenderer ────────────────────────────────────────────────────
+        SpriteRenderer sr = unitObj.AddComponent<SpriteRenderer>();
+        sr.sprite       = enemyData.sprite;
+        sr.sortingOrder = 10;
+
+        // ── CombatUnit ────────────────────────────────────────────────────────
+        CombatUnit combatUnit = unitObj.AddComponent<CombatUnit>();
+        combatUnit.isPlayerUnit = false;
+
+        var (hp, atk, def, spd) = enemyData.GetScaledStats(difficulty);
+        combatUnit.InitializeAsEnemy(enemyData.enemyName, hp, atk, def, spd);
+
+        // Normalize sprite size
+        if (enemyData.sprite != null)
+        {
+            float targetHeight = 0.8f;
+            float worldHeight  = enemyData.sprite.rect.height / enemyData.sprite.pixelsPerUnit;
+            float scale        = worldHeight > 0 ? targetHeight / worldHeight : 1f;
+            unitObj.transform.localScale = Vector3.one * scale;
+        }
+
+        combatUnit.visualObject = unitObj;
+
+        // ── Place on grid ─────────────────────────────────────────────────────
+        bool placed = GridManager.Instance.PlaceUnitAt(combatUnit, pos);
+        if (!placed)
+        {
+            Destroy(unitObj);
+            Debug.LogError($"[EnemySpawner] PlaceUnitAt({pos}) failed for '{enemyData.enemyName}'.");
+            return false;
+        }
+
+        if (showDebugLogs)
+            Debug.Log($"[EnemySpawner] Spawned '{enemyData.enemyName}' at {pos}, hp={hp} atk={atk} def={def} spd={spd}");
+        return true;
+    }
+
+    private bool SpawnGenericEnemy(string name, Vector2Int pos, float hp, float atk, float def, float spd)
+    {
+        if (!GridManager.Instance.IsValidPosition(pos.x, pos.y))
+        {
+            Debug.LogError($"[EnemySpawner] Invalid fallback position {pos}.");
+            return false;
+        }
+
+        GridCell cell = GridManager.Instance.GetCell(pos);
+        if (cell == null || !cell.IsEmpty())
+        {
+            Debug.LogWarning($"[EnemySpawner] Fallback position {pos} is occupied, skipping '{name}'.");
+            return false;
+        }
+
+        GameObject unitObj = new GameObject(name);
+        unitObj.transform.localScale = Vector3.one * 0.5f;
+
+        CombatUnit combatUnit = unitObj.AddComponent<CombatUnit>();
+        combatUnit.isPlayerUnit = false;
+        combatUnit.InitializeAsEnemy(name, hp, atk, def, spd);
+
+        bool placed = GridManager.Instance.PlaceUnitAt(combatUnit, pos);
+        if (!placed)
+        {
+            Destroy(unitObj);
+            Debug.LogError($"[EnemySpawner] Fallback PlaceUnitAt({pos}) failed for '{name}'.");
+            return false;
+        }
+
+        Debug.Log($"[EnemySpawner] Fallback enemy '{name}' spawned at {pos}.");
+        return true;
+    }
+
+    private Vector2Int GetNextEmptyEnemyPosition(ref int posIndex)
+    {
+        while (posIndex < EnemyPositions.Length)
+        {
+            Vector2Int pos = EnemyPositions[posIndex++];
+            GridCell cell = GridManager.Instance.GetCell(pos);
+            if (cell != null && cell.IsEmpty())
+                return pos;
+        }
+        return new Vector2Int(-1, -1); // No position found
+    }
+}
+
+} // namespace SowurShield.Combat

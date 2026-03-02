@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using System.Linq;
 using SowurShield.Combat;
 
 namespace SowurShield.Editor
@@ -31,6 +32,17 @@ public class StageGeneratorWindow : EditorWindow
     private int stageNumber = 1;
     private StageTheme stageTheme = StageTheme.Forest;
     private int stageDifficulty = 1;
+
+    // Enemy spawn configuration (SingleStage mode only)
+    private List<EnemySpawnConfig> enemySpawnConfigs = new List<EnemySpawnConfig>();
+
+    private class EnemySpawnConfig
+    {
+        public EnemyData enemy;
+        public int minCount = 1;
+        public int maxCount = 3;
+        public float spawnWeight = 1f;
+    }
 
     // Progression settings
     private int progressionCount = 5;
@@ -133,6 +145,61 @@ public class StageGeneratorWindow : EditorWindow
         stageNumber = EditorGUILayout.IntField("Stage Number", stageNumber);
         stageTheme = (StageTheme)EditorGUILayout.EnumPopup("Theme", stageTheme);
         stageDifficulty = EditorGUILayout.IntSlider("Difficulty", stageDifficulty, 1, 10);
+
+        EditorGUILayout.Space(6);
+        DrawEnemySpawns();
+    }
+
+    private void DrawEnemySpawns()
+    {
+        EditorGUILayout.LabelField("Enemy Spawns", EditorStyles.boldLabel);
+
+        for (int i = 0; i < enemySpawnConfigs.Count; i++)
+        {
+            EnemySpawnConfig config = enemySpawnConfigs[i];
+
+            EditorGUILayout.BeginVertical("box");
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField($"Slot {i}", GUILayout.Width(45));
+            config.enemy = (EnemyData)EditorGUILayout.ObjectField(config.enemy, typeof(EnemyData), false);
+            if (GUILayout.Button("✕", GUILayout.Width(22)))
+            {
+                enemySpawnConfigs.RemoveAt(i);
+                EditorGUILayout.EndHorizontal();
+                EditorGUILayout.EndVertical();
+                i--;
+                continue;
+            }
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUI.indentLevel++;
+            config.minCount = EditorGUILayout.IntSlider("Min Count", config.minCount, 1, 10);
+            config.maxCount = EditorGUILayout.IntSlider("Max Count", Mathf.Max(config.minCount, config.maxCount), config.minCount, 10);
+            config.spawnWeight = EditorGUILayout.Slider("Weight", config.spawnWeight, 0.1f, 10f);
+            EditorGUI.indentLevel--;
+
+            EditorGUILayout.EndVertical();
+        }
+
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("+ Add Enemy"))
+        {
+            enemySpawnConfigs.Add(new EnemySpawnConfig());
+        }
+        GUI.backgroundColor = new Color(1f, 0.4f, 0.4f);
+        if (enemySpawnConfigs.Count > 0 && GUILayout.Button("Clear All", GUILayout.Width(80)))
+        {
+            enemySpawnConfigs.Clear();
+        }
+        GUI.backgroundColor = Color.white;
+        EditorGUILayout.EndHorizontal();
+
+        if (enemySpawnConfigs.Count > 0)
+        {
+            int totalMin = enemySpawnConfigs.Sum(c => c.minCount);
+            int totalMax = enemySpawnConfigs.Sum(c => c.maxCount);
+            EditorGUILayout.HelpBox($"Total Enemies: Min {totalMin} / Max {totalMax}", MessageType.None);
+        }
     }
 
     private void DrawProgressionSettings()
@@ -230,6 +297,10 @@ public class StageGeneratorWindow : EditorWindow
             EditorGUILayout.LabelField(stage.stageName, GUILayout.Width(150));
             EditorGUILayout.LabelField(stage.theme.ToString(), GUILayout.Width(80));
             EditorGUILayout.LabelField($"Diff: {stage.difficulty}", GUILayout.Width(60));
+            string spawnSummary = stage.enemySpawns != null && stage.enemySpawns.Count > 0
+                ? $"{stage.enemySpawns.Count} enemy type(s)"
+                : "No enemies";
+            EditorGUILayout.LabelField(spawnSummary, GUILayout.Width(110));
             EditorGUILayout.EndHorizontal();
         }
         EditorGUI.indentLevel--;
@@ -255,7 +326,16 @@ public class StageGeneratorWindow : EditorWindow
         switch (generationMode)
         {
             case GenerationMode.SingleStage:
-                previewStages.Add(StageFactory.CreateStage(stageName, stageNumber, stageTheme, stageDifficulty));
+                var spawns = enemySpawnConfigs
+                    .Where(c => c.enemy != null)
+                    .Select(c => new EnemySpawn
+                    {
+                        enemy = c.enemy,
+                        minCount = c.minCount,
+                        maxCount = c.maxCount,
+                        spawnWeight = c.spawnWeight
+                    }).ToList();
+                previewStages.Add(StageFactory.CreateStage(stageName, stageNumber, stageTheme, stageDifficulty, spawns));
                 break;
 
             case GenerationMode.Progression:

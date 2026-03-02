@@ -7,10 +7,12 @@ namespace SowurShield.Combat
 
 /// <summary>
 /// Stores the team composition assembled by the player.
-/// Persists between farm scene and combat scene.
+/// Persists between farm scene and combat scene via DontDestroyOnLoad.
+///
+/// This is a MonoBehaviour singleton so Unity pins it in memory across
+/// scene loads — plain C# static fields can be reset by domain reload.
 /// </summary>
-[System.Serializable]
-public class TeamAssemblerData
+public class TeamAssemblerData : MonoBehaviour
 {
     [System.Serializable]
     public class PositionedAnimal
@@ -104,7 +106,7 @@ public class TeamAssemblerData
     public string zoneName = "Unknown Zone";
     public int zoneDifficulty = 1;
 
-    // Singleton instance (persists between scenes)
+    // ── MonoBehaviour singleton with DontDestroyOnLoad ────────────────────────
     private static TeamAssemblerData instance;
     public static TeamAssemblerData Instance
     {
@@ -112,10 +114,32 @@ public class TeamAssemblerData
         {
             if (instance == null)
             {
-                instance = new TeamAssemblerData();
+                // Try to find an existing one in the scene first
+                instance = FindFirstObjectByType<TeamAssemblerData>();
+                if (instance == null)
+                {
+                    // Create a persistent GameObject
+                    var go = new GameObject("TeamAssemblerData");
+                    instance = go.AddComponent<TeamAssemblerData>();
+                    DontDestroyOnLoad(go);
+                    Debug.Log("[TeamAssemblerData] Created persistent singleton.");
+                }
             }
             return instance;
         }
+    }
+
+    private void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            // Duplicate — destroy this one
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+        Debug.Log("[TeamAssemblerData] Singleton initialized, DontDestroyOnLoad set.");
     }
 
     /// <summary>

@@ -6,304 +6,270 @@ namespace SowurShield.Combat
 {
 
 /// <summary>
-/// Spawns player and enemy teams on the combat grid at the start of battle.
-/// Reads team composition from TeamAssemblerData and creates CombatUnits.
+/// Spawns the player's team on the combat grid at battle start.
+/// Reads team composition from TeamAssemblerData (set in the farm scene).
+/// Uses the same proven pattern as CombatTestSpawner.CreateAnimalUnitWithStats().
 ///
 /// SETUP IN UNITY:
-/// 1. Add this script to a GameObject in the Combat scene
-/// 2. Assign the combatUnitPrefab (prefab with CombatUnit component)
-/// 3. This script will automatically spawn teams when Start() is called
-///
-/// RESPONSIBILITIES:
-/// - Load player team from TeamAssemblerData
-/// - Spawn CombatUnits on the grid at correct positions
-/// - Initialize units with animal data
-/// - Handle team validation
+/// 1. Add this script to any GameObject in the Combat scene
+/// 2. Make sure spawnPlayerTeam = true
+/// 3. That's it — no prefab needed
 /// </summary>
 public class CombatTeamSpawner : MonoBehaviour
 {
-    [Header("Prefabs")]
-    [Tooltip("Prefab with CombatUnit component to spawn for each animal")]
-    [SerializeField] private GameObject combatUnitPrefab;
-
     [Header("Spawn Configuration")]
-    [Tooltip("Should spawn player team from TeamAssemblerData?")]
+    [Tooltip("Spawn player team from TeamAssemblerData on Start?")]
     [SerializeField] private bool spawnPlayerTeam = true;
-
-    [Tooltip("Should spawn enemy team? (placeholder for now)")]
-    [SerializeField] private bool spawnEnemyTeam = false;
 
     [Header("Debug")]
     [SerializeField] private bool showDebugLogs = true;
 
+    // Default player spawn positions (columns 6-8, right side)
+    private static readonly Vector2Int[] DefaultPlayerPositions = new Vector2Int[]
+    {
+        new Vector2Int(6, 2),
+        new Vector2Int(7, 1),
+        new Vector2Int(8, 2),
+        new Vector2Int(6, 0),
+        new Vector2Int(7, 3),
+        new Vector2Int(8, 0),
+    };
+
+    private void Awake()
+    {
+        Debug.LogWarning($"[CombatTeamSpawner] Awake() on '{gameObject.name}', enabled={enabled}, active={gameObject.activeInHierarchy}");
+    }
+
     private void Start()
     {
-        // Small delay to ensure GridManager is ready
-        Invoke(nameof(SpawnTeams), 0.1f);
+        Debug.LogWarning($"[CombatTeamSpawner] Start() — scheduling SpawnTeams in 0.5s");
+        // Wait for GridManager.GenerateGrid() (runs in its own Start) and
+        // for all other Start() callbacks to complete before spawning.
+        // 0.5f is safe; TurnManager waits 1.0f before InitializeCombat.
+        Invoke(nameof(SpawnTeams), 0.5f);
     }
 
-    /// <summary>
-    /// Spawn both player and enemy teams
-    /// </summary>
     private void SpawnTeams()
     {
-        if (showDebugLogs)
-        {
-        }
+        Debug.LogWarning($"[CombatTeamSpawner] SpawnTeams() called. spawnPlayerTeam={spawnPlayerTeam}");
 
-        // Verify GridManager is ready
         if (GridManager.Instance == null)
         {
+            Debug.LogError("[CombatTeamSpawner] GridManager.Instance is null!");
             return;
         }
 
-        // Spawn player team
         if (spawnPlayerTeam)
-        {
             SpawnPlayerTeam();
-        }
-
-        // Spawn enemy team (placeholder for now)
-        if (spawnEnemyTeam)
-        {
-            SpawnEnemyTeam();
-        }
+        else
+            Debug.LogWarning("[CombatTeamSpawner] spawnPlayerTeam is FALSE — tick it in the Inspector!");
     }
 
-    /// <summary>
-    /// Spawn player team from TeamAssemblerData
-    /// </summary>
     private void SpawnPlayerTeam()
     {
-        if (showDebugLogs)
-        {
-        }
+        int teamCount = TeamAssemblerData.Instance?.team?.Count ?? -1;
+        Debug.LogWarning($"[CombatTeamSpawner] SpawnPlayerTeam() — TeamAssemblerData team size: {teamCount}");
 
-        // Check if TeamAssemblerData exists
-        if (TeamAssemblerData.Instance == null)
+        List<TeamAssemblerData.PositionedAnimal> team = null;
+
+        if (TeamAssemblerData.Instance != null && TeamAssemblerData.Instance.team != null &&
+            TeamAssemblerData.Instance.team.Count > 0)
         {
+            team = TeamAssemblerData.Instance.team;
+        }
+        else
+        {
+            Debug.LogWarning("[CombatTeamSpawner] TeamAssemblerData is null or empty — using fallback test unit.");
+            SpawnFallbackUnit();
             return;
         }
 
-        // Get team from TeamAssemblerData
-        List<TeamAssemblerData.PositionedAnimal> playerTeam = TeamAssemblerData.Instance.team;
-
-        if (playerTeam == null || playerTeam.Count == 0)
-        {
-            return;
-        }
-
         if (showDebugLogs)
-        {
-        }
+            Debug.Log($"[CombatTeamSpawner] Spawning {team.Count} player unit(s)...");
 
-        // Spawn each animal at their assigned position
-        int spawnedCount = 0;
-        foreach (TeamAssemblerData.PositionedAnimal positioned in playerTeam)
+        int spawned = 0;
+        int posIndex = 0;
+        foreach (var positioned in team)
         {
             if (positioned.animalData == null)
             {
+                Debug.LogWarning("[CombatTeamSpawner] Skipping entry with null AnimalData.");
                 continue;
             }
 
-            // Spawn the unit using AnimalData and runtime stats
-            bool success = SpawnAnimalUnit(
-                positioned.animalData,
-                positioned.customName,
-                positioned.gridPosition,
-                isPlayerUnit: true,
-                isFed: positioned.isFed,
-                happiness: positioned.happiness,
-                attackGrowth: positioned.attackGrowth,
-                defenseGrowth: positioned.defenseGrowth,
-                speedGrowth: positioned.speedGrowth,
-                healthGrowth: positioned.healthGrowth,
-                level: positioned.level,
-                experience: positioned.experience,
-                seasonalAttackMod: positioned.seasonalAttackMod,
-                seasonalDefenseMod: positioned.seasonalDefenseMod,
-                seasonalSpeedMod: positioned.seasonalSpeedMod
-            );
-
-            if (success)
-            {
-                spawnedCount++;
-            }
+            // Use the stored grid position from TeamAssemblerData, but map it to valid player columns
+            Vector2Int pos = GetPlayerSpawnPosition(positioned.gridPosition, posIndex);
+            bool ok = SpawnUnit(positioned, pos);
+            if (ok) spawned++;
+            posIndex++;
         }
 
-        if (showDebugLogs)
-        {
-        }
+        Debug.LogWarning($"[CombatTeamSpawner] Spawned {spawned}/{team.Count} units.");
     }
 
     /// <summary>
-    /// Spawn enemy team (placeholder - will be expanded later)
+    /// Map a TeamAssembler grid position to a valid combat grid position on the player side.
+    /// TeamAssembler uses the same 9x5 grid as combat (columns 6-8 = player side).
     /// </summary>
-    private void SpawnEnemyTeam()
+    private Vector2Int GetPlayerSpawnPosition(Vector2Int teamAssemblerPos, int fallbackIndex)
     {
-        if (showDebugLogs)
+        // TeamAssembler uses the SAME grid coordinate system as the combat grid.
+        // Player side = columns 6-8, rows 0-4. Just clamp to valid range.
+        int combatCol = Mathf.Clamp(teamAssemblerPos.x, 6, 8);
+        int combatRow = Mathf.Clamp(teamAssemblerPos.y, 0, 4);
+
+        // If that cell is already occupied, fall back to default positions
+        GridCell cell = GridManager.Instance.GetCell(combatCol, combatRow);
+        if (cell != null && cell.IsEmpty())
+            return new Vector2Int(combatCol, combatRow);
+
+        // Try default positions
+        for (int i = fallbackIndex; i < DefaultPlayerPositions.Length; i++)
         {
+            Vector2Int fallback = DefaultPlayerPositions[i];
+            GridCell fb = GridManager.Instance.GetCell(fallback);
+            if (fb != null && fb.IsEmpty())
+                return fallback;
         }
 
-        // TODO: Implement enemy spawning based on zone difficulty
-        // For now, this is a placeholder
+        return new Vector2Int(combatCol, combatRow); // Last resort — PlaceUnitAt will log error
     }
 
     /// <summary>
-    /// Spawn a single animal as a CombatUnit on the grid using AnimalData
+    /// Create one CombatUnit from a PositionedAnimal.
+    /// Uses the exact same pattern as CombatTestSpawner.CreateAnimalUnitWithStats().
     /// </summary>
-    private bool SpawnAnimalUnit(AnimalData animalData, string customName, Vector2Int gridPosition, bool isPlayerUnit, bool isFed,
-        float happiness, float attackGrowth, float defenseGrowth, float speedGrowth, float healthGrowth, int level, float experience,
+    private bool SpawnUnit(TeamAssemblerData.PositionedAnimal positioned, Vector2Int pos)
+    {
+        AnimalData data = positioned.animalData;
+        string displayName = positioned.GetDisplayName();
+
+        Debug.Log($"[CombatTeamSpawner] SpawnUnit: '{displayName}' at {pos}, sprite={(data.idleSprite != null ? data.idleSprite.name : "NULL")}");
+
+        return CreateAnimalUnit(displayName, pos, true, data,
+            positioned.happiness,
+            positioned.attackGrowth,
+            positioned.defenseGrowth,
+            positioned.speedGrowth,
+            positioned.healthGrowth,
+            positioned.level,
+            positioned.experience,
+            positioned.seasonalAttackMod,
+            positioned.seasonalDefenseMod,
+            positioned.seasonalSpeedMod);
+    }
+
+    /// <summary>
+    /// Spawn a single hardcoded test chicken when no TeamAssemblerData is present.
+    /// Lets you run CombatScene directly without going through the farm flow.
+    /// </summary>
+    private void SpawnFallbackUnit()
+    {
+        AnimalData chicken = Resources.Load<AnimalData>("Animals/chicken");
+        if (chicken == null)
+        {
+            Debug.LogWarning("[CombatTeamSpawner] Fallback: no 'Animals/chicken' asset found in Resources.");
+            return;
+        }
+
+        Vector2Int pos = new Vector2Int(6, 2);
+        GridCell cell = GridManager.Instance.GetCell(pos);
+        if (cell == null || !cell.IsEmpty())
+            pos = new Vector2Int(7, 2);
+
+        bool ok = CreateAnimalUnit("Chicken (Test)", pos, true, chicken,
+            50f, 1f, 1f, 1f, 1f, 1, 0f, 1f, 1f, 1f);
+
+        if (ok)
+            Debug.Log($"[CombatTeamSpawner] Fallback chicken spawned at {pos}.");
+    }
+
+    /// <summary>
+    /// Core spawn logic — mirrors CombatTestSpawner.CreateAnimalUnitWithStats() exactly.
+    /// </summary>
+    private bool CreateAnimalUnit(string customName, Vector2Int gridPos, bool isPlayer,
+        AnimalData animalData,
+        float happiness, float attackGrowth, float defenseGrowth, float speedGrowth,
+        float healthGrowth, int level, float experience,
         float seasonalAttackMod, float seasonalDefenseMod, float seasonalSpeedMod)
     {
-        if (animalData == null)
+        // ── Validate position ─────────────────────────────────────────────────
+        if (!GridManager.Instance.IsValidPosition(gridPos.x, gridPos.y))
         {
+            Debug.LogError($"[CombatTeamSpawner] Invalid grid position {gridPos} for '{customName}'.");
             return false;
         }
 
-        if (combatUnitPrefab == null)
-        {
-            return false;
-        }
+        // ── Create GameObject ─────────────────────────────────────────────────
+        GameObject unitObj = new GameObject(customName);
+        unitObj.transform.localScale = Vector3.one;
 
-        // Validate grid position
-        if (!GridManager.Instance.IsValidPosition(gridPosition.x, gridPosition.y))
-        {
-            return false;
-        }
-
-        // Get the grid cell
-        GridCell targetCell = GridManager.Instance.GetCell(gridPosition);
-        if (targetCell == null)
-        {
-            return false;
-        }
-
-        // Check if cell is already occupied
-        if (!targetCell.IsEmpty())
-        {
-            return false;
-        }
-
-        // Instantiate the combat unit
-        GameObject unitObj = Instantiate(combatUnitPrefab, targetCell.transform.position, Quaternion.identity);
-        unitObj.name = $"CombatUnit_{customName}";
-
-        // Add SpriteRenderer with the sprite directly assigned
-        SpriteRenderer sr = unitObj.GetComponent<SpriteRenderer>();
-        if (sr == null)
-        {
-            sr = unitObj.AddComponent<SpriteRenderer>();
-        }
-        sr.sprite = animalData.idleSprite;
+        // ── SpriteRenderer — assign idle sprite directly (must exist before Animal.Awake) ──
+        SpriteRenderer sr = unitObj.AddComponent<SpriteRenderer>();
+        sr.sprite       = animalData.idleSprite;
         sr.sortingOrder = 10; // Above grid
 
-        // Add Animal component and initialize it with AnimalData
-        Animal animal = unitObj.GetComponent<Animal>();
-        if (animal == null)
-        {
-            animal = unitObj.AddComponent<Animal>();
-        }
+        // ── Animal component — set data via reflection (SerializeField) ───────
+        Animal animal = unitObj.AddComponent<Animal>();
 
-        // Set the animal data via reflection (since it's a SerializeField)
         var animalDataField = typeof(Animal).GetField("animalData",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
         animalDataField?.SetValue(animal, animalData);
 
-        // Set custom name for player units
-        if (isPlayerUnit && !string.IsNullOrEmpty(customName))
+        // Set custom name for player units only
+        if (isPlayer)
         {
             var customNameField = typeof(Animal).GetField("customName",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             customNameField?.SetValue(animal, customName);
         }
 
-        // Manually trigger combat stats initialization
+        // Initialize combat stats (same as CombatTestSpawner)
         var combatStatsField = typeof(Animal).GetField("combatStats",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
         AnimalCombatStats stats = combatStatsField?.GetValue(animal) as AnimalCombatStats;
         if (stats != null && animalData.baseCombatStats != null)
         {
             stats.Initialize(animalData.baseCombatStats);
-
-            // Apply runtime progression stats from farm scene
-            stats.happiness = happiness;
-            stats.attackGrowth = attackGrowth;
-            stats.defenseGrowth = defenseGrowth;
-            stats.speedGrowth = speedGrowth;
-            stats.healthGrowth = healthGrowth;
-            stats.level = level;
-            stats.experience = experience;
-
-            // Apply seasonal bonuses
-            stats.seasonalAttackMod = seasonalAttackMod;
+            stats.happiness       = happiness;
+            stats.attackGrowth    = attackGrowth;
+            stats.defenseGrowth   = defenseGrowth;
+            stats.speedGrowth     = speedGrowth;
+            stats.healthGrowth    = healthGrowth;
+            stats.level           = level;
+            stats.experience      = experience;
+            stats.seasonalAttackMod  = seasonalAttackMod;
             stats.seasonalDefenseMod = seasonalDefenseMod;
-            stats.seasonalSpeedMod = seasonalSpeedMod;
-
-            if (showDebugLogs)
-            {
-            }
+            stats.seasonalSpeedMod   = seasonalSpeedMod;
         }
 
-        // Get CombatUnit component
-        CombatUnit combatUnit = unitObj.GetComponent<CombatUnit>();
-        if (combatUnit == null)
+        // ── CombatUnit — initialize from Animal ───────────────────────────────
+        CombatUnit combatUnit = unitObj.AddComponent<CombatUnit>();
+        combatUnit.isPlayerUnit = isPlayer;
+        combatUnit.InitializeFromAnimal(animal, isPlayer);
+
+        // ── Place on grid (also assigns healthBarPrefab and creates health bar) ─
+        bool placed = GridManager.Instance.PlaceUnitAt(combatUnit, gridPos);
+        if (!placed)
         {
             Destroy(unitObj);
+            Debug.LogError($"[CombatTeamSpawner] PlaceUnitAt({gridPos}) failed for '{customName}'.");
             return false;
         }
 
-        // Set team BEFORE initializing
-        combatUnit.isPlayerUnit = isPlayerUnit;
-
-        // Initialize the unit from the Animal component
-        combatUnit.InitializeFromAnimal(animal, isPlayerUnit);
-
-        // Place unit on grid
-        bool placed = GridManager.Instance.PlaceUnitAt(combatUnit, gridPosition);
-
-        if (placed)
-        {
-            if (showDebugLogs)
-            {
-            }
-            return true;
-        }
-        else
-        {
-            Destroy(unitObj);
-            return false;
-        }
+        Debug.LogWarning($"[CombatTeamSpawner] Spawned '{customName}' at {gridPos}, world pos={unitObj.transform.position}.");
+        return true;
     }
 
-    /// <summary>
-    /// Clear all units from grid (for battle restart)
-    /// </summary>
-    public void ClearAllUnits()
+    /// <summary>Clears and respawns all units (for battle restart).</summary>
+    public void RespawnTeams()
     {
         if (GridManager.Instance != null)
         {
             GridManager.Instance.ClearAllUnits();
-
-            // Also destroy GameObjects
-            CombatUnit[] allUnits = FindObjectsByType<CombatUnit>(FindObjectsSortMode.None);
-            foreach (CombatUnit unit in allUnits)
-            {
-                Destroy(unit.gameObject);
-            }
-
-            if (showDebugLogs)
-            {
-            }
+            foreach (var u in FindObjectsByType<CombatUnit>(FindObjectsSortMode.None))
+                Destroy(u.gameObject);
         }
-    }
-
-    /// <summary>
-    /// Respawn teams (useful for battle restart)
-    /// </summary>
-    public void RespawnTeams()
-    {
-        ClearAllUnits();
         SpawnTeams();
     }
 }

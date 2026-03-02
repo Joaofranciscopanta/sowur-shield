@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e0cf74c453b9f84c9be5ffb4f05d783, type: 3}
+  m_Name: Stage_007_DarkGrove
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
+  stageName: Dark Grove
+  stageNumber: 7
+  description: Poison Frogs lurk beneath the undergrowth.
+  theme: 0
+  backgroundSprite: {fileID: 0}
+  ambientColor: {r: 0.2, g: 0.5, b: 0.2, a: 1}
+  difficulty: 3
+  recommendedTeamSize: 2
+  enemyStatMultiplier: 1.3
+  enemySpawns:
+  - enemy: {fileID: 11400000, guid: c9797e7154c230443b612ec395b58d42, type: 2}
+    minCount: 1
+    maxCount: 3
+    spawnWeight: 3
+  - enemy: {fileID: 11400000, guid: c13a6f9471e58124e82fa1bec9475e9e, type: 2}
+    minCount: 1
+    maxCount: 2
+    spawnWeight: 1
+  minTotalEnemies: 2
+  maxTotalEnemies: 4
+  bossEnemy: {fileID: 0}
+  lootTable: []
+  baseGoldReward: 120
+  goldVariance: 0.2
+  baseExperienceReward: 60
+  prerequisiteStage: {fileID: 0}
+  minimumPlayerLevel: 4
+  unlockedByDefault: 0
+  weatherEffect: None
+  timeOfDay: Day

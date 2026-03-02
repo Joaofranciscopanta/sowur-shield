@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e0cf74c453b9f84c9be5ffb4f05d783, type: 3}
+  m_Name: Stage_019_CloudRidge
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
+  stageName: Cloud Ridge
+  stageNumber: 19
+  description: A Frost Drake circles overhead. The elite Thunder Eagles escort it.
+  theme: 2
+  backgroundSprite: {fileID: 0}
+  ambientColor: {r: 0.6, g: 0.6, b: 0.7, a: 1}
+  difficulty: 8
+  recommendedTeamSize: 3
+  enemyStatMultiplier: 2.05
+  enemySpawns:
+  - enemy: {fileID: 11400000, guid: 989a76d6bd7f3f0418d76f0d90c10865, type: 2}
+    minCount: 1
+    maxCount: 1
+    spawnWeight: 1
+  - enemy: {fileID: 11400000, guid: cac561328a392f64c9296b933b861f29, type: 2}
+    minCount: 1
+    maxCount: 2
+    spawnWeight: 2
+  - enemy: {fileID: 11400000, guid: 6c1b08eb7af5b354f992fba7b0c52a17, type: 2}
+    minCount: 1
+    maxCount: 1
+    spawnWeight: 1
+  minTotalEnemies: 2
+  maxTotalEnemies: 3
+  bossEnemy: {fileID: 0}
+  lootTable: []
+  baseGoldReward: 320
+  goldVariance: 0.2
+  baseExperienceReward: 160
+  prerequisiteStage: {fileID: 0}
+  minimumPlayerLevel: 14
+  unlockedByDefault: 0
+  weatherEffect: None
+  timeOfDay: Day

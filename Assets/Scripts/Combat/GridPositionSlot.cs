@@ -42,6 +42,20 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
     {
         gridPosition = position;
 
+        // Auto-find slotBackground if not assigned in Inspector
+        if (slotBackground == null)
+            slotBackground = GetComponent<Image>();
+
+        // Auto-find animalIcon in children if not assigned
+        if (animalIcon == null)
+        {
+            foreach (Transform child in transform)
+            {
+                Image img = child.GetComponent<Image>();
+                if (img != null) { animalIcon = img; break; }
+            }
+        }
+
         // Display position text
         if (positionText != null)
         {
@@ -94,6 +108,13 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
         if (success)
         {
             assignedAnimal = animal;
+
+            // Auto-mark as fed if the animal was already fed today (via FeedingTrough or manual feeding)
+            if (!animal.NeedsFeeding)
+            {
+                TeamAssemblerData.Instance.MarkAsFed(animal);
+            }
+
             UpdateVisuals();
 
             // Update UI

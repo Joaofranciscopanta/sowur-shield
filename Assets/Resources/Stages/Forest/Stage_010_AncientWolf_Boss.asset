@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e0cf74c453b9f84c9be5ffb4f05d783, type: 3}
+  m_Name: Stage_010_AncientWolf_Boss
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
+  stageName: "Mossy Hollow \u2014 Boss"
+  stageNumber: 10
+  description: '[BOSS] The Ancient Wolf rules this forest. Its pack defends it fiercely.'
+  theme: 0
+  backgroundSprite: {fileID: 0}
+  ambientColor: {r: 0.2, g: 0.5, b: 0.2, a: 1}
+  difficulty: 4
+  recommendedTeamSize: 2
+  enemyStatMultiplier: 1.45
+  enemySpawns:
+  - enemy: {fileID: 11400000, guid: dad669d1d07f71744aaf59b346781eee, type: 2}
+    minCount: 1
+    maxCount: 2
+    spawnWeight: 1
+  minTotalEnemies: 1
+  maxTotalEnemies: 1
+  bossEnemy: {fileID: 11400000, guid: 03e5849f9541f0149976dc58b2325d74, type: 2}
+  lootTable: []
+  baseGoldReward: 250
+  goldVariance: 0.2
+  baseExperienceReward: 160
+  prerequisiteStage: {fileID: 0}
+  minimumPlayerLevel: 6
+  unlockedByDefault: 0
+  weatherEffect: None
+  timeOfDay: Day
