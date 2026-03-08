@@ -33,6 +33,9 @@ public static class StageManager
     public static void SetSelectedStage(StageData stage)
     {
         selectedStage = stage;
+        // Also persist name in TeamAssemblerData (survives scene load in builds)
+        if (TeamAssemblerData.Instance != null)
+            TeamAssemblerData.Instance.selectedStageName = stage?.stageName ?? "";
         Debug.Log($"[StageManager] Selected stage: {stage?.stageName ?? "None"}");
     }
 

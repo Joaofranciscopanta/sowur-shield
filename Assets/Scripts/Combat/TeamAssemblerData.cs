@@ -40,6 +40,9 @@ public class TeamAssemblerData : MonoBehaviour
         public Vector2Int gridPosition;
         public bool isFed;
 
+        // Parameterless constructor for PlayerPrefs restore
+        public PositionedAnimal() { }
+
         // Constructor to extract data from Animal component
         public PositionedAnimal(Animal animal, Vector2Int pos)
         {
@@ -106,6 +109,12 @@ public class TeamAssemblerData : MonoBehaviour
     public string zoneName = "Unknown Zone";
     public int zoneDifficulty = 1;
 
+    /// <summary>
+    /// Name of the selected stage — persists across scene loads (static fields don't in builds).
+    /// Set by StageButton before loading CombatScene.
+    /// </summary>
+    public string selectedStageName = "";
+
     // ── MonoBehaviour singleton with DontDestroyOnLoad ────────────────────────
     private static TeamAssemblerData instance;
     public static TeamAssemblerData Instance
@@ -114,11 +123,17 @@ public class TeamAssemblerData : MonoBehaviour
         {
             if (instance == null)
             {
-                // Try to find an existing one in the scene first
-                instance = FindFirstObjectByType<TeamAssemblerData>();
+                // FindObjectsByType searches ALL scenes including DontDestroyOnLoad
+                var all = FindObjectsByType<TeamAssemblerData>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                foreach (var t in all)
+                {
+                    instance = t;
+                    break;
+                }
+
                 if (instance == null)
                 {
-                    // Create a persistent GameObject
+                    // Create a persistent root GameObject
                     var go = new GameObject("TeamAssemblerData");
                     instance = go.AddComponent<TeamAssemblerData>();
                     DontDestroyOnLoad(go);
@@ -133,13 +148,90 @@ public class TeamAssemblerData : MonoBehaviour
     {
         if (instance != null && instance != this)
         {
-            // Duplicate — destroy this one
             Destroy(gameObject);
             return;
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
         Debug.Log("[TeamAssemblerData] Singleton initialized, DontDestroyOnLoad set.");
+    }
+
+    // ── PlayerPrefs persistence (survives domain reload in builds) ────────────
+
+    private const string PrefsKeyStage = "Combat_SelectedStage";
+    private const string PrefsKeyTeamCount = "Combat_TeamCount";
+    private const string PrefsKeyTeamPrefix = "Combat_Team_";
+
+    /// <summary>
+    /// Save team and stage to PlayerPrefs before scene load.
+    /// </summary>
+    public void SaveToPrefs()
+    {
+        PlayerPrefs.SetString(PrefsKeyStage, selectedStageName);
+        PlayerPrefs.SetInt(PrefsKeyTeamCount, team.Count);
+        for (int i = 0; i < team.Count; i++)
+        {
+            var p = team[i];
+            PlayerPrefs.SetString(PrefsKeyTeamPrefix + i + "_animal", p.animalData?.animalName ?? "");
+            PlayerPrefs.SetString(PrefsKeyTeamPrefix + i + "_name",   p.customName ?? "");
+            PlayerPrefs.SetFloat (PrefsKeyTeamPrefix + i + "_happiness", p.happiness);
+            PlayerPrefs.SetInt   (PrefsKeyTeamPrefix + i + "_gx",  p.gridPosition.x);
+            PlayerPrefs.SetInt   (PrefsKeyTeamPrefix + i + "_gy",  p.gridPosition.y);
+            PlayerPrefs.SetFloat (PrefsKeyTeamPrefix + i + "_atkG", p.attackGrowth);
+            PlayerPrefs.SetFloat (PrefsKeyTeamPrefix + i + "_defG", p.defenseGrowth);
+            PlayerPrefs.SetFloat (PrefsKeyTeamPrefix + i + "_spdG", p.speedGrowth);
+            PlayerPrefs.SetFloat (PrefsKeyTeamPrefix + i + "_hpG",  p.healthGrowth);
+            PlayerPrefs.SetInt   (PrefsKeyTeamPrefix + i + "_lvl",  p.level);
+            PlayerPrefs.SetFloat (PrefsKeyTeamPrefix + i + "_exp",  p.experience);
+            PlayerPrefs.SetFloat (PrefsKeyTeamPrefix + i + "_atkS", p.seasonalAttackMod);
+            PlayerPrefs.SetFloat (PrefsKeyTeamPrefix + i + "_defS", p.seasonalDefenseMod);
+            PlayerPrefs.SetFloat (PrefsKeyTeamPrefix + i + "_spdS", p.seasonalSpeedMod);
+        }
+        PlayerPrefs.Save();
+        Debug.Log($"[TeamAssemblerData] Saved {team.Count} units + stage '{selectedStageName}' to PlayerPrefs.");
+    }
+
+    /// <summary>
+    /// Restore team and stage from PlayerPrefs (called in CombatScene if team is empty).
+    /// </summary>
+    public void LoadFromPrefs()
+    {
+        if (!PlayerPrefs.HasKey(PrefsKeyTeamCount)) return;
+
+        selectedStageName = PlayerPrefs.GetString(PrefsKeyStage, "");
+        int count = PlayerPrefs.GetInt(PrefsKeyTeamCount, 0);
+        team.Clear();
+
+        for (int i = 0; i < count; i++)
+        {
+            string animalName = PlayerPrefs.GetString(PrefsKeyTeamPrefix + i + "_animal", "");
+            AnimalData data = Resources.Load<AnimalData>($"Animals/{animalName}");
+            if (data == null)
+            {
+                Debug.LogWarning($"[TeamAssemblerData] LoadFromPrefs: could not load AnimalData 'Animals/{animalName}'");
+                continue;
+            }
+
+            var p = new PositionedAnimal();
+            p.animalData        = data;
+            p.customName        = PlayerPrefs.GetString(PrefsKeyTeamPrefix + i + "_name", "");
+            p.happiness         = PlayerPrefs.GetFloat (PrefsKeyTeamPrefix + i + "_happiness", 50f);
+            p.gridPosition      = new Vector2Int(PlayerPrefs.GetInt(PrefsKeyTeamPrefix + i + "_gx", 6),
+                                                 PlayerPrefs.GetInt(PrefsKeyTeamPrefix + i + "_gy", 2));
+            p.attackGrowth      = PlayerPrefs.GetFloat(PrefsKeyTeamPrefix + i + "_atkG", 1f);
+            p.defenseGrowth     = PlayerPrefs.GetFloat(PrefsKeyTeamPrefix + i + "_defG", 1f);
+            p.speedGrowth       = PlayerPrefs.GetFloat(PrefsKeyTeamPrefix + i + "_spdG", 1f);
+            p.healthGrowth      = PlayerPrefs.GetFloat(PrefsKeyTeamPrefix + i + "_hpG",  1f);
+            p.level             = PlayerPrefs.GetInt  (PrefsKeyTeamPrefix + i + "_lvl",  1);
+            p.experience        = PlayerPrefs.GetFloat(PrefsKeyTeamPrefix + i + "_exp",  0f);
+            p.seasonalAttackMod = PlayerPrefs.GetFloat(PrefsKeyTeamPrefix + i + "_atkS", 1f);
+            p.seasonalDefenseMod= PlayerPrefs.GetFloat(PrefsKeyTeamPrefix + i + "_defS", 1f);
+            p.seasonalSpeedMod  = PlayerPrefs.GetFloat(PrefsKeyTeamPrefix + i + "_spdS", 1f);
+            p.isFed             = true;
+            team.Add(p);
+        }
+
+        Debug.Log($"[TeamAssemblerData] Restored {team.Count} units + stage '{selectedStageName}' from PlayerPrefs.");
     }
 
     /// <summary>

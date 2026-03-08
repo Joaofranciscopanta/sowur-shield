@@ -727,6 +727,8 @@ public class TeamAssemblerUI : MonoBehaviour
         }
 
         Debug.Log($"[TeamAssembler] Loading scene '{combatSceneName}'...");
+        TeamAssemblerData.Instance.SaveToPrefs(); // Persist team across domain reload in builds
+        Time.timeScale = 1f;
         SceneManager.LoadScene(combatSceneName);
     }
 
