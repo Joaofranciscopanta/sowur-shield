@@ -82,6 +82,10 @@ public class GridCell : MonoBehaviour
         Material mat = new Material(Shader.Find("Unlit/Color"));
         cellRenderer.material = mat;
 
+        // Ensure grid cells render behind sprites
+        cellRenderer.sortingLayerName = "Default";
+        cellRenderer.sortingOrder = -10;
+
         // Remove collider (we'll use GridManager for mouse detection)
         Destroy(cellVisual.GetComponent<Collider>());
     }
@@ -105,6 +109,10 @@ public class GridCell : MonoBehaviour
         Material highlightMat = new Material(Shader.Find("Unlit/Color"));
         highlightMat.color = highlightColor;
         highlightRenderer.material = highlightMat;
+
+        // Ensure highlight renders behind sprites but above cell base
+        highlightRenderer.sortingLayerName = "Default";
+        highlightRenderer.sortingOrder = -9;
 
         // Hide by default
         highlightVisual.SetActive(false);
@@ -147,7 +155,7 @@ public class GridCell : MonoBehaviour
         // Position unit at this cell's world position
         if (unit != null)
         {
-            unit.transform.position = transform.position + new Vector3(0, 0, -0.1f); // In front of grid
+            unit.transform.position = transform.position + new Vector3(0, 0, -0.5f); // In front of grid
             unit.gridPosition = new Vector2Int(gridX, gridY);
         }
 
