@@ -49,6 +49,20 @@ public class EnemySpawner : MonoBehaviour
         }
 
         StageData stage = StageManager.GetSelectedStage();
+
+        // In builds, static fields may be cleared on scene load — restore from TeamAssemblerData
+        if (stage == null)
+        {
+            StageManager.LoadAllStages();
+            string savedName = TeamAssemblerData.Instance?.selectedStageName;
+            if (!string.IsNullOrEmpty(savedName))
+            {
+                StageData restored = StageManager.GetStageByName(savedName);
+                if (restored != null) StageManager.SetSelectedStage(restored);
+            }
+            stage = StageManager.GetSelectedStage();
+        }
+
         if (stage == null || stage.enemySpawns == null || stage.enemySpawns.Count == 0)
         {
             Debug.LogWarning("[EnemySpawner] No stage selected or stage has no enemy spawns — using fallback test enemies.");
@@ -56,7 +70,35 @@ public class EnemySpawner : MonoBehaviour
             return;
         }
 
+        SpawnBackground(stage);
         SpawnFromStage(stage);
+    }
+
+    private void SpawnBackground(StageData stage)
+    {
+        if (stage.backgroundSprite == null) return;
+
+        GameObject bg = new GameObject("CombatBackground");
+        SpriteRenderer sr = bg.AddComponent<SpriteRenderer>();
+        sr.sprite = stage.backgroundSprite;
+        sr.sortingLayerName = "Default";
+        sr.sortingOrder = -20; // Behind grid cells (-10) and units (10)
+
+        // Scale to fill camera view (orthographic size * 2 = full height)
+        Camera cam = Camera.main;
+        if (cam != null)
+        {
+            float camHeight = cam.orthographicSize * 2f;
+            float camWidth  = camHeight * cam.aspect;
+            float spriteHeight = sr.sprite.bounds.size.y;
+            float spriteWidth  = sr.sprite.bounds.size.x;
+            float scaleY = camHeight / spriteHeight;
+            float scaleX = camWidth  / spriteWidth;
+            float scale  = Mathf.Max(scaleX, scaleY); // Cover, not contain
+            bg.transform.localScale = Vector3.one * scale;
+        }
+
+        bg.transform.position = Vector3.zero;
     }
 
     private void SpawnFromStage(StageData stage)

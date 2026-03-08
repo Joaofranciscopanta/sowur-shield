@@ -40,6 +40,11 @@ public class CombatTeamSpawner : MonoBehaviour
         Debug.LogWarning($"[CombatTeamSpawner] Awake() on '{gameObject.name}', enabled={enabled}, active={gameObject.activeInHierarchy}");
     }
 
+    private void OnDestroy()
+    {
+        Debug.LogError($"[CombatTeamSpawner] OnDestroy() called on '{gameObject.name}' — Invoke will be cancelled!");
+    }
+
     private void Start()
     {
         Debug.LogWarning($"[CombatTeamSpawner] Start() — scheduling SpawnTeams in 0.5s");
@@ -67,6 +72,10 @@ public class CombatTeamSpawner : MonoBehaviour
 
     private void SpawnPlayerTeam()
     {
+        // Restore from PlayerPrefs if team is empty (domain reload in builds clears static fields)
+        if (TeamAssemblerData.Instance.team == null || TeamAssemblerData.Instance.team.Count == 0)
+            TeamAssemblerData.Instance.LoadFromPrefs();
+
         int teamCount = TeamAssemblerData.Instance?.team?.Count ?? -1;
         Debug.LogWarning($"[CombatTeamSpawner] SpawnPlayerTeam() — TeamAssemblerData team size: {teamCount}");
 

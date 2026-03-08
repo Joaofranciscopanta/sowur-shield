@@ -143,16 +143,23 @@ public class CombatUnit : MonoBehaviour
     /// </summary>
     private void SetupVisuals()
     {
-        // Try to use sprite from animal data first
+        // Priority 1: animal data sprite (player units)
         if (animal != null && animal.AnimalData != null && animal.AnimalData.idleSprite != null)
         {
             CreateSpriteVisual(animal.AnimalData.idleSprite);
+            return;
         }
-        else
+
+        // Priority 2: SpriteRenderer already added by EnemySpawner (enemies with sprites)
+        SpriteRenderer existingSR = GetComponent<SpriteRenderer>();
+        if (existingSR != null && existingSR.sprite != null)
         {
-            // Fall back to sphere for testing/enemies without sprites
-            CreateSphereVisual();
+            CreateSpriteVisual(existingSR.sprite);
+            return;
         }
+
+        // Fallback: sphere (no sprite available)
+        CreateSphereVisual();
     }
 
     /// <summary>
@@ -165,8 +172,11 @@ public class CombatUnit : MonoBehaviour
 
         if (existingSpriteRenderer != null && existingSpriteRenderer.sprite != null)
         {
-            // Already has a sprite - just use it as-is (CombatTestSpawner set it up)
+            // Already has a sprite — ensure material supports sprites (not Unlit/Color)
             visualObject = gameObject;
+            existingSpriteRenderer.material = new Material(Shader.Find("Sprites/Default"));
+            existingSpriteRenderer.color = Color.white;
+            existingSpriteRenderer.sortingOrder = 10;
         }
         else if (existingSpriteRenderer != null)
         {
