@@ -121,15 +121,18 @@ public class WorldMapTriggerZone : MonoBehaviour, IInteractable
         }
 
 
-        // Open Team Assembler UI
+        // Open world map via UIManager-integrated controller
         if (TeamAssemblerUI.Instance != null)
         {
-            WorldMap.SetActive(true);
-            Time.timeScale = 0f; // pausa o jogo
-            GameMenuManager.Instance.SetMapOpen(true);
-        }
-        else
-        {
+            var controller = WorldMap != null ? WorldMap.GetComponent<WorldMapUIController>() : null;
+            if (controller != null)
+                controller.OpenMap();
+            else
+            {
+                WorldMap.SetActive(true);
+                Time.timeScale = 0f;
+                GameMenuManager.Instance?.SetMapOpen(true);
+            }
         }
     }
 
