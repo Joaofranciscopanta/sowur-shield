@@ -25,7 +25,7 @@ public class CombatTestSpawner : MonoBehaviour
 {
     [Header("Test Configuration")]
     [Tooltip("Spawn test units automatically on Start?")]
-    [SerializeField] private bool autoSpawnOnStart = true;
+    [SerializeField] private bool autoSpawnOnStart = false;
 
     [Tooltip("Use team from TeamAssemblerData? (false = spawn test units)")]
     [SerializeField] private bool useTeamAssemblerData = false;
