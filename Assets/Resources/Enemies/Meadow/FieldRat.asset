@@ -15,7 +15,7 @@ MonoBehaviour:
   enemyName: Field Rat
   enemyType: 0
   description: 
-  sprite: {fileID: 0}
+  sprite: {fileID: -9057044753461655860, guid: 97616f138e7d11d4c8bd09646bf71694, type: 3}
   animatorController: {fileID: 0}
   spriteScale: 1
   baseHealth: 35

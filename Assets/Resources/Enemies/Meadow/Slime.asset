@@ -15,7 +15,7 @@ MonoBehaviour:
   enemyName: Slime
   enemyType: 0
   description: 
-  sprite: {fileID: 0}
+  sprite: {fileID: -7282886668606283007, guid: 1e7da7ac365942745ba2bb3a595b376c, type: 3}
   animatorController: {fileID: 0}
   spriteScale: 1
   baseHealth: 40

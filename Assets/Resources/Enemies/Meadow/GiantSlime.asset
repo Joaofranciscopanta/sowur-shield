@@ -15,7 +15,7 @@ MonoBehaviour:
   enemyName: Giant Slime
   enemyType: 1
   description: 
-  sprite: {fileID: 0}
+  sprite: {fileID: -7940509610996526749, guid: 1e0180e1522b72c41b2d2127d9a09a7e, type: 3}
   animatorController: {fileID: 0}
   spriteScale: 1
   baseHealth: 90

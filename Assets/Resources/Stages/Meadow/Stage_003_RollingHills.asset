@@ -41,7 +41,7 @@ MonoBehaviour:
   baseGoldReward: 80
   goldVariance: 0.2
   baseExperienceReward: 40
-  prerequisiteStage: {fileID: 0}
+  prerequisiteStage: {fileID: 11400000, guid: fc381a55b882e0f4da04d1cd465acf05, type: 2}
   minimumPlayerLevel: 2
   unlockedByDefault: 0
   weatherEffect: None

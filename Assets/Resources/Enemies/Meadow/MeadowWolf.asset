@@ -15,7 +15,7 @@ MonoBehaviour:
   enemyName: Meadow Wolf
   enemyType: 3
   description: 
-  sprite: {fileID: 0}
+  sprite: {fileID: -5107452676420340490, guid: 9517c9165ce1ef44eb54a11d17d6b6ff, type: 3}
   animatorController: {fileID: 0}
   spriteScale: 1
   baseHealth: 200

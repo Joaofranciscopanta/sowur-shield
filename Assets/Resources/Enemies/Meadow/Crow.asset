@@ -15,7 +15,7 @@ MonoBehaviour:
   enemyName: Crow
   enemyType: 0
   description: 
-  sprite: {fileID: 0}
+  sprite: {fileID: -4285408029963660783, guid: b388fd9c3c286b8498c4f196f7776e73, type: 3}
   animatorController: {fileID: 0}
   spriteScale: 1
   baseHealth: 30

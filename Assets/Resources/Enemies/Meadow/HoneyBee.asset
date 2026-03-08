@@ -15,7 +15,7 @@ MonoBehaviour:
   enemyName: Honey Bee
   enemyType: 0
   description: 
-  sprite: {fileID: 0}
+  sprite: {fileID: 2053699210746947431, guid: f1dd476032b7b694d9f4f3f640bb6116, type: 3}
   animatorController: {fileID: 0}
   spriteScale: 1
   baseHealth: 25
