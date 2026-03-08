@@ -178,6 +178,10 @@ public class UnitHealthBar : MonoBehaviour
         }
 
         GameObject healthBarObj = Instantiate(prefab, unit.transform.position, Quaternion.identity);
+
+        // Scale the world-space canvas so 160px slider = 0.8 world units (fits one grid cell)
+        healthBarObj.transform.localScale = Vector3.one * 0.005f;
+
         UnitHealthBar healthBar = healthBarObj.GetComponent<UnitHealthBar>();
 
         if (healthBar == null)
