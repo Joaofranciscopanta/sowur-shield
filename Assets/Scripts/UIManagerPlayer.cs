@@ -32,19 +32,13 @@ public class UIManagerPlayer : MonoBehaviour
 
         if (timeController != null)
         {
-
-
-            // Registra para eventos com handlers específicos
-            timeController.OnTimeChanged += HandleTimeChanged;  // Este evento agora é disparado a cada 15 minutos
+            // Register for time events (fired every 15 in-game minutes)
+            timeController.OnTimeChanged += HandleTimeChanged;
             timeController.OnDayChanged += HandleDayChanged;
 
-            // Inicializa imediatamente
+            // Initialize immediately
             UpdateTimeDisplay();
             UpdateDayDisplay();
-        }
-        else
-        {
-
         }
 
         // Conecta com PlayerStats
@@ -89,19 +83,13 @@ public class UIManagerPlayer : MonoBehaviour
         
         if (playerStats != null)
         {
-
-            
-            // Registra para eventos de mudança nos stats
+            // Subscribe to stat change events
             playerStats.OnEnergyChanged += UpdateStaminaUI;
             playerStats.OnMoneyChanged += UpdateMoneyUI;
-            
-            // Atualiza UI imediatamente com valores atuais
+
+            // Initialize with current values
             UpdateStaminaUI(playerStats.currentEnergy, playerStats.maxEnergy);
             UpdateMoneyUI(playerStats.money);
-        }
-        else
-        {
-
         }
     }
     
@@ -232,10 +220,6 @@ public class UIManagerPlayer : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-
-    }
 }
 
 } // namespace SowurShield.Core

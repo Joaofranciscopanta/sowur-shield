@@ -9,15 +9,15 @@ namespace SowurShield.Core
 public class GroundItem : MonoBehaviour, IInteractable, ISaveable
 {
     public Item item;
-    public int quantity = 1; // Add quantity support
+    public int quantity = 1;
     private bool playerInRange = false;
     public bool itemPicked = false;
 
-    // Componentes visuais
+    // Visual components
     private SpriteRenderer spriteRenderer;
     private float initialY;
 
-    // Configurações de efeitos visuais
+    // Visual effects settings
     [Header("Visual Effects")]
     public bool enableFloating = true;
     public float floatHeight = 0.1f;
@@ -45,7 +45,7 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
     public float minimumMoveTime = 0.1f;
     public float maximumMoveTime = 0.3f;
 
-    // Referência ao jogador e seu inventário
+    // Reference to the player and their inventory
     private Transform playerTransform;
     private SowurShield.Inventory.Inventory playerInventory;
 
@@ -77,14 +77,14 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
     {
         if (!itemPicked && enableFloating)
         {
-            // Movimento de flutuação suave
+            // Smooth floating motion
             float y = Mathf.Sin(Time.time * floatSpeed) * floatHeight;
             transform.position = new Vector3(transform.position.x, initialY + y, transform.position.z);
         }
 
         if (!itemPicked && enableRotation)
         {
-            // Rotação suave para dar dimensão
+            // Gentle rotation for visual depth
             transform.Rotate(0, 0, rotationSpeed * Time.deltaTime);
         }
     }
@@ -114,14 +114,14 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
             playerInRange = true;
             playerTransform = other.transform;
 
-            // Obtém referência ao inventário do jogador
+            // Get reference to the player's inventory
             PlayerMove playerMove = other.GetComponent<PlayerMove>();
             if (playerMove != null)
             {
                 playerInventory = playerMove.GetInventory();
             }
 
-            // Destaque visual quando jogador se aproxima
+            // Highlight when player approaches
             if (spriteRenderer != null)
             {
                 spriteRenderer.color = highlightColor;
@@ -135,7 +135,7 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
         {
             playerInRange = false;
 
-            // Remove o destaque quando o jogador se afasta
+            // Remove highlight when player walks away
             if (spriteRenderer != null)
             {
                 spriteRenderer.color = originalColor;
@@ -153,12 +153,12 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
         {
             if (enableAreaCollection)
             {
-                // Colete todos os itens na área
+                // Collect all items in the area
                 CollectAllItemsInArea();
             }
             else
             {
-                // Coleta apenas este item
+                // Collect only this item
                 PickupItem();
             }
         }
@@ -166,14 +166,14 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
 
     private void CollectAllItemsInArea()
     {
-        // Encontra todos os GroundItems próximos
+        // Find all nearby GroundItems
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, collectionRadius);
         List<GroundItem> itemsToCollect = new List<GroundItem>();
 
-        // Adiciona este próprio item primeiro (garantindo que seja coletado)
+        // Add this item first to guarantee it is collected
         itemsToCollect.Add(this);
 
-        // Encontra outros itens na área
+        // Find other items in the area
         foreach (Collider2D col in colliders)
         {
             GroundItem otherItem = col.GetComponent<GroundItem>();
@@ -183,14 +183,14 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
             }
         }
 
-        // Se tem apenas 1 item (este), faz coleta normal
+        // If only this item exists, use normal pickup
         if (itemsToCollect.Count == 1)
         {
             PickupItem();
             return;
         }
 
-        // Inicia a coleta com movimento em direção ao jogador
+        // Start collection with movement toward the player
         StartCoroutine(CollectItemsWithAnimation(itemsToCollect));
     }
 
@@ -199,7 +199,7 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
         int collectedCount = 0;
         List<GroundItem> successfullyCollected = new List<GroundItem>();
 
-        // Primeiro verifica se todos cabem no inventário
+        // First check whether all items fit in the inventory
         foreach (GroundItem groundItem in itemsToCollect)
         {
             groundItem.itemPicked = true;
@@ -214,33 +214,33 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
             }
         }
 
-        // Realiza a animação de movimento para os itens que serão coletados
+        // Play movement animation for items that will be collected
         List<Coroutine> movementCoroutines = new List<Coroutine>();
 
         foreach (GroundItem groundItem in itemsToCollect)
         {
             if (groundItem.itemPicked)
             {
-                // Calcula tempo de movimento baseado na distância
+                // Calculate movement time based on distance
                 float distance = Vector2.Distance(groundItem.transform.position, playerTransform.position);
                 float moveTime = Mathf.Lerp(minimumMoveTime, maximumMoveTime,
                                            distance / collectionRadius);
 
-                // Inicia a coroutine de movimento e armazena a referência
+                // Start movement coroutine and store the reference
                 Coroutine moveCo = StartCoroutine(groundItem.MoveToPlayer(playerTransform, moveTime));
                 movementCoroutines.Add(moveCo);
 
-                // Adiciona à lista de coletados com sucesso
+                // Add to the successfully collected list
                 successfullyCollected.Add(groundItem);
             }
         }
 
-        // Aguarda um pequeno delay para variar o início do movimento dos itens
+        // Small stagger delay to vary movement start times
         foreach (GroundItem groundItem in successfullyCollected)
         {
             yield return new WaitForSeconds(0.05f);
 
-            // Adiciona ao inventário enquanto os itens estão se movendo
+            // Add to inventory while items are moving
             bool added = playerInventory.Add(groundItem.item, 1);
             if (added)
             {
@@ -248,20 +248,20 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
             }
         }
 
-        // Aguarda todas as coroutines de movimento terminarem
+        // Wait for all movement coroutines to finish
         foreach (Coroutine co in movementCoroutines)
         {
             yield return co;
         }
 
-        // Destrói os itens coletados
+        // Destroy collected items
         foreach (GroundItem groundItem in successfullyCollected)
         {
             groundItem.PlayPickupEffects();
             Destroy(groundItem.gameObject, 0.1f);
         }
 
-        // Se coletou vários itens, mostra efeito especial de área
+        // If multiple items were collected, play the area collection effect
         if (collectedCount > 1)
         {
             PlayAreaCollectionEffect(collectedCount);
@@ -274,10 +274,10 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
         Vector3 endPosition = target.position;
         float elapsed = 0;
 
-        // Desativa efeitos de flutuação durante o movimento
+        // Disable floating while moving toward player
         enableFloating = false;
 
-        // Aumenta um pouco a velocidade de rotação
+        // Slightly increase rotation speed during movement
         float originalRotationSpeed = rotationSpeed;
         rotationSpeed = originalRotationSpeed * 2;
 
@@ -286,30 +286,30 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
             float t = elapsed / duration;
             float curvedT = movementCurve.Evaluate(t);
 
-            // Move em direção ao jogador com a curva de animação
+            // Move toward player using the animation curve
             transform.position = Vector3.Lerp(startPosition, endPosition, curvedT);
 
-            // Diminui o tamanho gradualmente enquanto se aproxima
+            // Gradually shrink as it approaches the player
             transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one * 0.5f, curvedT);
 
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        // Finaliza no centro do jogador
+        // Snap to player center
         transform.position = endPosition;
     }
 
     private void PlayAreaCollectionEffect(int count)
     {
-        // Efeito visual de coleta em área
+        // Area collection visual effect
         if (areaCollectionEffectPrefab != null && playerTransform != null)
         {
             GameObject effect = Instantiate(areaCollectionEffectPrefab,
                                            playerTransform.position,
                                            Quaternion.identity);
 
-            // Ajusta a intensidade do efeito baseado na quantidade de itens
+            // Scale effect intensity based on item count
             ParticleSystem ps = effect.GetComponent<ParticleSystem>();
             if (ps != null)
             {
@@ -320,19 +320,19 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
             Destroy(effect, 2f);
         }
 
-        // Som de coleta em área
+        // Area collection sound effect
         if (areaSoundEffect != null && playerTransform != null)
         {
             AudioSource.PlayClipAtPoint(areaSoundEffect, playerTransform.position);
         }
 
-        // Exibe texto flutuante com a quantidade coletada
-        ShowFloatingText($"+{count} itens");
+        // Show floating text with collected count
+        ShowFloatingText($"+{count} items");
     }
 
     private void ShowFloatingText(string message)
     {
-        // Se você tiver um sistema de texto flutuante, implemente aqui
+        // Implement here if a floating text system is available
     }
 
     private void PickupItem()
@@ -354,10 +354,10 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
 
     private IEnumerator CollectWithAnimation()
     {
-        // Move em direção ao jogador antes de adicionar ao inventário
+        // Move toward player before adding to inventory
         yield return StartCoroutine(MoveToPlayer(playerTransform, minimumMoveTime));
 
-        // Adiciona ao inventário após o movimento
+        // Add to inventory after movement completes
         bool added = playerInventory.Add(item, quantity);
         if (added)
         {
@@ -366,14 +366,14 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
         }
         else
         {
-            // Se algo deu errado, reseta
+            // Something went wrong — reset pickup state
             itemPicked = false;
         }
     }
 
     public void PlayPickupEffects()
     {
-        // Efeito visual de coleta (partículas)
+        // Pickup particle effect
         if (pickupEffectPrefab != null && playerTransform != null)
         {
             GameObject effect = Instantiate(pickupEffectPrefab,
@@ -382,7 +382,7 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
             Destroy(effect, 2f);
         }
 
-        // Efeito sonoro de coleta
+        // Pickup sound effect
         if (pickupSound != null && playerTransform != null)
         {
             AudioSource.PlayClipAtPoint(pickupSound, playerTransform.position);
@@ -397,11 +397,11 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
         }
     }
 
-    // Método público para definir o item quando spawnar dinamicamente
+    // Public method to set the item when spawning dynamically
     public void SetItem(Item newItem)
     {
         item = newItem;
-        quantity = 1; // Default quantity
+        quantity = 1;
         UpdateVisual();
     }
 
@@ -409,7 +409,7 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
     public void SetItem(Item newItem, int newQuantity)
     {
         item = newItem;
-        quantity = Mathf.Max(1, newQuantity); // Ensure at least 1
+        quantity = Mathf.Max(1, newQuantity);
         UpdateVisual();
     }
 
@@ -441,7 +441,7 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
             Destroy(gameObject);
     }
 
-    // Visualização da área de coleta no editor
+    // Visualize collection radius in the editor
     private void OnDrawGizmosSelected()
     {
         if (enableAreaCollection)
