@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using SowurShield.Core;
+using SowurShield.Inventory;
 
 namespace SowurShield.Combat
 {
@@ -22,8 +24,8 @@ namespace SowurShield.Combat
 public class TurnManager : MonoBehaviour
 {
     [Header("Combat Configuration")]
-    [Tooltip("Speed at which turn gauges fill (multiplier)")]
-    [SerializeField] private float gaugeFilLRate = 1f;
+    [Tooltip("Speed at which turn gauges fill (multiplier). 10 = ~1s per turn at speed 10.")]
+    [SerializeField] private float gaugeFilLRate = 10f;
 
     [Tooltip("Maximum number of actions before battle ends in draw")]
     [SerializeField] private int maxActions = 500;
@@ -90,8 +92,11 @@ public class TurnManager : MonoBehaviour
         // Get all units from grid
         allUnits = GridManager.Instance.GetAllUnits();
 
+        Debug.LogWarning($"[TurnManager] InitializeCombat — found {allUnits.Count} units on grid.");
+
         if (allUnits.Count == 0)
         {
+            Debug.LogError("[TurnManager] No units found! CombatTeamSpawner/EnemySpawner may have failed.");
             return;
         }
 
@@ -367,6 +372,9 @@ public class TurnManager : MonoBehaviour
         }
 
 
+        // Compute rewards and update stats
+        CombatRewardData rewards = ComputeRewards(result);
+
         // Display surviving units
         int survivingPlayers = playerUnits.Count(u => u != null && u.IsAlive());
         int survivingEnemies = enemyUnits.Count(u => u != null && u.IsAlive());
@@ -374,13 +382,56 @@ public class TurnManager : MonoBehaviour
         // Show battle results UI
         if (BattleResultsUI.Instance != null)
         {
-            BattleResultsUI.Instance.ShowResults(result, currentTurn, survivingPlayers, survivingEnemies);
+            BattleResultsUI.Instance.ShowResults(result, currentTurn, survivingPlayers, survivingEnemies, rewards);
+        }
+    }
+
+    /// <summary>
+    /// Get a copy of the player units list.
+    /// </summary>
+    public List<CombatUnit> GetPlayerUnits() => new List<CombatUnit>(playerUnits);
+
+    /// <summary>
+    /// Compute rewards for a battle result.
+    /// Marks the stage complete in StageManager and worldFlags on victory.
+    /// Updates combatData stats regardless of outcome.
+    /// </summary>
+    private CombatRewardData ComputeRewards(BattleResult result)
+    {
+        var data = new CombatRewardData { isVictory = result == BattleResult.Victory };
+
+        StageData stage = StageManager.GetSelectedStage();
+
+        if (data.isVictory)
+        {
+            data.goldReward = stage != null ? stage.CalculateGoldReward() : 100 + currentTurn * 5;
+            data.lootDrops = stage != null ? stage.RollLoot() : new List<(Item, int)>();
+            data.animalHappinessBonus = 5f;
+            data.survivingPlayerUnits = playerUnits.Where(u => u != null && u.IsAlive()).ToList();
+
+            // Mark stage complete in runtime cache and world flags
+            if (stage != null)
+            {
+                StageManager.CompleteStage(stage);
+                var gameData = SaveManager.Instance?.CurrentGameData;
+                if (gameData != null)
+                    gameData.worldData.worldFlags[$"stage_completed_{stage.stageName}"] = true;
+            }
+
+            var combat = SaveManager.Instance?.CurrentGameData?.combatData;
+            if (combat != null)
+            {
+                combat.battlesWon++;
+                combat.enemiesDefeated += enemyUnits.Count(u => u != null && !u.IsAlive());
+            }
         }
         else
         {
+            var combat = SaveManager.Instance?.CurrentGameData?.combatData;
+            if (combat != null) combat.battlesLost++;
         }
 
-        // TODO: Award rewards, XP (Task 11)
+        return data;
     }
 
     /// <summary>

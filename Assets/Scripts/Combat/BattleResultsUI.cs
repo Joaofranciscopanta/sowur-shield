@@ -51,6 +51,10 @@ public class BattleResultsUI : MonoBehaviour
     private int unitsLost;
     private int enemiesDefeated;
 
+    // Reward tracking
+    private CombatRewardData pendingRewards;
+    private bool rewardsAwarded;
+
     // Singleton instance
     public static BattleResultsUI Instance { get; private set; }
 
@@ -92,8 +96,10 @@ public class BattleResultsUI : MonoBehaviour
     /// <summary>
     /// Show battle results screen
     /// </summary>
-    public void ShowResults(TurnManager.BattleResult result, int turns, int playerUnitsAlive, int enemyUnitsAlive)
+    public void ShowResults(TurnManager.BattleResult result, int turns, int playerUnitsAlive, int enemyUnitsAlive, CombatRewardData rewards = null)
     {
+        pendingRewards = rewards;
+        rewardsAwarded = false;
         totalTurns = turns;
 
         switch (result)
@@ -217,31 +223,59 @@ public class BattleResultsUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Get formatted rewards text (placeholder - will be expanded in Task 11)
+    /// Get formatted rewards text from computed reward data.
     /// </summary>
     private string GetRewardsText()
     {
-        // TODO: Calculate actual rewards based on zone difficulty (Task 11)
-        int goldReward = 100 + (totalTurns * 5); // Base 100 + bonus for efficiency
-        int xpReward = 100; // Base XP per animal
+        if (pendingRewards == null || !pendingRewards.isVictory)
+            return "No rewards.";
 
-        return $"<b>Rewards</b>\n\n" +
-               $"Gold: {goldReward}\n" +
-               $"Animal XP: {xpReward}\n" +
-               $"Player XP: 50";
+        var sb = new System.Text.StringBuilder("<b>Rewards</b>\n\n");
+        sb.AppendLine($"Gold: {pendingRewards.goldReward}");
+        foreach (var (item, qty) in pendingRewards.lootDrops)
+            sb.AppendLine($"{item.itemName} x{qty}");
+        if (pendingRewards.animalHappinessBonus > 0)
+            sb.AppendLine($"Animal Happiness: +{pendingRewards.animalHappinessBonus}");
+        return sb.ToString();
     }
 
     /// <summary>
-    /// Return to farm scene
+    /// Award pending rewards to the player. Guarded against double-award.
+    /// </summary>
+    private void AwardRewards()
+    {
+        if (pendingRewards == null || !pendingRewards.isVictory || rewardsAwarded) return;
+        rewardsAwarded = true;
+
+        // Gold
+        var stats = FindFirstObjectByType<PlayerStats>();
+        stats?.AddMoney(pendingRewards.goldReward);
+
+        // Loot
+        var inventory = FindFirstObjectByType<SowurShield.Inventory.Inventory>();
+        if (inventory != null)
+            foreach (var (item, qty) in pendingRewards.lootDrops)
+                inventory.AddItem(item, qty);
+
+        // Animal happiness
+        foreach (var unit in pendingRewards.survivingPlayerUnits)
+            unit.GetSourceAnimal()?.ModifyHappiness(pendingRewards.animalHappinessBonus);
+
+        // Persist
+        SaveManager.Instance?.SaveGame();
+    }
+
+    /// <summary>
+    /// Return to farm scene, awarding rewards first.
     /// </summary>
     private void ReturnToFarm()
     {
-
-        // TODO: Award rewards and XP before transitioning (Task 11)
-        // TODO: Use SceneTransitionManager for smooth transition
-
-        Time.timeScale = 1f; // Ensure time is running
-        SceneManager.LoadScene(farmSceneName);
+        AwardRewards();
+        Time.timeScale = 1f;
+        if (SceneTransitionManager.Instance != null)
+            SceneTransitionManager.Instance.LoadScene(farmSceneName);
+        else
+            SceneManager.LoadScene(farmSceneName);
     }
 
     /// <summary>
@@ -300,7 +334,7 @@ public class BattleResultsUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Reset battle statistics
+    /// Reset battle statistics and pending rewards.
     /// </summary>
     public void ResetStats()
     {
@@ -309,6 +343,8 @@ public class BattleResultsUI : MonoBehaviour
         damageTaken = 0;
         unitsLost = 0;
         enemiesDefeated = 0;
+        pendingRewards = null;
+        rewardsAwarded = false;
     }
 }
 
