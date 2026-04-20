@@ -232,6 +232,8 @@ public class BattleResultsUI : MonoBehaviour
 
         var sb = new System.Text.StringBuilder("<b>Rewards</b>\n\n");
         sb.AppendLine($"Gold: {pendingRewards.goldReward}");
+        if (pendingRewards.xpReward > 0)
+            sb.AppendLine($"XP: +{pendingRewards.xpReward} (surviving units)");
         foreach (var (item, qty) in pendingRewards.lootDrops)
             sb.AppendLine($"{item.itemName} x{qty}");
         if (pendingRewards.animalHappinessBonus > 0)
@@ -257,9 +259,13 @@ public class BattleResultsUI : MonoBehaviour
             foreach (var (item, qty) in pendingRewards.lootDrops)
                 inventory.AddItem(item, qty);
 
-        // Animal happiness
+        // Animal happiness + XP
         foreach (var unit in pendingRewards.survivingPlayerUnits)
-            unit.GetSourceAnimal()?.ModifyHappiness(pendingRewards.animalHappinessBonus);
+        {
+            var src = unit.GetSourceAnimal();
+            src?.ModifyHappiness(pendingRewards.animalHappinessBonus);
+            src?.GainCombatExperience(pendingRewards.xpReward);
+        }
 
         // Persist
         SaveManager.Instance?.SaveGame();

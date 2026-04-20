@@ -574,6 +574,8 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
             gameData.worldData.worldCounters[$"{prefix}_defenseGrowth"] = Mathf.RoundToInt(combatStats.defenseGrowth * 1000f);
             gameData.worldData.worldCounters[$"{prefix}_speedGrowth"] = Mathf.RoundToInt(combatStats.speedGrowth * 1000f);
             gameData.worldData.worldCounters[$"{prefix}_healthGrowth"] = Mathf.RoundToInt(combatStats.healthGrowth * 1000f);
+            gameData.worldData.worldCounters[$"{prefix}_level"] = combatStats.level;
+            gameData.worldData.worldCounters[$"{prefix}_experience"] = Mathf.RoundToInt(combatStats.experience);
         }
 
         // Save custom name (only if set)
@@ -615,6 +617,10 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
             combatStats.speedGrowth = Mathf.Clamp(spdG / 1000f, 1f, 3f);
         if (gameData.worldData.worldCounters.TryGetValue($"{prefix}_healthGrowth", out int hpG))
             combatStats.healthGrowth = Mathf.Clamp(hpG / 1000f, 1f, 3f);
+        if (gameData.worldData.worldCounters.TryGetValue($"{prefix}_level", out int savedLevel))
+            combatStats.level = Mathf.Clamp(savedLevel, 1, 10);
+        if (gameData.worldData.worldCounters.TryGetValue($"{prefix}_experience", out int savedXP))
+            combatStats.experience = Mathf.Max(0f, savedXP);
 
         // Load custom name
         if (gameData.worldData.worldStrings.TryGetValue($"{prefix}_customName", out string savedName))
@@ -812,6 +818,39 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
             combatStats.ApplyStatGrowth(stat, animalData.feedingStatBonus);
         }
     }
+
+    /// <summary>
+    /// Grant combat XP to this animal and handle level-ups.
+    /// Called by BattleResultsUI.AwardRewards() for each surviving player unit.
+    /// Level-up formula: XP needed = current level * 100 (e.g. level 1→2 = 100 XP).
+    /// Max level: 10. On level-up: +5% boost distributed to all four growth stats.
+    /// </summary>
+    public void GainCombatExperience(float xp)
+    {
+        if (combatStats == null) InitializeCombatStats();
+        if (combatStats.level >= 10) return;
+
+        combatStats.experience += xp;
+
+        // Check for level-ups (may gain multiple levels from one large XP grant)
+        while (combatStats.level < 10)
+        {
+            float xpNeeded = combatStats.level * 100f;
+            if (combatStats.experience < xpNeeded) break;
+
+            combatStats.experience -= xpNeeded;
+            combatStats.level++;
+
+            // Apply a flat +5% boost to all growth stats, capped at 3×
+            combatStats.ApplyStatGrowth("all", 0.05f);
+        }
+    }
+
+    /// <summary>Returns the animal's current combat level (1-10).</summary>
+    public int GetCombatLevel() => combatStats != null ? combatStats.level : 1;
+
+    /// <summary>Returns current XP progress toward the next level.</summary>
+    public float GetCombatExperience() => combatStats != null ? combatStats.experience : 0f;
 
     /// <summary>
     /// Apply seasonal combat modifiers based on current season.

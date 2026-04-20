@@ -14,6 +14,7 @@ public class CombatRewardData
 {
     public bool isVictory;
     public int goldReward;
+    public int xpReward;
     public List<(Item item, int quantity)> lootDrops = new List<(Item, int)>();
     public float animalHappinessBonus;
     public List<CombatUnit> survivingPlayerUnits = new List<CombatUnit>();

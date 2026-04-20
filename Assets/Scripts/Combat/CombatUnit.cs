@@ -97,6 +97,9 @@ public class CombatUnit : MonoBehaviour
     // ── Status effects ────────────────────────────────────────────────────────
     private List<CombatStatusEffect> statusEffects = new List<CombatStatusEffect>();
 
+    // ── Status immunities (populated from EnemyData.immunities) ──────────────
+    private HashSet<string> statusImmunities = new HashSet<string>(System.StringComparer.OrdinalIgnoreCase);
+
     /// <summary>
     /// Initialize this CombatUnit from an Animal
     /// </summary>
@@ -610,6 +613,18 @@ public class CombatUnit : MonoBehaviour
     // ============================================================================
     // STATUS EFFECT API
     // ============================================================================
+
+    /// <summary>Populate this unit's status immunities from EnemyData (case-insensitive).</summary>
+    public void InitializeImmunities(List<string> immunities)
+    {
+        statusImmunities.Clear();
+        if (immunities == null) return;
+        foreach (string s in immunities)
+            if (!string.IsNullOrEmpty(s)) statusImmunities.Add(s);
+    }
+
+    /// <summary>Returns true if this unit is immune to the given status effect type.</summary>
+    public bool IsImmuneTo(StatusEffectType type) => statusImmunities.Contains(type.ToString());
 
     /// <summary>Apply or stack a status effect on this unit.</summary>
     public void ApplyStatusEffect(StatusEffectType type, float value, int duration)

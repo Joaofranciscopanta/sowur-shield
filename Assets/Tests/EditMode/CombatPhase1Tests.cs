@@ -465,6 +465,44 @@ public class CombatPhase1Tests
             "Shield 0.25 should reduce 80 raw damage to 60");
     }
 
+    // =========================================================================
+    // IMMUNITY
+    // =========================================================================
+
+    [Test]
+    public void Immunity_StunBlocked_WhenUnitIsImmuneToStun()
+    {
+        var unit = CreateUnit();
+        unit.InitializeImmunities(new System.Collections.Generic.List<string> { "Stun" });
+
+        // Immunity is checked by the caller (TurnManager.ExecuteSkill), not ApplyStatusEffect.
+        // Verify IsImmuneTo returns true so the caller can skip the apply.
+        Assert.IsTrue(unit.IsImmuneTo(StatusEffectType.Stun),
+            "Unit with 'Stun' in immunities should report IsImmuneTo(Stun) = true");
+        Assert.IsFalse(unit.IsImmuneTo(StatusEffectType.Burn),
+            "Stun immunity must not grant Burn immunity");
+    }
+
+    [Test]
+    public void Immunity_CaseInsensitive_MatchesLowercase()
+    {
+        var unit = CreateUnit();
+        unit.InitializeImmunities(new System.Collections.Generic.List<string> { "burn" });
+
+        Assert.IsTrue(unit.IsImmuneTo(StatusEffectType.Burn),
+            "Immunity check must be case-insensitive ('burn' matches Burn enum)");
+    }
+
+    [Test]
+    public void Immunity_NullList_NothingBlocked()
+    {
+        var unit = CreateUnit();
+        unit.InitializeImmunities(null);
+
+        Assert.IsFalse(unit.IsImmuneTo(StatusEffectType.Stun));
+        Assert.IsFalse(unit.IsImmuneTo(StatusEffectType.Burn));
+    }
+
     [Test]
     public void TakeDamageWithShield_MaxShieldCap_StillDealsMinimumDamage()
     {

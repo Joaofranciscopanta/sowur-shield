@@ -225,6 +225,7 @@ public class EnemySpawner : MonoBehaviour
 
         // ── Skills ────────────────────────────────────────────────────────────
         combatUnit.InitializeEnemySkills(enemyData.skills, enemyData.skillUseChance);
+        combatUnit.InitializeImmunities(enemyData.immunities);
 
         // ── Place on grid ─────────────────────────────────────────────────────
         bool placed = GridManager.Instance.PlaceUnitAt(combatUnit, pos);

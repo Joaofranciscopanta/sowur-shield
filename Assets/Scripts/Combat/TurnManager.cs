@@ -326,12 +326,14 @@ public class TurnManager : MonoBehaviour
             attacker.ApplyStatusEffect(StatusEffectType.Shield, skill.statusEffectValue, skill.statusEffectDuration);
         }
 
-        // Status effect on target (Stun / Burn — offensive)
-        if (skill.statusEffect == AnimalSkillEffect.Stun && !skill.affectsAllies)
+        // Status effect on target (Stun / Burn — offensive, blocked by immunity)
+        if (skill.statusEffect == AnimalSkillEffect.Stun && !skill.affectsAllies
+            && !primaryTarget.IsImmuneTo(StatusEffectType.Stun))
         {
             primaryTarget.ApplyStatusEffect(StatusEffectType.Stun, 0f, skill.statusEffectDuration > 0 ? skill.statusEffectDuration : 1);
         }
-        else if (skill.statusEffect == AnimalSkillEffect.Burn && !skill.affectsAllies)
+        else if (skill.statusEffect == AnimalSkillEffect.Burn && !skill.affectsAllies
+            && !primaryTarget.IsImmuneTo(StatusEffectType.Burn))
         {
             primaryTarget.ApplyStatusEffect(StatusEffectType.Burn, skill.statusEffectValue, skill.statusEffectDuration > 0 ? skill.statusEffectDuration : 2);
         }
@@ -511,6 +513,7 @@ public class TurnManager : MonoBehaviour
         if (data.isVictory)
         {
             data.goldReward = stage != null ? stage.CalculateGoldReward() : 100 + currentTurn * 5;
+            data.xpReward   = stage != null ? stage.baseExperienceReward : 50;
             data.lootDrops = stage != null ? stage.RollLoot() : new List<(Item, int)>();
             data.animalHappinessBonus = 5f;
             data.survivingPlayerUnits = playerUnits.Where(u => u != null && u.IsAlive()).ToList();
