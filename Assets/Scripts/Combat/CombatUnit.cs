@@ -553,6 +553,19 @@ public class CombatUnit : MonoBehaviour
     public float GetHealthPercent() => maxHealth > 0f ? currentHealth / maxHealth : 0f;
 
     /// <summary>
+    /// Scale attack, defense, and health by multiplier at spawn time (e.g. illness penalty).
+    /// Speed is intentionally unaffected — slow animals still need to act in combat.
+    /// </summary>
+    public void ApplyStatMultiplier(float multiplier)
+    {
+        attack    *= multiplier;
+        defense   *= multiplier;
+        maxHealth *= multiplier;
+        currentHealth = Mathf.Min(currentHealth, maxHealth);
+        UpdateHealthBar();
+    }
+
+    /// <summary>
     /// Get reference to source Animal (null for enemies)
     /// </summary>
     public Animal GetSourceAnimal() => animal;

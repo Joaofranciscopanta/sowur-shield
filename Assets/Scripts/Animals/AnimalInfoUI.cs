@@ -209,6 +209,11 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
         if (buffsText != null)
         {
             string buffs = "Status:\n";
+            if (animal.IsIll)
+            {
+                string cureItem = animal.AnimalData?.illnessCureItemName ?? "Medicine";
+                buffs += $"• ILL — use {cureItem} to cure\n";
+            }
             if (animal.HasBeenPetToday)
                 buffs += "• Happy (Petted today)\n";
             if (!animal.NeedsFeeding)

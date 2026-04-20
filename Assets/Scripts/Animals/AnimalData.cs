@@ -105,6 +105,15 @@ public class AnimalData : ScriptableObject
     [Tooltip("Available passive skills (can unlock up to 4 based on conditions)")]
     public List<AnimalSkill> availablePassiveSkills = new List<AnimalSkill>();
 
+    [Header("Illness System")]
+    [Tooltip("Consecutive days of being both unfed AND unpetted before the animal becomes ill.")]
+    public int illnessThresholdDays = 3;
+    [Tooltip("Item name (must match ItemDatabase key exactly) used to cure illness.")]
+    public string illnessCureItemName = "Medicine";
+    [Tooltip("Combat stat multiplier applied while the animal is ill (e.g. 0.5 = −50% all stats).")]
+    [Range(0.1f, 1f)]
+    public float illnessStatPenalty = 0.5f;
+
     [Header("Future: Work System")]
     public bool canDoChores = false;
     public string choreType; // "Watering", "Harvesting", etc. - for future implementation

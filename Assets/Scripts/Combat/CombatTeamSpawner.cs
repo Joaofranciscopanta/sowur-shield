@@ -258,6 +258,10 @@ public class CombatTeamSpawner : MonoBehaviour
         combatUnit.InitializeFromAnimal(animal, isPlayer);
         combatUnit.InitializePlayerSkill(animal.AnimalData?.activeSkill);
 
+        // Apply illness stat penalty (attack/defense/health -%, speed unchanged)
+        if (animal.IsIll && animalData.illnessStatPenalty < 1f)
+            combatUnit.ApplyStatMultiplier(animalData.illnessStatPenalty);
+
         // ── Place on grid (also assigns healthBarPrefab and creates health bar) ─
         bool placed = GridManager.Instance.PlaceUnitAt(combatUnit, gridPos);
         if (!placed)

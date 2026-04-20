@@ -57,6 +57,13 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     // Custom name set by player
     private string customName = "";
 
+    // Illness tracking
+    private bool isIll = false;
+    private int neglectDays = 0;
+
+    /// <summary>True when the animal is ill (production blocked, stats penalised).</summary>
+    public bool IsIll => isIll;
+
     // Particle system
     private GameObject currentHeartParticle;
 
@@ -254,24 +261,26 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
 
     public string GetInteractionPrompt()
     {
+        if (isIll)
+        {
+            if (playerInventory != null)
+            {
+                Item selectedItem = playerInventory.GetSelectedItem();
+                string cureItem = animalData?.illnessCureItemName ?? "Medicine";
+                if (selectedItem != null && selectedItem.itemName == cureItem)
+                    return $"Cure {GetDisplayName()} (use {cureItem})";
+            }
+            return $"{GetDisplayName()} is ill! (use {animalData?.illnessCureItemName ?? "Medicine"} to cure)";
+        }
+
         if (playerInventory != null)
         {
             Item selectedItem = playerInventory.GetSelectedItem();
             if (selectedItem != null && CanEatFood(selectedItem.itemName))
-            {
                 return $"Feed {GetDisplayName()}";
-            }
         }
 
-        // Default to petting
-        if (!hasBeenPetToday)
-        {
-            return $"Pet {GetDisplayName()}";
-        }
-        else
-        {
-            return $"View {GetDisplayName()} Info";
-        }
+        return !hasBeenPetToday ? $"Pet {GetDisplayName()}" : $"View {GetDisplayName()} Info";
     }
 
     public void Interact()
@@ -281,10 +290,21 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         if (playerInventory != null)
         {
             Item selectedItem = playerInventory.GetSelectedItem();
-            if (selectedItem != null && CanEatFood(selectedItem.itemName))
+            if (selectedItem != null)
             {
-                FeedAnimal(selectedItem, playerInventory);
-                return;
+                // Medicine cures illness (checked first so medicine isn't accidentally fed)
+                string cureItem = animalData?.illnessCureItemName ?? "Medicine";
+                if (isIll && selectedItem.itemName == cureItem)
+                {
+                    CureIllness(playerInventory);
+                    return;
+                }
+
+                if (CanEatFood(selectedItem.itemName))
+                {
+                    FeedAnimal(selectedItem, playerInventory);
+                    return;
+                }
             }
         }
 
@@ -473,13 +493,16 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         // Apply seasonal combat modifiers
         ApplySeasonalModifiers();
 
+        // Track neglect and progress illness — evaluated BEFORE resetting daily flags
+        UpdateNeglectAndIllness();
+
         // Reset daily tracking
         hasBeenPetToday = false;
         foodEatenToday = 0;
         needsFeeding = true;
 
-        // Check for production (eggs, milk, etc.)
-        if (animalData.canProduce)
+        // Check for production — blocked when ill
+        if (animalData.canProduce && !isIll)
         {
             CheckProduction();
         }
@@ -578,6 +601,10 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
             gameData.worldData.worldCounters[$"{prefix}_experience"] = Mathf.RoundToInt(combatStats.experience);
         }
 
+        // Save illness state
+        gameData.worldData.worldFlags[$"{prefix}_isIll"] = isIll;
+        gameData.worldData.worldCounters[$"{prefix}_neglectDays"] = neglectDays;
+
         // Save custom name (only if set)
         if (!string.IsNullOrEmpty(customName))
             gameData.worldData.worldStrings[$"{prefix}_customName"] = customName;
@@ -621,6 +648,12 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
             combatStats.level = Mathf.Clamp(savedLevel, 1, 10);
         if (gameData.worldData.worldCounters.TryGetValue($"{prefix}_experience", out int savedXP))
             combatStats.experience = Mathf.Max(0f, savedXP);
+
+        // Load illness state
+        if (gameData.worldData.worldFlags.TryGetValue($"{prefix}_isIll", out bool savedIll))
+            isIll = savedIll;
+        if (gameData.worldData.worldCounters.TryGetValue($"{prefix}_neglectDays", out int savedNeglect))
+            neglectDays = Mathf.Max(0, savedNeglect);
 
         // Load custom name
         if (gameData.worldData.worldStrings.TryGetValue($"{prefix}_customName", out string savedName))
@@ -851,6 +884,61 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
 
     /// <summary>Returns current XP progress toward the next level.</summary>
     public float GetCombatExperience() => combatStats != null ? combatStats.experience : 0f;
+
+    #endregion
+
+    #region Illness System
+
+    /// <summary>
+    /// Called once per day (before daily flags reset) to update neglect counter and
+    /// transition the animal into the ill state if fully neglected too many days in a row.
+    /// Neglect = not petted AND not fed on the same day.
+    /// Any care action (petting OR feeding) resets the neglect counter.
+    /// </summary>
+    private void UpdateNeglectAndIllness()
+    {
+        if (animalData == null) return;
+
+        bool neglectedToday = !hasBeenPetToday && needsFeeding;
+
+        if (neglectedToday)
+        {
+            neglectDays++;
+            if (!isIll && neglectDays >= animalData.illnessThresholdDays)
+                isIll = true;
+        }
+        else
+        {
+            // Animal was cared for — reset neglect streak (illness still requires medicine)
+            neglectDays = 0;
+        }
+    }
+
+    /// <summary>
+    /// Cure the animal's illness by consuming one medicine item from the player's inventory.
+    /// </summary>
+    private void CureIllness(SowurShield.Inventory.Inventory inventory)
+    {
+        if (!isIll || inventory == null || animalData == null) return;
+
+        Item medicine = ItemDatabase.GetItem(animalData.illnessCureItemName);
+        if (medicine == null)
+        {
+            Debug.LogWarning($"[Animal] Cure item '{animalData.illnessCureItemName}' not found in ItemDatabase.");
+            return;
+        }
+
+        if (!inventory.RemoveItem(medicine, 1)) return;
+
+        isIll = false;
+        neglectDays = 0;
+        ModifyHappiness(10f); // Recovery happiness boost
+        SpawnHeartParticle();
+    }
+
+    #endregion
+
+    #region Combat Stats (illness penalty integration)
 
     /// <summary>
     /// Apply seasonal combat modifiers based on current season.

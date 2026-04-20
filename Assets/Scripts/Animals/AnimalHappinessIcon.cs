@@ -18,6 +18,8 @@ public class AnimalHappinessIcon : MonoBehaviour
     [SerializeField] private Sprite neutralSprite;
     [Tooltip("Displayed when happiness < 40")]
     [SerializeField] private Sprite sadSprite;
+    [Tooltip("Displayed when the animal is ill (overrides mood sprite)")]
+    [SerializeField] private Sprite sickSprite;
 
     [Header("Position")]
     [SerializeField] private float verticalOffset = 1.2f;
@@ -80,15 +82,23 @@ public class AnimalHappinessIcon : MonoBehaviour
     {
         if (!showIcon || iconRenderer == null) return;
 
-        float happiness = animal.GetHappiness();
         Sprite targetSprite;
 
-        if (happiness >= 70f)
-            targetSprite = happySprite;
-        else if (happiness >= 40f)
-            targetSprite = neutralSprite;
+        // Illness overrides mood — show sick icon regardless of happiness
+        if (animal.IsIll)
+        {
+            targetSprite = sickSprite != null ? sickSprite : sadSprite;
+        }
         else
-            targetSprite = sadSprite;
+        {
+            float happiness = animal.GetHappiness();
+            if (happiness >= 70f)
+                targetSprite = happySprite;
+            else if (happiness >= 40f)
+                targetSprite = neutralSprite;
+            else
+                targetSprite = sadSprite;
+        }
 
         // Only update if sprite changed
         if (targetSprite != currentSprite)
