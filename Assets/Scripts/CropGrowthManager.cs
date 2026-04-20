@@ -251,6 +251,23 @@ namespace SowurShield.Core
             return yield;
         }
 
+        /// <summary>
+        /// Called by the weather system on drought days to accelerate water depletion.
+        /// Increments daysSinceLastWatered by an additional 1 and immediately checks
+        /// whether the crop should die from thirst.
+        /// </summary>
+        public void SimulateDroughtDay()
+        {
+            if (currentCrop == null) return;
+
+            daysSinceLastWatered++;
+
+            if (currentCrop.requiresWater && daysSinceLastWatered >= currentCrop.maxDaysWithoutWater)
+            {
+                KillCrop();
+            }
+        }
+
         // Remove crop completely
         public void RemoveCrop()
         {

@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections.Generic;
 using SowurShield.Animals;
 
 namespace SowurShield.Combat
@@ -70,8 +71,31 @@ public class CombatUnit : MonoBehaviour
     private Color playerColor = new Color(0.3f, 0.5f, 1f); // Blue
     private Color enemyColor = new Color(1f, 0.3f, 0.3f);  // Red
 
+    // Animator (optional — set by SetupVisuals when animal has an animatorController)
+    private Animator unitAnimator;
+
+    // Animator parameter hashes
+    private static readonly int AnimAttack = Animator.StringToHash("Attack");
+    private static readonly int AnimHurt   = Animator.StringToHash("Hurt");
+    private static readonly int AnimDie    = Animator.StringToHash("Die");
+    private static readonly int AnimIdle   = Animator.StringToHash("Idle");
+
     // Flash coroutine tracking
     private Coroutine currentFlashCoroutine = null;
+
+    // ── Skill tracking ────────────────────────────────────────────────────────
+    /// <summary>Active skill for player units (from AnimalData). Null for enemies.</summary>
+    private AnimalSkill playerActiveSkill;
+    /// <summary>Remaining cooldown turns on the active skill (0 = ready).</summary>
+    private int skillCooldownRemaining;
+
+    /// <summary>Enemy skill pool (from EnemyData). Empty for player units.</summary>
+    private List<AnimalSkill> enemySkills = new List<AnimalSkill>();
+    /// <summary>Chance (0-1) that an enemy uses a skill instead of a basic attack.</summary>
+    private float enemySkillUseChance;
+
+    // ── Status effects ────────────────────────────────────────────────────────
+    private List<CombatStatusEffect> statusEffects = new List<CombatStatusEffect>();
 
     /// <summary>
     /// Initialize this CombatUnit from an Animal
@@ -103,6 +127,13 @@ public class CombatUnit : MonoBehaviour
 
         // Set display name
         unitName = animal.GetDisplayName();
+
+        // Setup animator from AnimalData if available
+        if (animal.AnimalData?.animatorController != null)
+        {
+            unitAnimator = gameObject.GetComponent<Animator>() ?? gameObject.AddComponent<Animator>();
+            unitAnimator.runtimeAnimatorController = animal.AnimalData.animatorController;
+        }
 
         // Setup visuals
         SetupVisuals();
@@ -315,19 +346,24 @@ public class CombatUnit : MonoBehaviour
     }
 
     /// <summary>
-    /// Handle unit death
+    /// Handle unit death: trigger Die animation, grey out sprite.
     /// </summary>
     private void Die()
     {
+        if (unitAnimator != null)
+            unitAnimator.SetTrigger(AnimDie);
 
-        // Visual feedback
-        if (visualObject != null)
+        SpriteRenderer sr = visualObject != null ? visualObject.GetComponent<SpriteRenderer>() : null;
+        if (sr != null)
+        {
+            sr.color = new Color(0.4f, 0.4f, 0.4f, 0.6f);
+        }
+        else if (visualObject != null)
         {
             Renderer renderer = visualObject.GetComponent<Renderer>();
-            renderer.material.color = Color.gray;
+            if (renderer != null)
+                renderer.material.color = Color.gray;
         }
-
-        // TODO: Play death animation, disable unit, etc.
     }
 
     /// <summary>
@@ -421,35 +457,33 @@ public class CombatUnit : MonoBehaviour
     }
 
     /// <summary>
-    /// Flash red when taking damage (visual feedback)
+    /// Flash red when taking damage (visual feedback) and trigger Hurt animation.
     /// </summary>
     private void FlashDamage()
     {
+        if (unitAnimator != null)
+            unitAnimator.SetTrigger(AnimHurt);
+
         if (visualObject != null)
         {
-            // Stop any existing flash to prevent color overlap
             if (currentFlashCoroutine != null)
-            {
                 StopCoroutine(currentFlashCoroutine);
-            }
-
             currentFlashCoroutine = StartCoroutine(FlashColorCoroutine(Color.red));
         }
     }
 
     /// <summary>
-    /// Flash yellow when attacking (visual feedback)
+    /// Flash yellow when attacking (visual feedback) and trigger Attack animation.
     /// </summary>
     public void FlashAttack()
     {
+        if (unitAnimator != null)
+            unitAnimator.SetTrigger(AnimAttack);
+
         if (visualObject != null)
         {
-            // Stop any existing flash to prevent color overlap
             if (currentFlashCoroutine != null)
-            {
                 StopCoroutine(currentFlashCoroutine);
-            }
-
             currentFlashCoroutine = StartCoroutine(FlashColorCoroutine(Color.yellow));
         }
     }
@@ -513,12 +547,134 @@ public class CombatUnit : MonoBehaviour
     public float GetSpeed() => speed;
     public float GetAccuracy() => accuracy;
 
-    public float GetHealthPercent() => currentHealth / maxHealth;
+    public float GetHealthPercent() => maxHealth > 0f ? currentHealth / maxHealth : 0f;
 
     /// <summary>
     /// Get reference to source Animal (null for enemies)
     /// </summary>
     public Animal GetSourceAnimal() => animal;
+
+    // ============================================================================
+    // SKILL API
+    // ============================================================================
+
+    /// <summary>Initialize player unit's active skill from AnimalData.</summary>
+    public void InitializePlayerSkill(AnimalSkill skill)
+    {
+        playerActiveSkill = skill;
+        skillCooldownRemaining = 0;
+    }
+
+    /// <summary>Initialize enemy skill pool from EnemyData.</summary>
+    public void InitializeEnemySkills(List<AnimalSkill> skills, float useChance)
+    {
+        enemySkills = skills ?? new List<AnimalSkill>();
+        enemySkillUseChance = useChance;
+    }
+
+    /// <summary>
+    /// Returns the active skill to execute this turn, or null if none is available.
+    /// For player units: returns activeSkill when off cooldown.
+    /// For enemy units: random roll against skillUseChance, then pick a random skill.
+    /// </summary>
+    public AnimalSkill GetReadySkill()
+    {
+        if (isPlayerUnit)
+        {
+            if (playerActiveSkill != null && playerActiveSkill.skillType == SkillType.Active && skillCooldownRemaining <= 0)
+                return playerActiveSkill;
+            return null;
+        }
+        else
+        {
+            if (enemySkills == null || enemySkills.Count == 0) return null;
+            if (UnityEngine.Random.value > enemySkillUseChance) return null;
+            return enemySkills[UnityEngine.Random.Range(0, enemySkills.Count)];
+        }
+    }
+
+    /// <summary>Put the active skill on cooldown after use.</summary>
+    public void SetSkillOnCooldown(AnimalSkill skill)
+    {
+        if (isPlayerUnit && skill == playerActiveSkill)
+            skillCooldownRemaining = skill.cooldownTurns;
+    }
+
+    /// <summary>Decrement skill cooldown by 1 (call at the start of this unit's turn).</summary>
+    public void TickSkillCooldown()
+    {
+        if (skillCooldownRemaining > 0)
+            skillCooldownRemaining--;
+    }
+
+    // ============================================================================
+    // STATUS EFFECT API
+    // ============================================================================
+
+    /// <summary>Apply or stack a status effect on this unit.</summary>
+    public void ApplyStatusEffect(StatusEffectType type, float value, int duration)
+    {
+        // Refresh duration if same type already active (no stacking, just refresh)
+        foreach (var effect in statusEffects)
+        {
+            if (effect.type == type)
+            {
+                effect.turnsRemaining = Mathf.Max(effect.turnsRemaining, duration);
+                return;
+            }
+        }
+        statusEffects.Add(new CombatStatusEffect(type, value, duration));
+    }
+
+    /// <summary>
+    /// Tick all status effects by 1 turn. Returns burn damage dealt this tick (0 if none).
+    /// Call at the start of this unit's turn before checking stun.
+    /// </summary>
+    public float TickStatusEffects()
+    {
+        float burnDamage = 0f;
+
+        for (int i = statusEffects.Count - 1; i >= 0; i--)
+        {
+            var effect = statusEffects[i];
+
+            if (effect.type == StatusEffectType.Burn)
+                burnDamage += effect.value;
+
+            effect.turnsRemaining--;
+            if (effect.turnsRemaining <= 0)
+                statusEffects.RemoveAt(i);
+        }
+
+        return burnDamage;
+    }
+
+    /// <summary>True if this unit has an active Stun effect.</summary>
+    public bool IsStunned
+    {
+        get
+        {
+            foreach (var e in statusEffects)
+                if (e.type == StatusEffectType.Stun) return true;
+            return false;
+        }
+    }
+
+    /// <summary>Total shield damage reduction fraction (0 = none, capped at 0.9).</summary>
+    public float GetShieldReduction()
+    {
+        float total = 0f;
+        foreach (var e in statusEffects)
+            if (e.type == StatusEffectType.Shield) total += e.value;
+        return Mathf.Min(total, 0.9f);
+    }
+
+    /// <summary>Modify TakeDamage to respect Shield reduction.</summary>
+    public void TakeDamageWithShield(float rawDamage)
+    {
+        float reduced = rawDamage * (1f - GetShieldReduction());
+        TakeDamage(reduced);
+    }
 }
 
 } // namespace SowurShield.Combat

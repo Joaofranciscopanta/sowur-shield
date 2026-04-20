@@ -519,6 +519,25 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         }
     }
 
+    /// <summary>
+    /// Called by the weather system on rainy days to automatically water this soil block.
+    /// Tilled soil becomes Watered; soil WithCrop has its crop watered.
+    /// Does nothing on Regular soil.
+    /// </summary>
+    public void AutoWater()
+    {
+        if (currentState == SoilState.Tilled)
+        {
+            currentState = SoilState.Watered;
+            UpdateAppearance();
+        }
+        else if (currentState == SoilState.WithCrop && cropGrowthManager != null)
+        {
+            cropGrowthManager.WaterCrop();
+            UpdateAppearance();
+        }
+    }
+
     private void ResetSoil()
     {
         SoilState previousState = currentState;

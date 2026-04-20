@@ -256,6 +256,7 @@ public class CombatTeamSpawner : MonoBehaviour
         CombatUnit combatUnit = unitObj.AddComponent<CombatUnit>();
         combatUnit.isPlayerUnit = isPlayer;
         combatUnit.InitializeFromAnimal(animal, isPlayer);
+        combatUnit.InitializePlayerSkill(animal.AnimalData?.activeSkill);
 
         // ── Place on grid (also assigns healthBarPrefab and creates health bar) ─
         bool placed = GridManager.Instance.PlaceUnitAt(combatUnit, gridPos);

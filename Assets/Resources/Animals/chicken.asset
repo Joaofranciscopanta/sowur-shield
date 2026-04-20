@@ -29,14 +29,14 @@ MonoBehaviour:
     quantityPerDay: 1
   heartParticlePrefab: {fileID: 8335835914115039494, guid: dd1fca26b61cc1141a98509bb88c1e03, type: 3}
   pettingCooldown: 5
-  canProduce: 0
-  produceItemName: 
+  canProduce: 1
+  produceItemName: Egg
   productionIntervalDays: 1
   minProduceAmount: 1
   maxProduceAmount: 1
-  groundItemPrefab: {fileID: 0}
+  groundItemPrefab: {fileID: 4536615237796670113, guid: 800ac1a83c170be4298192a95c621b10, type: 3}
   produceOnlyIfFed: 0
-  happinessProductionBonus: 0
+  happinessProductionBonus: 1
   baseCombatStats:
     baseAttack: 16
     baseDefense: 16

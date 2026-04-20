@@ -810,4 +810,295 @@ public class AnimalHusbandryTests
         var zones = roster.GetOccupiedZones();
         Assert.AreEqual(1, zones.Count); // Same zone, shouldn't duplicate
     }
+
+    // =========================================================================
+    // COMBAT STATS GROWTH — Daily Care
+    // =========================================================================
+
+    [Test]
+    public void ApplyStatGrowth_IncreasesAttackGrowth()
+    {
+        var stats = new AnimalCombatStats();
+        stats.attackGrowth = 1f;
+
+        stats.ApplyStatGrowth("attack", 0.01f);
+
+        Assert.AreEqual(1.01f, stats.attackGrowth, 0.001f);
+    }
+
+    [Test]
+    public void ApplyStatGrowth_ClampsAtThree()
+    {
+        var stats = new AnimalCombatStats();
+        stats.attackGrowth = 2.99f;
+
+        stats.ApplyStatGrowth("attack", 0.1f);
+
+        Assert.AreEqual(3f, stats.attackGrowth, 0.001f);
+    }
+
+    [Test]
+    public void ApplyStatGrowth_ClampsAtOne_Minimum()
+    {
+        var stats = new AnimalCombatStats();
+        stats.defenseGrowth = 1f;
+
+        stats.ApplyStatGrowth("defense", -0.5f);
+
+        Assert.AreEqual(1f, stats.defenseGrowth, 0.001f);
+    }
+
+    [Test]
+    public void ApplyStatGrowth_All_GrowsAllStats()
+    {
+        var stats = new AnimalCombatStats();
+
+        stats.ApplyStatGrowth("all", 0.05f);
+
+        Assert.AreEqual(1.05f, stats.attackGrowth, 0.001f);
+        Assert.AreEqual(1.05f, stats.defenseGrowth, 0.001f);
+        Assert.AreEqual(1.05f, stats.speedGrowth, 0.001f);
+        Assert.AreEqual(1.05f, stats.healthGrowth, 0.001f);
+    }
+
+    [Test]
+    public void GetCombatStats_ReturnsInitializedStats()
+    {
+        var data = CreateAnimalData(); Track(data);
+        data.baseCombatStats = new AnimalCombatStats
+        {
+            baseAttack = 20f,
+            baseDefense = 15f,
+            baseSpeed = 10f,
+            baseHealth = 100f
+        };
+        var (go, animal) = CreateAnimal("CS_Init"); Track(go);
+        SetField(animal, "animalData", data);
+
+        // Force initialization via GetCombatStats
+        var stats = animal.GetCombatStats();
+
+        Assert.IsNotNull(stats);
+        Assert.AreEqual(20f, stats.baseAttack, 0.001f);
+        Assert.AreEqual(15f, stats.baseDefense, 0.001f);
+    }
+
+    [Test]
+    public void GetCombatStats_SyncsHappiness()
+    {
+        var data = CreateAnimalData(); Track(data);
+        var (go, animal) = CreateAnimal("CS_Sync"); Track(go);
+        SetField(animal, "animalData", data);
+        SetField(animal, "happiness", 80f);
+
+        var stats = animal.GetCombatStats();
+
+        Assert.AreEqual(80f, stats.happiness, 0.001f);
+    }
+
+    [Test]
+    public void GrowthSaveLoad_RoundTrip_PreservesMultipliers()
+    {
+        var data = CreateAnimalData(); Track(data);
+        var (go, animal) = CreateAnimal("GR_RT"); Track(go);
+        SetField(animal, "animalData", data);
+
+        // Set up growth values
+        var stats = animal.GetCombatStats();
+        stats.attackGrowth = 1.25f;
+        stats.defenseGrowth = 1.10f;
+        stats.speedGrowth = 1.50f;
+        stats.healthGrowth = 2.00f;
+
+        // Save
+        var gd = new GameData();
+        animal.SaveData(gd);
+
+        // Reset growth
+        stats.attackGrowth = 1f;
+        stats.defenseGrowth = 1f;
+        stats.speedGrowth = 1f;
+        stats.healthGrowth = 1f;
+
+        // Load
+        animal.LoadData(gd);
+
+        // Verify — int*1000 encoding may cause minor precision loss
+        stats = animal.GetCombatStats();
+        Assert.AreEqual(1.25f, stats.attackGrowth, 0.002f);
+        Assert.AreEqual(1.10f, stats.defenseGrowth, 0.002f);
+        Assert.AreEqual(1.50f, stats.speedGrowth, 0.002f);
+        Assert.AreEqual(2.00f, stats.healthGrowth, 0.002f);
+    }
+
+    [Test]
+    public void GrowthLoad_ClampsValues()
+    {
+        var data = CreateAnimalData(); Track(data);
+        var (go, animal) = CreateAnimal("GR_Clamp"); Track(go);
+        SetField(animal, "animalData", data);
+
+        // Force init
+        animal.GetCombatStats();
+
+        // Manually inject out-of-range values
+        var gd = new GameData();
+        string prefix = $"animal_{go.name}";
+        gd.worldData.worldCounters[$"{prefix}_attackGrowth"] = 5000; // 5.0 — over max
+        gd.worldData.worldCounters[$"{prefix}_defenseGrowth"] = 500; // 0.5 — under min
+
+        animal.LoadData(gd);
+
+        var stats = animal.GetCombatStats();
+        Assert.AreEqual(3f, stats.attackGrowth, 0.001f); // Clamped to max
+        Assert.AreEqual(1f, stats.defenseGrowth, 0.001f); // Clamped to min
+    }
+
+    // =========================================================================
+    // SEASONAL MODIFIERS
+    // =========================================================================
+
+    [Test]
+    public void SeasonalModifiers_ApplyCorrectly()
+    {
+        var stats = new AnimalCombatStats();
+
+        stats.ApplySeasonalModifiers(1.2f, 1.1f, 1.15f);
+
+        Assert.AreEqual(1.2f, stats.seasonalAttackMod, 0.001f);
+        Assert.AreEqual(1.1f, stats.seasonalDefenseMod, 0.001f);
+        Assert.AreEqual(1.15f, stats.seasonalSpeedMod, 0.001f);
+    }
+
+    [Test]
+    public void SeasonalModifiers_ResetToDefaults()
+    {
+        var stats = new AnimalCombatStats();
+        stats.ApplySeasonalModifiers(1.5f, 1.5f, 1.5f);
+
+        stats.ResetSeasonalModifiers();
+
+        Assert.AreEqual(1f, stats.seasonalAttackMod, 0.001f);
+        Assert.AreEqual(1f, stats.seasonalDefenseMod, 0.001f);
+        Assert.AreEqual(1f, stats.seasonalSpeedMod, 0.001f);
+    }
+
+    [Test]
+    public void SeasonalModifiers_AffectCalculatedStats()
+    {
+        var stats = new AnimalCombatStats();
+        stats.baseAttack = 10f;
+        stats.attackGrowth = 1f;
+        stats.happiness = 50f; // HappinessMultiplier = 1.0
+
+        stats.ApplySeasonalModifiers(1.2f, 1f, 1f);
+
+        // CurrentAttack = 10 * 1.0 * 1.0 * 1.2 = 12
+        Assert.AreEqual(12f, stats.CurrentAttack, 0.001f);
+    }
+
+    // =========================================================================
+    // CUSTOM NAMING
+    // =========================================================================
+
+    [Test]
+    public void SetCustomName_UpdatesDisplayName()
+    {
+        var data = CreateAnimalData("Clucky"); Track(data);
+        var (go, animal) = CreateAnimal("CN_Set"); Track(go);
+        SetField(animal, "animalData", data);
+
+        animal.SetCustomName("Bob");
+
+        Assert.AreEqual("Bob", animal.GetDisplayName());
+    }
+
+    [Test]
+    public void SetCustomName_Empty_ResetsToDefault()
+    {
+        var data = CreateAnimalData("Clucky"); Track(data);
+        var (go, animal) = CreateAnimal("CN_Reset"); Track(go);
+        SetField(animal, "animalData", data);
+
+        animal.SetCustomName("Bob");
+        animal.SetCustomName("");
+
+        Assert.AreEqual("Clucky", animal.GetDisplayName());
+    }
+
+    [Test]
+    public void SetCustomName_Null_ResetsToDefault()
+    {
+        var data = CreateAnimalData("Clucky"); Track(data);
+        var (go, animal) = CreateAnimal("CN_Null"); Track(go);
+        SetField(animal, "animalData", data);
+
+        animal.SetCustomName("Bob");
+        animal.SetCustomName(null);
+
+        Assert.AreEqual("Clucky", animal.GetDisplayName());
+    }
+
+    [Test]
+    public void SetCustomName_TruncatesAt20Chars()
+    {
+        var data = CreateAnimalData("Hen"); Track(data);
+        var (go, animal) = CreateAnimal("CN_Long"); Track(go);
+        SetField(animal, "animalData", data);
+
+        animal.SetCustomName("ABCDEFGHIJKLMNOPQRSTUVWXYZ"); // 26 chars
+
+        Assert.AreEqual(20, animal.GetCustomName().Length);
+        Assert.AreEqual("ABCDEFGHIJKLMNOPQRST", animal.GetCustomName());
+    }
+
+    [Test]
+    public void SetCustomName_TrimsWhitespace()
+    {
+        var data = CreateAnimalData("Hen"); Track(data);
+        var (go, animal) = CreateAnimal("CN_Trim"); Track(go);
+        SetField(animal, "animalData", data);
+
+        animal.SetCustomName("  Fluffy  ");
+
+        Assert.AreEqual("Fluffy", animal.GetCustomName());
+    }
+
+    [Test]
+    public void CustomName_SaveLoad_RoundTrip()
+    {
+        var data = CreateAnimalData("Clucky"); Track(data);
+        var (go, animal) = CreateAnimal("CN_RT"); Track(go);
+        SetField(animal, "animalData", data);
+
+        animal.SetCustomName("Princess");
+
+        // Save
+        var gd = new GameData();
+        animal.SaveData(gd);
+
+        // Reset
+        SetField(animal, "customName", "");
+        Assert.AreEqual("Clucky", animal.GetDisplayName());
+
+        // Load
+        animal.LoadData(gd);
+
+        Assert.AreEqual("Princess", animal.GetDisplayName());
+    }
+
+    [Test]
+    public void CustomName_SaveLoad_EmptyName_NotSaved()
+    {
+        var data = CreateAnimalData("Clucky"); Track(data);
+        var (go, animal) = CreateAnimal("CN_Empty"); Track(go);
+        SetField(animal, "animalData", data);
+
+        // Don't set custom name — should not save a worldStrings entry
+        var gd = new GameData();
+        animal.SaveData(gd);
+
+        string prefix = $"animal_{go.name}";
+        Assert.IsFalse(gd.worldData.worldStrings.ContainsKey($"{prefix}_customName"));
+    }
 }

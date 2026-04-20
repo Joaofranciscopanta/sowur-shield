@@ -51,6 +51,12 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     // Happiness tracking — initial value set in Start() from GameBalance
     private float happiness = 50f;
 
+    // Persistent combat stats (growth persists across sessions)
+    private AnimalCombatStats combatStats;
+
+    // Custom name set by player
+    private string customName = "";
+
     // Particle system
     private GameObject currentHeartParticle;
 
@@ -142,6 +148,9 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
             Debug.LogError($"Animal {gameObject.name} has no AnimalData assigned!");
             return;
         }
+
+        // Initialize persistent combat stats from base data
+        InitializeCombatStats();
 
         // Register with InteractionManager
         if (InteractionManager.Instance != null)
@@ -250,18 +259,18 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
             Item selectedItem = playerInventory.GetSelectedItem();
             if (selectedItem != null && CanEatFood(selectedItem.itemName))
             {
-                return $"Feed {animalData.animalName}";
+                return $"Feed {GetDisplayName()}";
             }
         }
 
         // Default to petting
         if (!hasBeenPetToday)
         {
-            return $"Pet {animalData.animalName}";
+            return $"Pet {GetDisplayName()}";
         }
         else
         {
-            return $"View {animalData.animalName} Info";
+            return $"View {GetDisplayName()} Info";
         }
     }
 
@@ -458,11 +467,16 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         // Apply happiness decay before resetting daily flags
         ApplyDailyHappinessDecay();
 
+        // Apply combat stat growth from daily care (before resetting flags)
+        ApplyDailyCareGrowth();
+
+        // Apply seasonal combat modifiers
+        ApplySeasonalModifiers();
+
         // Reset daily tracking
         hasBeenPetToday = false;
         foodEatenToday = 0;
         needsFeeding = true;
-
 
         // Check for production (eggs, milk, etc.)
         if (animalData.canProduce)
@@ -552,6 +566,19 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         gameData.worldData.worldCounters[$"{prefix}_foodEaten"] = foodEatenToday;
         gameData.worldData.worldCounters[$"{prefix}_lastProductionDay"] = lastProductionDay;
         gameData.worldData.worldCounters[$"{prefix}_happiness"] = Mathf.RoundToInt(happiness);
+
+        // Save growth multipliers (float * 1000 → int for precision)
+        if (combatStats != null)
+        {
+            gameData.worldData.worldCounters[$"{prefix}_attackGrowth"] = Mathf.RoundToInt(combatStats.attackGrowth * 1000f);
+            gameData.worldData.worldCounters[$"{prefix}_defenseGrowth"] = Mathf.RoundToInt(combatStats.defenseGrowth * 1000f);
+            gameData.worldData.worldCounters[$"{prefix}_speedGrowth"] = Mathf.RoundToInt(combatStats.speedGrowth * 1000f);
+            gameData.worldData.worldCounters[$"{prefix}_healthGrowth"] = Mathf.RoundToInt(combatStats.healthGrowth * 1000f);
+        }
+
+        // Save custom name (only if set)
+        if (!string.IsNullOrEmpty(customName))
+            gameData.worldData.worldStrings[$"{prefix}_customName"] = customName;
     }
 
     public void LoadData(GameData gameData)
@@ -577,6 +604,21 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
             float ceil = balance != null ? balance.happinessCeiling : 100f;
             happiness = Mathf.Clamp(savedHappiness, 0f, ceil);
         }
+
+        // Load growth multipliers (int / 1000 → float)
+        if (combatStats == null) InitializeCombatStats();
+        if (gameData.worldData.worldCounters.TryGetValue($"{prefix}_attackGrowth", out int atkG))
+            combatStats.attackGrowth = Mathf.Clamp(atkG / 1000f, 1f, 3f);
+        if (gameData.worldData.worldCounters.TryGetValue($"{prefix}_defenseGrowth", out int defG))
+            combatStats.defenseGrowth = Mathf.Clamp(defG / 1000f, 1f, 3f);
+        if (gameData.worldData.worldCounters.TryGetValue($"{prefix}_speedGrowth", out int spdG))
+            combatStats.speedGrowth = Mathf.Clamp(spdG / 1000f, 1f, 3f);
+        if (gameData.worldData.worldCounters.TryGetValue($"{prefix}_healthGrowth", out int hpG))
+            combatStats.healthGrowth = Mathf.Clamp(hpG / 1000f, 1f, 3f);
+
+        // Load custom name
+        if (gameData.worldData.worldStrings.TryGetValue($"{prefix}_customName", out string savedName))
+            customName = savedName ?? "";
     }
 
     #endregion
@@ -671,7 +713,6 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         {
             animalAI.TriggerEating();
         }
-
     }
 
     /// <summary>
@@ -692,33 +733,111 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         }
     }
 
-    /// <summary>Get the display name (custom name or data name).</summary>
+    /// <summary>Get the display name (custom name first, then data name, then GO name).</summary>
     public string GetDisplayName()
     {
+        if (!string.IsNullOrEmpty(customName))
+            return customName;
         return animalData != null ? animalData.animalName : gameObject.name;
     }
 
+    /// <summary>Set a custom name for this animal (max 20 chars).</summary>
+    public void SetCustomName(string name)
+    {
+        if (string.IsNullOrEmpty(name))
+        {
+            customName = "";
+            return;
+        }
+        customName = name.Trim();
+        if (customName.Length > 20)
+            customName = customName.Substring(0, 20);
+    }
+
+    /// <summary>Get the custom name (empty string if not set).</summary>
+    public string GetCustomName() => customName;
+
     /// <summary>
-    /// Get combat stats for this animal.
-    /// Creates a new AnimalCombatStats instance with current happiness and animal data.
+    /// Get the persistent combat stats for this animal.
+    /// Syncs happiness before returning.
     /// </summary>
     public AnimalCombatStats GetCombatStats()
     {
-        if (animalData == null || animalData.baseCombatStats == null)
+        if (combatStats == null)
+            InitializeCombatStats();
+
+        // Sync happiness from the farming side to combat stats
+        combatStats.happiness = happiness;
+        return combatStats;
+    }
+
+    #endregion
+
+    #region Combat Stats & Growth
+
+    /// <summary>Initialize combat stats from AnimalData base stats.</summary>
+    private void InitializeCombatStats()
+    {
+        combatStats = new AnimalCombatStats();
+        if (animalData != null && animalData.baseCombatStats != null)
         {
-            Debug.LogWarning($"[Animal] {gameObject.name} has no combat stats configured!");
-            return null;
+            combatStats.Initialize(animalData.baseCombatStats);
+        }
+        combatStats.happiness = happiness;
+    }
+
+    /// <summary>
+    /// Apply stat growth from daily care activities.
+    /// Called at the start of each new day BEFORE resetting daily flags.
+    /// Petting: +pettingStatBonus to a random stat.
+    /// Full feeding: +feedingStatBonus to a random stat.
+    /// </summary>
+    private void ApplyDailyCareGrowth()
+    {
+        if (combatStats == null || animalData == null) return;
+
+        string[] stats = { "attack", "defense", "speed", "health" };
+
+        // Petting bonus
+        if (hasBeenPetToday)
+        {
+            string stat = stats[UnityEngine.Random.Range(0, stats.Length)];
+            combatStats.ApplyStatGrowth(stat, animalData.pettingStatBonus);
         }
 
-        // Create a copy of the base combat stats
-        AnimalCombatStats stats = new AnimalCombatStats();
-        stats.Initialize(animalData.baseCombatStats);
+        // Feeding bonus (fully fed)
+        if (!needsFeeding)
+        {
+            string stat = stats[UnityEngine.Random.Range(0, stats.Length)];
+            combatStats.ApplyStatGrowth(stat, animalData.feedingStatBonus);
+        }
+    }
 
-        // Apply current happiness from farming system
-        stats.happiness = happiness;
-        stats.currentHealth = stats.MaxHealth;
+    /// <summary>
+    /// Apply seasonal combat modifiers based on current season.
+    /// Animals in their preferred season get bonus stats.
+    /// </summary>
+    private void ApplySeasonalModifiers()
+    {
+        if (combatStats == null || animalData == null) return;
 
-        return stats;
+        string currentSeason = "";
+        if (GameTimeController.instance != null)
+            currentSeason = GameTimeController.instance.GetCurrentSeason();
+
+        if (!string.IsNullOrEmpty(animalData.preferredSeason) &&
+            currentSeason.Equals(animalData.preferredSeason, StringComparison.OrdinalIgnoreCase))
+        {
+            combatStats.ApplySeasonalModifiers(
+                animalData.seasonalAttackBonus,
+                animalData.seasonalDefenseBonus,
+                animalData.seasonalSpeedBonus
+            );
+        }
+        else
+        {
+            combatStats.ResetSeasonalModifiers();
+        }
     }
 
     #endregion

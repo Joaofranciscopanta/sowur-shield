@@ -135,6 +135,18 @@ public class SkillUnlockCondition
 }
 
 /// <summary>
+/// Status effect an active skill can apply to its target.
+/// Maps to CombatStatusEffect in the combat system.
+/// </summary>
+public enum AnimalSkillEffect
+{
+    None,
+    Stun,    // Target skips its next turn
+    Shield,  // Caster gains damage reduction (statusEffectValue fraction, e.g. 0.3)
+    Burn,    // Target takes statusEffectValue damage per turn for statusEffectDuration turns
+}
+
+/// <summary>
 /// Defines an animal skill (active or passive)
 /// ScriptableObject for data-driven skill creation
 /// </summary>
@@ -186,6 +198,16 @@ public class AnimalSkill : ScriptableObject
 
     [Tooltip("Cooldown in turns (for active skills)")]
     public int cooldownTurns = 0;
+
+    [Header("Status Effect (optional)")]
+    [Tooltip("Status effect applied to the primary target on skill use")]
+    public AnimalSkillEffect statusEffect = AnimalSkillEffect.None;
+
+    [Tooltip("Burn: damage per turn. Shield: reduction fraction (0-1, e.g. 0.3 = 30%).")]
+    public float statusEffectValue = 0f;
+
+    [Tooltip("Duration of the status effect in turns")]
+    public int statusEffectDuration = 0;
 
     /// <summary>
     /// Check if this skill can be unlocked for the given animal

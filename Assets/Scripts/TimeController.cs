@@ -7,6 +7,14 @@ namespace SowurShield.Core
 
 public class GameTimeController : MonoBehaviour, ISaveable
 {
+    [Header("Season Settings")]
+    [Tooltip("Number of in-game days per season (4 seasons = 1 year)")]
+    public int daysPerSeason = 7;
+    private static readonly string[] Seasons = { "Spring", "Summer", "Fall", "Winter" };
+    /// <summary>Fired when the season changes. Passes the new season name.</summary>
+    public event Action<string> OnSeasonChanged;
+    private string _lastKnownSeason = "Spring";
+
     [Header("Configurações de Tempo")]
     public int startingDay = 1;
     [Tooltip("Hora do dia inicial (0-1, onde 0.25 = 6:00)")]
@@ -166,6 +174,9 @@ public class GameTimeController : MonoBehaviour, ISaveable
         {
             OnDayChanged.Invoke();
 
+            // Check for season transition after day change
+            CheckSeasonChange();
+
             // Reseta o lastUIUpdateProgress para o início do dia
             _lastUIUpdateProgress = _dayProgress;
 
@@ -218,9 +229,11 @@ public class GameTimeController : MonoBehaviour, ISaveable
             OnTimeChanged.Invoke();
 
         if (oldDay != _currentDay && OnDayChanged != null)
+        {
             OnDayChanged.Invoke();
+            CheckSeasonChange();
+        }
     }
-
 
     // Para definir um horário específico
     public void SetTimeOfDay(float progress)
@@ -307,14 +320,54 @@ public class GameTimeController : MonoBehaviour, ISaveable
     public bool IsEvening() => IsTimeBetween(sunsetTime, 0.9f);
     public bool IsNight() => IsTimeBetween(0.9f, sunriseTime);
 
+    // ============================================================================
+    // SEASON SYSTEM
+    // ============================================================================
+
     /// <summary>
-    /// Get current season (for future season system)
+    /// Get current season based on the current day.
+    /// 4 seasons: Spring, Summer, Fall, Winter (7 days each by default).
     /// </summary>
     public string GetCurrentSeason()
     {
-        // TODO: Implement proper season calculation based on day
-        // For now, return Spring as default (will be expanded in future)
-        return "Spring";
+        int seasonIndex = GetCurrentSeasonIndex();
+        return Seasons[seasonIndex];
+    }
+
+    /// <summary>Get current season as an index (0=Spring, 1=Summer, 2=Fall, 3=Winter).</summary>
+    public int GetCurrentSeasonIndex()
+    {
+        if (daysPerSeason <= 0) daysPerSeason = 7;
+        return ((_currentDay - 1) / daysPerSeason) % 4;
+    }
+
+    /// <summary>Get current year (starts at 1).</summary>
+    public int GetCurrentYear()
+    {
+        if (daysPerSeason <= 0) daysPerSeason = 7;
+        int daysPerYear = daysPerSeason * 4;
+        return ((_currentDay - 1) / daysPerYear) + 1;
+    }
+
+    /// <summary>Get the day within the current season (1-based).</summary>
+    public int GetDayInSeason()
+    {
+        if (daysPerSeason <= 0) daysPerSeason = 7;
+        return ((_currentDay - 1) % daysPerSeason) + 1;
+    }
+
+    /// <summary>
+    /// Check if the season changed and fire OnSeasonChanged event.
+    /// Called after day changes.
+    /// </summary>
+    private void CheckSeasonChange()
+    {
+        string currentSeason = GetCurrentSeason();
+        if (currentSeason != _lastKnownSeason)
+        {
+            _lastKnownSeason = currentSeason;
+            OnSeasonChanged?.Invoke(currentSeason);
+        }
     }
 
     // Método para ajuste manual do tempo (debug)
@@ -371,9 +424,9 @@ public class GameTimeController : MonoBehaviour, ISaveable
         gameData.timeData.timeFlowEnabled = timeFlowEnabled;
         gameData.timeData.minutesPerRealSecond = minutesPerRealSecond;
 
-        // For now, keep default season and year - can be expanded later
-        gameData.timeData.season = "Spring";
-        gameData.timeData.year = 1;
+        // Save calculated season and year
+        gameData.timeData.season = GetCurrentSeason();
+        gameData.timeData.year = GetCurrentYear();
     }
 
     public void LoadData(GameData gameData)
@@ -382,6 +435,9 @@ public class GameTimeController : MonoBehaviour, ISaveable
         _dayProgress = gameData.timeData.dayProgress;
         timeFlowEnabled = gameData.timeData.timeFlowEnabled;
         minutesPerRealSecond = gameData.timeData.minutesPerRealSecond;
+
+        // Initialize season tracking from loaded day
+        _lastKnownSeason = GetCurrentSeason();
 
         // Update UI progress tracking
         _lastUIUpdateProgress = GetRoundedUITime(_dayProgress);
@@ -421,6 +477,7 @@ public class GameTimeController : MonoBehaviour, ISaveable
         _currentDay = startingDay; // Reset to Day 1
         _dayProgress = defaultWakeUpTime; // Reset to 6:00 AM
         _lastUIUpdateProgress = GetRoundedUITime(_dayProgress);
+        _lastKnownSeason = "Spring"; // Reset season tracking
         _isPaused = false;
         timeFlowEnabled = true;
 

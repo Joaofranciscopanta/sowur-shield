@@ -27,11 +27,14 @@ MonoBehaviour:
   dailyFoodRequirements: []
   heartParticlePrefab: {fileID: 0}
   pettingCooldown: 5
-  canProduce: 0
-  produceItemName: 
+  canProduce: 1
+  produceItemName: Duck Egg
   productionIntervalDays: 1
   minProduceAmount: 1
-  maxProduceAmount: 1
+  maxProduceAmount: 2
+  groundItemPrefab: {fileID: 0}
+  produceOnlyIfFed: 0
+  happinessProductionBonus: 0.5
   baseCombatStats:
     baseAttack: 12
     baseDefense: 12
@@ -55,7 +58,7 @@ MonoBehaviour:
   pettingStatBonus: 0.01
   feedingStatBonus: 0.02
   productionQualityBonus: 0.05
-  preferredSeason: Spring
+  preferredSeason: Summer
   seasonalAttackBonus: 1.2
   seasonalDefenseBonus: 1.1
   seasonalSpeedBonus: 1.15

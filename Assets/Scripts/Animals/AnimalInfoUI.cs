@@ -30,6 +30,13 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
     [SerializeField] private TextMeshProUGUI happinessText;
     [SerializeField] private TextMeshProUGUI happinessMultiplierText;
 
+    [Header("Rename UI")]
+    [SerializeField] private Button renameButton;
+    [SerializeField] private GameObject renamePanel;
+    [SerializeField] private TMP_InputField renameInputField;
+    [SerializeField] private Button renameConfirmButton;
+    [SerializeField] private Button renameCancelButton;
+
     [Header("Colors")]
     [SerializeField] private Color wellFedColor = new Color(0.3f, 0.8f, 0.3f);
     [SerializeField] private Color hungryColor = new Color(0.8f, 0.3f, 0.3f);
@@ -59,6 +66,8 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
 
     public void CloseWindow()
     {
+        HideRenamePanel();
+
         if (infoPanel != null)
             infoPanel.SetActive(false);
 
@@ -82,6 +91,16 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
 
         if (closeButton != null)
             closeButton.onClick.AddListener(CloseUI);
+
+        // Wire rename UI buttons
+        if (renameButton != null)
+            renameButton.onClick.AddListener(ShowRenamePanel);
+        if (renameConfirmButton != null)
+            renameConfirmButton.onClick.AddListener(ConfirmRename);
+        if (renameCancelButton != null)
+            renameCancelButton.onClick.AddListener(HideRenamePanel);
+        if (renamePanel != null)
+            renamePanel.SetActive(false);
 
         // Register with UIManager
         if (UIManager.Instance != null)
@@ -145,9 +164,9 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
             animalPortrait.gameObject.SetActive(true);
         }
 
-        // Name
+        // Name (prefer custom name → data name → GO name)
         if (animalNameText != null)
-            animalNameText.text = data.animalName;
+            animalNameText.text = animal.GetDisplayName();
 
         // Type + Classification
         if (animalTypeText != null)
@@ -342,6 +361,59 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
         PlayerMove player = Object.FindFirstObjectByType<PlayerMove>();
         if (player != null)
             player.EnableMovement();
+    }
+
+    // =========================================================================
+    // Rename System
+    // =========================================================================
+
+    /// <summary>Show the rename panel with the current name pre-filled.</summary>
+    private void ShowRenamePanel()
+    {
+        if (renamePanel == null || currentAnimal == null) return;
+
+        renamePanel.SetActive(true);
+
+        if (renameInputField != null)
+        {
+            string existingName = currentAnimal.GetCustomName();
+            renameInputField.text = string.IsNullOrEmpty(existingName)
+                ? currentAnimal.AnimalData.animalName
+                : existingName;
+            renameInputField.characterLimit = 20;
+            renameInputField.ActivateInputField();
+        }
+    }
+
+    /// <summary>Hide the rename panel without saving.</summary>
+    private void HideRenamePanel()
+    {
+        if (renamePanel != null)
+            renamePanel.SetActive(false);
+    }
+
+    /// <summary>Confirm the rename and update the animal's custom name.</summary>
+    private void ConfirmRename()
+    {
+        if (currentAnimal == null || renameInputField == null) return;
+
+        string newName = renameInputField.text.Trim();
+
+        if (string.IsNullOrEmpty(newName))
+        {
+            // Empty name resets to default
+            currentAnimal.SetCustomName("");
+        }
+        else
+        {
+            currentAnimal.SetCustomName(newName);
+        }
+
+        // Update displayed name
+        if (animalNameText != null)
+            animalNameText.text = currentAnimal.GetDisplayName();
+
+        HideRenamePanel();
     }
 
     // =========================================================================

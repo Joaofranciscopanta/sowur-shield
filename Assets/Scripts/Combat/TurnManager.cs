@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using SowurShield.Animals;
 using SowurShield.Core;
 using SowurShield.Inventory;
 
@@ -39,6 +40,9 @@ public class TurnManager : MonoBehaviour
 #pragma warning disable CS0414
     private float timeSinceLastActionBatch = 0f;
 #pragma warning restore CS0414
+
+    // Pre-allocated buffer so ProcessReadyUnits() doesn't alloc every frame
+    private readonly List<CombatUnit> _readyBuffer = new List<CombatUnit>();
 
     [Header("Combat State")]
     [Tooltip("Is combat currently active?")]
@@ -169,25 +173,34 @@ public class TurnManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Process any units with full turn gauge (ATB System)
+    /// Process any units with full turn gauge (ATB System).
+    /// Uses a pre-allocated buffer to avoid per-frame LINQ allocations.
     /// </summary>
     private void ProcessReadyUnits()
     {
         // Don't start new batch while processing current batch
         if (isProcessingActions) return;
 
-        // Get all units ready to act, sorted by speed (highest first)
-        var readyUnits = allUnits
-            .Where(u => u != null && u.IsReadyToAct())
-            .OrderByDescending(u => u.GetSpeed())
-            .ThenByDescending(u => u.turnGauge) // Tiebreaker: higher gauge first
-            .ToList();
-
-        // If multiple units are ready, process them in sequence with micro-delays
-        if (readyUnits.Count > 0)
+        // Collect ready units into the reusable buffer (no alloc when nothing is ready)
+        _readyBuffer.Clear();
+        for (int i = 0; i < allUnits.Count; i++)
         {
-            StartCoroutine(ProcessActionBatch(readyUnits));
+            var u = allUnits[i];
+            if (u != null && u.IsReadyToAct())
+                _readyBuffer.Add(u);
         }
+
+        if (_readyBuffer.Count == 0) return;
+
+        // Sort: highest speed first, then highest gauge as tiebreaker
+        _readyBuffer.Sort((a, b) =>
+        {
+            int cmp = b.GetSpeed().CompareTo(a.GetSpeed());
+            return cmp != 0 ? cmp : b.turnGauge.CompareTo(a.turnGauge);
+        });
+
+        // Hand a snapshot to the coroutine so the buffer can be reused next frame
+        StartCoroutine(ProcessActionBatch(new List<CombatUnit>(_readyBuffer)));
     }
 
     /// <summary>
@@ -217,7 +230,8 @@ public class TurnManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Execute a single unit's turn
+    /// Execute a single unit's turn: tick cooldowns/status, apply burn, check stun,
+    /// then attempt skill or fall back to basic attack.
     /// </summary>
     private void ExecuteUnitTurn(CombatUnit unit)
     {
@@ -225,30 +239,114 @@ public class TurnManager : MonoBehaviour
 
         currentTurn++;
 
-        if (verboseLogging)
-        {
-        }
+        // Tick skill cooldown and status effects
+        unit.TickSkillCooldown();
+        float burnDamage = unit.TickStatusEffects();
 
-        // Highlight acting unit in UI
-        if (BattleStatusUI.Instance != null)
-        {
-            BattleStatusUI.Instance.HighlightActingUnit(unit);
-        }
+        // Apply burn damage (after tick so expired effects don't deal damage).
+        // Uses TakeDamageWithShield so Shield status can reduce burn ticks too.
+        if (burnDamage > 0f && unit.IsAlive())
+            unit.TakeDamageWithShield(burnDamage);
 
-        // Select target
-        CombatUnit target = SelectTarget(unit);
-
-        if (target == null)
+        // Stun: unit loses its turn
+        if (unit.IsStunned)
         {
             unit.ResetTurnGauge();
             return;
         }
 
-        // Execute attack
-        ExecuteAttack(unit, target);
+        if (!unit.IsAlive()) { unit.ResetTurnGauge(); return; }
 
-        // Reset turn gauge
+        // Highlight acting unit in UI
+        if (BattleStatusUI.Instance != null)
+            BattleStatusUI.Instance.HighlightActingUnit(unit);
+
+        // Check if unit has a ready skill to use
+        AnimalSkill skill = unit.GetReadySkill();
+        if (skill != null)
+        {
+            CombatUnit skillTarget = SelectSkillTarget(unit, skill);
+            if (skillTarget != null)
+            {
+                ExecuteSkill(unit, skill, skillTarget);
+                unit.SetSkillOnCooldown(skill);
+                unit.ResetTurnGauge();
+                return;
+            }
+        }
+
+        // Fall back to basic attack
+        CombatUnit target = SelectTarget(unit);
+        if (target != null)
+            ExecuteAttack(unit, target);
+
         unit.ResetTurnGauge();
+    }
+
+    /// <summary>
+    /// Execute a skill from attacker against primaryTarget.
+    /// Handles damage, healing, and status effects.
+    /// </summary>
+    private void ExecuteSkill(CombatUnit attacker, AnimalSkill skill, CombatUnit primaryTarget)
+    {
+        attacker.FlashAttack();
+
+        // Damage component (active skills with damageMultiplier > 0)
+        if (skill.damageMultiplier > 0f && !skill.affectsAllies)
+        {
+            float accuracy = attacker.GetAccuracy();
+            if (UnityEngine.Random.value <= accuracy)
+            {
+                float baseDamage = attacker.GetAttack() * skill.damageMultiplier;
+                float defense = primaryTarget.GetDefense();
+                float damageReduction = 1f - (defense / (defense + 100f));
+                float finalDamage = baseDamage * damageReduction;
+                primaryTarget.TakeDamageWithShield(finalDamage);
+            }
+        }
+
+        // Heal component — targets self or allies
+        if (skill.healAmount > 0f)
+        {
+            if (skill.affectsSelf)
+                attacker.Heal(skill.healAmount);
+
+            if (skill.affectsAllies)
+            {
+                List<CombatUnit> allies = attacker.isPlayerUnit ? playerUnits : enemyUnits;
+                foreach (var ally in allies)
+                    if (ally != null && ally.IsAlive())
+                        ally.Heal(skill.healAmount);
+            }
+        }
+
+        // Shield on self (self-buff)
+        if (skill.statusEffect == AnimalSkillEffect.Shield && skill.affectsSelf)
+        {
+            attacker.ApplyStatusEffect(StatusEffectType.Shield, skill.statusEffectValue, skill.statusEffectDuration);
+        }
+
+        // Status effect on target (Stun / Burn — offensive)
+        if (skill.statusEffect == AnimalSkillEffect.Stun && !skill.affectsAllies)
+        {
+            primaryTarget.ApplyStatusEffect(StatusEffectType.Stun, 0f, skill.statusEffectDuration > 0 ? skill.statusEffectDuration : 1);
+        }
+        else if (skill.statusEffect == AnimalSkillEffect.Burn && !skill.affectsAllies)
+        {
+            primaryTarget.ApplyStatusEffect(StatusEffectType.Burn, skill.statusEffectValue, skill.statusEffectDuration > 0 ? skill.statusEffectDuration : 2);
+        }
+    }
+
+    /// <summary>Select primary target for a skill.</summary>
+    private CombatUnit SelectSkillTarget(CombatUnit attacker, AnimalSkill skill)
+    {
+        // Offensive skills always hit an opponent regardless of self-buff flags.
+        // Any self-heal from affectsSelf is applied separately inside ExecuteSkill.
+        if (skill.damageMultiplier > 0f)
+            return SelectTarget(attacker);
+
+        // Pure healing / self-buff skills: primaryTarget is self (ally spread handled in ExecuteSkill).
+        return attacker;
     }
 
     /// <summary>
@@ -311,8 +409,8 @@ public class TurnManager : MonoBehaviour
         float damageReduction = 1 - (defense / (defense + 100));
         float finalDamage = baseDamage * damageReduction;
 
-        // Apply damage (target will flash red)
-        target.TakeDamage(finalDamage);
+        // Apply damage — respects any Shield status effect on target
+        target.TakeDamageWithShield(finalDamage);
 
         if (verboseLogging)
         {
@@ -361,14 +459,22 @@ public class TurnManager : MonoBehaviour
         combatActive = false;
         battleResult = result;
 
-        switch (result)
+        // Apply happiness changes to source animals immediately (before results UI awards more)
+        const float defeatHappinessPenalty = -5f;
+        const float defeatedUnitPenalty    = -3f;
+
+        if (result == BattleResult.Defeat || result == BattleResult.Draw)
         {
-            case BattleResult.Victory:
-                break;
-            case BattleResult.Defeat:
-                break;
-            case BattleResult.Draw:
-                break;
+            // All player units take a morale hit on defeat/draw
+            foreach (var unit in playerUnits)
+                unit?.GetSourceAnimal()?.ModifyHappiness(defeatHappinessPenalty);
+        }
+        else if (result == BattleResult.Victory)
+        {
+            // Units that died in a victory still take a small hit
+            foreach (var unit in playerUnits)
+                if (unit != null && !unit.IsAlive())
+                    unit.GetSourceAnimal()?.ModifyHappiness(defeatedUnitPenalty);
         }
 
 
