@@ -1,6 +1,6 @@
 # Sowur Shield — Development Roadmap
 
-> Last updated: 2026-04-19
+> Last updated: 2026-04-20
 > Branch: `main`
 
 ---
@@ -55,38 +55,38 @@ Sowur Shield is a 2D farming + auto-chess combat game. The farming side is produ
 ## In Progress 🔶
 
 ### Combat System
-The ATB auto-chess loop runs and is playable, but is shallow.
+Combat loop is functionally complete. Needs Unity Editor wiring to be playable.
 
 **Working:**
 - 9×5 grid (cols 0–5 enemy, 6–8 player)
-- Speed-based ATB turn gauge
-- Basic melee attack with defense mitigation
-- Victory/defeat detection
-- Player team spawning from AnimalRoster
-- Enemy spawning from StageData
-- Health bars, turn order UI, battle results screen
+- Speed-based ATB turn gauge (allocation-free update loop)
+- Skill execution with cooldowns, accuracy, damage multiplier, self-heal
+- Status effects: Stun (skip turn), Shield (0–0.9 damage reduction), Burn (DoT)
+- Status immunities: enemies with `immunities` list block specific effects
+- Reward delivery: gold → PlayerStats, loot → Inventory, happiness → animals
+- XP + level-up (1–10): surviving animals gain XP, level up every level×100 XP, +5% all stats per level
+- Happiness decay on defeat/draw (−5 all), dead units in victory (−3)
+- Combat animations: Attack/Hurt/Die triggers on AnimatorController
 
-**Missing:**
-- Animal skills — `AnimalSkill.cs` exists with data structure but is never executed in `TurnManager`
-- No skill cooldowns, targeting rules, or AoE
-- No status effects (stun, poison, burn, shield)
-- No animal happiness/growth bonuses applied during combat
-- Reward distribution incomplete — `CombatRewardData` exists but rewards aren't granted to player
-- No XP or persistent animal level-up from combat results
-- Animations minimal — only flash on hit, no attack/idle animation states in CombatUnit
+**Needs Unity Editor wiring:**
+- Assign `AnimalSkill` ScriptableObjects to `AnimalData.activeSkill` fields
+- Assign `AnimatorController` to `AnimalData.animatorController` fields
+- Populate `EnemyData.skills` and `EnemyData.immunities` on enemy assets
 
 ### World Map
-`WorldMapUiController`, `StageButton`, `WorldMapTriggerZone` exist as stubs.
+Fully implemented in code. Needs Unity Editor wiring to be playable.
 
 **Working:**
-- CombatTriggerZone hooks into farm scene to enter CombatScene
-- StageButton wired to StageManager
+- `WorldMapBiomePanel`: expandable biome panels with stage buttons + lock icon
+- `BiomeUnlockChecker`: boss completion, biome unlock, stage count queries
+- `WorldMapUIController`: syncs save → StageManager, refreshes panels on open
+- `StageButton`: lock/unlock state from worldFlags, routes to TeamAssemblerUI
+- `WorldMapTriggerZone`: E-key entry point in farm scene
 
-**Missing:**
-- No map rendering — no visual world map exists
-- No stage unlock / progression tracking
-- No boss completion flags
-- No biome exploration flow (5 biomes defined in assets: Meadow, Forest, Cave, Mountain, Volcano; 25 stages + bosses fully defined in ScriptableObjects — just not surfaced to player)
+**Needs Unity Editor wiring:**
+- Create WorldMap Canvas in farm scene, add `WorldMapUIController`
+- Create one `WorldMapBiomePanel` GameObject per biome, wire to controller's `biomePanels` list
+- Assign `WorldMap` reference on `WorldMapTriggerZone` in farm scene
 
 ---
 
@@ -112,10 +112,10 @@ Unlock the 25 stages and 5 biomes already defined in assets.
 ### Phase 3 — Farm Expansion
 Deepen the farming loop.
 
-1. **More crops** — At least 1 crop per season (currently only Carrot and Cabbage)
+1. [x] **More crops** — `CropCreatorWindow` editor tool creates Tomato (Summer) + Winter Wheat (Winter); run via `Tools > Sowur Shield > Create Crop Assets` in Unity
 2. **Animal expansion** — At least 1 more animal type; animal health/illness system
 3. **Farm buildings** — Barn (more animal slots), Greenhouse (grow out of season)
-4. **Weather** — Rain waters crops automatically; drought speeds wilting
+4. [x] **Weather** — `WeatherController.cs`: Rain (auto-waters all tilled/watered soil), Drought (accelerates crop wilting); subscribe to `OnDayChanged`; place in SampleScene
 
 ### Phase 4 — NPC & World
 1. **NPC relationships** — Track affection per NPC; unlock dialogue branches and gifts at thresholds; save via worldCounters
@@ -148,10 +148,11 @@ Deepen the farming loop.
 
 ## Known Gaps / Tech Debt
 
-- `AnimalSkill.cs` — data structure fully defined, never called in TurnManager
-- `WorldMapTriggerZone.cs` / `WorldMapUiController.cs` / `StageButton.cs` — stubs only
-- FeedingTrough: `DuckEgg_GroundItem` and `Feather_GroundItem` prefabs need to be created and assigned in Unity Editor
-- AnimalInfoUI rename panel: UI elements need to be wired in Unity Editor (scripts ready)
+- AnimalSkill assets need to be created in Unity Editor and assigned to AnimalData.activeSkill / EnemyData.skills
+- WorldMap Canvas + BiomePanels need to be created and wired in Unity Editor (all code done)
+- AnimalInfoUI rename panel: UI elements need to be wired in Unity Editor (scripts complete)
+- WeatherController: needs to be placed as a GameObject in SampleScene
+- CropCreatorWindow: run `Tools > Sowur Shield > Create Crop Assets` once in Unity Editor
+- FeedingTrough: `DuckEgg_GroundItem` and `Feather_GroundItem` prefabs in `Resources/Prefabs/GroundItems/` need sprites assigned in Editor
 - No NPC affection tracking despite dialogue system supporting it
-- `CombatRewardData` never distributed to player inventory
 - Debug.Log calls remain in many scripts — clean up per-feature when shipping
