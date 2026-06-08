@@ -276,7 +276,7 @@ public class QuestManager : MonoBehaviour, ISaveable
         // Items
         if (data.rewardItems != null && data.rewardItems.Count > 0)
         {
-            Inventory inv = Object.FindFirstObjectByType<Inventory>();
+            Inventory.Inventory inv = Object.FindFirstObjectByType<Inventory.Inventory>();
             if (inv != null)
             {
                 foreach (var reward in data.rewardItems)

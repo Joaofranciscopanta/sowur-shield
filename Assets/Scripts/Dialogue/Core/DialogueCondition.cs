@@ -63,7 +63,7 @@ namespace SowurShield.Dialogue
                     {
                         int currentAmount = 0;
                         Item item = ItemDatabase.GetItem(conditionKey);
-                        Inventory inv = Object.FindFirstObjectByType<Inventory>();
+                        Inventory.Inventory inv = Object.FindFirstObjectByType<Inventory.Inventory>();
                         if (item != null && inv != null)
                             currentAmount = inv.GetItemCount(item);
                         result = EvaluateNumericCondition(currentAmount, requiredAmount, conditionOperator);

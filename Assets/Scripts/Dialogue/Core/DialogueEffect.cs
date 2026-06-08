@@ -73,7 +73,7 @@ namespace SowurShield.Dialogue
                 return;
             }
 
-            Inventory inv = Object.FindFirstObjectByType<Inventory>();
+            Inventory.Inventory inv = Object.FindFirstObjectByType<Inventory.Inventory>();
             if (inv == null)
             {
                 Debug.LogWarning("[DialogueEffect] GiveItem: no Inventory found in scene.");
@@ -95,7 +95,7 @@ namespace SowurShield.Dialogue
                 return;
             }
 
-            Inventory inv = Object.FindFirstObjectByType<Inventory>();
+            Inventory.Inventory inv = Object.FindFirstObjectByType<Inventory.Inventory>();
             if (inv == null)
             {
                 Debug.LogWarning("[DialogueEffect] TakeItem: no Inventory found in scene.");

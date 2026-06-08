@@ -31,7 +31,7 @@ public class ShopUI : MonoBehaviour, IUIWindow, ISaveable
 
     private ShopData _currentShop;
     private PlayerStats _playerStats;
-    private Inventory _inventory;
+    private Inventory.Inventory _inventory;
 
     // Pool of instantiated rows
     private readonly List<ShopItemRow> _rows = new List<ShopItemRow>();
@@ -137,7 +137,7 @@ public class ShopUI : MonoBehaviour, IUIWindow, ISaveable
 
         _currentShop = shopData;
         _playerStats = Object.FindFirstObjectByType<PlayerStats>();
-        _inventory   = Object.FindFirstObjectByType<Inventory>();
+        _inventory   = Object.FindFirstObjectByType<Inventory.Inventory>();
 
         PopulateUI();
 
@@ -320,8 +320,8 @@ public class ShopItemRow : MonoBehaviour
     {
         _entry = entry;
 
-        if (itemIcon != null && item.itemIcon != null)
-            itemIcon.sprite = item.itemIcon;
+        if (itemIcon != null && item.icon != null)
+            itemIcon.sprite = item.icon;
 
         if (itemNameText != null)
             itemNameText.text = item.itemName;
