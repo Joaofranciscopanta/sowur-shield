@@ -329,7 +329,6 @@ public static class StageFactory
         }
 
         AssetDatabase.CreateAsset(stage, assetPath);
-        Debug.Log($"[StageFactory] Saved stage: {assetPath}");
     }
 
     /// <summary>
@@ -344,7 +343,6 @@ public static class StageFactory
 
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
-        Debug.Log($"[StageFactory] Saved {stages.Count} stages to {folderPath}");
     }
 #endif
 }

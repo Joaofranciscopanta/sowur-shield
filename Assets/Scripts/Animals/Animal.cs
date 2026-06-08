@@ -365,6 +365,8 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
             hasBeenPetToday = true;
             ModifyHappiness(balance != null ? balance.petHappinessBonus : 5f);
             SpawnHeartParticle();
+            SowurShield.Core.SFXManager.Play("PetAnimal");
+            SowurShield.Core.TutorialManager.NotifyStepComplete("pet_animal");
         }
         else
         {

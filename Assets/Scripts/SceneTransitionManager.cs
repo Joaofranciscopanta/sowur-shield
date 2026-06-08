@@ -342,6 +342,9 @@ public class SceneTransitionManager : MonoBehaviour
             case "SampleScene":
                 OnGameSceneLoaded();
                 break;
+            case "CombatScene":
+                OnCombatSceneLoaded();
+                break;
         }
     }
     
@@ -353,10 +356,19 @@ public class SceneTransitionManager : MonoBehaviour
 
     private void OnGameSceneLoaded()
     {
-        // Start game music when entering game scene
+        // Start (or resume, when returning from combat) seasonal farm music.
         if (GameMusicManager.Instance != null)
         {
             GameMusicManager.Instance.OnStartGame();
+        }
+    }
+
+    private void OnCombatSceneLoaded()
+    {
+        // Switch to combat music when entering the battle scene.
+        if (GameMusicManager.Instance != null)
+        {
+            GameMusicManager.Instance.OnEnterCombat();
         }
     }
     

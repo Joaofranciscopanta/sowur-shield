@@ -137,7 +137,6 @@ public class TeamAssemblerData : MonoBehaviour
                     var go = new GameObject("TeamAssemblerData");
                     instance = go.AddComponent<TeamAssemblerData>();
                     DontDestroyOnLoad(go);
-                    Debug.Log("[TeamAssemblerData] Created persistent singleton.");
                 }
             }
             return instance;
@@ -153,7 +152,6 @@ public class TeamAssemblerData : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
-        Debug.Log("[TeamAssemblerData] Singleton initialized, DontDestroyOnLoad set.");
     }
 
     // ── PlayerPrefs persistence (survives domain reload in builds) ────────────
@@ -188,7 +186,6 @@ public class TeamAssemblerData : MonoBehaviour
             PlayerPrefs.SetFloat (PrefsKeyTeamPrefix + i + "_spdS", p.seasonalSpeedMod);
         }
         PlayerPrefs.Save();
-        Debug.Log($"[TeamAssemblerData] Saved {team.Count} units + stage '{selectedStageName}' to PlayerPrefs.");
     }
 
     /// <summary>
@@ -231,7 +228,6 @@ public class TeamAssemblerData : MonoBehaviour
             team.Add(p);
         }
 
-        Debug.Log($"[TeamAssemblerData] Restored {team.Count} units + stage '{selectedStageName}' from PlayerPrefs.");
     }
 
     /// <summary>

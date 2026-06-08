@@ -712,11 +712,6 @@ public class TeamAssemblerUI : MonoBehaviour
         bool allFed  = TeamAssemblerData.Instance.AreAllAnimalsFed();
         bool valid   = TeamAssemblerData.Instance.IsTeamValid();
 
-        Debug.Log($"[TeamAssembler] Start Battle clicked — team={teamSize}, allFed={allFed}, valid={valid}");
-
-        foreach (var p in TeamAssemblerData.Instance.team)
-            Debug.Log($"  • {p.GetDisplayName()} at {p.gridPosition}, isFed={p.isFed}, animalData={p.animalData?.animalName ?? "NULL"}");
-
         if (!valid)
         {
             if (teamSize == 0)
@@ -726,7 +721,6 @@ public class TeamAssemblerUI : MonoBehaviour
             return;
         }
 
-        Debug.Log($"[TeamAssembler] Loading scene '{combatSceneName}'...");
         TeamAssemblerData.Instance.SaveToPrefs(); // Persist team across domain reload in builds
         Time.timeScale = 1f;
         SceneManager.LoadScene(combatSceneName);

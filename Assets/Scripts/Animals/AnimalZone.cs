@@ -18,8 +18,26 @@ public class AnimalZone : MonoBehaviour
     [Tooltip("Show zone boundaries in editor")]
     public bool showGizmos = true;
 
+    [Header("Capacity")]
+    [Tooltip("Max animals without a Barn. Barn doubles this.")]
+    [SerializeField] private int baseCapacity = 5;
+
     private Collider2D zoneCollider;
     private List<Animal> animalsInZone = new List<Animal>();
+
+    /// <summary>Effective capacity — doubled when Barn is built.</summary>
+    public int Capacity
+    {
+        get
+        {
+            bool hasBarn = SowurShield.Core.FarmBuildingManager.Instance != null
+                           && SowurShield.Core.FarmBuildingManager.Instance.HasBarn;
+            return hasBarn ? baseCapacity * 2 : baseCapacity;
+        }
+    }
+
+    public bool IsFull => animalsInZone.Count >= Capacity;
+    public int AnimalCount => animalsInZone.Count;
 
     private void Awake()
     {
@@ -107,14 +125,18 @@ public class AnimalZone : MonoBehaviour
     }
 
     /// <summary>
-    /// Register an animal to this zone
+    /// Register an animal to this zone. Returns false if zone is at capacity.
     /// </summary>
-    public void RegisterAnimal(Animal animal)
+    public bool RegisterAnimal(Animal animal)
     {
-        if (!animalsInZone.Contains(animal))
+        if (animalsInZone.Contains(animal)) return true;
+        if (IsFull)
         {
-            animalsInZone.Add(animal);
+            Debug.LogWarning($"[AnimalZone] '{gameObject.name}' is full ({Capacity} animals). Build a Barn to increase capacity.");
+            return false;
         }
+        animalsInZone.Add(animal);
+        return true;
     }
 
     /// <summary>

@@ -1,11 +1,19 @@
 using UnityEngine;
 using System.IO;
+using System.Collections.Generic;
+using SowurShield.Core;
 
 namespace SowurShield.Dialogue
 {
 
-public class ConversationMemory : MonoBehaviour
+public class ConversationMemory : MonoBehaviour, ISaveable
 {
+    // Save key prefixes (kept short to avoid worldCounters key bloat)
+    private const string REL_PREFIX     = "rel_";     // relationship float → int×100
+    private const string CONV_PREFIX    = "conv_done_"; // completed conversation → worldFlags
+    private const string QUEST_PREFIX   = "quest_";   // quest status → worldStrings
+    private const string VAR_PREFIX     = "dlgvar_";  // custom variable → worldStrings
+
     [Header("Save Settings")]
     [SerializeField] private string saveFileName = "ConversationData";
     [SerializeField] private string saveFileExtension = ".json";
@@ -35,6 +43,9 @@ public class ConversationMemory : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             InitializeMemorySystem();
+
+            if (SaveManager.Instance != null)
+                SaveManager.Instance.RegisterSaveable(this);
         }
         else if (Instance != this)
         {
@@ -42,6 +53,13 @@ public class ConversationMemory : MonoBehaviour
         }
     }
     
+    private void Start()
+    {
+        // Re-attempt registration in case SaveManager was not yet initialized during Awake
+        if (Instance == this && SaveManager.Instance != null)
+            SaveManager.Instance.RegisterSaveable(this);
+    }
+
     private void Update()
     {
         // Handle auto-save
@@ -121,6 +139,9 @@ public class ConversationMemory : MonoBehaviour
         
         conversationData.CompleteConversation(conversationId);
         MarkDataChanged();
+
+        // Advance any TalkToNPC quest objectives that target this conversation id
+        QuestManager.Instance?.NotifyObjective(QuestObjectiveType.TalkToNPC, conversationId);
 
         OnConversationCompleted?.Invoke(conversationId);
     }
@@ -323,9 +344,102 @@ public class ConversationMemory : MonoBehaviour
     private void OnDestroy()
     {
         if (hasUnsavedChanges)
-        {
             SaveData();
+
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.UnregisterSaveable(this);
+    }
+
+    // =========================================================================
+    // ISaveable — bridge to main SaveManager / GameData
+    // =========================================================================
+
+    /// <summary>
+    /// Called by SaveManager.SaveGame(). Writes conversation state into GameData so
+    /// it persists in the same save slot as the rest of the game.
+    /// </summary>
+    public void SaveData(GameData gameData)
+    {
+        if (conversationData == null || gameData?.worldData == null) return;
+
+        var flags    = gameData.worldData.worldFlags;
+        var counters = gameData.worldData.worldCounters;
+        var strings  = gameData.worldData.worldStrings;
+
+        // ── Completed conversations ──────────────────────────────────────────
+        foreach (string id in conversationData.completedConversations)
+            flags[CONV_PREFIX + id] = true;
+
+        // ── Relationship levels (float stored as int×100) ────────────────────
+        foreach (var kv in conversationData.relationshipLevels)
+            counters[REL_PREFIX + kv.Key] = Mathf.RoundToInt(kv.Value * 100f);
+
+        // ── Quest statuses ───────────────────────────────────────────────────
+        foreach (var kv in conversationData.questStatuses)
+            strings[QUEST_PREFIX + kv.Key] = kv.Value;
+
+        // ── Custom variables ─────────────────────────────────────────────────
+        foreach (var kv in conversationData.customVariables)
+            strings[VAR_PREFIX + kv.Key] = kv.Value;
+    }
+
+    /// <summary>
+    /// Called by SaveManager.LoadGame(). Restores conversation state from GameData,
+    /// overwriting any data that was loaded from the standalone JSON file.
+    /// </summary>
+    public void LoadData(GameData gameData)
+    {
+        if (gameData?.worldData == null) return;
+
+        if (conversationData == null)
+            conversationData = new ConversationData();
+
+        var flags    = gameData.worldData.worldFlags;
+        var counters = gameData.worldData.worldCounters;
+        var strings  = gameData.worldData.worldStrings;
+
+        // ── Completed conversations ──────────────────────────────────────────
+        foreach (var kv in flags)
+        {
+            if (kv.Value && kv.Key.StartsWith(CONV_PREFIX))
+            {
+                string id = kv.Key.Substring(CONV_PREFIX.Length);
+                if (!conversationData.completedConversations.Contains(id))
+                    conversationData.completedConversations.Add(id);
+            }
         }
+
+        // ── Relationship levels ──────────────────────────────────────────────
+        foreach (var kv in counters)
+        {
+            if (kv.Key.StartsWith(REL_PREFIX))
+            {
+                string npcId = kv.Key.Substring(REL_PREFIX.Length);
+                conversationData.relationshipLevels[npcId] = kv.Value / 100f;
+            }
+        }
+
+        // ── Quest statuses ───────────────────────────────────────────────────
+        foreach (var kv in strings)
+        {
+            if (kv.Key.StartsWith(QUEST_PREFIX))
+            {
+                string questId = kv.Key.Substring(QUEST_PREFIX.Length);
+                conversationData.questStatuses[questId] = kv.Value;
+            }
+        }
+
+        // ── Custom variables ─────────────────────────────────────────────────
+        foreach (var kv in strings)
+        {
+            if (kv.Key.StartsWith(VAR_PREFIX))
+            {
+                string varKey = kv.Key.Substring(VAR_PREFIX.Length);
+                conversationData.customVariables[varKey] = kv.Value;
+            }
+        }
+
+        hasUnsavedChanges = false;
     }
 }
 

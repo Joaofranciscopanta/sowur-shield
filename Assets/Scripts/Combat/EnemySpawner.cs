@@ -40,8 +40,6 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnEnemies()
     {
-        Debug.Log("[EnemySpawner] SpawnEnemies() called");
-
         if (GridManager.Instance == null)
         {
             Debug.LogError("[EnemySpawner] GridManager.Instance is null!");
@@ -106,9 +104,6 @@ public class EnemySpawner : MonoBehaviour
         int totalEnemies = Random.Range(stage.minTotalEnemies, stage.maxTotalEnemies + 1);
         totalEnemies = Mathf.Clamp(totalEnemies, 1, EnemyPositions.Length);
 
-        if (showDebugLogs)
-            Debug.Log($"[EnemySpawner] Stage '{stage.stageName}' — spawning {totalEnemies} enemies (difficulty {stage.difficulty})");
-
         // Build weighted spawn pool
         List<EnemyData> pool = BuildSpawnPool(stage.enemySpawns, totalEnemies);
 
@@ -125,8 +120,6 @@ public class EnemySpawner : MonoBehaviour
             if (ok) spawned++;
         }
 
-        if (showDebugLogs)
-            Debug.Log($"[EnemySpawner] Spawned {spawned}/{pool.Count} enemies from stage data.");
     }
 
     /// <summary>
@@ -195,8 +188,6 @@ public class EnemySpawner : MonoBehaviour
 
     private bool SpawnEnemy(EnemyData enemyData, Vector2Int pos, int difficulty)
     {
-        Debug.Log($"[EnemySpawner] Spawning '{enemyData.enemyName}' at {pos}");
-
         GameObject unitObj = new GameObject(enemyData.enemyName);
         unitObj.transform.localScale = Vector3.one;
 
@@ -236,8 +227,6 @@ public class EnemySpawner : MonoBehaviour
             return false;
         }
 
-        if (showDebugLogs)
-            Debug.Log($"[EnemySpawner] Spawned '{enemyData.enemyName}' at {pos}, hp={hp} atk={atk} def={def} spd={spd}");
         return true;
     }
 
@@ -271,7 +260,6 @@ public class EnemySpawner : MonoBehaviour
             return false;
         }
 
-        Debug.Log($"[EnemySpawner] Fallback enemy '{name}' spawned at {pos}.");
         return true;
     }
 

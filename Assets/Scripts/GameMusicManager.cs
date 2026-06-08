@@ -11,11 +11,18 @@ namespace SowurShield.Core
 public class GameMusicManager : MonoBehaviour
 {
     [Header("Music Settings")]
-    [SerializeField] private AudioClip gameplayMusic;
+    [SerializeField] private AudioClip gameplayMusic; // Fallback single farm track
     [SerializeField] private bool playOnStart = true;
     [SerializeField] private float musicVolume = 0.7f;
     [SerializeField] private float fadeInDuration = 1.5f;
     [SerializeField] private float fadeOutDuration = 1f;
+
+    [Header("Seasonal Farm Tracks (index 0=Spring 1=Summer 2=Fall 3=Winter)")]
+    [SerializeField] private AudioClip[] seasonalFarmTracks = new AudioClip[4];
+
+    [Header("Scene Tracks")]
+    [SerializeField] private AudioClip combatMusic;
+    [SerializeField] private AudioClip menuMusic;
 
     [Header("Audio Source")]
     [SerializeField] private AudioSource musicSource;
@@ -63,14 +70,52 @@ public class GameMusicManager : MonoBehaviour
         // This only runs once when GameMusicManager is first created
         // For subsequent scene loads, we rely on SceneTransitionManager callbacks
 
-        // Stop any menu music that might be playing
         StopMenuMusic();
 
-        // Start gameplay music if enabled
-        if (playOnStart && gameplayMusic != null)
+        if (playOnStart)
+            PlayFarmMusic();
+
+        // Subscribe to season changes for live crossfading
+        if (GameTimeController.instance != null)
+            GameTimeController.instance.OnSeasonChanged += OnSeasonChanged;
+    }
+
+    private void OnDestroy()
+    {
+        if (GameTimeController.instance != null)
+            GameTimeController.instance.OnSeasonChanged -= OnSeasonChanged;
+    }
+
+    private void OnSeasonChanged(string newSeason)
+    {
+        // Only crossfade if we're playing farm music (not combat/menu)
+        if (musicSource == null || combatMusic == musicSource.clip || menuMusic == musicSource.clip)
+            return;
+        PlayFarmMusic();
+    }
+
+    /// <summary>
+    /// Play the seasonal farm track, falling back to gameplayMusic if none assigned.
+    /// </summary>
+    public void PlayFarmMusic()
+    {
+        AudioClip track = GetCurrentSeasonTrack();
+        if (track != null)
+            PlayMusic(track, fadeInDuration);
+    }
+
+    private AudioClip GetCurrentSeasonTrack()
+    {
+        if (seasonalFarmTracks != null && seasonalFarmTracks.Length == 4)
         {
-            PlayMusic(gameplayMusic, fadeInDuration);
+            int idx = GameTimeController.instance != null
+                ? GameTimeController.instance.GetCurrentSeasonIndex()
+                : 0;
+            idx = Mathf.Clamp(idx, 0, 3);
+            if (seasonalFarmTracks[idx] != null)
+                return seasonalFarmTracks[idx];
         }
+        return gameplayMusic; // Fallback
     }
 
     private void Update()
@@ -303,19 +348,39 @@ public class GameMusicManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Called when starting game from menu
+    /// Called when transitioning to the farm scene.
     /// </summary>
     public void OnStartGame()
     {
+        PlayFarmMusic();
+    }
 
-        // Play gameplay music
-        if (gameplayMusic != null)
-        {
-            PlayMusic(gameplayMusic, fadeInDuration);
-        }
+    /// <summary>
+    /// Called when entering the combat scene.
+    /// </summary>
+    public void OnEnterCombat()
+    {
+        if (combatMusic != null)
+            PlayMusic(combatMusic, fadeInDuration);
+    }
+
+    /// <summary>
+    /// Called when returning from combat to the farm scene.
+    /// </summary>
+    public void OnExitCombat()
+    {
+        PlayFarmMusic();
+    }
+
+    /// <summary>
+    /// Play the menu music track.
+    /// </summary>
+    public void OnEnterMainMenu()
+    {
+        if (menuMusic != null)
+            PlayMusic(menuMusic, fadeInDuration);
         else
-        {
-        }
+            StopMusic(fadeOutDuration);
     }
 }
 

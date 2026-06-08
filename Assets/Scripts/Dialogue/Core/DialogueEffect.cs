@@ -1,4 +1,6 @@
 using UnityEngine;
+using SowurShield.Inventory;
+using SowurShield.Core;
 
 namespace SowurShield.Dialogue
 {
@@ -40,13 +42,11 @@ namespace SowurShield.Dialogue
                     break;
 
                 case EffectType.GiveItem:
-                    // This would integrate with your inventory system
-                    // For now, we'll track it in memory
-                    memory.GiveItem(effectKey, Mathf.RoundToInt(numericValue));
+                    GiveItemToInventory(effectKey, Mathf.RoundToInt(numericValue));
                     break;
 
                 case EffectType.TakeItem:
-                    memory.TakeItem(effectKey, Mathf.RoundToInt(numericValue));
+                    TakeItemFromInventory(effectKey, Mathf.RoundToInt(numericValue));
                     break;
 
                 case EffectType.PlaySound:
@@ -60,6 +60,50 @@ namespace SowurShield.Dialogue
                 default:
                     break;
             }
+        }
+
+        private void GiveItemToInventory(string itemName, int count)
+        {
+            if (string.IsNullOrEmpty(itemName) || count <= 0) return;
+
+            Item item = ItemDatabase.GetItem(itemName);
+            if (item == null)
+            {
+                Debug.LogWarning($"[DialogueEffect] GiveItem: item '{itemName}' not found in ItemDatabase.");
+                return;
+            }
+
+            Inventory inv = Object.FindFirstObjectByType<Inventory>();
+            if (inv == null)
+            {
+                Debug.LogWarning("[DialogueEffect] GiveItem: no Inventory found in scene.");
+                return;
+            }
+
+            if (!inv.AddItem(item, count))
+                Debug.LogWarning($"[DialogueEffect] GiveItem: inventory full — could not add {count}x '{itemName}'.");
+        }
+
+        private void TakeItemFromInventory(string itemName, int count)
+        {
+            if (string.IsNullOrEmpty(itemName) || count <= 0) return;
+
+            Item item = ItemDatabase.GetItem(itemName);
+            if (item == null)
+            {
+                Debug.LogWarning($"[DialogueEffect] TakeItem: item '{itemName}' not found in ItemDatabase.");
+                return;
+            }
+
+            Inventory inv = Object.FindFirstObjectByType<Inventory>();
+            if (inv == null)
+            {
+                Debug.LogWarning("[DialogueEffect] TakeItem: no Inventory found in scene.");
+                return;
+            }
+
+            if (!inv.RemoveItem(item, count))
+                Debug.LogWarning($"[DialogueEffect] TakeItem: could not remove {count}x '{itemName}' — not enough in inventory.");
         }
 
         private void PlaySoundEffect()

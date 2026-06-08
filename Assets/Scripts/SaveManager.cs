@@ -126,6 +126,9 @@ namespace SowurShield.Core
                 currentGameData = new GameData();
                 initializeNewGameAfterLoad = false;
                 LogDebug("New game initialized successfully");
+
+                // Start tutorial for new games
+                TutorialManager.Instance?.StartTutorial();
             }
             else if (HasSaveFile())
             {
@@ -560,9 +563,7 @@ namespace SowurShield.Core
         [ContextMenu("Show Save File Info")]
         public void DebugShowSaveInfo()
         {
-            var info = GetSaveFileInfo();
-            if (info != null)
-                Debug.Log($"[SaveManager] Save: {info.fileName} | Size: {info.fileSizeBytes}B | Last saved: {info.lastWriteTime}");
+            GetSaveFileInfo();
         }
 #endif
     }

@@ -229,6 +229,7 @@ namespace SowurShield.Core
                 return 0;
 
             int yield = currentCrop.GetRandomYield();
+            string harvestedCropName = currentCrop.cropName; // capture before RemoveCrop() can null it
 
             // Handle regrowth
             if (currentCrop.regrowsAfterHarvest &&
@@ -248,6 +249,9 @@ namespace SowurShield.Core
             }
 
             OnCropHarvested?.Invoke(this);
+            TutorialManager.NotifyStepComplete("harvest");
+            SowurShield.Dialogue.QuestManager.Instance?.NotifyObjective(
+                SowurShield.Dialogue.QuestObjectiveType.HarvestCrop, harvestedCropName);
             return yield;
         }
 

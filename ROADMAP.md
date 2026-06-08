@@ -113,20 +113,20 @@ Unlock the 25 stages and 5 biomes already defined in assets.
 Deepen the farming loop.
 
 1. [x] **More crops** — `CropCreatorWindow` editor tool creates Tomato (Summer) + Winter Wheat (Winter); run via `Tools > Sowur Shield > Create Crop Assets` in Unity
-2. **Animal expansion** — At least 1 more animal type; animal health/illness system
-3. **Farm buildings** — Barn (more animal slots), Greenhouse (grow out of season)
+2. [x] **Animal expansion** — Rabbit (Winter, speed-focused, produces Fur every 3 days, eats Carrots); illness system complete; `AnimalCreatorTool` editor tool creates `Resources/Animals/Rabbit.asset` + `Resources/Items/RabbitFur.asset` via `Tools > Sowur Shield > Create Animal Assets`
+3. [x] **Farm buildings** — `FarmBuildingData` ScriptableObject + `FarmBuildingManager` ISaveable singleton; Barn doubles AnimalZone capacity (5→10); Greenhouse bypasses seasonal planting restriction; `BuildingShopUI` IUIWindow loads all `Resources/Buildings/` assets
 4. [x] **Weather** — `WeatherController.cs`: Rain (auto-waters all tilled/watered soil), Drought (accelerates crop wilting); subscribe to `OnDayChanged`; place in SampleScene
 
 ### Phase 4 — NPC & World
-1. **NPC relationships** — Track affection per NPC; unlock dialogue branches and gifts at thresholds; save via worldCounters
-2. **Quests** — Simple task-based quest system using existing dialogue infrastructure
-3. **Shop NPC** — Buy seeds, tools, and animal feed; prices affected by relationship level
+1. [x] **NPC relationships** — `ConversationMemory` now implements `ISaveable`; relationships, quests, completed conversations all bridge to `GameData` worldFlags/worldCounters/worldStrings; `DialogueEffect.GiveItem/TakeItem` now use real `Inventory`; `DialogueCondition.InventoryItem` queries real `Inventory` via `ItemDatabase`
+2. [x] **Quests** — `QuestData` ScriptableObject (objectives, rewards, prereqs); `QuestManager` singleton (ISaveable, start/track/complete, NotifyObjective broadcast); `QuestTrackerUI` corner HUD; ConversationMemory quest status kept in sync for dialogue conditions; save/load via worldFlags+worldCounters
+3. [x] **Shop NPC** — `ShopData` ScriptableObject (items, prices, stock); `ShopNPC` IInteractable; `ShopUI` IUIWindow with relationship discount (0.2%/point, max 20%); limited stock persisted via ISaveable
 
 ### Phase 5 — Polish & Release
-1. **Audio** — Background music per scene and season; SFX for all interactions (currently partial)
-2. **Tutorial** — Guided first day: till soil → plant → water → sleep → harvest
+1. [x] **Audio** — `GameMusicManager` extended with `seasonalFarmTracks[4]`, `combatMusic`, `menuMusic`; crossfades on `OnSeasonChanged` event; `PlayFarmMusic()`, `OnEnterCombat()`, `OnExitCombat()`, `OnEnterMainMenu()` API; `SFXManager` singleton with pooled AudioSources (round-robin, 5 slots), `Play(clip)`/`Play(key)` with Resources fallback; wired: CombatHit, CombatDeath, PetAnimal
+2. [x] **Tutorial** — `TutorialManager` ISaveable singleton; 6 steps (till → plant → water → pet → sleep → harvest); persists to `GameData.progressData.tutorialSteps`; triggered on new game via `SaveManager.initializeNewGameAfterLoad`; steps advance via `TutorialManager.NotifyStepComplete()` wired into SoilBlockInteractable, CropGrowthManager, Animal, BedInteractable; skip button exits early
 3. **WebGL build** — Monthly deploy via existing GitHub Actions workflow
-4. **Delete all debug logs** — Final cleanup pass per CLAUDE.md policy
+4. [x] **Delete all debug logs** — All 59 bare `Debug.Log()` calls removed from gameplay scripts; failure-condition logs promoted to `Debug.LogWarning`; editor/debugging tools untouched
 5. **Achievements / completion** — Optional stretch goal
 
 ---
@@ -137,8 +137,8 @@ Deepen the farming loop.
 |------|-------|-------|
 | Enemy ScriptableObjects | 39 | 5 biomes fully defined |
 | Stage ScriptableObjects | 25 | 5 per biome, ready to use |
-| Animal types | 3 | chicken, duck, sparrow |
-| Crop types | 2 | carrot, cabbage |
+| Animal types | 4 | chicken, duck, sparrow, rabbit (via AnimalCreatorTool) |
+| Crop types | 4 | carrot, cabbage, tomato (summer), winter wheat (winter via CropCreatorWindow) |
 | Items | 30+ | produce, seeds, tools, food |
 | Prefabs | 20 | combat, UI, interactables |
 | Scenes | 4 | menu, farm, combat, map editor |
@@ -146,13 +146,34 @@ Deepen the farming loop.
 
 ---
 
-## Known Gaps / Tech Debt
+## Known Gaps / Tech Debt (Unity Editor Wiring Only)
 
-- AnimalSkill assets need to be created in Unity Editor and assigned to AnimalData.activeSkill / EnemyData.skills
-- WorldMap Canvas + BiomePanels need to be created and wired in Unity Editor (all code done)
-- AnimalInfoUI rename panel: UI elements need to be wired in Unity Editor (scripts complete)
-- WeatherController: needs to be placed as a GameObject in SampleScene
-- CropCreatorWindow: run `Tools > Sowur Shield > Create Crop Assets` once in Unity Editor
-- FeedingTrough: `DuckEgg_GroundItem` and `Feather_GroundItem` prefabs in `Resources/Prefabs/GroundItems/` need sprites assigned in Editor
-- No NPC affection tracking despite dialogue system supporting it
-- Debug.Log calls remain in many scripts — clean up per-feature when shipping
+All gameplay code is complete. The following require manual setup in the Unity Editor:
+
+**Combat:**
+- Create `AnimalSkill` ScriptableObjects; assign to `AnimalData.activeSkill` / `EnemyData.skills`
+- Assign `AnimatorController` to `AnimalData.animatorController` per animal
+
+**World Map:**
+- Create WorldMap Canvas + `WorldMapUIController`; create one `WorldMapBiomePanel` per biome
+- Assign `WorldMap` reference on `WorldMapTriggerZone` in farm scene
+
+**Animals & Farm:**
+- Run `Tools > Sowur Shield > Create Animal Assets` → assign sprites to Rabbit.asset + RabbitFur.asset
+- Create `RabbitFur_GroundItem`, `DuckEgg_GroundItem`, `Feather_GroundItem` prefabs in `Resources/Prefabs/GroundItems/`
+- Run `Tools > Sowur Shield > Create Crop Assets` once (Tomato + Winter Wheat)
+- Place `WeatherController` as a GameObject in SampleScene
+- Wire `AnimalInfoUI` rename panel UI elements in Inspector
+
+**Buildings / Shop / Tutorial:**
+- Create `Resources/Buildings/`; add `Barn.asset` + `Greenhouse.asset` (FarmBuildingData)
+- Create building row prefab (Image + 3× TMP + Button); wire to `BuildingShopUI`
+- Add `FarmBuildingManager`, `TutorialManager`, `SFXManager`, `QuestManager` GameObjects to SampleScene
+- Create `ShopItemRow` prefab (Image + 3× TMP + Button); wire to `ShopUI.shopItemRowPrefab`
+- Create `Resources/Quests/` folder for QuestData assets
+
+**Audio:**
+- Assign `seasonalFarmTracks[4]`, `combatMusic`, `menuMusic` on `GameMusicManager`
+- Add SFX clips to `SFXManager` named clips: `CombatHit`, `CombatDeath`, `PetAnimal`
+  (or place AudioClips in `Resources/Audio/SFX/` with matching names)
+- Call `GameMusicManager.Instance.OnEnterCombat()` from `SceneTransitionManager` when entering CombatScene

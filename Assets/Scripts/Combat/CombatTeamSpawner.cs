@@ -93,8 +93,6 @@ public class CombatTeamSpawner : MonoBehaviour
             return;
         }
 
-        if (showDebugLogs)
-            Debug.Log($"[CombatTeamSpawner] Spawning {team.Count} player unit(s)...");
 
         int spawned = 0;
         int posIndex = 0;
@@ -153,8 +151,6 @@ public class CombatTeamSpawner : MonoBehaviour
         AnimalData data = positioned.animalData;
         string displayName = positioned.GetDisplayName();
 
-        Debug.Log($"[CombatTeamSpawner] SpawnUnit: '{displayName}' at {pos}, sprite={(data.idleSprite != null ? data.idleSprite.name : "NULL")}");
-
         return CreateAnimalUnit(displayName, pos, true, data,
             positioned.happiness,
             positioned.attackGrowth,
@@ -186,11 +182,8 @@ public class CombatTeamSpawner : MonoBehaviour
         if (cell == null || !cell.IsEmpty())
             pos = new Vector2Int(7, 2);
 
-        bool ok = CreateAnimalUnit("Chicken (Test)", pos, true, chicken,
+        CreateAnimalUnit("Chicken (Test)", pos, true, chicken,
             50f, 1f, 1f, 1f, 1f, 1, 0f, 1f, 1f, 1f);
-
-        if (ok)
-            Debug.Log($"[CombatTeamSpawner] Fallback chicken spawned at {pos}.");
     }
 
     /// <summary>

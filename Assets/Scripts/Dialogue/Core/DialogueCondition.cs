@@ -1,4 +1,5 @@
 using UnityEngine;
+using SowurShield.Inventory;
 
 namespace SowurShield.Dialogue
 {
@@ -58,11 +59,13 @@ namespace SowurShield.Dialogue
                     break;
 
                 case ConditionType.InventoryItem:
-                    // This would integrate with your inventory system
-                    // For now, we'll use the memory system to track items
                     if (int.TryParse(conditionValue, out int requiredAmount))
                     {
-                        int currentAmount = memory.GetInventoryItemCount(conditionKey);
+                        int currentAmount = 0;
+                        Item item = ItemDatabase.GetItem(conditionKey);
+                        Inventory inv = Object.FindFirstObjectByType<Inventory>();
+                        if (item != null && inv != null)
+                            currentAmount = inv.GetItemCount(item);
                         result = EvaluateNumericCondition(currentAmount, requiredAmount, conditionOperator);
                     }
                     break;

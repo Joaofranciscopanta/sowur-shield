@@ -36,7 +36,6 @@ public static class StageManager
         // Also persist name in TeamAssemblerData (survives scene load in builds)
         if (TeamAssemblerData.Instance != null)
             TeamAssemblerData.Instance.selectedStageName = stage?.stageName ?? "";
-        Debug.Log($"[StageManager] Selected stage: {stage?.stageName ?? "None"}");
     }
 
     /// <summary>
@@ -70,8 +69,11 @@ public static class StageManager
         if (!completedStages.Contains(stageKey))
         {
             completedStages.Add(stageKey);
-            Debug.Log($"[StageManager] Stage completed: {stage.stageName}");
         }
+
+        // Advance any CompleteBattle quest objectives that target this stage
+        SowurShield.Dialogue.QuestManager.Instance?.NotifyObjective(
+            SowurShield.Dialogue.QuestObjectiveType.CompleteBattle, stage.stageName);
     }
 
     /// <summary>
@@ -167,7 +169,6 @@ public static class StageManager
             RegisterStage(stage);
         }
 
-        Debug.Log($"[StageManager] Loaded {stages.Length} stages from Resources");
     }
 
     // ============================================================================
@@ -202,7 +203,6 @@ public static class StageManager
             }
         }
 
-        Debug.Log($"[StageManager] Loaded progress: {completedStages.Count} stages completed");
     }
 
     /// <summary>
@@ -212,7 +212,6 @@ public static class StageManager
     {
         completedStages.Clear();
         selectedStage = null;
-        Debug.Log("[StageManager] Progress reset");
     }
 
     // ============================================================================

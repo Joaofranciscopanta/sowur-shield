@@ -332,6 +332,11 @@ public class Inventory : MonoBehaviour, ISaveable
             PlaySound(pickupSound);
         }
 
+        // Notify quest system so CollectItem objectives advance
+        if (success && item != null)
+            SowurShield.Dialogue.QuestManager.Instance?.OnInventoryItemCountChanged(
+                item.itemName, container.GetItemCount(item));
+
         return success;
     }
 

@@ -200,6 +200,7 @@ public class BedInteractable : MonoBehaviour, IInteractable
         ProcessSellBoxSales();
 
         // Avança o tempo
+        TutorialManager.NotifyStepComplete("sleep");
         timeController.AdvanceDay(daysToAdvance);
 
         // Store bed position for respawning

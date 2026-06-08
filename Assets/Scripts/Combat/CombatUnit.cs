@@ -324,10 +324,10 @@ public class CombatUnit : MonoBehaviour
         currentHealth -= damage;
         if (currentHealth < 0) currentHealth = 0;
 
-
         // Update visuals
         UpdateHealthBar();
         FlashDamage();
+        SowurShield.Core.SFXManager.Play("CombatHit");
 
         // Check death
         if (!IsAlive())
@@ -353,6 +353,7 @@ public class CombatUnit : MonoBehaviour
     /// </summary>
     private void Die()
     {
+        SowurShield.Core.SFXManager.Play("CombatDeath");
         if (unitAnimator != null)
             unitAnimator.SetTrigger(AnimDie);
 

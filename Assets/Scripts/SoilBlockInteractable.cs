@@ -361,6 +361,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         UpdateAppearance();
         PlayEffect(tillEffect);
         PlaySound(tillSound);
+        TutorialManager.NotifyStepComplete("till_soil");
     }
 
     private void WaterSoil()
@@ -371,6 +372,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             UpdateAppearance();
             PlayEffect(waterEffect);
             PlaySound(waterSound);
+            TutorialManager.NotifyStepComplete("water_crop");
         }
         else if (currentState == SoilState.WithCrop && cropGrowthManager != null)
         {
@@ -394,12 +396,21 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             return;
         }
 
-        // Verifica requisitos sazonais (se sistema de estações estiver implementado)
-        GameTimeController timeController = GameTimeController.instance;
-        if (timeController != null)
+        // Enforce seasonal restrictions — Greenhouse bypasses them
+        bool greenhouseBuilt = SowurShield.Core.FarmBuildingManager.Instance != null
+                               && SowurShield.Core.FarmBuildingManager.Instance.HasGreenhouse;
+        if (!greenhouseBuilt)
         {
-            // Aqui você pode implementar verificação de estação se necessário
-            // Por exemplo: if (!cropData.IsValidSeason(GetCurrentSeason())) return;
+            GameTimeController timeController = GameTimeController.instance;
+            if (timeController != null)
+            {
+                Season currentSeason = (Season)timeController.GetCurrentSeasonIndex();
+                if (!cropData.IsValidSeason(currentSeason))
+                {
+                    Debug.LogWarning($"[SoilBlock] Cannot plant '{cropData.cropName}' in {currentSeason}. Build a Greenhouse to plant any season.");
+                    return;
+                }
+            }
         }
 
         // Planta o cultivo
@@ -413,6 +424,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
             currentState = SoilState.WithCrop;
             UpdateAppearance();
+            TutorialManager.NotifyStepComplete("plant_seed");
 
             // Remove semente do inventário
             playerInventory.Remove(seedItem, 1);
