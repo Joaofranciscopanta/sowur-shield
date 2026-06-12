@@ -9,6 +9,11 @@ on:
         description: 'Unity build number (leave empty for latest)'
         required: false
         type: string
+      trigger_new_build:
+        description: 'Trigger a brand new Unity Cloud Build before deploying'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   deploy:
@@ -24,6 +29,47 @@ jobs:
           ref: main
           fetch-depth: 0
       
+      - name: Trigger New Unity Cloud Build
+        id: trigger
+        if: ${{ github.event.inputs.trigger_new_build == 'true' }}
+        env:
+          UNITY_API_KEY: ${{ secrets.UNITY_API_KEY }}
+          UNITY_ORG_ID: ${{ secrets.UNITY_ORG_ID }}
+          UNITY_PROJECT_ID: ${{ secrets.UNITY_PROJECT_ID }}
+          UNITY_BUILD_TARGET_ID: ${{ secrets.UNITY_BUILD_TARGET_ID }}
+        run: |
+          ENCODED_KEY=$(echo -n "$UNITY_API_KEY:" | base64)
+
+          echo "🚀 Starting a new Unity Cloud Build..."
+          START_RESPONSE=$(curl -s -X POST -H "Authorization: Basic $ENCODED_KEY" -H "Content-Type: application/json" \
+            -d '{"clean": false, "delay": 0}' \
+            "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${UNITY_BUILD_TARGET_ID}/builds")
+
+          NEW_BUILD_NUMBER=$(echo "$START_RESPONSE" | grep -o '"build":[0-9]*' | head -1 | cut -d':' -f2)
+          [ -z "$NEW_BUILD_NUMBER" ] && echo "❌ Could not start new build: $START_RESPONSE" && exit 1
+          echo "✅ Started build #$NEW_BUILD_NUMBER — polling for completion..."
+
+          # Poll every 30s for up to 30 minutes
+          for i in $(seq 1 60); do
+            sleep 30
+            STATUS_INFO=$(curl -s -H "Authorization: Basic $ENCODED_KEY" \
+              "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${UNITY_BUILD_TARGET_ID}/builds/${NEW_BUILD_NUMBER}")
+            STATUS=$(echo "$STATUS_INFO" | grep -o '"buildStatus":"[^"]*"' | head -1 | cut -d':' -f2 | tr -d '"')
+            echo "  ⏳ [$i/60] Build #$NEW_BUILD_NUMBER status: $STATUS"
+
+            if [ "$STATUS" = "success" ]; then
+              echo "✅ Build #$NEW_BUILD_NUMBER succeeded!"
+              echo "build_number=$NEW_BUILD_NUMBER" >> $GITHUB_OUTPUT
+              exit 0
+            elif [ "$STATUS" = "failure" ] || [ "$STATUS" = "canceled" ]; then
+              echo "❌ Build #$NEW_BUILD_NUMBER ended with status: $STATUS"
+              exit 1
+            fi
+          done
+
+          echo "❌ Timed out waiting for build #$NEW_BUILD_NUMBER to complete"
+          exit 1
+
       - name: Download Unity Build
         id: download
         env:
@@ -32,11 +78,14 @@ jobs:
           UNITY_PROJECT_ID: ${{ secrets.UNITY_PROJECT_ID }}
           UNITY_BUILD_TARGET_ID: ${{ secrets.UNITY_BUILD_TARGET_ID }}
         run: |
-          echo "Downloading latest Unity Cloud Build..."
+          echo "Downloading Unity Cloud Build..."
           mkdir -p temp_build
           ENCODED_KEY=$(echo -n "$UNITY_API_KEY:" | base64)
-          
-          BUILD_NUMBER="${{ github.event.inputs.build_number }}"
+
+          BUILD_NUMBER="${{ steps.trigger.outputs.build_number }}"
+          if [ -z "$BUILD_NUMBER" ]; then
+            BUILD_NUMBER="${{ github.event.inputs.build_number }}"
+          fi
           if [ -z "$BUILD_NUMBER" ]; then
             BUILD_INFO=$(curl -s -H "Authorization: Basic $ENCODED_KEY" \
               "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${UNITY_BUILD_TARGET_ID}/builds?per_page=1&buildStatus=success")
@@ -44,7 +93,7 @@ jobs:
             [ -z "$BUILD_NUMBER" ] && echo "❌ Could not fetch build number" && exit 1
             echo "✅ Latest successful build: #$BUILD_NUMBER"
           fi
-          
+
           echo "build_number=$BUILD_NUMBER" >> $GITHUB_OUTPUT
           
           DOWNLOAD_INFO=$(curl -s -H "Authorization: Basic $ENCODED_KEY" \
