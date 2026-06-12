@@ -50,6 +50,74 @@ ul, ol { margin: 0; }
 }
 
 /* =============================================
+   AMBIENT BACKGROUND FX
+   ============================================= */
+#bg-fx {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bg-fx-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 520px;
+  height: 520px;
+  margin: -260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(126, 200, 126, 0.16) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  will-change: transform, opacity;
+}
+
+.bg-fx-glow-scroll {
+  left: 50%;
+  width: 720px;
+  height: 720px;
+  margin: -360px;
+  background: radial-gradient(circle, rgba(126, 200, 126, 0.10) 0%, transparent 70%);
+  opacity: 1;
+  transform: translateY(0);
+  transition: transform 0.4s ease-out;
+}
+
+.bg-fx-fireflies {
+  position: absolute;
+  inset: 0;
+}
+
+.firefly {
+  position: absolute;
+  width: var(--size, 3px);
+  height: var(--size, 3px);
+  border-radius: 50%;
+  background: var(--accent-light);
+  box-shadow: 0 0 8px 2px rgba(184, 240, 184, 0.6);
+  opacity: 0;
+  animation: firefly-drift var(--dur, 20s) ease-in-out var(--delay, 0s) infinite;
+}
+
+@keyframes firefly-drift {
+  0%   { transform: translate(0, 0); opacity: 0; }
+  10%  { opacity: 0.8; }
+  50%  { transform: translate(var(--drift, 80px), -120px); opacity: 0.5; }
+  90%  { opacity: 0.8; }
+  100% { transform: translate(0, 0); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-fx-glow, .firefly { display: none; }
+}
+
+@media (pointer: coarse) {
+  #bg-cursor-glow { display: none; }
+}
+
+/* =============================================
    SHARED LAYOUT
    ============================================= */
 .section {
@@ -339,6 +407,9 @@ ul, ol { margin: 0; }
   object-fit: cover;
   border-radius: var(--radius);
   border: 1px solid var(--border);
+  display: block;
+  cursor: zoom-in;
+  transition: transform 0.4s ease;
 }
 
 /* =============================================
@@ -415,11 +486,87 @@ ul, ol { margin: 0; }
   gap: 16px;
 }
 
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+
+.gallery-item:hover .gallery-img {
+  transform: scale(1.08);
+}
+
 .gallery-wide { grid-column: span 2; }
 
 @media (max-width: 760px) {
   .gallery-grid { grid-template-columns: repeat(2, 1fr); }
   .gallery-wide { grid-column: span 2; }
+}
+
+/* =============================================
+   LIGHTBOX
+   ============================================= */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 14, 10, 0.88);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+  padding: 32px;
+}
+
+.lightbox.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.lightbox-img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  transform: scale(0.94);
+  transition: transform 0.25s ease;
+}
+
+.lightbox.is-open .lightbox-img {
+  transform: scale(1);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 28px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.lightbox-close:hover {
+  background: rgba(126, 200, 126, 0.12);
+  border-color: var(--border-strong);
+  transform: rotate(90deg);
+}
+
+body.lightbox-locked {
+  overflow: hidden;
 }
 
 /* =============================================

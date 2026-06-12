@@ -14,6 +14,13 @@
   </head>
   <body>
 
+    <!-- Ambient backdrop: fireflies + cursor glow + scroll-reactive field glow -->
+    <div id="bg-fx" aria-hidden="true">
+      <div class="bg-fx-glow" id="bg-cursor-glow"></div>
+      <div class="bg-fx-glow bg-fx-glow-scroll" id="bg-scroll-glow"></div>
+      <div class="bg-fx-fireflies" id="bg-fireflies"></div>
+    </div>
+
     <!-- ============================================= -->
     <!-- NAV                                             -->
     <!-- ============================================= -->
@@ -153,13 +160,19 @@
       </div>
 
       <div class="gallery-grid">
-        <img src="assets/farm.png" alt="Farm overview" class="gallery-img gallery-wide">
-        <img src="assets/animals.png" alt="Animal pen" class="gallery-img">
-        <img src="assets/dialogue.png" alt="NPC dialogue" class="gallery-img">
-        <img src="assets/combat.png" alt="Combat scene" class="gallery-img">
-        <img src="assets/worldmap.png" alt="World map" class="gallery-img gallery-wide">
+        <div class="gallery-item gallery-wide"><img src="assets/farm.png" alt="Farm overview" class="gallery-img"></div>
+        <div class="gallery-item"><img src="assets/animals.png" alt="Animal pen" class="gallery-img"></div>
+        <div class="gallery-item"><img src="assets/dialogue.png" alt="NPC dialogue" class="gallery-img"></div>
+        <div class="gallery-item"><img src="assets/combat.png" alt="Combat scene" class="gallery-img"></div>
+        <div class="gallery-item gallery-wide"><img src="assets/worldmap.png" alt="World map" class="gallery-img"></div>
       </div>
     </section>
+
+    <!-- Lightbox overlay for full-size gallery images -->
+    <div id="lightbox" class="lightbox" aria-hidden="true">
+      <button class="lightbox-close" aria-label="Close">&times;</button>
+      <img src="" alt="" class="lightbox-img">
+    </div>
 
     <!-- ============================================= -->
     <!-- PLAY (UNITY WEBGL)                             -->
@@ -335,6 +348,92 @@
       };
 
       document.body.appendChild(script);
+    </script>
+
+    <script>
+      // ---------------------------------------------
+      // Gallery lightbox
+      // ---------------------------------------------
+      (() => {
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = lightbox.querySelector('.lightbox-img');
+        const closeBtn = lightbox.querySelector('.lightbox-close');
+
+        function openLightbox(src, alt) {
+          lightboxImg.src = src;
+          lightboxImg.alt = alt || '';
+          lightbox.classList.add('is-open');
+          lightbox.setAttribute('aria-hidden', 'false');
+          document.body.classList.add('lightbox-locked');
+        }
+
+        function closeLightbox() {
+          lightbox.classList.remove('is-open');
+          lightbox.setAttribute('aria-hidden', 'true');
+          document.body.classList.remove('lightbox-locked');
+          lightboxImg.src = '';
+        }
+
+        document.querySelectorAll('.gallery-img').forEach((img) => {
+          img.addEventListener('click', () => openLightbox(img.src, img.alt));
+        });
+
+        closeBtn.addEventListener('click', closeLightbox);
+        lightbox.addEventListener('click', (e) => {
+          if (e.target === lightbox) closeLightbox();
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && lightbox.classList.contains('is-open')) closeLightbox();
+        });
+      })();
+
+      // ---------------------------------------------
+      // Ambient background fx: cursor glow, scroll glow, fireflies
+      // ---------------------------------------------
+      (() => {
+        const cursorGlow = document.getElementById('bg-cursor-glow');
+        const scrollGlow = document.getElementById('bg-scroll-glow');
+        const fireflyLayer = document.getElementById('bg-fireflies');
+
+        // Cursor-following glow (desktop only)
+        if (window.matchMedia('(pointer: fine)').matches) {
+          window.addEventListener('pointermove', (e) => {
+            cursorGlow.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+            cursorGlow.style.opacity = '1';
+          });
+          window.addEventListener('pointerleave', () => {
+            cursorGlow.style.opacity = '0';
+          });
+        }
+
+        // Scroll-reactive glow drifts down the page and rotates hue slightly
+        let lastScroll = -1;
+        function onScroll() {
+          const scrollY = window.scrollY;
+          if (scrollY === lastScroll) return;
+          lastScroll = scrollY;
+          const docHeight = Math.max(document.body.scrollHeight - window.innerHeight, 1);
+          const progress = Math.min(scrollY / docHeight, 1);
+          scrollGlow.style.transform = `translateY(${progress * 100}vh)`;
+          scrollGlow.style.filter = `hue-rotate(${progress * 40}deg)`;
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+
+        // Drifting "firefly" particles
+        const FIREFLY_COUNT = 18;
+        for (let i = 0; i < FIREFLY_COUNT; i++) {
+          const fly = document.createElement('span');
+          fly.className = 'firefly';
+          fly.style.left = `${Math.random() * 100}%`;
+          fly.style.top = `${Math.random() * 100}%`;
+          fly.style.setProperty('--dur', `${14 + Math.random() * 18}s`);
+          fly.style.setProperty('--delay', `${Math.random() * -30}s`);
+          fly.style.setProperty('--drift', `${(Math.random() - 0.5) * 160}px`);
+          fly.style.setProperty('--size', `${2 + Math.random() * 3}px`);
+          fireflyLayer.appendChild(fly);
+        }
+      })();
     </script>
   </body>
 </html>
