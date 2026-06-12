@@ -169,16 +169,16 @@
       </div>
 
       <div class="gallery-grid">
-        <div class="gallery-item gallery-wide"><img src="assets/farm.png" alt="Farm overview" class="gallery-img"></div>
-        <div class="gallery-item"><img src="assets/animals.png" alt="Animal pen" class="gallery-img"></div>
-        <div class="gallery-item"><img src="assets/dialogue.png" alt="NPC dialogue" class="gallery-img"></div>
-        <div class="gallery-item"><img src="assets/combat.png" alt="Combat scene" class="gallery-img"></div>
-        <div class="gallery-item gallery-wide"><img src="assets/worldmap.png" alt="World map" class="gallery-img"></div>
+        <div class="gallery-item gallery-wide"><img src="assets/farm.png" alt="Farm overview" class="gallery-img" tabindex="0" role="button" aria-label="View full size: Farm overview"></div>
+        <div class="gallery-item"><img src="assets/animals.png" alt="Animal pen" class="gallery-img" tabindex="0" role="button" aria-label="View full size: Animal pen"></div>
+        <div class="gallery-item"><img src="assets/dialogue.png" alt="NPC dialogue" class="gallery-img" tabindex="0" role="button" aria-label="View full size: NPC dialogue"></div>
+        <div class="gallery-item"><img src="assets/combat.png" alt="Combat scene" class="gallery-img" tabindex="0" role="button" aria-label="View full size: Combat scene"></div>
+        <div class="gallery-item gallery-wide"><img src="assets/worldmap.png" alt="World map" class="gallery-img" tabindex="0" role="button" aria-label="View full size: World map"></div>
       </div>
     </section>
 
     <!-- Lightbox overlay for full-size gallery images -->
-    <div id="lightbox" class="lightbox" aria-hidden="true">
+    <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Image preview" aria-hidden="true">
       <button class="lightbox-close" aria-label="Close">&times;</button>
       <img src="" alt="" class="lightbox-img">
     </div>
@@ -341,18 +341,22 @@
 
       document.querySelector("#unity-loading-bar").style.display = "block";
 
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+
       var script = document.createElement("script");
       script.src = loaderUrl;
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
-          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
+          progressBarFull.style.width = 100 * progress + "%";
         }).then((unityInstance) => {
-          document.querySelector("#unity-loading-bar").style.display = "none";
+          loadingBar.style.display = "none";
           document.querySelector("#unity-fullscreen-button").onclick = () => {
             unityInstance.SetFullscreen(1);
           };
         }).catch((message) => {
-          alert(message);
+          loadingBar.style.display = "none";
+          unityShowBanner('Could not load the game. Please check your connection and reload the page.', 'error');
         });
       };
 
@@ -384,6 +388,13 @@
         document.addEventListener('keydown', (e) => {
           if (e.key === 'Escape') closeMenu();
         });
+
+        // Close the menu if the viewport widens past the mobile breakpoint
+        // while it's open, so it doesn't reappear pre-opened later.
+        const desktopQuery = window.matchMedia('(min-width: 861px)');
+        desktopQuery.addEventListener('change', (e) => {
+          if (e.matches) closeMenu();
+        });
       })();
 
       // ---------------------------------------------
@@ -393,13 +404,16 @@
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = lightbox.querySelector('.lightbox-img');
         const closeBtn = lightbox.querySelector('.lightbox-close');
+        let lastTrigger = null;
 
-        function openLightbox(src, alt) {
-          lightboxImg.src = src;
-          lightboxImg.alt = alt || '';
+        function openLightbox(trigger) {
+          lastTrigger = trigger;
+          lightboxImg.src = trigger.src;
+          lightboxImg.alt = trigger.alt || '';
           lightbox.classList.add('is-open');
           lightbox.setAttribute('aria-hidden', 'false');
           document.body.classList.add('lightbox-locked');
+          closeBtn.focus();
         }
 
         function closeLightbox() {
@@ -407,10 +421,20 @@
           lightbox.setAttribute('aria-hidden', 'true');
           document.body.classList.remove('lightbox-locked');
           lightboxImg.src = '';
+          if (lastTrigger) {
+            lastTrigger.focus();
+            lastTrigger = null;
+          }
         }
 
         document.querySelectorAll('.gallery-img').forEach((img) => {
-          img.addEventListener('click', () => openLightbox(img.src, img.alt));
+          img.addEventListener('click', () => openLightbox(img));
+          img.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openLightbox(img);
+            }
+          });
         });
 
         closeBtn.addEventListener('click', closeLightbox);
@@ -418,7 +442,15 @@
           if (e.target === lightbox) closeLightbox();
         });
         document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape' && lightbox.classList.contains('is-open')) closeLightbox();
+          if (!lightbox.classList.contains('is-open')) return;
+          if (e.key === 'Escape') {
+            closeLightbox();
+          } else if (e.key === 'Tab') {
+            // Only the close button is focusable inside the lightbox —
+            // keep Tab from escaping to the page behind the overlay.
+            e.preventDefault();
+            closeBtn.focus();
+          }
         });
       })();
 
@@ -488,6 +520,8 @@
           const DAMPING = 0.94;      // energy loss per frame
           const WIND_FACTOR = 0.0028; // how strongly mouse velocity pushes the swing
 
+          let rafId = null;
+
           window.addEventListener('pointermove', (e) => {
             const dx = e.clientX - lastX;
             lastX = e.clientX;
@@ -500,6 +534,7 @@
               lampY = targetY;
               visible = true;
               lampGlow.style.opacity = '1';
+              if (rafId === null) rafId = requestAnimationFrame(tick);
             }
           });
           window.addEventListener('pointerleave', () => {
@@ -510,6 +545,11 @@
           const REST_THRESHOLD = 0.0008; // below this, snap the swing to a full stop
 
           function tick() {
+            if (!visible) {
+              rafId = null;
+              return;
+            }
+
             // Spring physics: swing angle oscillates back toward 0,
             // damped over time, driven by wind impulses from the mouse.
             angVel += -angle * STIFFNESS;
@@ -532,9 +572,8 @@
             const rotation = angle * 12; // visual tilt in degrees
 
             lampGlow.style.transform = `translate(${lampX + swingOffset}px, ${lampY}px) rotate(${rotation}deg)`;
-            requestAnimationFrame(tick);
+            rafId = requestAnimationFrame(tick);
           }
-          requestAnimationFrame(tick);
         }
       })();
     </script>
