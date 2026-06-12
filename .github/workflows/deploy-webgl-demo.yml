@@ -14,6 +14,10 @@ on:
         required: false
         type: boolean
         default: false
+      diagnose_build:
+        description: 'Build number to diagnose (prints status+log, skips deploy)'
+        required: false
+        type: string
 
 jobs:
   deploy:
@@ -29,6 +33,24 @@ jobs:
           ref: main
           fetch-depth: 0
       
+      - name: Diagnose Build
+        if: ${{ github.event.inputs.diagnose_build != '' }}
+        env:
+          UNITY_API_KEY: ${{ secrets.UNITY_API_KEY }}
+          UNITY_ORG_ID: ${{ secrets.UNITY_ORG_ID }}
+          UNITY_PROJECT_ID: ${{ secrets.UNITY_PROJECT_ID }}
+          UNITY_BUILD_TARGET_ID: ${{ secrets.UNITY_BUILD_TARGET_ID }}
+        run: |
+          ENCODED_KEY=$(echo -n "$UNITY_API_KEY:" | base64)
+          BUILD_NUMBER="${{ github.event.inputs.diagnose_build }}"
+          echo "--- Build #$BUILD_NUMBER details ---"
+          curl -s -H "Authorization: Basic $ENCODED_KEY" \
+            "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${UNITY_BUILD_TARGET_ID}/builds/${BUILD_NUMBER}"
+          echo ""
+          echo "--- Build #$BUILD_NUMBER log ---"
+          curl -s -H "Authorization: Basic $ENCODED_KEY" \
+            "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${UNITY_BUILD_TARGET_ID}/builds/${BUILD_NUMBER}/log"
+
       - name: Trigger New Unity Cloud Build
         id: trigger
         if: ${{ github.event.inputs.trigger_new_build == 'true' }}
@@ -63,6 +85,11 @@ jobs:
               exit 0
             elif [ "$STATUS" = "failure" ] || [ "$STATUS" = "canceled" ]; then
               echo "❌ Build #$NEW_BUILD_NUMBER ended with status: $STATUS"
+              echo "--- Build details ---"
+              echo "$STATUS_INFO"
+              echo "--- Build log entries ---"
+              curl -s -H "Authorization: Basic $ENCODED_KEY" \
+                "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${UNITY_BUILD_TARGET_ID}/builds/${NEW_BUILD_NUMBER}/log" || true
               exit 1
             fi
           done
