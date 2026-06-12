@@ -413,9 +413,9 @@
           const docHeight = Math.max(document.body.scrollHeight - window.innerHeight, 1);
           const progress = Math.min(scrollY / docHeight, 1);
 
-          skyLayer.style.transform = `translateY(${progress * 22}%)`;
+          skyLayer.style.transform = `translateY(${progress * 13}%)`;
           forestLayer.style.transform = `translateY(${(progress - 1) * 55 + 55}%)`;
-          farmLayer.style.transform = `translateY(${(progress - 1) * 95 + 95}%)`;
+          farmLayer.style.transform = `translateY(${(progress - 1) * 65 + 65}%)`;
 
           forestLayer.style.opacity = String(0.4 + progress * 0.6);
           farmLayer.style.opacity = String(Math.min(Math.max(0, progress - 0.25) / 0.75, 0.7));

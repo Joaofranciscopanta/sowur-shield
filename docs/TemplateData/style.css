@@ -74,7 +74,7 @@ ul, ol { margin: 0; }
 /* Layer 1: night sky + moon */
 .bg-layer-sky {
   background-image:
-    linear-gradient(180deg, rgba(10, 14, 28, 0.15) 0%, rgba(27, 36, 56, 0.35) 100%),
+    linear-gradient(180deg, rgba(10, 14, 28, 0.32) 0%, rgba(27, 36, 56, 0.45) 100%),
     url('../assets/bg/sky-night.png');
   background-position: center top;
 }
@@ -178,6 +178,8 @@ ul, ol { margin: 0; }
    SHARED LAYOUT
    ============================================= */
 .section {
+  position: relative;
+  z-index: 1;
   max-width: var(--container);
   margin: 0 auto;
   padding: 88px 24px;
@@ -340,6 +342,7 @@ ul, ol { margin: 0; }
    ============================================= */
 .hero {
   position: relative;
+  z-index: 1;
   max-width: var(--container);
   margin: 0 auto;
   padding: 80px 24px 100px;
@@ -479,7 +482,9 @@ ul, ol { margin: 0; }
 }
 
 .feature-card {
-  background: var(--surface-2);
+  background: rgba(12, 20, 16, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 24px;
@@ -489,7 +494,7 @@ ul, ol { margin: 0; }
 .feature-card:hover {
   transform: translateY(-4px);
   border-color: var(--border-strong);
-  background: rgba(126, 200, 126, 0.05);
+  background: rgba(18, 32, 24, 0.65);
 }
 
 .feature-icon {
@@ -757,6 +762,8 @@ body.lightbox-locked {
    FOOTER
    ============================================= */
 .site-footer {
+  position: relative;
+  z-index: 1;
   border-top: 1px solid var(--border);
   background: var(--bg-alt);
   padding: 56px 24px 28px;
