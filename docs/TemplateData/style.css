@@ -87,7 +87,9 @@ ul, ol { margin: 0; }
 
 /* Layer 3: farm with bonfire */
 .bg-layer-farm {
-  background-image: url('../assets/bg/farm-bonfire.png');
+  background-image:
+    linear-gradient(180deg, transparent 0%, rgba(6, 13, 8, 0.55) 75%, rgba(6, 13, 8, 0.85) 100%),
+    url('../assets/bg/farm-bonfire.png');
   background-position: center bottom;
 }
 
@@ -100,12 +102,12 @@ ul, ol { margin: 0; }
   margin-left: -240px;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255, 158, 68, 0.55) 0%, rgba(255, 110, 40, 0.22) 35%, transparent 70%);
-  animation: bonfire-pulse 3.2s ease-in-out infinite;
+  animation: bonfire-pulse 2.4s ease-in-out infinite;
 }
 
 @keyframes bonfire-pulse {
-  0%, 100% { transform: scale(1) translateY(0); opacity: 0.85; }
-  50%      { transform: scale(1.08) translateY(-2%); opacity: 1; }
+  0%, 100% { transform: scale(1) translateY(0); opacity: 0.65; }
+  50%      { transform: scale(1.18) translateY(-2%); opacity: 1; }
 }
 
 /* ---- Lamp glow (mouse-follow "lamparina") ---- */
@@ -123,15 +125,20 @@ ul, ol { margin: 0; }
   will-change: transform, opacity;
 }
 
-.bg-lamp-glow {
-  animation: lamp-flicker 2.6s ease-in-out infinite;
+/* Inner flame: pulses independently of the outer glow's position/swing transform */
+.bg-lamp-flame {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 196, 110, 0.85) 0%, rgba(255, 158, 68, 0.35) 45%, transparent 70%);
+  animation: lamp-flicker 2.2s ease-in-out infinite;
 }
 
 @keyframes lamp-flicker {
-  0%, 100% { filter: brightness(1); }
-  25%      { filter: brightness(1.08); }
-  50%      { filter: brightness(0.95); }
-  75%      { filter: brightness(1.04); }
+  0%, 100% { opacity: 0.75; transform: scale(1); }
+  20%      { opacity: 0.55; transform: scale(1.06); }
+  45%      { opacity: 0.9; transform: scale(0.96); }
+  70%      { opacity: 0.6; transform: scale(1.1); }
 }
 
 .bg-fx-fireflies {

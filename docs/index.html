@@ -22,7 +22,9 @@
         <div class="bg-bonfire-glow"></div>
       </div>
       <div class="bg-fx-fireflies" id="bg-fireflies"></div>
-      <div class="bg-fx-glow bg-lamp-glow" id="bg-cursor-glow"></div>
+      <div class="bg-fx-glow bg-lamp-glow" id="bg-cursor-glow">
+        <div class="bg-lamp-flame"></div>
+      </div>
     </div>
 
     <!-- ============================================= -->
@@ -411,12 +413,12 @@
           const docHeight = Math.max(document.body.scrollHeight - window.innerHeight, 1);
           const progress = Math.min(scrollY / docHeight, 1);
 
-          skyLayer.style.transform = `translateY(${progress * 8}%)`;
-          forestLayer.style.transform = `translateY(${(progress - 1) * 22 + 22}%)`;
-          farmLayer.style.transform = `translateY(${(progress - 1) * 40 + 40}%)`;
+          skyLayer.style.transform = `translateY(${progress * 22}%)`;
+          forestLayer.style.transform = `translateY(${(progress - 1) * 55 + 55}%)`;
+          farmLayer.style.transform = `translateY(${(progress - 1) * 95 + 95}%)`;
 
           forestLayer.style.opacity = String(0.4 + progress * 0.6);
-          farmLayer.style.opacity = String(Math.max(0, progress - 0.25) / 0.75);
+          farmLayer.style.opacity = String(Math.min(Math.max(0, progress - 0.25) / 0.75, 0.7));
         }
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
@@ -474,12 +476,21 @@
             visible = false;
           });
 
+          const REST_THRESHOLD = 0.0008; // below this, snap the swing to a full stop
+
           function tick() {
             // Spring physics: swing angle oscillates back toward 0,
             // damped over time, driven by wind impulses from the mouse.
             angVel += -angle * STIFFNESS;
             angVel *= DAMPING;
             angle += angVel;
+
+            // Once the swing has settled to a tiny amplitude, stop it
+            // completely so the lamp doesn't rattle forever at idle.
+            if (Math.abs(angle) < REST_THRESHOLD && Math.abs(angVel) < REST_THRESHOLD) {
+              angle = 0;
+              angVel = 0;
+            }
 
             // Lamp position eases toward the cursor (vertical follow),
             // offset horizontally by the pendulum swing.
