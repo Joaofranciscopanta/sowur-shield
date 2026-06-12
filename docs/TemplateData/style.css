@@ -186,6 +186,7 @@ ul, ol { margin: 0; }
 }
 
 .section-alt {
+  position: relative;
   max-width: none;
   background: var(--bg-alt);
   border-top: 1px solid var(--border);
@@ -196,6 +197,30 @@ ul, ol { margin: 0; }
   max-width: var(--container);
   margin-left: auto;
   margin-right: auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Soft fade at the top/bottom edges so the parallax background blends
+   into the opaque section instead of cutting off abruptly. */
+.section-alt::before,
+.section-alt::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 80px;
+  pointer-events: none;
+}
+
+.section-alt::before {
+  top: -1px;
+  background: linear-gradient(180deg, transparent 0%, var(--bg-alt) 100%);
+}
+
+.section-alt::after {
+  bottom: -1px;
+  background: linear-gradient(0deg, transparent 0%, var(--bg-alt) 100%);
 }
 
 .section-head {
@@ -838,6 +863,23 @@ body.lightbox-locked {
   border-top: 1px solid var(--border);
   background: var(--bg-alt);
   padding: 56px 24px 28px;
+}
+
+/* Soft fade at the top edge so the parallax background blends in. */
+.site-footer::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(180deg, transparent 0%, var(--bg-alt) 100%);
+  pointer-events: none;
+}
+
+.site-footer > * {
+  position: relative;
+  z-index: 1;
 }
 
 .footer-grid {
