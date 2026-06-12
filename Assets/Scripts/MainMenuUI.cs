@@ -173,7 +173,11 @@ public class MainMenuUI : MonoBehaviour
         AudioListener.volume = masterVolume;
         
         // Load and apply graphics settings
+#if UNITY_WEBGL
+        bool fullscreen = PlayerPrefs.GetInt("Fullscreen", 0) == 1; // WebGL: default windowed (avoid pending fullscreen request firing on first click)
+#else
         bool fullscreen = PlayerPrefs.GetInt("Fullscreen", 1) == 1; // Default to fullscreen
+#endif
         int savedWidth = PlayerPrefs.GetInt("ResolutionWidth", Screen.currentResolution.width);
         int savedHeight = PlayerPrefs.GetInt("ResolutionHeight", Screen.currentResolution.height);
         int savedRefreshRateNumerator = PlayerPrefs.GetInt("RefreshRate", (int)Screen.currentResolution.refreshRateRatio.numerator);
