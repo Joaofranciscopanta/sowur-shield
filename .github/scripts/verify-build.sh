@@ -102,11 +102,11 @@ if [ ! -f "$BUILD_DIR/TemplateData/style.css" ]; then
     exit 1
 fi
 
-# Check for release notes sidebar CSS
-if grep -q "#release-notes" "$BUILD_DIR/TemplateData/style.css"; then
-    echo "  ✅ Custom sidebar CSS preserved"
+# Check for custom landing page CSS
+if grep -q ".site-header" "$BUILD_DIR/TemplateData/style.css"; then
+    echo "  ✅ Custom landing page CSS preserved"
 else
-    echo "❌ ERROR: Custom CSS missing - #release-notes styles not found"
+    echo "❌ ERROR: Custom CSS missing - .site-header styles not found"
     exit 1
 fi
 

@@ -3,86 +3,276 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Sowur Shield — WebGL Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sowur Shield — a cozy 2D farming sim with combat, animals, quests and a living world. Play the WebGL demo in your browser.">
+    <title>Sowur Shield — Farming Sim Demo</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
   <body>
-    <div id="release-notes">
-      <div class="brand">
-        <div class="brand-emoji">🌾</div>
-        <div class="brand-text">
-          <h2>Sowur Shield</h2>
-          <div class="version">
-            <span class="live-dot"></span>
-            Build #2 &middot; February 2026
-          </div>
+
+    <!-- ============================================= -->
+    <!-- NAV                                             -->
+    <!-- ============================================= -->
+    <header class="site-header">
+      <div class="nav-wrap">
+        <a href="#top" class="nav-brand">
+          <span class="nav-emoji">🌾</span>
+          <span>Sowur Shield</span>
+        </a>
+        <nav class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#gallery">Gallery</a>
+          <a href="#play">Play Demo</a>
+          <a href="#controls">Controls</a>
+          <a href="https://github.com/Joaofranciscopanta/sowur-shield" target="_blank" rel="noopener">GitHub</a>
+        </nav>
+        <a href="#play" class="btn btn-primary nav-cta">Play Now</a>
+      </div>
+    </header>
+
+    <!-- ============================================= -->
+    <!-- HERO                                            -->
+    <!-- ============================================= -->
+    <section id="top" class="hero">
+      <div class="hero-glow"></div>
+      <div class="hero-content">
+        <div class="badge-row">
+          <span class="badge badge-live"><span class="live-dot"></span>Playable Demo</span>
+          <span class="badge">Build #2 &middot; February 2026</span>
+        </div>
+        <h1 class="hero-title">
+          Grow your farm.<br>
+          <span class="text-gradient">Defend your world.</span>
+        </h1>
+        <p class="hero-subtitle">
+          Sowur Shield is a cozy 2D farming sim with deep systems — till the land, raise
+          animals, befriend villagers, and gear up for turn-based battles across a living
+          world map.
+        </p>
+        <div class="hero-actions">
+          <a href="#play" class="btn btn-primary btn-lg">▶ Play in Browser</a>
+          <a href="#features" class="btn btn-ghost btn-lg">Explore Features</a>
+        </div>
+        <div class="hero-meta">
+          <span>🖥️ Runs in your browser via WebGL</span>
+          <span>🎮 Keyboard controls</span>
+          <span>🆓 Free &amp; open source</span>
         </div>
       </div>
 
-      <h3>What's New</h3>
-      <div class="notes-content">
+      <!-- PLACEHOLDER: hero showcase image / animated GIF of gameplay -->
+      <!-- Replace .hero-art-placeholder with: <img src="assets/hero-showcase.png" alt="Sowur Shield gameplay" class="hero-art"> -->
+      <div class="hero-art-placeholder">
+        <div class="placeholder-icon">🖼️</div>
+        <div class="placeholder-label">Hero showcase image / GIF</div>
+        <div class="placeholder-hint">Recommended: 1280×800px gameplay capture</div>
+      </div>
+    </section>
 
-        <div class="note-section">
-          <h4><span class="note-icon">🐔</span>Animal Husbandry</h4>
+    <!-- ============================================= -->
+    <!-- FEATURES                                       -->
+    <!-- ============================================= -->
+    <section id="features" class="section">
+      <div class="section-head">
+        <span class="eyebrow">What's New</span>
+        <h2>Everything you need for a full farm life</h2>
+        <p class="section-sub">Core systems built and playable right now in the demo build.</p>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🌱</div>
+          <h3>Farming</h3>
+          <ul>
+            <li>Till → Water → Plant → Harvest cycle</li>
+            <li>Multi-stage crop growth</li>
+            <li>Seasonal calendar &amp; day/night cycle</li>
+          </ul>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🐔</div>
+          <h3>Animal Husbandry</h3>
           <ul>
             <li>Pet animals daily for happiness &amp; heart particles</li>
-            <li>Feed via inventory or <strong>Feeding Trough</strong></li>
+            <li>Feed via inventory or the Feeding Trough</li>
             <li>Happiness (0–100) affects production output</li>
-            <li>Animal Roster UI to track all your animals</li>
+            <li>Animal Roster UI tracks every animal</li>
           </ul>
         </div>
 
-        <div class="note-section">
-          <h4><span class="note-icon">💾</span>Multiple Save Slots</h4>
+        <div class="feature-card">
+          <div class="feature-icon">🎒</div>
+          <h3>Inventory &amp; Economy</h3>
           <ul>
-            <li><strong>4 slots:</strong> AutoSave + Slot 1, 2, 3</li>
-            <li>Play time displayed per slot</li>
-            <li>Auto-save on every sleep</li>
-            <li>Delete slots from the Load screen</li>
-          </ul>
-        </div>
-
-        <div class="note-section">
-          <h4><span class="note-icon">✨</span>Core Features</h4>
-          <ul>
-            <li>Farming: Till → Water → Plant → Harvest</li>
             <li>36-slot inventory with drag &amp; drop</li>
-            <li>Branching NPC dialogue with memory</li>
             <li>Automatic selling via SellBox on sleep</li>
-            <li>Day/night cycle &amp; seasonal calendar</li>
+            <li>Shops &amp; quest rewards</li>
+          </ul>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>NPCs &amp; Story</h3>
+          <ul>
+            <li>Branching dialogue with persistent memory</li>
+            <li>Quest progression system</li>
+            <li>Village full of characters to meet</li>
+          </ul>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">⚔️</div>
+          <h3>Combat &amp; World Map</h3>
+          <ul>
+            <li>Turn-based battles with your team</li>
+            <li>Explore stages on a world map</li>
+            <li>Assemble your party before each fight</li>
+          </ul>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">💾</div>
+          <h3>Save Slots</h3>
+          <ul>
+            <li>4 slots: AutoSave + Slot 1, 2, 3</li>
+            <li>Play time tracked per slot</li>
+            <li>Auto-save on every sleep</li>
             <li>3-state Minimap (Normal / Semi / Fullscreen)</li>
           </ul>
         </div>
+      </div>
+    </section>
 
-        <div class="note-section">
-          <h4><span class="note-icon">🎯</span>Controls</h4>
-          <div class="key-grid">
-            <span class="key-pill"><kbd>WASD</kbd> Move</span>
-            <span class="key-pill"><kbd>E</kbd> Interact</span>
-            <span class="key-pill"><kbd>Click</kbd> Use tool</span>
-            <span class="key-pill"><kbd>I</kbd> Inventory</span>
-            <span class="key-pill"><kbd>M</kbd> Minimap</span>
-            <span class="key-pill"><kbd>1–9</kbd> Hotbar</span>
-            <span class="key-pill"><kbd>ESC</kbd> Menu / Save</span>
-            <span class="key-pill"><kbd>Shift</kbd> Sprint</span>
+    <!-- ============================================= -->
+    <!-- GALLERY                                        -->
+    <!-- ============================================= -->
+    <section id="gallery" class="section section-alt">
+      <div class="section-head">
+        <span class="eyebrow">Gallery</span>
+        <h2>A peek at the world</h2>
+        <p class="section-sub">Screenshots and clips from the current build.</p>
+      </div>
+
+      <!-- PLACEHOLDER: gallery screenshots -->
+      <!-- Replace each .gallery-placeholder with: <img src="assets/screenshots/shot-1.png" alt="..." class="gallery-img"> -->
+      <div class="gallery-grid">
+        <div class="gallery-placeholder gallery-wide">
+          <div class="placeholder-icon">🌾</div>
+          <div class="placeholder-label">Farm overview</div>
+        </div>
+        <div class="gallery-placeholder">
+          <div class="placeholder-icon">🐄</div>
+          <div class="placeholder-label">Animal pen</div>
+        </div>
+        <div class="gallery-placeholder">
+          <div class="placeholder-icon">💬</div>
+          <div class="placeholder-label">NPC dialogue</div>
+        </div>
+        <div class="gallery-placeholder">
+          <div class="placeholder-icon">⚔️</div>
+          <div class="placeholder-label">Combat scene</div>
+        </div>
+        <div class="gallery-placeholder gallery-wide">
+          <div class="placeholder-icon">🗺️</div>
+          <div class="placeholder-label">World map</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================= -->
+    <!-- PLAY (UNITY WEBGL)                             -->
+    <!-- ============================================= -->
+    <section id="play" class="section section-play">
+      <div class="section-head">
+        <span class="eyebrow">Live Demo</span>
+        <h2>Play Sowur Shield right now</h2>
+        <p class="section-sub">Runs entirely in your browser — no install required. Best on desktop.</p>
+      </div>
+
+      <div class="play-frame">
+        <div id="unity-container" class="unity-desktop">
+          <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
+          <div id="unity-loading-bar">
+            <div id="unity-logo"></div>
+            <div id="unity-progress-bar-empty">
+              <div id="unity-progress-bar-full"></div>
+            </div>
+          </div>
+          <div id="unity-warning"> </div>
+          <div id="unity-footer">
+            <div id="unity-logo-title-footer"></div>
+            <div id="unity-fullscreen-button"></div>
+            <div id="unity-build-title">Sowur Shield</div>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="note-section">
-          <h4><span class="note-icon">🎮</span>How to Play</h4>
-          <ul>
-            <li><strong>Hoe</strong> → till soil</li>
-            <li><strong>Watering Can</strong> → water it</li>
-            <li><strong>Seeds</strong> → plant &amp; wait</li>
-            <li><strong>Left Click</strong> → harvest</li>
-            <li><strong>SellBox</strong> → drag items, earn on sleep</li>
-            <li>Pet &amp; feed animals every day</li>
-          </ul>
+    <!-- ============================================= -->
+    <!-- CONTROLS                                       -->
+    <!-- ============================================= -->
+    <section id="controls" class="section section-alt">
+      <div class="section-head">
+        <span class="eyebrow">Controls</span>
+        <h2>How to play</h2>
+        <p class="section-sub">Keyboard &amp; mouse — controller support coming later.</p>
+      </div>
+
+      <div class="controls-wrap">
+        <div class="key-grid">
+          <span class="key-pill"><kbd>WASD</kbd> Move</span>
+          <span class="key-pill"><kbd>E</kbd> Interact</span>
+          <span class="key-pill"><kbd>Click</kbd> Use tool</span>
+          <span class="key-pill"><kbd>I</kbd> Inventory</span>
+          <span class="key-pill"><kbd>M</kbd> Minimap</span>
+          <span class="key-pill"><kbd>1–9</kbd> Hotbar</span>
+          <span class="key-pill"><kbd>ESC</kbd> Menu / Save</span>
+          <span class="key-pill"><kbd>Shift</kbd> Sprint</span>
         </div>
 
-        <div class="note-section">
-          <h4><span class="note-icon">👥</span>Team</h4>
+        <div class="howto-grid">
+          <div class="howto-card">
+            <h4>🚜 Farming Loop</h4>
+            <ol>
+              <li><strong>Hoe</strong> → till soil</li>
+              <li><strong>Watering Can</strong> → water it</li>
+              <li><strong>Seeds</strong> → plant &amp; wait</li>
+              <li><strong>Left Click</strong> → harvest</li>
+            </ol>
+          </div>
+          <div class="howto-card">
+            <h4>🏡 Daily Routine</h4>
+            <ol>
+              <li><strong>SellBox</strong> → drag items, earn on sleep</li>
+              <li>Pet &amp; feed animals every day</li>
+              <li>Talk to villagers for quests</li>
+              <li>Sleep to advance to the next day</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================= -->
+    <!-- TEAM / FOOTER                                  -->
+    <!-- ============================================= -->
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="nav-brand">
+            <span class="nav-emoji">🌾</span>
+            <span>Sowur Shield</span>
+          </div>
+          <p>A cozy 2D farming sim built in Unity.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Team</h4>
           <ul>
             <li><strong>João Francisco</strong> — Owner &amp; Lead Dev</li>
             <li><strong>Lucas Daniel</strong> — Co-Owner &amp; Dev</li>
@@ -90,28 +280,21 @@
           </ul>
         </div>
 
-      </div>
-      <div class="footer-links">
-        <a href="https://github.com/Joaofranciscopanta/sowur-shield" target="_blank"><span class="link-icon">📂</span>GitHub Repository</a>
-        <a href="https://github.com/Joaofranciscopanta/sowur-shield/blob/main/README.md" target="_blank"><span class="link-icon">📖</span>Documentation</a>
-      </div>
-    </div>
-
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
+        <div class="footer-col">
+          <h4>Links</h4>
+          <ul>
+            <li><a href="https://github.com/Joaofranciscopanta/sowur-shield" target="_blank" rel="noopener">📂 GitHub Repository</a></li>
+            <li><a href="https://github.com/Joaofranciscopanta/sowur-shield/blob/main/README.md" target="_blank" rel="noopener">📖 Documentation</a></li>
+            <li><a href="#play">▶ Play Demo</a></li>
+          </ul>
         </div>
       </div>
-      <div id="unity-warning"> </div>
-      <div id="unity-footer">
-        <div id="unity-logo-title-footer"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">Sowur Shield</div>
+      <div class="footer-bottom">
+        <span>Build #2 &middot; February 2026</span>
+        <span>Made with Unity</span>
       </div>
-    </div>
+    </footer>
+
     <script>
       var canvas = document.querySelector("#unity-canvas");
 

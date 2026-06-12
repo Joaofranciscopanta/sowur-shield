@@ -46,10 +46,10 @@ if [ ! -f "$TARGET_CSS" ]; then
 fi
 
 # Check 6: Verify custom CSS content is present
-if grep -q "#release-notes" "$TARGET_CSS"; then
-    echo "✅ Custom sidebar CSS verified (#release-notes found)"
+if grep -q ".site-header" "$TARGET_CSS"; then
+    echo "✅ Custom landing page CSS verified (.site-header found)"
 else
-    echo "❌ ERROR: Custom CSS verification failed - #release-notes not found"
+    echo "❌ ERROR: Custom CSS verification failed - .site-header not found"
     exit 1
 fi
 
