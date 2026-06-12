@@ -36,7 +36,7 @@
           <span class="nav-emoji">🌾</span>
           <span>Sowur Shield</span>
         </a>
-        <nav class="nav-links">
+        <nav class="nav-links" id="nav-links">
           <a href="#features">Features</a>
           <a href="#gallery">Gallery</a>
           <a href="#play">Play Demo</a>
@@ -44,6 +44,9 @@
           <a href="https://github.com/Joaofranciscopanta/sowur-shield" target="_blank" rel="noopener">GitHub</a>
         </nav>
         <a href="#play" class="btn btn-primary nav-cta">Play Now</a>
+        <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </header>
 
@@ -358,6 +361,32 @@
 
     <script>
       // ---------------------------------------------
+      // Mobile nav toggle
+      // ---------------------------------------------
+      (() => {
+        const toggle = document.getElementById('nav-toggle');
+        const links = document.getElementById('nav-links');
+
+        function closeMenu() {
+          links.classList.remove('is-open');
+          toggle.setAttribute('aria-expanded', 'false');
+        }
+
+        toggle.addEventListener('click', () => {
+          const isOpen = links.classList.toggle('is-open');
+          toggle.setAttribute('aria-expanded', String(isOpen));
+        });
+
+        links.querySelectorAll('a').forEach((link) => {
+          link.addEventListener('click', closeMenu);
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') closeMenu();
+        });
+      })();
+
+      // ---------------------------------------------
       // Gallery lightbox
       // ---------------------------------------------
       (() => {
@@ -413,9 +442,11 @@
           const docHeight = Math.max(document.body.scrollHeight - window.innerHeight, 1);
           const progress = Math.min(scrollY / docHeight, 1);
 
+          // Sky drifts down slightly; forest and farm rise into view
+          // (start shifted down/hidden, settle into place) as progress -> 1.
           skyLayer.style.transform = `translateY(${progress * 13}%)`;
-          forestLayer.style.transform = `translateY(${(progress - 1) * 55 + 55}%)`;
-          farmLayer.style.transform = `translateY(${(progress - 1) * 65 + 65}%)`;
+          forestLayer.style.transform = `translateY(${(1 - progress) * 18}%)`;
+          farmLayer.style.transform = `translateY(${(1 - progress) * 30}%)`;
 
           forestLayer.style.opacity = String(0.4 + progress * 0.6);
           farmLayer.style.opacity = String(Math.min(Math.max(0, progress - 0.25) / 0.75, 0.7));
