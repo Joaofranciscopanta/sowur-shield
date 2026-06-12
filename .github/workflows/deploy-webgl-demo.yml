@@ -87,7 +87,13 @@ jobs:
             cp docs/TemplateData/style.css custom_backup/TemplateData/style.css
             echo "✅ style.css backed up"
           fi
-          
+
+          # Backup custom assets (landing page images, etc.)
+          if [ -d "docs/assets" ]; then
+            cp -r docs/assets custom_backup/assets
+            echo "✅ assets/ backed up"
+          fi
+
           # Backup any README or other custom files
           if [ -f "docs/README.md" ]; then
             cp docs/README.md custom_backup/README.md
@@ -120,7 +126,14 @@ jobs:
             cp custom_backup/TemplateData/style.css docs/TemplateData/style.css
             echo "✅ Custom CSS restored"
           fi
-          
+
+          # Restore custom assets (landing page images, etc.)
+          if [ -d "custom_backup/assets" ]; then
+            rm -rf docs/assets
+            cp -r custom_backup/assets docs/assets
+            echo "✅ Custom assets restored"
+          fi
+
           # Restore README
           if [ -f "custom_backup/README.md" ]; then
             cp custom_backup/README.md docs/README.md
