@@ -14,11 +14,15 @@
   </head>
   <body>
 
-    <!-- Ambient backdrop: fireflies + cursor glow + scroll-reactive field glow -->
+    <!-- Ambient backdrop: scroll parallax (sky/forest/farm) + lamp glow + fireflies -->
     <div id="bg-fx" aria-hidden="true">
-      <div class="bg-fx-glow" id="bg-cursor-glow"></div>
-      <div class="bg-fx-glow bg-fx-glow-scroll" id="bg-scroll-glow"></div>
+      <div class="bg-layer bg-layer-sky" id="bg-layer-sky"></div>
+      <div class="bg-layer bg-layer-forest" id="bg-layer-forest"></div>
+      <div class="bg-layer bg-layer-farm" id="bg-layer-farm">
+        <div class="bg-bonfire-glow"></div>
+      </div>
       <div class="bg-fx-fireflies" id="bg-fireflies"></div>
+      <div class="bg-fx-glow bg-lamp-glow" id="bg-cursor-glow"></div>
     </div>
 
     <!-- ============================================= -->
@@ -388,25 +392,17 @@
       })();
 
       // ---------------------------------------------
-      // Ambient background fx: cursor glow, scroll glow, fireflies
+      // Ambient background fx: scroll parallax, lamp glow, fireflies
       // ---------------------------------------------
       (() => {
-        const cursorGlow = document.getElementById('bg-cursor-glow');
-        const scrollGlow = document.getElementById('bg-scroll-glow');
+        const lampGlow = document.getElementById('bg-cursor-glow');
         const fireflyLayer = document.getElementById('bg-fireflies');
+        const skyLayer = document.getElementById('bg-layer-sky');
+        const forestLayer = document.getElementById('bg-layer-forest');
+        const farmLayer = document.getElementById('bg-layer-farm');
 
-        // Cursor-following glow (desktop only)
-        if (window.matchMedia('(pointer: fine)').matches) {
-          window.addEventListener('pointermove', (e) => {
-            cursorGlow.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
-            cursorGlow.style.opacity = '1';
-          });
-          window.addEventListener('pointerleave', () => {
-            cursorGlow.style.opacity = '0';
-          });
-        }
-
-        // Scroll-reactive glow drifts down the page and rotates hue slightly
+        // Scroll parallax: each layer drifts at a different speed,
+        // revealing moon -> forest -> farm as the page scrolls down.
         let lastScroll = -1;
         function onScroll() {
           const scrollY = window.scrollY;
@@ -414,13 +410,18 @@
           lastScroll = scrollY;
           const docHeight = Math.max(document.body.scrollHeight - window.innerHeight, 1);
           const progress = Math.min(scrollY / docHeight, 1);
-          scrollGlow.style.transform = `translateY(${progress * 100}vh)`;
-          scrollGlow.style.filter = `hue-rotate(${progress * 40}deg)`;
+
+          skyLayer.style.transform = `translateY(${progress * 8}%)`;
+          forestLayer.style.transform = `translateY(${(progress - 1) * 22 + 22}%)`;
+          farmLayer.style.transform = `translateY(${(progress - 1) * 40 + 40}%)`;
+
+          forestLayer.style.opacity = String(0.4 + progress * 0.6);
+          farmLayer.style.opacity = String(Math.max(0, progress - 0.25) / 0.75);
         }
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
 
-        // Drifting "firefly" particles
+        // Drifting "firefly" particles (forest layer)
         const FIREFLY_COUNT = 18;
         for (let i = 0; i < FIREFLY_COUNT; i++) {
           const fly = document.createElement('span');
@@ -432,6 +433,66 @@
           fly.style.setProperty('--drift', `${(Math.random() - 0.5) * 160}px`);
           fly.style.setProperty('--size', `${2 + Math.random() * 3}px`);
           fireflyLayer.appendChild(fly);
+        }
+
+        // ---------------------------------------------
+        // "Lamparina": the lamp glow follows the cursor vertically,
+        // but swings on a pendulum horizontally — mouse movement
+        // acts like wind nudging a hanging oil lamp.
+        // ---------------------------------------------
+        if (window.matchMedia('(pointer: fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          let targetX = window.innerWidth / 2;
+          let targetY = window.innerHeight / 2;
+          let lampX = targetX;
+          let lampY = targetY;
+          let angle = 0;       // current swing angle (radians)
+          let angVel = 0;      // angular velocity
+          let lastX = targetX;
+          let visible = false;
+
+          const SWING_LENGTH = 90;   // px, how far the lamp swings
+          const STIFFNESS = 0.012;   // pulls swing back to center
+          const DAMPING = 0.94;      // energy loss per frame
+          const WIND_FACTOR = 0.0028; // how strongly mouse velocity pushes the swing
+
+          window.addEventListener('pointermove', (e) => {
+            const dx = e.clientX - lastX;
+            lastX = e.clientX;
+            // Horizontal mouse velocity = "wind" pushing the lamp
+            angVel += dx * WIND_FACTOR;
+            targetX = e.clientX;
+            targetY = e.clientY;
+            if (!visible) {
+              lampX = targetX;
+              lampY = targetY;
+              visible = true;
+              lampGlow.style.opacity = '1';
+            }
+          });
+          window.addEventListener('pointerleave', () => {
+            lampGlow.style.opacity = '0';
+            visible = false;
+          });
+
+          function tick() {
+            // Spring physics: swing angle oscillates back toward 0,
+            // damped over time, driven by wind impulses from the mouse.
+            angVel += -angle * STIFFNESS;
+            angVel *= DAMPING;
+            angle += angVel;
+
+            // Lamp position eases toward the cursor (vertical follow),
+            // offset horizontally by the pendulum swing.
+            lampY += (targetY - lampY) * 0.12;
+            lampX += (targetX - lampX) * 0.12;
+
+            const swingOffset = Math.sin(angle) * SWING_LENGTH;
+            const rotation = angle * 12; // visual tilt in degrees
+
+            lampGlow.style.transform = `translate(${lampX + swingOffset}px, ${lampY}px) rotate(${rotation}deg)`;
+            requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
         }
       })();
     </script>

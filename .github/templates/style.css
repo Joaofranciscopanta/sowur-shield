@@ -60,6 +60,55 @@ ul, ol { margin: 0; }
   overflow: hidden;
 }
 
+/* ---- Scroll parallax layers: sky -> forest -> farm ---- */
+.bg-layer {
+  position: absolute;
+  inset: -10% -10% -10% -10%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  will-change: transform;
+  transition: opacity 0.6s ease;
+}
+
+/* Layer 1: night sky + moon */
+.bg-layer-sky {
+  background-image:
+    linear-gradient(180deg, rgba(10, 14, 28, 0.15) 0%, rgba(27, 36, 56, 0.35) 100%),
+    url('../assets/bg/sky-night.png');
+  background-position: center top;
+}
+
+/* Layer 2: forest silhouette + fireflies */
+.bg-layer-forest {
+  background-image: url('../assets/bg/forest-fireflies.png');
+  background-position: center center;
+}
+
+/* Layer 3: farm with bonfire */
+.bg-layer-farm {
+  background-image: url('../assets/bg/farm-bonfire.png');
+  background-position: center bottom;
+}
+
+.bg-bonfire-glow {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  width: 480px;
+  height: 480px;
+  margin-left: -240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 158, 68, 0.55) 0%, rgba(255, 110, 40, 0.22) 35%, transparent 70%);
+  animation: bonfire-pulse 3.2s ease-in-out infinite;
+}
+
+@keyframes bonfire-pulse {
+  0%, 100% { transform: scale(1) translateY(0); opacity: 0.85; }
+  50%      { transform: scale(1.08) translateY(-2%); opacity: 1; }
+}
+
+/* ---- Lamp glow (mouse-follow "lamparina") ---- */
 .bg-fx-glow {
   position: absolute;
   top: 0;
@@ -68,21 +117,21 @@ ul, ol { margin: 0; }
   height: 520px;
   margin: -260px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(126, 200, 126, 0.16) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 196, 110, 0.20) 0%, rgba(255, 158, 68, 0.08) 45%, transparent 70%);
   opacity: 0;
   transition: opacity 0.6s ease;
   will-change: transform, opacity;
 }
 
-.bg-fx-glow-scroll {
-  left: 50%;
-  width: 720px;
-  height: 720px;
-  margin: -360px;
-  background: radial-gradient(circle, rgba(126, 200, 126, 0.10) 0%, transparent 70%);
-  opacity: 1;
-  transform: translateY(0);
-  transition: transform 0.4s ease-out;
+.bg-lamp-glow {
+  animation: lamp-flicker 2.6s ease-in-out infinite;
+}
+
+@keyframes lamp-flicker {
+  0%, 100% { filter: brightness(1); }
+  25%      { filter: brightness(1.08); }
+  50%      { filter: brightness(0.95); }
+  75%      { filter: brightness(1.04); }
 }
 
 .bg-fx-fireflies {
@@ -110,6 +159,7 @@ ul, ol { margin: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .bg-fx-glow, .firefly, .bg-bonfire-glow, .bg-lamp-glow, .bg-layer { animation: none; }
   .bg-fx-glow, .firefly { display: none; }
 }
 
