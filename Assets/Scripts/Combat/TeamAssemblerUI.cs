@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine.SceneManagement;
 using SowurShield.Animals;
 using SowurShield.Core;
@@ -54,18 +53,10 @@ public class TeamAssemblerUI : MonoBehaviour
     [Header("Scene Management")]
     [SerializeField] private string combatSceneName = "CombatScene";
 
-    [Header("DEBUG: Visibility Fixes")]
-    [SerializeField] private bool disableViewportMask = false; // Set to true to disable RectMask2D for testing
-    [SerializeField] private bool autoExpandViewport = true; // Auto-expand viewport to fit content (RECOMMENDED)
-#pragma warning disable CS0414
-    [SerializeField] private bool showVisualDebugBorders = false; // Draw colored debug borders for debugging
-#pragma warning restore CS0414
-
     // Runtime data
     private List<AnimalSelectionCard> animalCards = new List<AnimalSelectionCard>();
     private List<GridPositionSlot> gridSlots = new List<GridPositionSlot>();
     private List<Animal> availableAnimals = new List<Animal>();
-    private List<GameObject> debugBorders = new List<GameObject>(); // For visual debugging
 
     // Singleton
     public static TeamAssemblerUI Instance { get; private set; }
@@ -117,6 +108,9 @@ public class TeamAssemblerUI : MonoBehaviour
         {
             zoneNameText.text = $"Zone: {TeamAssemblerData.Instance.zoneName}";
         }
+
+        // Arrange the selection/grid/info panels before populating them
+        FixPanelLayout();
 
         // Find all animals in the scene
         FindAvailableAnimals();
@@ -209,17 +203,7 @@ public class TeamAssemblerUI : MonoBehaviour
     private void FindAvailableAnimals()
     {
         availableAnimals.Clear();
-
-        // Find all Animal components in scene
-        Animal[] allAnimals = FindObjectsByType<Animal>(FindObjectsSortMode.None);
-
-        foreach (Animal animal in allAnimals)
-        {
-            // Only include animals that are owned by player (have custom names or are tamed)
-            // For now, include all animals found
-            availableAnimals.Add(animal);
-        }
-
+        availableAnimals.AddRange(FindObjectsByType<Animal>(FindObjectsSortMode.None));
     }
 
     /// <summary>
@@ -227,12 +211,7 @@ public class TeamAssemblerUI : MonoBehaviour
     /// </summary>
     private void SetupGrid()
     {
-        if (gridContainer == null)
-        {
-            return;
-        }
-
-        if (gridSlotPrefab == null)
+        if (gridContainer == null || gridSlotPrefab == null)
         {
             return;
         }
@@ -291,7 +270,6 @@ public class TeamAssemblerUI : MonoBehaviour
                 }
             }
         }
-
     }
 
     /// <summary>
@@ -299,23 +277,9 @@ public class TeamAssemblerUI : MonoBehaviour
     /// </summary>
     private void PopulateAnimalSelection()
     {
-        if (animalCardContainer == null)
+        if (animalCardContainer == null || animalCardPrefab == null)
         {
             return;
-        }
-
-        if (animalCardPrefab == null)
-        {
-            return;
-        }
-
-
-        // CRITICAL VALIDATION: Check if container is properly configured
-        if (animalCardContainer.name != "Content")
-        {
-        }
-        else
-        {
         }
 
         // Clear existing cards
@@ -331,191 +295,53 @@ public class TeamAssemblerUI : MonoBehaviour
             GameObject cardObj = Instantiate(animalCardPrefab, animalCardContainer);
             AnimalSelectionCard card = cardObj.GetComponent<AnimalSelectionCard>();
 
-            if (card != null)
+            if (card == null) continue;
+
+            LayoutElement layoutElement = cardObj.GetComponent<LayoutElement>();
+            if (layoutElement == null)
             {
-                // CRITICAL FIX: Ensure LayoutElement exists for proper sizing
-                UnityEngine.UI.LayoutElement layoutElement = cardObj.GetComponent<UnityEngine.UI.LayoutElement>();
-                if (layoutElement == null)
-                {
-                    layoutElement = cardObj.AddComponent<UnityEngine.UI.LayoutElement>();
-                    layoutElement.preferredHeight = 120;
-                    layoutElement.minHeight = 120;
-
-                    // Force layout rebuild after adding component at runtime
-                    UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(cardObj.GetComponent<RectTransform>());
-                }
-
-                card.Initialize(animal);
-                animalCards.Add(card);
-
-                // Debug card visibility - check Canvas hierarchy
-                RectTransform cardRect = cardObj.GetComponent<RectTransform>();
-                Canvas parentCanvas = cardObj.GetComponentInParent<Canvas>();
-                CanvasGroup canvasGroup = cardObj.GetComponent<CanvasGroup>();
-                float alpha = (canvasGroup != null) ? canvasGroup.alpha : 1f;
-
+                layoutElement = cardObj.AddComponent<LayoutElement>();
+                layoutElement.preferredHeight = 120;
+                layoutElement.minHeight = 120;
             }
-            else
-            {
-            }
+
+            card.Initialize(animal);
+            animalCards.Add(card);
         }
 
-
-        // Force layout rebuild on container
-        if (animalCardContainer != null)
+        // Ensure the container stretches to fill the viewport width and grows downward
+        if (animalCardContainer is RectTransform containerRect)
         {
-            RectTransform containerRect = animalCardContainer as RectTransform;
-            ScrollRect scrollRect = animalCardContainer.GetComponentInParent<ScrollRect>();
-            VerticalLayoutGroup layoutGroup = animalCardContainer.GetComponent<VerticalLayoutGroup>();
             ContentSizeFitter sizeFitter = animalCardContainer.GetComponent<ContentSizeFitter>();
-
-
-            // CRITICAL FIX: Disable ContentSizeFitter horizontal fit if it exists
-            // ContentSizeFitter with Horizontal=PreferredSize forces width to 0 when there's no preferred width set
             if (sizeFitter != null)
             {
-                if (sizeFitter.horizontalFit != ContentSizeFitter.FitMode.Unconstrained)
-                {
-                    sizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
-                }
+                sizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
             }
 
-            // Content stretches full width of viewport, grows downward
             containerRect.anchorMin = new Vector2(0, 1);
             containerRect.anchorMax = new Vector2(1, 1);
             containerRect.pivot = new Vector2(0.5f, 1);
             containerRect.anchoredPosition = Vector2.zero;
             containerRect.sizeDelta = new Vector2(0, containerRect.sizeDelta.y); // width 0 = stretch
 
-            UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
-
-            // CRITICAL: Check for masking components that might be hiding the cards
-            var rectMask2D = animalCardContainer.GetComponentInParent<UnityEngine.UI.RectMask2D>();
-            var mask = animalCardContainer.GetComponentInParent<UnityEngine.UI.Mask>();
-
-            if (rectMask2D != null)
-            {
-                RectTransform maskRect = rectMask2D.GetComponent<RectTransform>();
-            }
-
-            Vector3[] containerCorners = new Vector3[4];
-            containerRect.GetWorldCorners(containerCorners);
-
-            // CRITICAL: Check ScrollRect configuration
-            if (scrollRect != null)
-            {
-                if (scrollRect.viewport != null)
-                {
-                    // Check if viewport has a RectMask2D
-                    var viewportMask = scrollRect.viewport.GetComponent<UnityEngine.UI.RectMask2D>();
-                    if (viewportMask != null)
-                    {
-                        // Check if container is actually inside viewport bounds
-                        Vector3[] viewportCorners = new Vector3[4];
-                        scrollRect.viewport.GetWorldCorners(viewportCorners);
-                    }
-                }
-                else
-                {
-                }
-            }
-            else
-            {
-            }
-
-            // ===================================================================
-            // FIX #1: Temporarily disable RectMask2D for testing
-            // ===================================================================
-            if (disableViewportMask && scrollRect != null && scrollRect.viewport != null)
-            {
-                var viewportMask = scrollRect.viewport.GetComponent<UnityEngine.UI.RectMask2D>();
-                if (viewportMask != null)
-                {
-                    viewportMask.enabled = false;
-                }
-            }
-
-            // ===================================================================
-            // FIX #2: Auto-expand viewport to fit content (PROPER SCROLLRECT)
-            // ===================================================================
-            if (autoExpandViewport && scrollRect != null && scrollRect.viewport != null)
-            {
-                RectTransform viewportRect = scrollRect.viewport;
-
-                // Configure viewport to fill parent (proper ScrollRect setup)
-                viewportRect.anchorMin = new Vector2(0, 0);
-                viewportRect.anchorMax = new Vector2(1, 1);
-                viewportRect.sizeDelta = Vector2.zero; // Fill parent completely
-                viewportRect.anchoredPosition = Vector2.zero;
-
-
-                // Verify RectMask2D is enabled for proper clipping
-                var viewportMask = viewportRect.GetComponent<UnityEngine.UI.RectMask2D>();
-                if (viewportMask != null)
-                {
-                    if (!viewportMask.enabled)
-                    {
-                        viewportMask.enabled = true;
-                    }
-                }
-                else
-                {
-                }
-
-                UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(viewportRect);
-            }
-
-            // ===================================================================
-            // FIX #3: Visual debug borders - DISABLED
-            // ===================================================================
-            // Clean up any existing debug borders from previous runs
-            foreach (var border in debugBorders)
-            {
-                if (border != null) Destroy(border);
-            }
-            debugBorders.Clear();
-
-            // Remove any debug borders that might still exist in the scene
-            GameObject[] debugObjects = GameObject.FindGameObjectsWithTag("Untagged");
-            foreach (GameObject obj in debugObjects)
-            {
-                if (obj.name.StartsWith("DEBUG_"))
-                {
-                    Destroy(obj);
-                }
-            }
-
-            // Force all child card Images to be enabled
-            foreach (Transform child in animalCardContainer)
-            {
-                var cardImage = child.GetComponent<UnityEngine.UI.Image>();
-                if (cardImage != null && !cardImage.enabled)
-                {
-                    cardImage.enabled = true;
-                }
-            }
+            LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
         }
     }
 
     /// <summary>
-    /// Create a colored debug border around a RectTransform
+    /// Refresh all animal cards and grid slot visuals (e.g. after feeding or clearing the team).
     /// </summary>
-    private GameObject CreateDebugBorder(RectTransform target, Color color, string name)
+    private void RefreshAllCardsAndSlots()
     {
-        GameObject borderObj = new GameObject(name);
-        borderObj.transform.SetParent(target, false);
+        foreach (AnimalSelectionCard card in animalCards)
+        {
+            if (card != null) card.RefreshCard();
+        }
 
-        RectTransform borderRect = borderObj.AddComponent<RectTransform>();
-        borderRect.anchorMin = Vector2.zero;
-        borderRect.anchorMax = Vector2.one;
-        borderRect.sizeDelta = Vector2.zero;
-        borderRect.anchoredPosition = Vector2.zero;
-
-        UnityEngine.UI.Image borderImage = borderObj.AddComponent<UnityEngine.UI.Image>();
-        borderImage.color = new Color(color.r, color.g, color.b, 0.3f); // Semi-transparent
-        borderImage.raycastTarget = false; // Don't block clicks
-
-        return borderObj;
+        foreach (GridPositionSlot slot in gridSlots)
+        {
+            if (slot != null) slot.UpdateVisuals();
+        }
     }
 
     /// <summary>
@@ -591,6 +417,7 @@ public class TeamAssemblerUI : MonoBehaviour
         {
             foreach (var positioned in TeamAssemblerData.Instance.team)
                 positioned.isFed = true;
+            RefreshAllCardsAndSlots();
             UpdateInfoDisplay();
             return;
         }
@@ -649,6 +476,7 @@ public class TeamAssemblerUI : MonoBehaviour
         foreach (var positioned in TeamAssemblerData.Instance.team)
             positioned.isFed = true;
 
+        RefreshAllCardsAndSlots();
         UpdateInfoDisplay();
     }
 
@@ -693,14 +521,8 @@ public class TeamAssemblerUI : MonoBehaviour
             if (slot != null) slot.ClearSlot();
         }
 
-        // Refresh animal cards
-        foreach (AnimalSelectionCard card in animalCards)
-        {
-            if (card != null) card.RefreshCard();
-        }
-
+        RefreshAllCardsAndSlots();
         UpdateInfoDisplay();
-
     }
 
     /// <summary>
@@ -723,6 +545,9 @@ public class TeamAssemblerUI : MonoBehaviour
 
         TeamAssemblerData.Instance.SaveToPrefs(); // Persist team across domain reload in builds
         Time.timeScale = 1f;
+        Debug.LogWarning($"[TeamAssembler] OnStartBattleClicked — teamSize={teamSize}, " +
+            $"selectedStage='{TeamAssemblerData.Instance.selectedStageName}', Time.timeScale set to {Time.timeScale}. " +
+            $"Loading scene '{combatSceneName}'.");
         SceneManager.LoadScene(combatSceneName);
     }
 
@@ -747,7 +572,6 @@ public class TeamAssemblerUI : MonoBehaviour
 
         // Re-enable player movement
         EnablePlayerMovement();
-
     }
 
     /// <summary>

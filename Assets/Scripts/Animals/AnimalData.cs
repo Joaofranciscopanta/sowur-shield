@@ -61,6 +61,8 @@ public class AnimalData : ScriptableObject
     [Tooltip("Base combat statistics for this animal type")]
     public AnimalCombatStats baseCombatStats = new AnimalCombatStats();
 
+    // Not currently read by the combat system — part of the PRD's descoped 3-Passive System.
+    // See SOWUR_SHIELD_STATUS.md "Combat Scope — Open Decision" (resolved: Option A, descope).
     [Tooltip("Combat class: Tank, DPS, Support, Utility")]
     public string combatClass = "DPS";
 
@@ -102,6 +104,8 @@ public class AnimalData : ScriptableObject
     [Tooltip("Active skill for this animal (1 per animal)")]
     public AnimalSkill activeSkill;
 
+    // Not currently read by the combat system — part of the PRD's descoped 3-Passive System.
+    // See SOWUR_SHIELD_STATUS.md "Combat Scope — Open Decision" (resolved: Option A, descope).
     [Tooltip("Available passive skills (can unlock up to 4 based on conditions)")]
     public List<AnimalSkill> availablePassiveSkills = new List<AnimalSkill>();
 

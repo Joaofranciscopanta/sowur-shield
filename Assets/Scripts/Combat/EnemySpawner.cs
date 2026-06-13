@@ -34,12 +34,21 @@ public class EnemySpawner : MonoBehaviour
 
     private void Start()
     {
+        Debug.LogWarning($"[EnemySpawner] Start() — scheduling SpawnEnemies in 0.6s. " +
+            $"Time.timeScale={Time.timeScale}, Time.time={Time.time}, Time.unscaledTime={Time.unscaledTime}");
+        if (Time.timeScale == 0f)
+        {
+            Debug.LogError("[EnemySpawner] Time.timeScale is 0 at Start() — Invoke(0.6s) will NEVER fire! Forcing Time.timeScale = 1f.");
+            Time.timeScale = 1f;
+        }
         // 0.6f: after player team (0.5f), before TurnManager (1.0f)
         Invoke(nameof(SpawnEnemies), 0.6f);
     }
 
     private void SpawnEnemies()
     {
+        Debug.LogWarning($"[EnemySpawner] SpawnEnemies() called at Time.time={Time.time}");
+
         if (GridManager.Instance == null)
         {
             Debug.LogError("[EnemySpawner] GridManager.Instance is null!");
@@ -47,16 +56,20 @@ public class EnemySpawner : MonoBehaviour
         }
 
         StageData stage = StageManager.GetSelectedStage();
+        Debug.LogWarning($"[EnemySpawner] StageManager.GetSelectedStage() = {(stage != null ? stage.stageName : "null")}");
 
         // In builds, static fields may be cleared on scene load — restore from TeamAssemblerData
         if (stage == null)
         {
             StageManager.LoadAllStages();
             string savedName = TeamAssemblerData.Instance?.selectedStageName;
+            Debug.LogWarning($"[EnemySpawner] Stage was null. TeamAssemblerData.selectedStageName='{savedName}', " +
+                $"StageManager total cached stages={StageManager.GetTotalStages()}");
             if (!string.IsNullOrEmpty(savedName))
             {
                 StageData restored = StageManager.GetStageByName(savedName);
                 if (restored != null) StageManager.SetSelectedStage(restored);
+                else Debug.LogWarning($"[EnemySpawner] StageManager.GetStageByName('{savedName}') returned null.");
             }
             stage = StageManager.GetSelectedStage();
         }
@@ -64,12 +77,34 @@ public class EnemySpawner : MonoBehaviour
         if (stage == null || stage.enemySpawns == null || stage.enemySpawns.Count == 0)
         {
             Debug.LogWarning("[EnemySpawner] No stage selected or stage has no enemy spawns — using fallback test enemies.");
-            SpawnFallbackEnemies();
+            try
+            {
+                SpawnFallbackEnemies();
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[EnemySpawner] Exception in SpawnFallbackEnemies(): {ex}");
+            }
             return;
         }
 
-        SpawnBackground(stage);
-        SpawnFromStage(stage);
+        try
+        {
+            SpawnBackground(stage);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"[EnemySpawner] Exception in SpawnBackground(): {ex}");
+        }
+
+        try
+        {
+            SpawnFromStage(stage);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"[EnemySpawner] Exception in SpawnFromStage(): {ex}");
+        }
     }
 
     private void SpawnBackground(StageData stage)
@@ -106,6 +141,7 @@ public class EnemySpawner : MonoBehaviour
 
         // Build weighted spawn pool
         List<EnemyData> pool = BuildSpawnPool(stage.enemySpawns, totalEnemies);
+        Debug.LogWarning($"[EnemySpawner] SpawnFromStage('{stage.stageName}') — totalEnemies={totalEnemies}, pool.Count={pool.Count}");
 
         int posIndex = 0;
         int spawned = 0;
@@ -116,9 +152,22 @@ public class EnemySpawner : MonoBehaviour
             Vector2Int pos = GetNextEmptyEnemyPosition(ref posIndex);
             if (pos.x < 0) break; // No free positions
 
-            bool ok = SpawnEnemy(enemyData, pos, stage.difficulty);
+            // Wrap per-enemy spawn in try/catch: an uncaught exception here would
+            // silently abort the whole foreach loop, leaving GridManager.GetAllUnits()
+            // with fewer (or zero) enemy units in builds with no visible in-game error.
+            bool ok = false;
+            try
+            {
+                ok = SpawnEnemy(enemyData, pos, stage.difficulty);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[EnemySpawner] Exception spawning '{enemyData?.enemyName}' at {pos}: {ex}");
+            }
+
             if (ok) spawned++;
         }
+        Debug.LogWarning($"[EnemySpawner] SpawnFromStage done — spawned {spawned} enemies.");
 
     }
 

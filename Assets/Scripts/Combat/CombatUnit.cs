@@ -298,7 +298,11 @@ public class CombatUnit : MonoBehaviour
             renderer.material = mat;
 
             // Remove collider (we use grid for positioning)
-            Destroy(visualObject.GetComponent<Collider>());
+            Collider sphereCollider = visualObject.GetComponent<Collider>();
+            if (Application.isPlaying)
+                Destroy(sphereCollider);
+            else
+                DestroyImmediate(sphereCollider);
         }
 
         // Note: Name text disabled for 2D sprites - will add proper UI later

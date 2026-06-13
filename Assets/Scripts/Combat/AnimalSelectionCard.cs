@@ -25,11 +25,23 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
     [SerializeField] private TextMeshProUGUI happinessText;
     [SerializeField] private TextMeshProUGUI foodStatusText;
     [SerializeField] private Image cardBackground;
+    [SerializeField] private Image foodStatusIcon;
+    [SerializeField] private Image happinessFillBar;
 
     [Header("Colors")]
-    [SerializeField] private Color normalColor = Color.white;
-    [SerializeField] private Color selectedColor = new Color(1f, 1f, 0.5f); // Yellow tint
-    [SerializeField] private Color inTeamColor = new Color(0.5f, 1f, 0.5f); // Green tint
+    [SerializeField] private Color normalColor = new Color(0.18f, 0.18f, 0.22f, 0.95f);
+    [SerializeField] private Color hoverColor = new Color(0.28f, 0.28f, 0.36f, 0.95f);
+    [SerializeField] private Color inTeamColor = new Color(0.16f, 0.32f, 0.2f, 0.95f);
+
+    [Header("Food Status Colors")]
+    [SerializeField] private Color fedColor = new Color(0.35f, 0.85f, 0.4f);
+    [SerializeField] private Color hungryColor = new Color(0.95f, 0.75f, 0.2f);
+    [SerializeField] private Color notInTeamColor = new Color(0.6f, 0.6f, 0.6f);
+
+    [Header("Happiness Bar Colors")]
+    [SerializeField] private Color happinessLowColor = new Color(0.85f, 0.35f, 0.3f);
+    [SerializeField] private Color happinessMidColor = new Color(0.95f, 0.75f, 0.2f);
+    [SerializeField] private Color happinessHighColor = new Color(0.35f, 0.85f, 0.4f);
 
     // Animal data
     private Animal animal;
@@ -80,112 +92,80 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
             return;
         }
 
-
-        // Set name
         if (nameText != null)
         {
             nameText.text = animal.GetDisplayName();
         }
-        else
-        {
-        }
 
-        // Set portrait
         if (animalPortrait != null && animal.AnimalData != null)
         {
             animalPortrait.sprite = animal.AnimalData.idleSprite;
         }
-        else
-        {
-        }
 
-        // Set happiness
+        AnimalCombatStats stats = animal.GetCombatStats();
+        float happinessPercent = stats != null ? stats.happiness : 0f;
+
         if (happinessText != null)
         {
-            AnimalCombatStats stats = animal.GetCombatStats();
-            if (stats != null)
-            {
-                happinessText.text = $"Happiness: {stats.happiness:F0}%";
-            }
+            happinessText.text = $"Happiness: {happinessPercent:F0}%";
         }
 
-        // Set food status
-        if (foodStatusText != null)
-        {
-            if (TeamAssemblerData.Instance.IsAnimalInTeam(animal))
-            {
-                var positioned = TeamAssemblerData.Instance.team.Find(pa => pa.animalData == animal.AnimalData);
-                if (positioned != null && positioned.isFed)
-                {
-                    foodStatusText.text = "Fed ✓";
-                    foodStatusText.color = Color.green;
-                }
-                else
-                {
-                    foodStatusText.text = GetFoodRequirementText();
-                    foodStatusText.color = Color.yellow;
-                }
-            }
-            else
-            {
-                foodStatusText.text = GetFoodRequirementText();
-                foodStatusText.color = Color.white;
-            }
-        }
+        UpdateHappinessBar(happinessPercent);
 
-        // Update background color
         isInTeam = TeamAssemblerData.Instance.IsAnimalInTeam(animal);
+        UpdateFoodStatus();
         UpdateBackgroundColor();
+    }
 
-        // CRITICAL FIX: Ensure cardBackground is visible
-        if (cardBackground != null)
+    /// <summary>
+    /// Update the happiness fill bar's width and color based on percent (0-100).
+    /// </summary>
+    private void UpdateHappinessBar(float happinessPercent)
+    {
+        if (happinessFillBar == null) return;
+
+        float t = Mathf.Clamp01(happinessPercent / 100f);
+        happinessFillBar.fillAmount = t;
+
+        happinessFillBar.color = t < 0.34f ? happinessLowColor
+            : t < 0.67f ? happinessMidColor
+            : happinessHighColor;
+    }
+
+    /// <summary>
+    /// Update the food status icon/text: green check when fed, yellow warning with
+    /// requirement text when in-team but hungry, neutral when not yet on the team.
+    /// </summary>
+    private void UpdateFoodStatus()
+    {
+        if (foodStatusText == null && foodStatusIcon == null) return;
+
+        Color statusColor;
+        string statusText;
+
+        if (isInTeam)
         {
-            if (cardBackground.sprite == null)
-            {
+            var positioned = TeamAssemblerData.Instance.team.Find(pa => pa.animalData == animal.AnimalData);
+            bool fed = positioned != null && positioned.isFed;
 
-                // Create a larger white texture for better compatibility
-                Texture2D tex = new Texture2D(32, 32);
-                for (int y = 0; y < 32; y++)
-                {
-                    for (int x = 0; x < 32; x++)
-                    {
-                        tex.SetPixel(x, y, Color.white);
-                    }
-                }
-                tex.Apply();
-
-                cardBackground.sprite = Sprite.Create(tex, new Rect(0, 0, 32, 32), new Vector2(0.5f, 0.5f), 100f);
-                cardBackground.type = UnityEngine.UI.Image.Type.Simple; // Use Simple, not Sliced
-
-            }
-
-            // Ensure Image is enabled and has correct settings
-            cardBackground.enabled = true;
-            cardBackground.raycastTarget = true;
-
+            statusColor = fed ? fedColor : hungryColor;
+            statusText = fed ? "Fed" : GetFoodRequirementText();
         }
         else
         {
+            statusColor = notInTeamColor;
+            statusText = GetFoodRequirementText();
         }
 
-        // Debug visibility settings
-        string imageDebug = "";
-        if (cardBackground != null)
+        if (foodStatusText != null)
         {
-            imageDebug += $"Background(Color={cardBackground.color}, Enabled={cardBackground.enabled}, Sprite={cardBackground.sprite != null}), ";
-        }
-        if (animalPortrait != null)
-        {
-            imageDebug += $"Portrait(Color={animalPortrait.color}, Enabled={animalPortrait.enabled}, Sprite={animalPortrait.sprite != null}), ";
+            foodStatusText.text = statusText;
+            foodStatusText.color = statusColor;
         }
 
-        // Check card world position to see if it's being clipped
-        // Get RectTransform directly in case Awake() hasn't run yet
-        RectTransform rt = rectTransform != null ? rectTransform : GetComponent<RectTransform>();
-        if (rt != null)
+        if (foodStatusIcon != null)
         {
-            Vector3[] corners = new Vector3[4];
-            rt.GetWorldCorners(corners);
+            foodStatusIcon.color = statusColor;
         }
     }
 
@@ -199,7 +179,7 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
             return "No food needed";
         }
 
-        string text = "Need: ";
+        string text = "Needs: ";
         foreach (FoodRequirement req in animal.AnimalData.dailyFoodRequirements)
         {
             text += $"{req.quantityPerDay}x {req.itemName} ";
@@ -240,7 +220,6 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
 
         // Move to canvas root so it renders on top
         transform.SetParent(canvas.transform, true);
-
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -253,7 +232,6 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
 
     public void OnEndDrag(PointerEventData eventData)
     {
-
         if (animal == null)
         {
             return;
@@ -286,7 +264,6 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
         }
         else
         {
-
             // Check if dropped on grid to remove from team
             if (isInTeam && IsOverGrid(eventData))
             {
@@ -362,7 +339,7 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
     {
         if (cardBackground != null && !isInTeam)
         {
-            cardBackground.color = selectedColor;
+            cardBackground.color = hoverColor;
         }
     }
 

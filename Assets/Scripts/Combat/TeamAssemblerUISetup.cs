@@ -814,7 +814,7 @@ public class TeamAssemblerUISetup : MonoBehaviour
 
         // Set colors to prevent yellow hover default
         so.FindProperty("normalColor").colorValue = new Color(0.95f, 0.95f, 0.95f, 1f); // Light gray
-        so.FindProperty("selectedColor").colorValue = new Color(1f, 1f, 0.9f, 1f); // Very light yellow (subtle hover)
+        so.FindProperty("hoverColor").colorValue = new Color(1f, 1f, 0.9f, 1f); // Very light yellow (subtle hover)
         so.FindProperty("inTeamColor").colorValue = new Color(0.8f, 1f, 0.8f, 1f); // Light green
 
         so.ApplyModifiedProperties();

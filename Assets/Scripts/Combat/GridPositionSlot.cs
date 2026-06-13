@@ -22,12 +22,17 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
     [SerializeField] private Image slotBackground;
     [SerializeField] private Image animalIcon;
     [SerializeField] private TextMeshProUGUI positionText;
+    [SerializeField] private Image fedIndicator;
 
     [Header("Colors")]
-    [SerializeField] private Color emptyColor = new Color(0.3f, 0.3f, 0.3f, 0.5f);
-    [SerializeField] private Color occupiedColor = new Color(0.5f, 1f, 0.5f, 0.7f); // Green
-    [SerializeField] private Color hoverColor = new Color(1f, 1f, 0.5f, 0.7f); // Yellow
-    [SerializeField] private Color invalidColor = new Color(1f, 0.3f, 0.3f, 0.7f); // Red
+    [SerializeField] private Color emptyColor = new Color(1f, 1f, 1f, 0.08f);
+    [SerializeField] private Color occupiedColor = new Color(0.35f, 0.85f, 0.4f, 0.35f);
+    [SerializeField] private Color occupiedHungryColor = new Color(0.95f, 0.75f, 0.2f, 0.35f);
+    [SerializeField] private Color hoverValidColor = new Color(0.35f, 0.85f, 0.4f, 0.5f);
+
+    [Header("Fed Indicator Colors")]
+    [SerializeField] private Color fedColor = new Color(0.35f, 0.85f, 0.4f);
+    [SerializeField] private Color hungryColor = new Color(0.95f, 0.75f, 0.2f);
 
     // Grid position
     public Vector2Int gridPosition { get; private set; }
@@ -71,7 +76,6 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
     /// </summary>
     public bool PlaceAnimal(Animal animal)
     {
-
         if (animal == null)
         {
             return false;
@@ -125,9 +129,6 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
 
             return true;
         }
-        else
-        {
-        }
 
         return false;
     }
@@ -137,7 +138,6 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
     /// </summary>
     private bool SwapAnimals(Animal newAnimal)
     {
-
         if (assignedAnimal == null)
         {
             return PlaceAnimal(newAnimal);
@@ -151,7 +151,7 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
             // Both animals are in team - swap positions
             Vector2Int oldPosition = newAnimalPosition.gridPosition;
 
-            // CRITICAL: Check if trying to move to same position
+            // Trying to move to the same position is a no-op
             if (oldPosition == gridPosition)
             {
                 return false;
@@ -213,23 +213,32 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
     }
 
     /// <summary>
-    /// Update visual appearance based on state
+    /// Update visual appearance based on state: empty, occupied+fed, or occupied+hungry.
+    /// The fed indicator (if assigned) shows a small colored dot on occupied slots.
     /// </summary>
-    private void UpdateVisuals()
+    public void UpdateVisuals()
     {
         if (slotBackground == null) return;
 
-        // Set background color
         if (assignedAnimal != null)
         {
-            slotBackground.color = occupiedColor;
+            var positioned = TeamAssemblerData.Instance.team.Find(pa => pa.animalData == assignedAnimal.AnimalData);
+            bool fed = positioned != null && positioned.isFed;
+
+            slotBackground.color = fed ? occupiedColor : occupiedHungryColor;
 
             // Show animal icon with full opacity
             if (animalIcon != null && assignedAnimal.AnimalData != null)
             {
                 animalIcon.enabled = true;
                 animalIcon.sprite = assignedAnimal.AnimalData.idleSprite;
-                animalIcon.color = new Color(1, 1, 1, 1); // Make fully visible
+                animalIcon.color = Color.white;
+            }
+
+            if (fedIndicator != null)
+            {
+                fedIndicator.enabled = true;
+                fedIndicator.color = fed ? fedColor : hungryColor;
             }
         }
         else
@@ -240,7 +249,12 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
             if (animalIcon != null)
             {
                 animalIcon.enabled = false;
-                animalIcon.color = new Color(1, 1, 1, 0); // Make transparent
+                animalIcon.color = new Color(1f, 1f, 1f, 0f);
+            }
+
+            if (fedIndicator != null)
+            {
+                fedIndicator.enabled = false;
             }
         }
     }
@@ -251,7 +265,6 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
 
     public void OnDrop(PointerEventData eventData)
     {
-
         // Get dragged animal card
         AnimalSelectionCard draggedCard = eventData.pointerDrag?.GetComponent<AnimalSelectionCard>();
 
@@ -264,14 +277,14 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        // Highlight when dragging over
+        // Highlight when dragging a card over this slot
         if (eventData.pointerDrag != null && slotBackground != null)
         {
             AnimalSelectionCard draggedCard = eventData.pointerDrag.GetComponent<AnimalSelectionCard>();
             if (draggedCard != null)
             {
-                // Show valid/invalid placement
-                slotBackground.color = hoverColor;
+                // Empty slots (or slots that would swap) are valid drop targets
+                slotBackground.color = hoverValidColor;
             }
         }
     }
