@@ -348,6 +348,9 @@ public class ConversationMemory : MonoBehaviour, ISaveable
 
         if (SaveManager.Instance != null)
             SaveManager.Instance.UnregisterSaveable(this);
+
+        if (Instance == this)
+            Instance = null;
     }
 
     // =========================================================================

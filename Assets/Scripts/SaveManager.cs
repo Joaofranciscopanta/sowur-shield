@@ -392,7 +392,23 @@ namespace SowurShield.Core
 
         private GameData MigrateSave(GameData data)
         {
-            data.saveVersion = GameData.CURRENT_SAVE_VERSION;
+            int fromVersion = data.saveVersion;
+
+            while (data.saveVersion < GameData.CURRENT_SAVE_VERSION)
+            {
+                switch (data.saveVersion)
+                {
+                    // case 1: MigrateV1ToV2(data); break; // example for the future
+                    default:
+                        break; // no-op for versions with no transformation needed
+                }
+
+                data.saveVersion++;
+            }
+
+            if (fromVersion != data.saveVersion)
+                Debug.LogWarning($"[SaveManager] Migrated save from v{fromVersion} to v{data.saveVersion}");
+
             return data;
         }
 

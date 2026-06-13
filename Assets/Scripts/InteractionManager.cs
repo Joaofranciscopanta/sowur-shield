@@ -169,11 +169,6 @@ public class InteractionManager : MonoBehaviour
         {
             npc.SetPromptVisibility(visible);
         }
-        
-        if (interactable is SellBox sellBox)
-        {
-            // SellBox doesn't have a prompt, but we could add one in the future
-        }
     }
     
     public bool CanInteract()

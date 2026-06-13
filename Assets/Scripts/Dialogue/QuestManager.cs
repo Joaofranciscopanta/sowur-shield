@@ -28,6 +28,10 @@ public class QuestManager : MonoBehaviour, ISaveable
     // Lookup: loaded QuestData ScriptableObjects by id
     private readonly Dictionary<string, QuestData> _allQuests = new Dictionary<string, QuestData>();
 
+    // Cached reward targets (resolved lazily, re-attempted if missing at grant time)
+    private PlayerStats _playerStats;
+    private Inventory.Inventory _inventory;
+
     // Events
     public System.Action<QuestData>              OnQuestStarted;
     public System.Action<QuestData, int, int>    OnObjectiveUpdated;  // quest, objIndex, newCount
@@ -63,12 +67,18 @@ public class QuestManager : MonoBehaviour, ISaveable
     {
         if (Instance == this && SaveManager.Instance != null)
             SaveManager.Instance.RegisterSaveable(this);
+
+        _playerStats = Object.FindFirstObjectByType<PlayerStats>();
+        _inventory = Object.FindFirstObjectByType<Inventory.Inventory>();
     }
 
     private void OnDestroy()
     {
         if (SaveManager.Instance != null)
             SaveManager.Instance.UnregisterSaveable(this);
+
+        if (Instance == this)
+            Instance = null;
     }
 
     private void LoadAllQuestAssets()
@@ -269,24 +279,33 @@ public class QuestManager : MonoBehaviour, ISaveable
         // Gold
         if (data.rewardGold > 0)
         {
-            PlayerStats stats = Object.FindFirstObjectByType<PlayerStats>();
-            stats?.AddMoney(data.rewardGold);
+            if (_playerStats == null) _playerStats = Object.FindFirstObjectByType<PlayerStats>();
+
+            if (_playerStats != null)
+                _playerStats.AddMoney(data.rewardGold);
+            else
+                Debug.LogWarning($"[QuestManager] Cannot grant gold reward for quest '{data.questId}' — PlayerStats not found");
         }
 
         // Items
         if (data.rewardItems != null && data.rewardItems.Count > 0)
         {
-            Inventory.Inventory inv = Object.FindFirstObjectByType<Inventory.Inventory>();
-            if (inv != null)
+            if (_inventory == null) _inventory = Object.FindFirstObjectByType<Inventory.Inventory>();
+
+            if (_inventory != null)
             {
                 foreach (var reward in data.rewardItems)
                 {
                     Item item = ItemDatabase.GetItem(reward.itemName);
                     if (item != null)
-                        inv.AddItem(item, reward.quantity);
+                        _inventory.AddItem(item, reward.quantity);
                     else
                         Debug.LogWarning($"[QuestManager] Reward item '{reward.itemName}' not found in ItemDatabase.");
                 }
+            }
+            else
+            {
+                Debug.LogWarning($"[QuestManager] Cannot grant item rewards for quest '{data.questId}' — Inventory not found");
             }
         }
 

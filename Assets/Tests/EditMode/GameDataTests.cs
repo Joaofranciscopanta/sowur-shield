@@ -35,7 +35,7 @@ public class GameDataTests
     [Test]
     public void Constructor_SetsSaveVersionToDefault()
     {
-        Assert.AreEqual("1.0.0", data.saveVersion);
+        Assert.AreEqual(1, data.saveVersion);
     }
 
     [Test]
