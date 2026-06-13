@@ -519,12 +519,17 @@
           const STIFFNESS = 0.012;   // pulls swing back to center
           const DAMPING = 0.94;      // energy loss per frame
           const WIND_FACTOR = 0.0028; // how strongly mouse velocity pushes the swing
+          const MAX_DX = 60;         // px per pointermove event, clamps "wind gust" strength
+          const MAX_ANGLE = 0.6;     // radians, caps how far the pendulum can swing
 
           let rafId = null;
 
           window.addEventListener('pointermove', (e) => {
-            const dx = e.clientX - lastX;
+            let dx = e.clientX - lastX;
             lastX = e.clientX;
+            // Clamp so a fast mouse flick doesn't inject a huge one-frame
+            // impulse that overshoots the spring and "explodes".
+            dx = Math.max(-MAX_DX, Math.min(MAX_DX, dx));
             // Horizontal mouse velocity = "wind" pushing the lamp
             angVel += dx * WIND_FACTOR;
             targetX = e.clientX;
@@ -555,6 +560,11 @@
             angVel += -angle * STIFFNESS;
             angVel *= DAMPING;
             angle += angVel;
+
+            // Cap the swing amplitude so rapid mouse movement can't pile
+            // up impulses into an ever-growing oscillation.
+            if (angle > MAX_ANGLE) { angle = MAX_ANGLE; angVel = Math.min(angVel, 0); }
+            else if (angle < -MAX_ANGLE) { angle = -MAX_ANGLE; angVel = Math.max(angVel, 0); }
 
             // Once the swing has settled to a tiny amplitude, stop it
             // completely so the lamp doesn't rattle forever at idle.
