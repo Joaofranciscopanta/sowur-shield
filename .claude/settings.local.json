@@ -30,7 +30,21 @@
       "Bash(\"C:\\Program Files\\Unity\\Hub\\Editor\\2022.3.46f1\\Editor\\Unity.exe\" -quit -batchmode -projectPath . -executeMethod DemoBuildScript.BuildWebGLDemo -logFile build_log.txt)",
       "Bash(\"/c/Program Files/Unity/Hub/Editor/2022.3.46f1/Editor/Unity.exe\" -quit -batchmode -projectPath . -executeMethod DemoBuildScript.BuildWebGLDemo -logFile build_log.txt)",
       "Bash(git -c core.autocrlf=true add CLAUDE.md)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(ls:*)",
+      "Bash(git rm:*)",
+      "Bash(xargs:*)",
+      "Bash(wc:*)",
+      "Bash(git fetch:*)",
+      "Bash(git rebase:*)",
+      "Bash(git:*)",
+      "Bash(read f:*)",
+      "Bash(del:*)",
+      "Bash(python3:*)",
+      "Bash(node:*)",
+      "Bash(echo EXIT:$?:*)",
+      "Bash(do:*)",
+      "Bash(gh run *)"
     ],
     "deny": [],
     "ask": []
