@@ -78,8 +78,8 @@ public class GridCell : MonoBehaviour
         // Get renderer
         cellRenderer = cellVisual.GetComponent<Renderer>();
 
-        // Create material with Unlit shader for guaranteed visibility in 2D
-        Material mat = new Material(Shader.Find("Unlit/Color"));
+        // Create material with Sprites/Default shader (Unlit/Color is stripped from builds)
+        Material mat = new Material(Shader.Find("Sprites/Default"));
         cellRenderer.material = mat;
 
         // Ensure grid cells render behind sprites
@@ -105,8 +105,8 @@ public class GridCell : MonoBehaviour
         // Get renderer and set color
         highlightRenderer = highlightVisual.GetComponent<Renderer>();
 
-        // Create material with Unlit shader for guaranteed visibility in 2D
-        Material highlightMat = new Material(Shader.Find("Unlit/Color"));
+        // Create material with Sprites/Default shader (Unlit/Color is stripped from builds)
+        Material highlightMat = new Material(Shader.Find("Sprites/Default"));
         highlightMat.color = highlightColor;
         highlightRenderer.material = highlightMat;
 

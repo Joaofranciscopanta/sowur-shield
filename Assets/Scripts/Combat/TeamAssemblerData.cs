@@ -115,6 +115,13 @@ public class TeamAssemblerData : MonoBehaviour
     /// </summary>
     public string selectedStageName = "";
 
+    /// <summary>
+    /// Set by BattleResultsUI.RetryBattle() before loading the farm scene; consumed (and
+    /// cleared) by TeamAssemblerUI.Start() to automatically reopen the assembler for the
+    /// same stage.
+    /// </summary>
+    public bool pendingReopenAssembler = false;
+
     // ── MonoBehaviour singleton with DontDestroyOnLoad ────────────────────────
     private static TeamAssemblerData instance;
     public static TeamAssemblerData Instance

@@ -277,8 +277,8 @@ public class CombatUnit : MonoBehaviour
             // Use this GameObject's renderer
             visualObject = gameObject;
 
-            // Color based on side
-            Material mat = new Material(Shader.Find("Unlit/Color"));
+            // Color based on side (Sprites/Default — Unlit/Color is stripped from builds)
+            Material mat = new Material(Shader.Find("Sprites/Default"));
             mat.color = isPlayerUnit ? playerColor : enemyColor;
             existingRenderer.material = mat;
         }
@@ -291,9 +291,9 @@ public class CombatUnit : MonoBehaviour
             visualObject.transform.localPosition = Vector3.zero;
             visualObject.transform.localScale = Vector3.one * 0.5f;
 
-            // Color based on side
+            // Color based on side (Sprites/Default — Unlit/Color is stripped from builds)
             Renderer renderer = visualObject.GetComponent<Renderer>();
-            Material mat = new Material(Shader.Find("Unlit/Color"));
+            Material mat = new Material(Shader.Find("Sprites/Default"));
             mat.color = isPlayerUnit ? playerColor : enemyColor;
             renderer.material = mat;
 

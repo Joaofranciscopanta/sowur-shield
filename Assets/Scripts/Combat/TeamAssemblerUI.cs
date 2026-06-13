@@ -80,6 +80,17 @@ public class TeamAssemblerUI : MonoBehaviour
         if (assemblerPanel != null) assemblerPanel.SetActive(false);
     }
 
+    private void Start()
+    {
+        // If we just retreated here from a battle's "Retry" button, reopen the
+        // assembler for the same stage so the player can reassemble their team.
+        if (TeamAssemblerData.Instance.pendingReopenAssembler)
+        {
+            TeamAssemblerData.Instance.pendingReopenAssembler = false;
+            OpenAssembler();
+        }
+    }
+
     /// <summary>
     /// Check if the team assembler is currently open
     /// </summary>

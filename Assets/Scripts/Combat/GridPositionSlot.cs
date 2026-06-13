@@ -230,6 +230,7 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
             // Show animal icon with full opacity
             if (animalIcon != null && assignedAnimal.AnimalData != null)
             {
+                animalIcon.gameObject.SetActive(true);
                 animalIcon.enabled = true;
                 animalIcon.sprite = assignedAnimal.AnimalData.idleSprite;
                 animalIcon.color = Color.white;
@@ -250,6 +251,7 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
             {
                 animalIcon.enabled = false;
                 animalIcon.color = new Color(1f, 1f, 1f, 0f);
+                animalIcon.gameObject.SetActive(false);
             }
 
             if (fedIndicator != null)

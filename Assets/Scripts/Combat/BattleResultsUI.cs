@@ -42,7 +42,6 @@ public class BattleResultsUI : MonoBehaviour
 
     [Header("Scene Management")]
     [SerializeField] private string farmSceneName = "SampleScene";
-    [SerializeField] private string combatSceneName = "CombatScene";
 
     [Header("Battle Statistics")]
     private int totalTurns;
@@ -276,22 +275,42 @@ public class BattleResultsUI : MonoBehaviour
     /// </summary>
     private void ReturnToFarm()
     {
+        Debug.LogWarning("[BattleResultsUI] ReturnToFarm() clicked.");
         AwardRewards();
         Time.timeScale = 1f;
         if (SceneTransitionManager.Instance != null)
+        {
+            Debug.LogWarning($"[BattleResultsUI] ReturnToFarm() — using SceneTransitionManager to load '{farmSceneName}'.");
             SceneTransitionManager.Instance.LoadScene(farmSceneName);
+        }
         else
+        {
+            Debug.LogWarning($"[BattleResultsUI] ReturnToFarm() — SceneTransitionManager.Instance is null, calling SceneManager.LoadScene('{farmSceneName}') directly.");
             SceneManager.LoadScene(farmSceneName);
+        }
     }
 
     /// <summary>
-    /// Retry the battle (reload combat scene)
+    /// Retry the battle. Returns to the farm scene and reopens the Team Assembler
+    /// for the same stage so the player can reassemble their team.
     /// </summary>
     private void RetryBattle()
     {
-
+        Debug.LogWarning("[BattleResultsUI] RetryBattle() clicked.");
         Time.timeScale = 1f; // Ensure time is running
-        SceneManager.LoadScene(combatSceneName);
+
+        TeamAssemblerData.Instance.pendingReopenAssembler = true;
+
+        if (SceneTransitionManager.Instance != null)
+        {
+            Debug.LogWarning($"[BattleResultsUI] RetryBattle() — using SceneTransitionManager to load '{farmSceneName}'.");
+            SceneTransitionManager.Instance.LoadScene(farmSceneName);
+        }
+        else
+        {
+            Debug.LogWarning($"[BattleResultsUI] RetryBattle() — SceneTransitionManager.Instance is null, calling SceneManager.LoadScene('{farmSceneName}') directly.");
+            SceneManager.LoadScene(farmSceneName);
+        }
     }
 
     /// <summary>
