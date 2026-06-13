@@ -1,6 +1,6 @@
 # Sowur Shield — Project Status
 
-> Last updated: 2026-06-12
+> Last updated: 2026-06-13
 > Branch: `main`
 > This document supersedes and replaces: ROADMAP.md, GAME_DEVELOPMENT_PLAN.md,
 > COMBAT_PIPELINE_STATUS.md, DEVELOPMENT_LOG.md, COMBAT_SETUP_GUIDE.md.
@@ -142,7 +142,7 @@ that is now baked into the saved scenes and can be considered historical.
 
 ---
 
-## Combat Scope — Open Decision
+## Combat Scope — Resolved (Option A, descope)
 
 `PRD_Animals_Combat_System.md` (v2.0, 2025-10-21) describes an elaborate "3-Passive System"
 (Family passives, Class passives, Happiness passives, plus team-wide "Combo Synergies") as the
@@ -151,9 +151,9 @@ core combat mechanic. **This is not implemented.** `AnimalData.combatClass` and
 anywhere in `Assets/Scripts/Combat/` — `CombatUnit`/`TurnManager` compute stats purely from
 `AnimalCombatStats` with no synergy/family/class logic.
 
-The combat system that IS shipped (status effects + XP/leveling, see above) is solid and
-well-tested, but it is a **simpler system than the PRD describes**. This gap needs an explicit
-decision (tracked as `/review/03_WORKLIST.md` TASK-002):
+The combat system that IS shipped (status effects + XP/leveling, happiness→stat multiplier, see
+above) is solid and well-tested, but it is a **simpler system than the PRD describes**. This gap
+was tracked as `/review/03_WORKLIST.md` TASK-002, with two options:
 
 - **Option A — Descope**: mark the PRD's 3-passive system as historical/aspirational, annotate
   `combatClass`/`availablePassiveSkills` as currently-unused fields.
@@ -161,8 +161,11 @@ decision (tracked as `/review/03_WORKLIST.md` TASK-002):
   the same `combatClass` grant a small stat bonus), using the field that already exists on every
   `AnimalData` asset. Family passives and Combo Synergies stay descoped.
 
-No recommendation is made here — this is a product-direction call, not a technical one. Until
-decided, treat the PRD's combat-passive content as **not representative of the current game**.
+**Decision: Option A.** `AnimalData.combatClass` and `AnimalData.availablePassiveSkills[]` are
+annotated in code as currently-unused (PRD-descoped) fields. The shipped status-effect +
+happiness-multiplier combat system is the source of truth; the PRD's 3-passive content should be
+treated as historical/aspirational and not representative of the current game. TASK-003
+(conditional Class-passive synergy) is marked N/A — descoped per this decision.
 
 ---
 
@@ -171,20 +174,21 @@ decided, treat the PRD's combat-passive content as **not representative of the c
 See `/review/02_FINDINGS.md` for the full diagnostic with file:line citations, and
 `/review/03_WORKLIST.md` for atomic, ready-to-execute tasks. Headlines:
 
-- **Save migration is a stub** (`SaveManager.cs:393-397`) — no schema-version dispatch exists
-  yet. Not an active bug, but the next schema change has nowhere to plug in. (TASK-004)
 - **God classes grew, didn't shrink**: `MainMenuUI.cs` 862→1019 lines, `SellBox.cs` 1109→1123,
   `Inventory.cs` ~1150, `InventorySlot.cs` 907, `Animal.cs` 975 (new entrant — 2nd largest script
   in the project). (TASK-011, TASK-012)
 - **UIManager has two coexisting window systems** — legacy `OpenPanel`/`ClosePanel` (still
   called by `SellBox.cs:429,509`) alongside the documented `TryOpenWindow`/`TryCloseWindow` stack
-  used by 10 `IUIWindow` implementers. Needs an audit, not a blind removal. (TASK-006)
-- **QuestManager.GrantRewards()** does `FindFirstObjectByType` on quest completion with silent
-  failure if null — low-frequency but player-visible if it ever misses. (TASK-005)
-- **Dialogue core has zero unit tests** — `DialogueCondition`/`DialogueEffect` evaluation logic
-  (7 condition types × 7 operators, 7 effect types) is untested. (TASK-007, TASK-008)
-- Minor cleanup: dead `SellBox` branch in `InteractionManager.cs:173-176` (TASK-009); CLAUDE.md's
-  folder table doesn't match where farming scripts actually live (TASK-010).
+  used by 10 `IUIWindow` implementers. Investigated (TASK-006): ESC handling only uses the
+  window stack (safe), but `IsAnyPanelOpen()` (legacy) is read by `PlayerMove.cs:169` and
+  `UIInput.cs:90`. Removal needs a manual Editor check first — see `/review/PROGRESS.md`.
+
+**Recently resolved**: save migration dispatch scaffolding added to `SaveManager.MigrateSave()`
+(TASK-004); `QuestManager.GrantRewards()` now caches `PlayerStats`/`Inventory` and logs a warning
+on miss instead of failing silently (TASK-005); dead `SellBox` branch removed from
+`InteractionManager.cs` (TASK-009); CLAUDE.md folder table corrected for farming scripts
+(TASK-010); test asmdefs verified (TASK-013); `DialogueCondition`/`DialogueEffect` now have
+19 unit tests total (TASK-007, TASK-008).
 
 **What's confirmed working well**: namespace convention (100%), combat pipeline structure,
 status-effect tests, GameBalance centralization (~80%), farming/weather/save scaffolding,

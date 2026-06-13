@@ -41,7 +41,7 @@
 ---
 
 ## TASK-002 — Decide and document the fate of AnimalData.combatClass / availablePassiveSkills
-- [ ] status
+- [x] status
 - priority: Critical
 - system: combat / animals (scope decision)
 - files: `Assets/Scripts/Animals/AnimalData.cs`, `PRD_Animals_Combat_System.md`,
@@ -79,7 +79,7 @@
 ---
 
 ## TASK-003 — (CONDITIONAL) Implement minimal Class-passive synergy bonus
-- [ ] status
+- [x] status — N/A, descoped per TASK-002
 - priority: Important
 - system: combat
 - files: `Assets/Scripts/Combat/CombatTeamSpawner.cs`, `Assets/Scripts/Animals/AnimalData.cs`,
@@ -132,7 +132,7 @@
 ---
 
 ## TASK-004 — Implement save migration scaffolding (GameData.saveVersion-based dispatch)
-- [ ] status
+- [x] status
 - priority: Critical
 - system: save
 - files: `Assets/Scripts/SaveManager.cs:393-397`, `Assets/Scripts/GameData.cs`
@@ -185,7 +185,7 @@
 ---
 
 ## TASK-005 — Cache PlayerStats/Inventory references in QuestManager instead of FindFirstObjectByType in GrantRewards
-- [ ] status
+- [x] status
 - priority: Important
 - system: dialogue/quests
 - files: `Assets/Scripts/Dialogue/QuestManager.cs:19-60` (Awake/Start), `:267-290` (GrantRewards)
@@ -241,7 +241,7 @@
 ---
 
 ## TASK-006 — Audit and resolve UIManager's dual panel systems (OpenPanel/ClosePanel vs TryOpenWindow/TryCloseWindow)
-- [ ] status
+- [x] status — investigated, documented (option b), follow-up task needed for removal
 - priority: Important
 - system: UI
 - files: `Assets/Scripts/UIManager.cs:13-120` (legacy), `Assets/Scripts/UIManager.cs:24-311`
@@ -288,7 +288,7 @@
 ---
 
 ## TASK-007 — Add DialogueCondition evaluation unit tests
-- [ ] status
+- [x] status
 - priority: Important
 - system: dialogue (testability)
 - files: new `Assets/Tests/EditMode/DialogueConditionTests.cs`,
@@ -351,7 +351,7 @@
 ---
 
 ## TASK-008 — Add DialogueEffect execution unit tests
-- [ ] status
+- [x] status
 - priority: Important
 - system: dialogue (testability)
 - files: new `Assets/Tests/EditMode/DialogueEffectTests.cs`,
@@ -389,7 +389,7 @@
 ---
 
 ## TASK-009 — Clean up dead SellBox branch in InteractionManager.SetInteractablePromptVisibility
-- [ ] status
+- [x] status
 - priority: Polish
 - system: interaction
 - files: `Assets/Scripts/InteractionManager.cs:166-177`
@@ -434,7 +434,7 @@
 ---
 
 ## TASK-010 — Fix CLAUDE.md folder table to reflect actual Farming script locations
-- [ ] status
+- [x] status
 - priority: Polish
 - system: documentation
 - files: `CLAUDE.md` (Project Structure section near top)
@@ -616,7 +616,7 @@
 ---
 
 ## TASK-013 — Verify SowurShield.Tests.PlayMode.asmdef / EditMode.asmdef exist and reference Runtime correctly
-- [ ] status
+- [x] status
 - priority: Polish
 - system: testing (verification)
 - files: `Assets/Tests/**/*.asmdef`
@@ -698,21 +698,28 @@
 
 **14 tasks generated.**
 
-**Critical priority (3 tasks)** — recommended to run first, in this order:
+**Done**: TASK-002 (descope decision), TASK-003 (N/A, descoped), TASK-004 (save migration
+dispatch), TASK-005 (QuestManager cached refs), TASK-006 (investigated, documented,
+follow-up needed), TASK-007 (DialogueCondition tests), TASK-008 (DialogueEffect tests),
+TASK-009 (dead SellBox branch removed), TASK-010 (CLAUDE.md folder table fixed),
+TASK-013 (test asmdefs verified).
+
+**Remaining — Critical (1 task)**:
 1. **TASK-001** — Smoke-test the combat pipeline. This is pure verification (no code change) and
    either closes out the project's longest-standing open bug investigation, or surfaces a real
    remaining issue early — either way, everything else benefits from knowing this answer.
-2. **TASK-004** — Add save-migration dispatch scaffolding. Small, isolated, no dependencies, and
-   the kind of thing that gets exponentially more annoying to retrofit the longer it's deferred.
-3. **TASK-002** — Decide the fate of the PRD's 3-Passive combat system. This is a
-   decision-and-documentation task (not code), but it's blocking (TASK-003 depends on it, and
-   TASK-014's final status doc depends on it too) and resolves the single biggest
-   ambiguity in the project's combat scope.
+   Requires the Unity Editor (not done in this pass).
 
-**Important (7 tasks)**: TASK-003 (conditional on TASK-002), TASK-005, TASK-006, TASK-007,
-TASK-008, TASK-011, TASK-012, TASK-014.
+**Remaining — Important (3 tasks)**: TASK-011, TASK-012, TASK-014
+(TASK-014 also depends on TASK-001).
 
-**Polish (4 tasks)**: TASK-009, TASK-010, TASK-013.
+**Remaining — Polish**: none.
+
+**New follow-up task needed** (from TASK-006 investigation): manual Unity Editor check of
+whether `PlayerMove.cs:169`'s `TryInteract()` E-key gate is already blocked while SellBox
+is open via `DisableMovement()` independent of `UIManager.IsAnyPanelOpen()` — determines
+whether the legacy `OpenPanel`/`ClosePanel`/`CloseAllPanels`/`IsAnyPanelOpen`/
+`currentlyOpenPanel`/`allUIPanels` machinery in `UIManager.cs` can be safely removed.
 
 All tasks are designed to be independently resumable — see `00_README.md` for the execution
 protocol.
