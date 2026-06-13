@@ -108,13 +108,11 @@ public class BattleStatusUI : MonoBehaviour
         if (playerTeamText != null)
         {
             playerTeamText.text = $"Your Team: {playerAlive}/{playerTotal}";
-            playerTeamText.color = playerAlive > 0 ? playerTeamColor : Color.gray;
         }
 
         if (enemyTeamText != null)
         {
             enemyTeamText.text = $"Enemies: {enemyAlive}/{enemyTotal}";
-            enemyTeamText.color = enemyAlive > 0 ? enemyTeamColor : Color.gray;
         }
     }
 
