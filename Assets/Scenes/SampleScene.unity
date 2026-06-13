@@ -17612,7 +17612,6 @@ GameObject:
   - component: {fileID: 1771585766}
   - component: {fileID: 1771585765}
   - component: {fileID: 1771585764}
-  - component: {fileID: 1771585767}
   - component: {fileID: 1771585768}
   m_Layer: 5
   m_Name: WorldMap
@@ -17704,18 +17703,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &1771585767
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1771585762}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb6c8d87be1af622d8a5e305d0c4c011, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WorldMapUIController
 --- !u!114 &1771585768
 MonoBehaviour:
   m_ObjectHideFlags: 0
