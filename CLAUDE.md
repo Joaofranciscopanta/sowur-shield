@@ -18,8 +18,9 @@ Assets/Scripts/
 ├── Core Systems/       PlayerMove.cs, InteractionManager.cs, UIManager.cs, UIInput.cs, IInteractable.cs
 ├── Inventory/          Inventory.cs, InventoryItem.cs, ItemStack.cs, InventorySlot.cs, ItemTooltip.cs
 ├── Selling/            SellBox.cs
-├── Farming/            SoilBlockInteractable.cs, CropData.cs, CropGrowthManager.cs
-│   DualGridTilemap/    DualGridTilemap.cs, CursorController.cs
+├── Farming (root, SowurShield.Core): SoilBlockInteractable.cs, CropData.cs, CropGrowthManager.cs,
+│                       FarmBuildingManager.cs, FarmBuildingData.cs, WeatherController.cs
+│   DualGridTilemap/    DualGridTilemap.cs, CursorController.cs  (SowurShield.Farming)
 ├── Dialogue/Core/      DialogueTree.cs, DialogueNode.cs, DialogueChoice.cs, DialogueCondition.cs, DialogueEffect.cs
 │   Dialogue/UI/        DialogueTreeUI.cs, ChoiceButton.cs, PortraitManager.cs
 │   Dialogue/Memory/    ConversationMemory.cs, ConversationData.cs
