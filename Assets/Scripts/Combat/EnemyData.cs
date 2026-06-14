@@ -86,6 +86,9 @@ public class EnemyData : ScriptableObject
     [Range(0f, 1f)]
     public float baseAccuracy = 1.0f;
 
+    [Tooltip("Melee units can only target the opposing front column (unless empty); Ranged units can target any column.")]
+    public AttackRange attackRange = AttackRange.Ranged;
+
     [Header("Drops")]
     [Tooltip("Experience points granted on defeat")]
     public int experienceReward = 20;

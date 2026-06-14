@@ -65,6 +65,10 @@ public class TurnManager : MonoBehaviour
     /// <summary>Current player combo stack count (0 = no active combo).</summary>
     public int GetComboCount() => comboCount;
 
+    // Grid layout constants (mirrors GridManager defaults: 9 columns, enemy side = 0-5, player side = 6-8).
+    private const int EnemyFrontColumn = 5;  // Enemy column closest to the player side.
+    private const int PlayerFrontColumn = 6; // Player column closest to the enemy side.
+
     // Battle result
     public enum BattleResult { Ongoing, Victory, Defeat, Draw }
     public BattleResult battleResult = BattleResult.Ongoing;
@@ -461,6 +465,16 @@ public class TurnManager : MonoBehaviour
 
         if (aliveEnemies.Count == 0)
             return null;
+
+        // Melee units can only reach the opposing side's front column, unless it's empty
+        // (no alive units there), in which case they can reach any column.
+        if (attacker.GetAttackRange() == AttackRange.Melee)
+        {
+            int frontColumn = attacker.isPlayerUnit ? EnemyFrontColumn : PlayerFrontColumn;
+            var frontColumnEnemies = aliveEnemies.Where(e => e.gridPosition.x == frontColumn).ToList();
+            if (frontColumnEnemies.Count > 0)
+                aliveEnemies = frontColumnEnemies;
+        }
 
         // Behavior-aware targeting for enemy AI units (player targeting always uses
         // lethal-first / front-column logic below).

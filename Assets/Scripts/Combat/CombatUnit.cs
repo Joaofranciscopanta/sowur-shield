@@ -108,6 +108,9 @@ public class CombatUnit : MonoBehaviour
     /// <summary>"Aggressive" (default), "Defensive", "Support", or "Random". Unused for player units.</summary>
     private string aiBehavior = "Aggressive";
 
+    // ── Attack range (from AnimalData/EnemyData.attackRange) ──────────────────
+    private AttackRange attackRange = AttackRange.Ranged;
+
     /// <summary>
     /// Initialize this CombatUnit from an Animal
     /// </summary>
@@ -588,6 +591,15 @@ public class CombatUnit : MonoBehaviour
 
     /// <summary>"Aggressive" (default), "Defensive", "Support", or "Random".</summary>
     public string GetAIBehavior() => aiBehavior;
+
+    /// <summary>Set this unit's attack range (from AnimalData/EnemyData.attackRange).</summary>
+    public void SetAttackRange(AttackRange range)
+    {
+        attackRange = range;
+    }
+
+    /// <summary>Melee (front column only, unless empty) or Ranged (any column).</summary>
+    public AttackRange GetAttackRange() => attackRange;
 
     /// <summary>Product of the given multiplier component across all active stat buffs.</summary>
     private float GetBuffMultiplier(System.Func<(float atkMult, float defMult, float spdMult, int turnsRemaining), float> selector)

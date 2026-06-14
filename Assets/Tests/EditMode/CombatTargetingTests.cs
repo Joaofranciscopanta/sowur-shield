@@ -376,6 +376,88 @@ public class CombatTargetingTests
 
         Assert.AreSame(killable, target, "Aggressive AI damage skills should still use lethal-first targeting.");
     }
+
+    // =========================================================================
+    // MELEE / RANGED POSITIONAL TARGETING
+    // =========================================================================
+
+    [Test]
+    public void SelectTarget_MeleePlayerAttacker_OnlyConsidersEnemyFrontColumn()
+    {
+        // Enemy front column (closest to the player side) is column 5.
+        // A melee player attacker must target the front-column enemy even though
+        // the back-column enemy would otherwise be a lethal kill.
+        var attacker = CreateUnit(isPlayer: true, column: 8, hp: 100f, atk: 50f);
+        attacker.SetAttackRange(AttackRange.Melee);
+
+        var frontTough = CreateUnit(isPlayer: false, column: 5, hp: 200f, def: 0f);
+        var backKillable = CreateUnit(isPlayer: false, column: 2, hp: 10f, def: 0f);
+
+        var tm = CreateTurnManager(
+            new List<CombatUnit> { attacker },
+            new List<CombatUnit> { frontTough, backKillable });
+
+        CombatUnit target = SelectTarget(tm, attacker);
+
+        Assert.AreSame(frontTough, target, "Melee attacker should only be able to target the enemy front column (5), even if a back-column kill is available.");
+    }
+
+    [Test]
+    public void SelectTarget_MeleePlayerAttacker_FrontColumnEmpty_FallsBackToAnyColumn()
+    {
+        // No enemy occupies the front column (5); melee attacker should fall back
+        // to considering all alive enemies.
+        var attacker = CreateUnit(isPlayer: true, column: 8, hp: 100f, atk: 50f);
+        attacker.SetAttackRange(AttackRange.Melee);
+
+        var backOnly = CreateUnit(isPlayer: false, column: 2, hp: 100f, def: 0f);
+
+        var tm = CreateTurnManager(
+            new List<CombatUnit> { attacker },
+            new List<CombatUnit> { backOnly });
+
+        CombatUnit target = SelectTarget(tm, attacker);
+
+        Assert.AreSame(backOnly, target, "When the front column is empty, a melee attacker should fall back to any alive enemy.");
+    }
+
+    [Test]
+    public void SelectTarget_RangedPlayerAttacker_CanTargetAnyColumn()
+    {
+        // Regression: a Ranged attacker (default) is unaffected by the melee front-column
+        // restriction and should still use lethal-first targeting across all columns.
+        var attacker = CreateUnit(isPlayer: true, column: 8, hp: 100f, atk: 50f);
+
+        var frontTough = CreateUnit(isPlayer: false, column: 5, hp: 200f, def: 0f);
+        var backKillable = CreateUnit(isPlayer: false, column: 2, hp: 10f, def: 0f);
+
+        var tm = CreateTurnManager(
+            new List<CombatUnit> { attacker },
+            new List<CombatUnit> { frontTough, backKillable });
+
+        CombatUnit target = SelectTarget(tm, attacker);
+
+        Assert.AreSame(backKillable, target, "Ranged attacker should use lethal-first targeting across all columns.");
+    }
+
+    [Test]
+    public void SelectTarget_MeleeEnemyAttacker_OnlyConsidersPlayerFrontColumn()
+    {
+        // Player front column (closest to the enemy side) is column 6.
+        var attacker = CreateUnit(isPlayer: false, column: 0, hp: 100f, atk: 50f);
+        attacker.SetAttackRange(AttackRange.Melee);
+
+        var frontTough = CreateUnit(isPlayer: true, column: 6, hp: 200f, def: 0f);
+        var backKillable = CreateUnit(isPlayer: true, column: 8, hp: 10f, def: 0f);
+
+        var tm = CreateTurnManager(
+            new List<CombatUnit> { frontTough, backKillable },
+            new List<CombatUnit> { attacker });
+
+        CombatUnit target = SelectTarget(tm, attacker);
+
+        Assert.AreSame(frontTough, target, "Melee enemy attacker should only be able to target the player front column (6), even if a back-column kill is available.");
+    }
 }
 
 } // namespace SowurShield.Tests

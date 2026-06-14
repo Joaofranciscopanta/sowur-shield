@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using SowurShield.Combat;
 
 namespace SowurShield.Animals
 {
@@ -60,6 +61,9 @@ public class AnimalData : ScriptableObject
     [Header("Combat Stats")]
     [Tooltip("Base combat statistics for this animal type")]
     public AnimalCombatStats baseCombatStats = new AnimalCombatStats();
+
+    [Tooltip("Melee units can only target the opposing front column (unless empty); Ranged units can target any column.")]
+    public AttackRange attackRange = AttackRange.Ranged;
 
     // Not currently read by the combat system — part of the PRD's descoped 3-Passive System.
     // See SOWUR_SHIELD_STATUS.md "Combat Scope — Open Decision" (resolved: Option A, descope).
