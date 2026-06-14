@@ -75,10 +75,13 @@ public class CombatUnit : MonoBehaviour
     private Animator unitAnimator;
 
     // Animator parameter hashes
-    private static readonly int AnimAttack = Animator.StringToHash("Attack");
-    private static readonly int AnimHurt   = Animator.StringToHash("Hurt");
-    private static readonly int AnimDie    = Animator.StringToHash("Die");
-    private static readonly int AnimIdle   = Animator.StringToHash("Idle");
+    private static readonly int AnimAttack   = Animator.StringToHash("Attack");
+    private static readonly int AnimHurt     = Animator.StringToHash("Hurt");
+    private static readonly int AnimDie      = Animator.StringToHash("Die");
+    private static readonly int AnimIdle     = Animator.StringToHash("Idle");
+    private static readonly int AnimCrit     = Animator.StringToHash("Crit");
+    private static readonly int AnimPoison   = Animator.StringToHash("Poison");
+    private static readonly int AnimWeakness = Animator.StringToHash("Weakness");
 
     // Flash coroutine tracking
     private Coroutine currentFlashCoroutine = null;
@@ -356,7 +359,7 @@ public class CombatUnit : MonoBehaviour
 
         // Update visuals
         UpdateHealthBar();
-        FlashDamage();
+        FlashDamage(isCrit);
         SowurShield.Core.SFXManager.Play("CombatHit");
 
         OnDamageTaken?.Invoke(damage, isCrit);
@@ -494,12 +497,16 @@ public class CombatUnit : MonoBehaviour
     }
 
     /// <summary>
-    /// Flash red when taking damage (visual feedback) and trigger Hurt animation.
+    /// Flash red when taking damage (visual feedback) and trigger Hurt/Crit animation.
     /// </summary>
-    private void FlashDamage()
+    private void FlashDamage(bool isCrit = false)
     {
         if (unitAnimator != null)
+        {
             unitAnimator.SetTrigger(AnimHurt);
+            if (isCrit)
+                unitAnimator.SetTrigger(AnimCrit);
+        }
 
         if (visualObject != null)
         {
@@ -507,6 +514,17 @@ public class CombatUnit : MonoBehaviour
                 StopCoroutine(currentFlashCoroutine);
             currentFlashCoroutine = StartCoroutine(FlashColorCoroutine(Color.red));
         }
+    }
+
+    /// <summary>Fire the Poison or Weakness animator trigger, if an animator is assigned.</summary>
+    public void TriggerStatusAnimation(StatusEffectType type)
+    {
+        if (unitAnimator == null) return;
+
+        if (type == StatusEffectType.Poison)
+            unitAnimator.SetTrigger(AnimPoison);
+        else if (type == StatusEffectType.Weakness)
+            unitAnimator.SetTrigger(AnimWeakness);
     }
 
     /// <summary>

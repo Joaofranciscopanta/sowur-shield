@@ -62,6 +62,8 @@ public class CombatUnitVFX : MonoBehaviour
 
     private void HandleStatusApplied(StatusEffectType type)
     {
+        unit.TriggerStatusAnimation(type);
+
         if (activeStatusIcons.ContainsKey(type))
             return;
 
