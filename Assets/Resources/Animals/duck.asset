@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: duck
   m_EditorClassIdentifier: 
   animalName: Duck
-  animalType: 
-  animalFamily: 
-  animalClass: 
+  animalType:
+  animalFamily: Anatidae
+  animalClass:
   idleSprite: {fileID: 3805131861176811647, guid: cd85b77fce8de69418b644ba975c1d18, type: 3}
   animatorController: {fileID: 0}
   moveSpeed: 1.5
@@ -55,6 +55,7 @@ MonoBehaviour:
     activeSkillId: 
     passiveSkillIds: []
   combatClass: DPS
+  attackRange: 0
   pettingStatBonus: 0.01
   feedingStatBonus: 0.02
   productionQualityBonus: 0.05
@@ -64,7 +65,7 @@ MonoBehaviour:
   seasonalSpeedBonus: 1.15
   canStack: 1
   maxStackSize: 3
-  activeSkill: {fileID: 0}
+  activeSkill: {fileID: 11400000, guid: c6115bd0ce604542ab70825f9f53e37c, type: 3}
   availablePassiveSkills: []
   canDoChores: 0
   choreType: 

@@ -27,8 +27,11 @@ MonoBehaviour:
   defenseScaling: 1.08
   aiBehavior: Aggressive
   targetPriority: Weakest
-  skills: []
+  skills:
+  - {fileID: 11400000, guid: cc248ce795574493a11bb16967f8f025, type: 3}
   skillUseChance: 0.3
+  baseAccuracy: 0.88
+  attackRange: 0
   experienceReward: 20
   goldDrop: 10
   enemyLoot: []

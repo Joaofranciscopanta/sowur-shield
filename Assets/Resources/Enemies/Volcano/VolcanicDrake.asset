@@ -29,6 +29,8 @@ MonoBehaviour:
   targetPriority: Weakest
   skills: []
   skillUseChance: 0.3
+  baseAccuracy: 0.88
+  attackRange: 0
   experienceReward: 200
   goldDrop: 100
   enemyLoot: []

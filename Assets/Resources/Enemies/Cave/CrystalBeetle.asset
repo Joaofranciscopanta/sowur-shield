@@ -25,10 +25,12 @@ MonoBehaviour:
   healthScaling: 1.15
   attackScaling: 1.1
   defenseScaling: 1.08
-  aiBehavior: Aggressive
+  aiBehavior: Defensive
   targetPriority: Weakest
   skills: []
   skillUseChance: 0.3
+  baseAccuracy: 0.9
+  attackRange: 1
   experienceReward: 60
   goldDrop: 30
   enemyLoot: []

@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: chicken
   m_EditorClassIdentifier: 
   animalName: Chicken
-  animalType: 
-  animalFamily: 
-  animalClass: 
+  animalType:
+  animalFamily: Galliformes
+  animalClass:
   idleSprite: {fileID: -7787217817404136488, guid: a96363599a2dc62458a1bbc653ae6bbc, type: 3}
   animatorController: {fileID: 0}
   moveSpeed: 1.5
@@ -57,6 +57,7 @@ MonoBehaviour:
     activeSkillId: 
     passiveSkillIds: []
   combatClass: DPS
+  attackRange: 1
   pettingStatBonus: 0.01
   feedingStatBonus: 0.02
   productionQualityBonus: 0.05
@@ -66,7 +67,8 @@ MonoBehaviour:
   seasonalSpeedBonus: 1.15
   canStack: 1
   maxStackSize: 3
-  activeSkill: {fileID: 0}
-  availablePassiveSkills: []
+  activeSkill: {fileID: 11400000, guid: a56c34e8252d4097a0e894fb7e7962dc, type: 3}
+  availablePassiveSkills:
+  - {fileID: 11400000, guid: ce55dc8105744f88a8110459ff669c20, type: 3}
   canDoChores: 0
   choreType: 
