@@ -394,10 +394,35 @@ public class TurnManager : MonoBehaviour
     /// <summary>Select primary target for a skill.</summary>
     private CombatUnit SelectSkillTarget(CombatUnit attacker, AnimalSkill skill)
     {
+        bool isOffensiveStatus = skill.statusEffect == AnimalSkillEffect.Burn
+            || skill.statusEffect == AnimalSkillEffect.Poison
+            || skill.statusEffect == AnimalSkillEffect.Weakness;
+
+        // Aggressive AI focuses offensive status skills (Burn/Poison/Weakness) on the
+        // highest-HP enemy (the tank) instead of the default lethal-first/front-column target.
+        // Damage skills still fall through to SelectTarget's lethal-first logic below.
+        if (!attacker.isPlayerUnit && isOffensiveStatus && attacker.GetAIBehavior() == "Aggressive")
+        {
+            List<CombatUnit> opponents = playerUnits;
+            var aliveOpponents = opponents.Where(o => o != null && o.IsAlive()).ToList();
+            if (aliveOpponents.Count > 0)
+                return aliveOpponents.OrderByDescending(o => o.currentHealth).First();
+        }
+
         // Offensive skills always hit an opponent regardless of self-buff flags.
         // Any self-heal from affectsSelf is applied separately inside ExecuteSkill.
-        if (skill.damageMultiplier > 0f)
+        if (skill.damageMultiplier > 0f || isOffensiveStatus)
             return SelectTarget(attacker);
+
+        // Support AI directs heal/shield-type skills to the ally with the lowest HP%.
+        if (!attacker.isPlayerUnit && attacker.GetAIBehavior() == "Support"
+            && (skill.healAmount > 0f || skill.statusEffect == AnimalSkillEffect.Shield || skill.affectsAllies))
+        {
+            List<CombatUnit> allies = attacker.isPlayerUnit ? playerUnits : enemyUnits;
+            var aliveAllies = allies.Where(a => a != null && a.IsAlive()).ToList();
+            if (aliveAllies.Count > 0)
+                return aliveAllies.OrderBy(a => a.GetHealthPercent()).First();
+        }
 
         // Pure healing / self-buff skills: primaryTarget is self (ally spread handled in ExecuteSkill).
         return attacker;

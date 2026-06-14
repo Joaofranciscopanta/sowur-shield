@@ -2,6 +2,7 @@ using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Reflection;
+using SowurShield.Animals;
 using SowurShield.Combat;
 
 namespace SowurShield.Tests
@@ -82,6 +83,25 @@ public class CombatTargetingTests
     private CombatUnit SelectTarget(TurnManager tm, CombatUnit attacker)
     {
         return (CombatUnit)InvokePrivate(tm, "SelectTarget", new object[] { attacker });
+    }
+
+    private CombatUnit SelectSkillTarget(TurnManager tm, CombatUnit attacker, AnimalSkill skill)
+    {
+        return (CombatUnit)InvokePrivate(tm, "SelectSkillTarget", new object[] { attacker, skill });
+    }
+
+    private AnimalSkill CreateSkill(float damageMultiplier = 0f, AnimalSkillEffect statusEffect = AnimalSkillEffect.None,
+        float healAmount = 0f, bool affectsAllies = false, bool affectsSelf = false)
+    {
+        var skill = ScriptableObject.CreateInstance<AnimalSkill>();
+        Track(skill);
+        skill.skillType = SkillType.Active;
+        skill.damageMultiplier = damageMultiplier;
+        skill.statusEffect = statusEffect;
+        skill.healAmount = healAmount;
+        skill.affectsAllies = affectsAllies;
+        skill.affectsSelf = affectsSelf;
+        return skill;
     }
 
     // =========================================================================
@@ -282,6 +302,79 @@ public class CombatTargetingTests
         CombatUnit target = SelectTarget(tm, attacker);
 
         Assert.AreSame(backWeak, target, "Aggressive AI should still prioritize a lethal kill over the front column.");
+    }
+
+    // =========================================================================
+    // AI BEHAVIOR — Skill targeting (SelectSkillTarget)
+    // =========================================================================
+
+    [Test]
+    public void SelectSkillTarget_AggressiveEnemy_OffensiveStatusSkill_TargetsHighestHealthEnemy()
+    {
+        // Aggressive AI should focus an offensive status skill (e.g. Poison) on the
+        // highest-HP enemy (the tank), not the default lethal-first/front-column target.
+        var attacker = CreateUnit(isPlayer: false, column: 0, hp: 100f, atk: 10f);
+        attacker.SetAIBehavior("Aggressive");
+
+        var lowHpFront = CreateUnit(isPlayer: true, column: 6, hp: 50f, def: 0f);
+        var highHpBack = CreateUnit(isPlayer: true, column: 8, hp: 200f, def: 0f);
+
+        var tm = CreateTurnManager(
+            new List<CombatUnit> { lowHpFront, highHpBack },
+            new List<CombatUnit> { attacker });
+
+        var poisonSkill = CreateSkill(statusEffect: AnimalSkillEffect.Poison);
+
+        CombatUnit target = SelectSkillTarget(tm, attacker, poisonSkill);
+
+        Assert.AreSame(highHpBack, target, "Aggressive AI should focus offensive status skills on the highest-HP enemy.");
+    }
+
+    [Test]
+    public void SelectSkillTarget_SupportEnemy_HealSkill_TargetsLowestHealthPercentAlly()
+    {
+        // Support AI should direct a heal skill to the ally with the lowest HP%.
+        var attacker = CreateUnit(isPlayer: false, column: 0, hp: 100f, atk: 1f);
+        attacker.SetAIBehavior("Support");
+
+        var healthyAlly = CreateUnit(isPlayer: false, column: 1, hp: 100f, def: 0f);
+
+        var hurtAlly = CreateUnit(isPlayer: false, column: 2, hp: 100f, def: 0f);
+        hurtAlly.TakeDamageWithShield(80f); // 20% HP remaining
+
+        var enemyPlayer = CreateUnit(isPlayer: true, column: 6, hp: 100f, def: 0f);
+
+        var tm = CreateTurnManager(
+            new List<CombatUnit> { enemyPlayer },
+            new List<CombatUnit> { attacker, healthyAlly, hurtAlly });
+
+        var healSkill = CreateSkill(healAmount: 20f, affectsSelf: true);
+
+        CombatUnit target = SelectSkillTarget(tm, attacker, healSkill);
+
+        Assert.AreSame(hurtAlly, target, "Support AI should direct heal skills to the ally with the lowest HP%.");
+    }
+
+    [Test]
+    public void SelectSkillTarget_AggressiveEnemy_DamageSkill_UsesLethalFirstFallback()
+    {
+        // Regression: a damage skill with no killable enemy in range should fall back
+        // to the default SelectTarget (front-column) logic, not the highest-HP heuristic.
+        var attacker = CreateUnit(isPlayer: false, column: 0, hp: 100f, atk: 5f);
+        attacker.SetAIBehavior("Aggressive");
+
+        var killable = CreateUnit(isPlayer: true, column: 8, hp: 4f, def: 0f);
+        var front = CreateUnit(isPlayer: true, column: 6, hp: 100f, def: 0f);
+
+        var tm = CreateTurnManager(
+            new List<CombatUnit> { front, killable },
+            new List<CombatUnit> { attacker });
+
+        var damageSkill = CreateSkill(damageMultiplier: 1f);
+
+        CombatUnit target = SelectSkillTarget(tm, attacker, damageSkill);
+
+        Assert.AreSame(killable, target, "Aggressive AI damage skills should still use lethal-first targeting.");
     }
 }
 
