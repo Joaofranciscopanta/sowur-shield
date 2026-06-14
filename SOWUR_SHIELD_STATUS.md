@@ -298,7 +298,15 @@ outstanding (the combat pipeline fixes may have completed some of these as a sid
 - `BattleHudOverlay.cs` — self-spawning screen-space overlay showing the active
   `BattleModifier.description` banner and `Combo x{N}!` counter, polling `TurnManager.Instance`
 - `ConsumableBattleUI.cs` — self-spawning "Items" button + list of consumables from `Inventory`;
-  clicking one calls `TurnManager.UseConsumableOnUnit` on the most-injured living player unit
+  clicking one calls `TurnManager.UseConsumableOnUnit` on the most-injured living player unit.
+  The button is now hidden outside of an active battle (`TurnManager.Instance == null`) — it
+  previously persisted across all scenes via `DontDestroyOnLoad` with no visibility gating.
+  **Known limitation**: the player's `Inventory` MonoBehaviour only exists in `SampleScene`
+  (the main game scene), not in `CombatScene` — so even during battle, `RefreshList()` currently
+  shows "No inventory found" because `FindFirstObjectByType<Inventory>()` returns null.
+  Fixing this requires either persisting the `Inventory` GameObject into `CombatScene` or
+  having `ConsumableBattleUI`/`TurnManager.UseConsumableOnUnit` read consumables from
+  `SaveManager`/`GameData` instead of a live `Inventory` instance — deferred to a future session.
 - `CombatUnit` animator triggers: `Crit` (fires alongside `Hurt` when `TakeDamage(_, isCrit: true)`),
   `Poison`/`Weakness` (fire via new `TriggerStatusAnimation(StatusEffectType)`, called from
   `CombatUnitVFX.HandleStatusApplied`) — all guarded by `unitAnimator != null`, no-op if no

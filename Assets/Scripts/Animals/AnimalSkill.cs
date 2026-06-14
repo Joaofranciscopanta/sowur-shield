@@ -49,6 +49,7 @@ public class SkillUnlockCondition
 
     [Header("Combined Conditions")]
     [Tooltip("Multiple conditions that must all be met")]
+    [SerializeReference]
     public List<SkillUnlockCondition> combinedConditions = new List<SkillUnlockCondition>();
 
     /// <summary>

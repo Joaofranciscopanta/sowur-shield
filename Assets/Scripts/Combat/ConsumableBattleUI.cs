@@ -91,6 +91,9 @@ public class ConsumableBattleUI : MonoBehaviour
         fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
         panelObj.SetActive(false);
+
+        // Hidden by default outside of battle; Update() shows it when TurnManager.Instance exists.
+        toggleButtonObj.SetActive(false);
     }
 
     private TextMeshProUGUI CreateLabel(Transform parent, string text)
@@ -127,7 +130,7 @@ public class ConsumableBattleUI : MonoBehaviour
         for (int i = listPanel.childCount - 1; i >= 0; i--)
             Destroy(listPanel.GetChild(i).gameObject);
 
-        Inventory inventory = FindFirstObjectByType<Inventory>();
+        SowurShield.Inventory.Inventory inventory = FindFirstObjectByType<SowurShield.Inventory.Inventory>();
         if (inventory == null)
         {
             CreateRow("No inventory found", null, 0);
@@ -190,7 +193,12 @@ public class ConsumableBattleUI : MonoBehaviour
 
     private void Update()
     {
-        if (isOpen && TurnManager.Instance == null)
+        bool inBattle = TurnManager.Instance != null;
+
+        if (toggleButtonObj.activeSelf != inBattle)
+            toggleButtonObj.SetActive(inBattle);
+
+        if (!inBattle && isOpen)
         {
             // No active battle — hide the list to avoid stale state.
             isOpen = false;

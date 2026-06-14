@@ -735,7 +735,7 @@ public class TurnManager : MonoBehaviour
         if (item.healthRestore > 0)
             target.Heal(item.healthRestore);
 
-        Inventory inventory = FindFirstObjectByType<Inventory>();
+        SowurShield.Inventory.Inventory inventory = FindFirstObjectByType<SowurShield.Inventory.Inventory>();
         if (inventory != null)
             inventory.RemoveItem(item, 1);
 
