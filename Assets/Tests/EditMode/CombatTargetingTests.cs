@@ -221,6 +221,68 @@ public class CombatTargetingTests
 
         Assert.IsNull(target, "SelectTarget should return null when there are no alive enemies.");
     }
+
+    // =========================================================================
+    // AI BEHAVIOR — Defensive / Support (enemy attackers only)
+    // =========================================================================
+
+    [Test]
+    public void SelectTarget_DefensiveEnemy_TargetsHighestAttackPlayer()
+    {
+        // Neither player is killable or lethal-relevant; Defensive AI should pick
+        // the player with the highest effective attack (the biggest threat),
+        // even though it isn't the front-column target.
+        var attacker = CreateUnit(isPlayer: false, column: 0, hp: 100f, atk: 1f);
+        attacker.SetAIBehavior("Defensive");
+
+        var frontWeakAttacker = CreateUnit(isPlayer: true, column: 6, hp: 100f, atk: 5f, def: 50f);
+        var backStrongAttacker = CreateUnit(isPlayer: true, column: 8, hp: 100f, atk: 40f, def: 50f);
+
+        var tm = CreateTurnManager(
+            new List<CombatUnit> { frontWeakAttacker, backStrongAttacker },
+            new List<CombatUnit> { attacker });
+
+        CombatUnit target = SelectTarget(tm, attacker);
+
+        Assert.AreSame(backStrongAttacker, target, "Defensive AI should target the player with the highest attack.");
+    }
+
+    [Test]
+    public void SelectTarget_SupportEnemy_TargetsLowestDefensePlayer()
+    {
+        var attacker = CreateUnit(isPlayer: false, column: 0, hp: 100f, atk: 1f);
+        attacker.SetAIBehavior("Support");
+
+        var frontTanky = CreateUnit(isPlayer: true, column: 6, hp: 100f, atk: 5f, def: 50f);
+        var backSquishy = CreateUnit(isPlayer: true, column: 8, hp: 100f, atk: 5f, def: 2f);
+
+        var tm = CreateTurnManager(
+            new List<CombatUnit> { frontTanky, backSquishy },
+            new List<CombatUnit> { attacker });
+
+        CombatUnit target = SelectTarget(tm, attacker);
+
+        Assert.AreSame(backSquishy, target, "Support AI should target the player with the lowest defense.");
+    }
+
+    [Test]
+    public void SelectTarget_AggressiveEnemy_StillUsesLethalFirst()
+    {
+        // Regression: default "Aggressive" behavior must preserve existing lethal-first logic.
+        var attacker = CreateUnit(isPlayer: false, column: 0, hp: 100f, atk: 50f);
+        attacker.SetAIBehavior("Aggressive");
+
+        var frontTough = CreateUnit(isPlayer: true, column: 6, hp: 200f, def: 0f);
+        var backWeak = CreateUnit(isPlayer: true, column: 8, hp: 40f, def: 0f);
+
+        var tm = CreateTurnManager(
+            new List<CombatUnit> { frontTough, backWeak },
+            new List<CombatUnit> { attacker });
+
+        CombatUnit target = SelectTarget(tm, attacker);
+
+        Assert.AreSame(backWeak, target, "Aggressive AI should still prioritize a lethal kill over the front column.");
+    }
 }
 
 } // namespace SowurShield.Tests

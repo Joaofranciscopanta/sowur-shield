@@ -424,6 +424,23 @@ public class TurnManager : MonoBehaviour
         if (aliveEnemies.Count == 0)
             return null;
 
+        // Behavior-aware targeting for enemy AI units (player targeting always uses
+        // lethal-first / front-column logic below).
+        if (!attacker.isPlayerUnit)
+        {
+            string behavior = attacker.GetAIBehavior();
+            if (behavior == "Defensive")
+            {
+                // Target the biggest threat: highest effective attack.
+                return aliveEnemies.OrderByDescending(e => e.GetAttack()).First();
+            }
+            if (behavior == "Support")
+            {
+                // Target the easiest to chip down: lowest effective defense.
+                return aliveEnemies.OrderBy(e => e.GetDefense()).First();
+            }
+        }
+
         // Lethal-first: secure a kill if this attack would finish off an enemy.
         CombatUnit lethalTarget = null;
         foreach (CombatUnit enemy in aliveEnemies)

@@ -104,6 +104,10 @@ public class CombatUnit : MonoBehaviour
     /// <summary>Active multiplicative stat buffs: (attackMult, defenseMult, speedMult, turnsRemaining).</summary>
     private List<(float atkMult, float defMult, float spdMult, int turnsRemaining)> statBuffs = new List<(float, float, float, int)>();
 
+    // ── AI behavior (from EnemyData.aiBehavior) ───────────────────────────────
+    /// <summary>"Aggressive" (default), "Defensive", "Support", or "Random". Unused for player units.</summary>
+    private string aiBehavior = "Aggressive";
+
     /// <summary>
     /// Initialize this CombatUnit from an Animal
     /// </summary>
@@ -565,6 +569,16 @@ public class CombatUnit : MonoBehaviour
     public float GetSpeed() => speed * GetBuffMultiplier(b => b.spdMult);
 
     public float GetAccuracy() => accuracy;
+
+    /// <summary>Set this unit's AI behavior pattern (from EnemyData.aiBehavior). Unused for player units.</summary>
+    public void SetAIBehavior(string behavior)
+    {
+        if (!string.IsNullOrEmpty(behavior))
+            aiBehavior = behavior;
+    }
+
+    /// <summary>"Aggressive" (default), "Defensive", "Support", or "Random".</summary>
+    public string GetAIBehavior() => aiBehavior;
 
     /// <summary>Product of the given multiplier component across all active stat buffs.</summary>
     private float GetBuffMultiplier(System.Func<(float atkMult, float defMult, float spdMult, int turnsRemaining), float> selector)
