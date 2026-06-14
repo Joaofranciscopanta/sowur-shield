@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 namespace SowurShield.Core
@@ -16,9 +15,6 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
     [SerializeField] private bool pauseGameWhenOpen = true;
     [SerializeField] private bool disablePlayerInputWhenOpen = true;
     [SerializeField] private string mainMenuSceneName = "MainMenu";
-
-    [Header("Input")]
-    [SerializeField] private InputActionReference menuToggleAction;
 
     [Header("Audio")]
     [SerializeField] private AudioClip menuOpenSound;
@@ -54,6 +50,9 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
 
     private void Awake()
     {
+        // Get components
+        menuUI = GetComponent<GameMenuUI>();
+
         // Singleton setup
         if (Instance == null)
         {
@@ -62,12 +61,16 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
         }
         else if (Instance != this)
         {
+            // A new scene instance has loaded its own GameMenuManager/GameMenuUI.
+            // Hand its freshly-wired panel/control references to the persisted
+            // singleton so settings/notification/save panels track this scene's
+            // UI instead of the previous scene's (now destroyed) UI, then discard
+            // this duplicate.
+            Instance.menuUI?.TransferReferencesFrom(menuUI);
+            Instance.TransferPanelReferenceFrom(this);
             Destroy(gameObject);
             return;
         }
-
-        // Get components
-        menuUI = GetComponent<GameMenuUI>();
 
         // Find audio source if not assigned
         if (audioSource == null)
@@ -79,9 +82,6 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
         // Find references
         FindGameReferences();
 
-        // Setup input
-        SetupInput();
-
         // Initialize menu state
         if (menuPanel != null)
             menuPanel.SetActive(false);
@@ -92,7 +92,6 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
 
     private void OnDestroy()
     {
-        CleanupInput();
         UnregisterFromUIManager();
 
         // Restore time scale if destroyed while paused
@@ -122,6 +121,28 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
     {
     }
 
+    /// <summary>
+    /// Re-point this persisted instance at the new scene's menu panel (the
+    /// previous scene's menuPanel reference is now destroyed) and ensure it
+    /// starts hidden, since the scene file serializes it as active.
+    /// </summary>
+    public void TransferPanelReferenceFrom(GameMenuManager other)
+    {
+        if (other == null) return;
+
+        menuPanel = other.menuPanel;
+        isMenuOpen = false;
+
+        if (menuPanel != null)
+            menuPanel.SetActive(false);
+
+        // Player/time controller references belong to the old scene; clear so
+        // FindGameReferences() re-resolves them against the new scene.
+        playerMove = null;
+        timeController = null;
+        FindGameReferences();
+    }
+
     private void FindGameReferences()
     {
         // Find player controller
@@ -134,61 +155,32 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
     }
 
     // ============================================================================
-    // INPUT SYSTEM
+    // MENU CONTROL
     // ============================================================================
 
-    private void SetupInput()
+    /// <summary>
+    /// Whether the pause menu is allowed to open right now. Checked by
+    /// UIManager.HandleEscapeKey() before opening this window via ESC.
+    /// </summary>
+    public bool CanOpenMenu()
     {
-        if (menuToggleAction != null)
-        {
-            menuToggleAction.action.Enable();
-            menuToggleAction.action.performed += OnMenuTogglePressed;
-        }
-        else
-        {
-        }
-    }
+        if (IsMapOpen)
+            return false;
 
-    private void CleanupInput()
-    {
-        if (menuToggleAction != null)
-        {
-            menuToggleAction.action.performed -= OnMenuTogglePressed;
-            menuToggleAction.action.Disable();
-        }
-    }
-
-    private void OnMenuTogglePressed(InputAction.CallbackContext context)
-    {
-        // Don't open menu if sleep confirmation panel is active
+        // Don't open menu if sleep confirmation panel is active and visible
         SleepConfirmationPanel sleepPanel = FindFirstObjectByType<SleepConfirmationPanel>();
         if (sleepPanel != null && sleepPanel.gameObject.activeInHierarchy)
         {
-            // Check if the panel is visible by looking for an active panel container
-            bool isPanelVisible = false;
             var panelContainerField = typeof(SleepConfirmationPanel).GetField("panelContainer",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             GameObject panelContainer = panelContainerField?.GetValue(sleepPanel) as GameObject;
 
             if (panelContainer != null && panelContainer.activeInHierarchy)
-            {
-                isPanelVisible = true;
-            }
-
-            if (isPanelVisible)
-            {
-                return;
-            }
+                return false;
         }
 
-            if (IsMapOpen)
-                return;
-        ToggleMenu();
+        return true;
     }
-
-    // ============================================================================
-    // MENU CONTROL
-    // ============================================================================
 
     public void SetMapOpen(bool value)
     {
@@ -328,8 +320,8 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
         // Trigger events
         OnMenuStateChanged?.Invoke(false);
 
-        // Update cursor state
-        SetCursorState(false);
+        // Restore gameplay cursor (visible/unlocked, same as every other in-game UI)
+        SetCursorState(true);
 
     }
 
@@ -491,16 +483,8 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
 
     private void SetCursorState(bool visible)
     {
-        if (visible)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     private void PlaySound(AudioClip clip)

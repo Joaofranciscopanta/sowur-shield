@@ -55,7 +55,9 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
     public string WindowName => "FeedingTrough";
     public int WindowPriority => SowurShield.Core.WindowPriority.SellBox; // Same tier as SellBox (20)
     public bool IsWindowOpen => isOpen;
-    public bool CanCloseWithEsc => true;
+
+    // ESC is reserved for the pause menu; close this window with E (Interact) instead.
+    public bool CanCloseWithEsc => false;
 
     public void OpenWindow()
     {

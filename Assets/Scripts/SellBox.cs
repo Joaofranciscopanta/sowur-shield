@@ -101,7 +101,9 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     public string WindowName => "SellBox";
     public int WindowPriority => 20;
     public bool IsWindowOpen => isSellBoxOpen;
-    public bool CanCloseWithEsc => true;
+
+    // ESC is reserved for the pause menu; close this window with E (Interact) instead.
+    public bool CanCloseWithEsc => false;
 
     // Static reference for single UI window management
     private static SellBox currentlyOpenSellBox;

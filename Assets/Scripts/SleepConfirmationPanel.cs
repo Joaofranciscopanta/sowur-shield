@@ -263,7 +263,7 @@ public class SleepConfirmationPanel : MonoBehaviour
             else
             {
                 sellBoxInfoText.text = "SellBox: No items to sell";
-                sellBoxInfoText.color = Color.gray;
+                sellBoxInfoText.color = new Color(0.176f, 0.165f, 0.149f, 1f);
             }
         }
     }

@@ -387,10 +387,34 @@ public class TeamAssemblerUI : MonoBehaviour
             }
         }
 
-        // Update synergies (placeholder - will expand in Phase 2)
+        // Update synergies based on same-type animal stacking
         if (synergiesText != null)
         {
-            synergiesText.text = "Synergies: TBD (Phase 2)";
+            Dictionary<AnimalData, int> typeCounts = new Dictionary<AnimalData, int>();
+            foreach (var member in TeamAssemblerData.Instance.team)
+            {
+                if (member?.animalData == null) continue;
+
+                typeCounts.TryGetValue(member.animalData, out int count);
+                typeCounts[member.animalData] = count + 1;
+            }
+
+            string synergyText = "Synergies:\n";
+            bool hasSynergy = false;
+            foreach (var entry in typeCounts)
+            {
+                AnimalData data = entry.Key;
+                int count = entry.Value;
+
+                if (data.canStack && count > 1)
+                {
+                    int stackCount = Mathf.Min(count, data.maxStackSize);
+                    synergyText += $"• {stackCount}x {data.animalName} (Stack Bonus)\n";
+                    hasSynergy = true;
+                }
+            }
+
+            synergiesText.text = hasSynergy ? synergyText : "No active synergies";
         }
 
         // Update start battle button

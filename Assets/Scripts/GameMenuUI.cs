@@ -69,6 +69,9 @@ public class GameMenuUI : MonoBehaviour
     private enum InGameSlotMode { Save, Load }
     private InGameSlotMode currentInGameSlotMode;
     private string pendingInGameSlot;
+
+    // Panel to restore when the confirmation dialog is dismissed
+    private GameObject confirmationReturnPanel;
     
     // References
     private GameMenuManager menuManager;
@@ -80,9 +83,69 @@ public class GameMenuUI : MonoBehaviour
         {
         }
     }
-    
+
     private void Start()
     {
+        SetupButtons();
+        SetupSettings();
+        InitializePanels();
+        LoadSettings();
+    }
+
+    /// <summary>
+    /// Re-point this persisted GameMenuUI at the UI panels/controls that belong to a
+    /// freshly-loaded scene, then re-run setup so listeners and panel state target
+    /// the new scene's objects instead of the (now destroyed) previous scene's UI.
+    /// Called by GameMenuManager when a duplicate instance is found on scene load.
+    /// </summary>
+    public void TransferReferencesFrom(GameMenuUI other)
+    {
+        if (other == null) return;
+
+        mainMenuPanel = other.mainMenuPanel;
+        resumeButton = other.resumeButton;
+        settingsButton = other.settingsButton;
+        saveInfoButton = other.saveInfoButton;
+        loadGameButton = other.loadGameButton;
+        quitToMenuButton = other.quitToMenuButton;
+        quitToDesktopButton = other.quitToDesktopButton;
+
+        settingsPanel = other.settingsPanel;
+        masterVolumeSlider = other.masterVolumeSlider;
+        musicVolumeSlider = other.musicVolumeSlider;
+        sfxVolumeSlider = other.sfxVolumeSlider;
+        fullscreenToggle = other.fullscreenToggle;
+        resolutionDropdown = other.resolutionDropdown;
+        settingsBackButton = other.settingsBackButton;
+
+        saveInfoPanel = other.saveInfoPanel;
+        saveInfoText = other.saveInfoText;
+        saveInfoBackButton = other.saveInfoBackButton;
+        deleteSaveButton = other.deleteSaveButton;
+
+        saveSlotPanel = other.saveSlotPanel;
+        saveSlotListParent = other.saveSlotListParent;
+        saveSlotButtonPrefab = other.saveSlotButtonPrefab;
+        saveSlotPanelTitle = other.saveSlotPanelTitle;
+        saveSlotBackButton = other.saveSlotBackButton;
+
+        confirmationPanel = other.confirmationPanel;
+        confirmationText = other.confirmationText;
+        confirmYesButton = other.confirmYesButton;
+        confirmNoButton = other.confirmNoButton;
+
+        notificationPanel = other.notificationPanel;
+        notificationText = other.notificationText;
+        notificationIcon = other.notificationIcon;
+
+        // Stop any notification timer tied to the old (destroyed) panel.
+        if (notificationCoroutine != null)
+        {
+            StopCoroutine(notificationCoroutine);
+            notificationCoroutine = null;
+        }
+
+        // Re-wire listeners and reset panel visibility against the new scene's objects.
         SetupButtons();
         SetupSettings();
         InitializePanels();
@@ -560,6 +623,8 @@ public class GameMenuUI : MonoBehaviour
         {
             // Confirm overwrite
             pendingInGameSlot = slotName;
+            confirmationReturnPanel = saveSlotPanel;
+            SetPanelActive(saveSlotPanel, false);
             SetPanelActive(confirmationPanel, true);
             if (confirmationText != null)
                 confirmationText.text = $"Overwrite save in {slotName}?";
@@ -573,6 +638,8 @@ public class GameMenuUI : MonoBehaviour
     private void OnInGameLoadSlotSelected(string slotName)
     {
         pendingInGameSlot = slotName;
+        confirmationReturnPanel = saveSlotPanel;
+        SetPanelActive(saveSlotPanel, false);
         SetPanelActive(confirmationPanel, true);
         if (confirmationText != null)
             confirmationText.text = "Load this save? Unsaved progress will be lost.";
@@ -604,25 +671,29 @@ public class GameMenuUI : MonoBehaviour
     public void ShowQuitConfirmation(bool quitToDesktop)
     {
         isQuitToDesktop = quitToDesktop;
-        
+
+        confirmationReturnPanel = mainMenuPanel;
+        SetPanelActive(mainMenuPanel, false);
         SetPanelActive(confirmationPanel, true);
-        
+
         if (confirmationText != null)
         {
-            string message = quitToDesktop ? 
+            string message = quitToDesktop ?
                 "Quit to Desktop?\n\nAny unsaved progress will be lost.\nMake sure to sleep in a bed to save!" :
                 "Return to Main Menu?\n\nAny unsaved progress will be lost.\nMake sure to sleep in a bed to save!";
-            
+
             confirmationText.text = message;
         }
     }
-    
+
     private void ShowDeleteSaveConfirmation()
     {
         isQuitToDesktop = false; // Reuse confirmation dialog for delete
-        
+
+        confirmationReturnPanel = mainMenuPanel;
+        SetPanelActive(mainMenuPanel, false);
         SetPanelActive(confirmationPanel, true);
-        
+
         if (confirmationText != null)
         {
             confirmationText.text = "Delete Save File?\n\nThis action cannot be undone.\nAll your progress will be permanently lost!";
@@ -638,6 +709,7 @@ public class GameMenuUI : MonoBehaviour
         {
             string slot = pendingInGameSlot;
             pendingInGameSlot = null;
+            confirmationReturnPanel = null;
 
             if (currentInGameSlotMode == InGameSlotMode.Save)
                 ExecuteInGameSave(slot);
@@ -656,20 +728,26 @@ public class GameMenuUI : MonoBehaviour
                 UpdateSaveInfoDisplay();
                 UpdateLoadButtonState();
             }
+
+            SetPanelActive(confirmationReturnPanel, true);
+            confirmationReturnPanel = null;
         }
         else
         {
             // Quit confirmation
+            confirmationReturnPanel = null;
             if (isQuitToDesktop)
                 menuManager?.DoQuitToDesktop();
             else
                 menuManager?.DoQuitToMainMenu();
         }
     }
-    
+
     private void OnConfirmNo()
     {
         SetPanelActive(confirmationPanel, false);
+        SetPanelActive(confirmationReturnPanel, true);
+        confirmationReturnPanel = null;
     }
     
     // ============================================================================

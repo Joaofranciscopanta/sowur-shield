@@ -266,14 +266,15 @@ public class UIManager : MonoBehaviour
 
         // No windows open, try to open game menu
         var gameMenu = registeredWindows.FirstOrDefault(w => w.WindowName == "GameMenu");
-        if (gameMenu != null && !gameMenu.IsWindowOpen)
+        if (gameMenu != null && !gameMenu.IsWindowOpen &&
+            (gameMenu is not GameMenuManager menuManager || menuManager.CanOpenMenu()))
         {
             TryOpenWindow(gameMenu);
             LogDebug("ESC opened game menu");
         }
         else
         {
-            LogDebug("ESC pressed but no game menu found or it's already open");
+            LogDebug("ESC pressed but no game menu found, blocked, or it's already open");
         }
     }
 

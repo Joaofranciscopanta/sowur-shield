@@ -20,17 +20,7 @@ public class UIInput : MonoBehaviour
             HandleEscapeKey();
         }
     }
-    
-    private void OnGUI()
-    {
-        // Alternative: Handle Escape key via OnGUI for better reliability
-        if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Escape)
-        {
-            HandleEscapeKey();
-            Event.current.Use(); // Consume the event
-        }
-    }
-    
+
     private void HandleEscapeKey()
     {
         // Always ensure cursor is visible when handling UI
