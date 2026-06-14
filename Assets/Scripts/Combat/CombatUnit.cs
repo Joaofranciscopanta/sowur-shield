@@ -711,6 +711,12 @@ public class CombatUnit : MonoBehaviour
     /// <summary>Returns true if this unit is immune to the given status effect type.</summary>
     public bool IsImmuneTo(StatusEffectType type) => statusImmunities.Contains(type.ToString());
 
+    /// <summary>Fired whenever a status effect is applied to this unit (including refreshes).</summary>
+    public event System.Action<StatusEffectType> OnStatusApplied;
+
+    /// <summary>Fired whenever an active status effect expires (its duration reaches 0).</summary>
+    public event System.Action<StatusEffectType> OnStatusExpired;
+
     /// <summary>Apply or stack a status effect on this unit.</summary>
     public void ApplyStatusEffect(StatusEffectType type, float value, int duration)
     {
@@ -718,6 +724,7 @@ public class CombatUnit : MonoBehaviour
         if (type == StatusEffectType.Poison)
         {
             statusEffects.Add(new CombatStatusEffect(type, value, duration));
+            OnStatusApplied?.Invoke(type);
             return;
         }
 
@@ -727,10 +734,12 @@ public class CombatUnit : MonoBehaviour
             if (effect.type == type)
             {
                 effect.turnsRemaining = Mathf.Max(effect.turnsRemaining, duration);
+                OnStatusApplied?.Invoke(type);
                 return;
             }
         }
         statusEffects.Add(new CombatStatusEffect(type, value, duration));
+        OnStatusApplied?.Invoke(type);
     }
 
     /// <summary>Number of currently active status effects of the given type.</summary>
@@ -759,7 +768,10 @@ public class CombatUnit : MonoBehaviour
 
             effect.turnsRemaining--;
             if (effect.turnsRemaining <= 0)
+            {
                 statusEffects.RemoveAt(i);
+                OnStatusExpired?.Invoke(effect.type);
+            }
         }
 
         // Tick temporary stat buffs (e.g. from skills/synergies) the same way.
