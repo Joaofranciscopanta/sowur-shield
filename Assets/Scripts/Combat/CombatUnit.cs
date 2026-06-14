@@ -570,6 +570,15 @@ public class CombatUnit : MonoBehaviour
 
     public float GetAccuracy() => accuracy;
 
+    /// <summary>Base chance for this unit's attacks/skills to land a critical hit.</summary>
+    public float GetCritChance() => 0.05f;
+
+    /// <summary>Damage multiplier applied to a critical hit.</summary>
+    public const float CritMultiplier = 1.5f;
+
+    /// <summary>Returns damage multiplied by <see cref="CritMultiplier"/> if isCrit is true, otherwise unchanged.</summary>
+    public static float ApplyCrit(float damage, bool isCrit) => isCrit ? damage * CritMultiplier : damage;
+
     /// <summary>Set this unit's AI behavior pattern (from EnemyData.aiBehavior). Unused for player units.</summary>
     public void SetAIBehavior(string behavior)
     {

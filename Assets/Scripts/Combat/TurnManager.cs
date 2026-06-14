@@ -326,6 +326,10 @@ public class TurnManager : MonoBehaviour
                 float defense = primaryTarget.GetDefense();
                 float damageReduction = 1f - (defense / (defense + 100f));
                 float finalDamage = baseDamage * damageReduction;
+
+                bool isCrit = UnityEngine.Random.value < attacker.GetCritChance();
+                finalDamage = CombatUnit.ApplyCrit(finalDamage, isCrit);
+
                 primaryTarget.TakeDamageWithShield(finalDamage);
             }
         }
@@ -534,6 +538,10 @@ public class TurnManager : MonoBehaviour
 
         // Calculate damage (from PRD damage formula)
         float finalDamage = EstimateAttackDamage(attacker, target);
+
+        // Critical hit roll
+        bool isCrit = Random.value < attacker.GetCritChance();
+        finalDamage = CombatUnit.ApplyCrit(finalDamage, isCrit);
 
         // Apply damage — respects any Shield status effect on target
         target.TakeDamageWithShield(finalDamage);
