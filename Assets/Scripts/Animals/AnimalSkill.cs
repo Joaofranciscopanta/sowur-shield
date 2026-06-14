@@ -141,9 +141,11 @@ public class SkillUnlockCondition
 public enum AnimalSkillEffect
 {
     None,
-    Stun,    // Target skips its next turn
-    Shield,  // Caster gains damage reduction (statusEffectValue fraction, e.g. 0.3)
-    Burn,    // Target takes statusEffectValue damage per turn for statusEffectDuration turns
+    Stun,     // Target skips its next turn
+    Shield,   // Caster gains damage reduction (statusEffectValue fraction, e.g. 0.3)
+    Burn,     // Target takes statusEffectValue damage per turn for statusEffectDuration turns
+    Poison,   // Target takes statusEffectValue damage per turn for statusEffectDuration turns; stacks independently
+    Weakness, // Target's attack/defense reduced by statusEffectValue fraction for statusEffectDuration turns
 }
 
 /// <summary>
