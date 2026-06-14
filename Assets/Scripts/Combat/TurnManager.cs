@@ -56,6 +56,15 @@ public class TurnManager : MonoBehaviour
     private List<CombatUnit> playerUnits = new List<CombatUnit>();
     private List<CombatUnit> enemyUnits = new List<CombatUnit>();
 
+    // Player combo tracking: consecutive player attacks on the same target build a combo.
+    private CombatUnit lastComboTarget = null;
+    private int comboCount = 0;
+    private const int MaxComboCount = 5;
+    private const float ComboDamagePerStack = 0.04f; // +4% damage per stack above 1
+
+    /// <summary>Current player combo stack count (0 = no active combo).</summary>
+    public int GetComboCount() => comboCount;
+
     // Battle result
     public enum BattleResult { Ongoing, Victory, Defeat, Draw }
     public BattleResult battleResult = BattleResult.Ongoing;
@@ -529,6 +538,24 @@ public class TurnManager : MonoBehaviour
         // Flash attacker yellow when attacking
         attacker.FlashAttack();
 
+        // Combo tracking: only player attacks build/extend a combo. Any enemy
+        // attack breaks the player's combo.
+        if (attacker.isPlayerUnit)
+        {
+            if (target == lastComboTarget)
+                comboCount = Mathf.Min(comboCount + 1, MaxComboCount);
+            else
+            {
+                comboCount = 1;
+                lastComboTarget = target;
+            }
+        }
+        else
+        {
+            comboCount = 0;
+            lastComboTarget = null;
+        }
+
         // Accuracy check
         float accuracy = attacker.GetAccuracy();
         if (Random.value > accuracy)
@@ -538,6 +565,10 @@ public class TurnManager : MonoBehaviour
 
         // Calculate damage (from PRD damage formula)
         float finalDamage = EstimateAttackDamage(attacker, target);
+
+        // Combo bonus: +4% damage per stack above 1 (player attacks only).
+        if (attacker.isPlayerUnit && comboCount > 1)
+            finalDamage *= 1f + (comboCount - 1) * ComboDamagePerStack;
 
         // Critical hit roll
         bool isCrit = Random.value < attacker.GetCritChance();
