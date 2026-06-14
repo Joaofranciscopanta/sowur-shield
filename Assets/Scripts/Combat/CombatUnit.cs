@@ -647,6 +647,13 @@ public class CombatUnit : MonoBehaviour
     /// <summary>Apply or stack a status effect on this unit.</summary>
     public void ApplyStatusEffect(StatusEffectType type, float value, int duration)
     {
+        // Poison stacks independently — always add a new entry instead of refreshing.
+        if (type == StatusEffectType.Poison)
+        {
+            statusEffects.Add(new CombatStatusEffect(type, value, duration));
+            return;
+        }
+
         // Refresh duration if same type already active (no stacking, just refresh)
         foreach (var effect in statusEffects)
         {
@@ -659,27 +666,36 @@ public class CombatUnit : MonoBehaviour
         statusEffects.Add(new CombatStatusEffect(type, value, duration));
     }
 
+    /// <summary>Number of currently active status effects of the given type.</summary>
+    public int GetActiveStatusCount(StatusEffectType type)
+    {
+        int count = 0;
+        foreach (var effect in statusEffects)
+            if (effect.type == type) count++;
+        return count;
+    }
+
     /// <summary>
-    /// Tick all status effects by 1 turn. Returns burn damage dealt this tick (0 if none).
+    /// Tick all status effects by 1 turn. Returns Burn + Poison damage dealt this tick (0 if none).
     /// Call at the start of this unit's turn before checking stun.
     /// </summary>
     public float TickStatusEffects()
     {
-        float burnDamage = 0f;
+        float tickDamage = 0f;
 
         for (int i = statusEffects.Count - 1; i >= 0; i--)
         {
             var effect = statusEffects[i];
 
-            if (effect.type == StatusEffectType.Burn)
-                burnDamage += effect.value;
+            if (effect.type == StatusEffectType.Burn || effect.type == StatusEffectType.Poison)
+                tickDamage += effect.value;
 
             effect.turnsRemaining--;
             if (effect.turnsRemaining <= 0)
                 statusEffects.RemoveAt(i);
         }
 
-        return burnDamage;
+        return tickDamage;
     }
 
     /// <summary>True if this unit has an active Stun effect.</summary>
