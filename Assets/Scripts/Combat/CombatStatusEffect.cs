@@ -6,9 +6,11 @@ namespace SowurShield.Combat
 /// </summary>
 public enum StatusEffectType
 {
-    Stun,    // Unit skips its next turn
-    Shield,  // Reduces incoming damage by value% for duration turns
-    Burn,    // Deals value damage at the start of each turn for duration turns
+    Stun,     // Unit skips its next turn
+    Shield,   // Reduces incoming damage by value% for duration turns
+    Burn,     // Deals value damage at the start of each turn for duration turns
+    Poison,   // Deals value damage at the start of each turn for duration turns; stacks independently
+    Weakness, // Reduces attack/defense by value% for duration turns
 }
 
 /// <summary>
