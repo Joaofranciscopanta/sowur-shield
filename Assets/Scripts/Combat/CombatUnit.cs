@@ -550,8 +550,13 @@ public class CombatUnit : MonoBehaviour
     // ============================================================================
 
     public float GetMaxHealth() => maxHealth;
-    public float GetAttack() => attack;
-    public float GetDefense() => defense;
+
+    /// <summary>Effective attack after Weakness reduction.</summary>
+    public float GetAttack() => attack * (1f - GetWeaknessReduction());
+
+    /// <summary>Effective defense after Weakness reduction.</summary>
+    public float GetDefense() => defense * (1f - GetWeaknessReduction());
+
     public float GetSpeed() => speed;
     public float GetAccuracy() => accuracy;
 
@@ -716,6 +721,15 @@ public class CombatUnit : MonoBehaviour
         foreach (var e in statusEffects)
             if (e.type == StatusEffectType.Shield) total += e.value;
         return Mathf.Min(total, 0.9f);
+    }
+
+    /// <summary>Total Weakness attack/defense reduction fraction (0 = none, capped at 0.75).</summary>
+    public float GetWeaknessReduction()
+    {
+        float total = 0f;
+        foreach (var e in statusEffects)
+            if (e.type == StatusEffectType.Weakness) total += e.value;
+        return Mathf.Min(total, 0.75f);
     }
 
     /// <summary>Modify TakeDamage to respect Shield reduction.</summary>

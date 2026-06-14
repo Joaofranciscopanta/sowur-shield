@@ -101,6 +101,41 @@ public class CombatPhase2StatusTests
         Assert.AreEqual(1, unit.GetActiveStatusCount(StatusEffectType.Weakness),
             "Applying Weakness twice should refresh duration, not create a second stack.");
     }
+
+    // =========================================================================
+    // WEAKNESS — GetAttack/GetDefense REDUCTION
+    // =========================================================================
+
+    [Test]
+    public void GetAttack_NoWeakness_ReturnsBaseAttack()
+    {
+        var unit = CreateUnit(atk: 20f);
+
+        Assert.AreEqual(20f, unit.GetAttack(), 0.001f, "With no Weakness, GetAttack should return the base attack value.");
+    }
+
+    [Test]
+    public void GetAttack_AndGetDefense_ReducedByWeaknessFraction()
+    {
+        var unit = CreateUnit(atk: 20f, def: 10f);
+
+        unit.ApplyStatusEffect(StatusEffectType.Weakness, 0.3f, 3);
+
+        Assert.AreEqual(14f, unit.GetAttack(), 0.001f, "Weakness 0.3 should reduce attack by 30% (20 -> 14).");
+        Assert.AreEqual(7f, unit.GetDefense(), 0.001f, "Weakness 0.3 should reduce defense by 30% (10 -> 7).");
+    }
+
+    [Test]
+    public void GetWeaknessReduction_CappedAtSeventyFivePercent()
+    {
+        var unit = CreateUnit(atk: 100f);
+
+        // A single Weakness value above the cap should be clamped to 0.75.
+        unit.ApplyStatusEffect(StatusEffectType.Weakness, 0.9f, 3);
+
+        Assert.AreEqual(0.75f, unit.GetWeaknessReduction(), 0.001f, "Weakness reduction should be capped at 0.75.");
+        Assert.AreEqual(25f, unit.GetAttack(), 0.001f, "Attack should be reduced by at most 75% (100 -> 25).");
+    }
 }
 
 } // namespace SowurShield.Tests
