@@ -402,6 +402,32 @@ public class TurnManager : MonoBehaviour
     /// <summary>Fired immediately before an attack or skill resolves (skill is null for basic attacks).</summary>
     public event System.Action<TelegraphInfo> OnTelegraph;
 
+    /// <summary>Hit-stop duration (seconds) applied to critical hits.</summary>
+    private const float BigHitCritDuration = 0.08f;
+
+    /// <summary>Hit-stop duration (seconds) applied to large (non-crit) hits.</summary>
+    private const float BigHitLargeDuration = 0.05f;
+
+    /// <summary>Damage threshold (as a fraction of target max health) considered a "big hit".</summary>
+    private const float BigHitHealthFraction = 0.25f;
+
+    /// <summary>
+    /// Fired when an attack or skill deals a critical hit (0.08s) or a large hit — damage
+    /// at least 25% of the target's max health (0.05s). Not fired for smaller hits.
+    /// </summary>
+    public static event System.Action<float> OnBigHit;
+
+    /// <summary>
+    /// Raise OnBigHit if the given hit qualifies (crit, or damage >= 25% of target max health).
+    /// </summary>
+    private static void RaiseBigHitIfQualifying(float damage, float targetMaxHealth, bool isCrit)
+    {
+        if (isCrit)
+            OnBigHit?.Invoke(BigHitCritDuration);
+        else if (targetMaxHealth > 0f && damage >= targetMaxHealth * BigHitHealthFraction)
+            OnBigHit?.Invoke(BigHitLargeDuration);
+    }
+
     /// <summary>
     /// Execute a skill from attacker against primaryTarget.
     /// Handles damage, healing, and status effects.
@@ -427,6 +453,7 @@ public class TurnManager : MonoBehaviour
                 if (activeModifier.type == BattleModifierType.GlassCannon)
                     finalDamage *= BattleModifier.GlassCannonMultiplier;
 
+                RaiseBigHitIfQualifying(finalDamage, primaryTarget.GetMaxHealth(), isCrit);
                 primaryTarget.TakeDamageWithShield(finalDamage);
             }
         }
@@ -688,6 +715,8 @@ public class TurnManager : MonoBehaviour
         // so damage dealt and received are both effectively doubled.
         if (activeModifier.type == BattleModifierType.GlassCannon)
             finalDamage *= BattleModifier.GlassCannonMultiplier;
+
+        RaiseBigHitIfQualifying(finalDamage, target.GetMaxHealth(), isCrit);
 
         // Apply damage — respects any Shield status effect on target
         target.TakeDamageWithShield(finalDamage);
