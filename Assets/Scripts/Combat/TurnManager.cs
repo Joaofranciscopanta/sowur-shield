@@ -372,6 +372,7 @@ public class TurnManager : MonoBehaviour
             CombatUnit skillTarget = SelectSkillTarget(unit, skill);
             if (skillTarget != null)
             {
+                OnTelegraph?.Invoke(new TelegraphInfo { actor = unit, target = skillTarget, skill = skill });
                 ExecuteSkill(unit, skill, skillTarget);
                 unit.SetSkillOnCooldown(skill);
                 unit.ResetTurnGauge();
@@ -382,10 +383,24 @@ public class TurnManager : MonoBehaviour
         // Fall back to basic attack
         CombatUnit target = SelectTarget(unit);
         if (target != null)
+        {
+            OnTelegraph?.Invoke(new TelegraphInfo { actor = unit, target = target, skill = null });
             ExecuteAttack(unit, target);
+        }
 
         unit.ResetTurnGauge();
     }
+
+    /// <summary>Info about an upcoming action, broadcast just before it resolves (for VFX/telegraph hooks).</summary>
+    public struct TelegraphInfo
+    {
+        public CombatUnit actor;
+        public CombatUnit target;
+        public AnimalSkill skill;
+    }
+
+    /// <summary>Fired immediately before an attack or skill resolves (skill is null for basic attacks).</summary>
+    public event System.Action<TelegraphInfo> OnTelegraph;
 
     /// <summary>
     /// Execute a skill from attacker against primaryTarget.
