@@ -1,6 +1,6 @@
 # Sowur Shield — Project Status
 
-> Last updated: 2026-06-13
+> Last updated: 2026-06-14
 > Branch: `main`
 > This document supersedes and replaces: ROADMAP.md, GAME_DEVELOPMENT_PLAN.md,
 > COMBAT_PIPELINE_STATUS.md, DEVELOPMENT_LOG.md, COMBAT_SETUP_GUIDE.md.
@@ -142,30 +142,97 @@ that is now baked into the saved scenes and can be considered historical.
 
 ---
 
-## Combat Scope — Resolved (Option A, descope)
+## Combat Scope — Implemented (minimal synergy)
 
 `PRD_Animals_Combat_System.md` (v2.0, 2025-10-21) describes an elaborate "3-Passive System"
 (Family passives, Class passives, Happiness passives, plus team-wide "Combo Synergies") as the
-core combat mechanic. **This is not implemented.** `AnimalData.combatClass` and
-`AnimalData.availablePassiveSkills[]` are populated ScriptableObject fields with **zero readers**
-anywhere in `Assets/Scripts/Combat/` — `CombatUnit`/`TurnManager` compute stats purely from
-`AnimalCombatStats` with no synergy/family/class logic.
+core combat mechanic. The full system is still not implemented, but as of the Combat Phase 2
+initiative (see below), `AnimalData.combatClass` and `AnimalData.availablePassiveSkills[]` are no
+longer dead fields:
 
-The combat system that IS shipped (status effects + XP/leveling, happiness→stat multiplier, see
-above) is solid and well-tested, but it is a **simpler system than the PRD describes**. This gap
-was tracked as `/review/03_WORKLIST.md` TASK-002, with two options:
+- **Class synergy** (`TurnManager.ApplyClassSynergies`, called from `StartCombat`): player units
+  sharing a `combatClass` with 2+ teammates (3+ total) each get a permanent +10% attack/defense
+  buff via `CombatUnit.ApplyStatBuff`.
+- **Passive skill unlocks** (`CombatTeamSpawner.ApplyUnlockedPassiveSkills`, called per unit at
+  spawn): each `AnimalSkill` in `availablePassiveSkills` with `skillType == Passive` is checked
+  via `AnimalSkill.CanUnlock` (existing `SkillUnlockCondition` logic — CombatClass, AnimalFamily,
+  FamilyCount via `AnimalRoster.GetFamilyCount`, HappinessThreshold, Combined). If unlocked and
+  its `attackMultiplier`/`defenseMultiplier`/`speedMultiplier` differ from `1f`, a permanent
+  `ApplyStatBuff` is applied.
+- **Season-based unlock conditions are still N/A** — no season-singleton accessor exists yet, so
+  `currentSeason` is passed as `""` and `Season`-type `SkillUnlockCondition`s never trigger. Family
+  passives beyond `FamilyCount` and the PRD's "Combo Synergies" (distinct from the Phase 2 combo
+  counter below) remain descoped.
 
-- **Option A — Descope**: mark the PRD's 3-passive system as historical/aspirational, annotate
-  `combatClass`/`availablePassiveSkills` as currently-unused fields.
-- **Option B — Minimal implementation**: implement just the Class-passive synergy (3+ units of
-  the same `combatClass` grant a small stat bonus), using the field that already exists on every
-  `AnimalData` asset. Family passives and Combo Synergies stay descoped.
+This was previously tracked as `/review/03_WORKLIST.md` TASK-002/TASK-003 (Option A descope,
+Option B minimal implementation). **Option B has now shipped** — TASK-003 is resolved, not N/A.
 
-**Decision: Option A.** `AnimalData.combatClass` and `AnimalData.availablePassiveSkills[]` are
-annotated in code as currently-unused (PRD-descoped) fields. The shipped status-effect +
-happiness-multiplier combat system is the source of truth; the PRD's 3-passive content should be
-treated as historical/aspirational and not representative of the current game. TASK-003
-(conditional Class-passive synergy) is marked N/A — descoped per this decision.
+---
+
+## Combat Phase 2 — Innovation Pass (AI, Strategy, Mechanics, Event Hooks)
+
+A 23-step CD initiative (small change → EditMode tests → commit, repeated) extended combat with
+new status effects, smarter enemy AI, new player-facing mechanics, and event hooks for future
+VFX/animation work. All logic is pure C# on `CombatUnit`/`TurnManager`/`AnimalSkill`/`EnemyData`/
+`CombatTeamSpawner`, covered by new EditMode test files under `Assets/Tests/EditMode/`
+(`CombatPhase2StatusTests.cs`, `CombatPhase2AccuracyTests.cs`, `CombatPhase3CritTests.cs`,
+`CombatPhase3ComboTests.cs`, `CombatPhase3ConsumableTests.cs`, `CombatPhase3BattleModifierTests.cs`,
+`CombatPhase4SynergyTests.cs`, `CombatPhase4PassiveSkillTests.cs`, `CombatPhase5TelegraphTests.cs`,
+`CombatPhase6BigHitTests.cs`, `CombatPhase6StatusEventTests.cs`, `CombatPhase6DamageHealEventTests.cs`,
+`CombatPhase7CritEventIntegrationTests.cs`).
+
+- **New status effects**: `Poison` (stacks independently, ticks alongside Burn) and `Weakness`
+  (refreshes like Burn/Shield/Stun, reduces `GetAttack()`/`GetDefense()` via
+  `GetWeaknessReduction()`, capped at 75%). Both wired into `TurnManager.ExecuteSkill` via
+  `AnimalSkillEffect.Poison`/`Weakness`, respecting `IsImmuneTo`.
+- **Temporary stat buffs**: `CombatUnit.ApplyStatBuff(atkMult, defMult, spdMult, duration)` —
+  buffs stack multiplicatively and expire independently via `TickStatusEffects()`. Activates the
+  previously-dormant `AnimalSkill.attackMultiplier`/`defenseMultiplier`/`speedMultiplier` fields.
+  `GetAttack()`/`GetDefense()`/`GetSpeed()` apply Weakness reduction × buff product; turn-gauge
+  fill now uses `GetSpeed()`.
+- **Smarter AI** (`EnemyData.aiBehavior`, previously unused — now wired at spawn via
+  `EnemySpawner`): `SelectTarget()` branches per-behavior for non-player attackers —
+  `"Defensive"` targets the highest-`GetAttack()` player unit, `"Support"` targets the
+  lowest-`GetDefense()` player unit, `"Aggressive"`/`"Random"` keep the existing lethal-first →
+  front-column logic (regression-safe). `SelectSkillTarget()` is similarly behavior-aware:
+  Aggressive prefers offensive (Burn/Poison/Weakness) skills on the highest-HP enemy; Support
+  prefers Shield/heal skills on the lowest-HP% ally.
+- **Difficulty-scaled accuracy/skill-use**: `EnemyData.GetScaledAccuracy(difficultyLevel)` and
+  `GetScaledSkillUseChance(difficultyLevel)` mirror the existing `GetScaledStats` `Mathf.Pow`
+  pattern (capped at 0.95 / 0.6). `CombatUnit.InitializeAsEnemy` gained an optional `acc`
+  parameter (default `1.0f`, all existing call sites unaffected).
+- **Critical hits**: `CombatUnit.GetCritChance()` (5% base), `CombatUnit.ApplyCrit(damage, isCrit)`
+  (×1.5 multiplier), rolled in both basic-attack and skill-damage resolution in `TurnManager`.
+- **Combo counter**: `TurnManager` tracks consecutive player hits on the same target
+  (`GetComboCount()`, cap 5), granting up to +20% damage (+4%/stack above 1). Any enemy action or
+  target switch resets the combo.
+- **Melee/Ranged positional targeting**: new `AttackRange` enum (`Melee`/`Ranged`, default
+  `Ranged` preserves prior behavior) on `AnimalData`/`EnemyData` → `CombatUnit.GetAttackRange()`.
+  Melee attackers in `SelectTarget()` restrict to the front column, falling back to the back
+  column only if the front column has no living targets.
+- **In-battle consumables**: `TurnManager.UseConsumableOnUnit(Item, CombatUnit)` — heals the
+  target via `item.healthRestore`, removes one unit from the player `Inventory`, free action (no
+  gauge cost). Rejects non-consumables, dead/null targets.
+- **Battle modifiers** (`BattleModifier.cs`): `BattleModifierType` enum (`None`/`DoubleSpeed`/
+  `LowVisibility`/`HealingRain`/`GlassCannon`), rolled once per battle in `StartCombat`
+  (60% `None`, 10% each other). `DoubleSpeed` doubles turn-gauge fill; `LowVisibility` subtracts a
+  flat accuracy penalty via `GetEffectiveAccuracy()`; `HealingRain` heals all living units at the
+  start of each round (`currentTurn % allUnits.Count == 1`); `GlassCannon` doubles both dealt and
+  received damage. `SetBattleModifierForTesting()`/`GetActiveModifier()` for deterministic tests.
+- **Event hooks for future VFX/animation** (no behavior change, pure data plumbing):
+  - `TurnManager.OnTelegraph` (instance event, `TelegraphInfo { actor, target, skill }`) fires
+    immediately before an attack/skill resolves (`skill = null` for basic attacks).
+  - `TurnManager.OnBigHit` (static event, `Action<float>`) fires with a hit-stop duration —
+    `0.08f` on crit, `0.05f` if damage ≥ 25% of target max HP, otherwise not fired.
+  - `CombatUnit.OnStatusApplied`/`OnStatusExpired` (`Action<StatusEffectType>`) fire on
+    application and expiry via `ApplyStatusEffect`/`TickStatusEffects`.
+  - `CombatUnit.OnDamageTaken` (`Action<float, bool>`, amount + isCrit) and `OnHealed`
+    (`Action<float>`) fire from `TakeDamage`/`TakeDamageWithShield`/`Heal`. The crit flag is
+    threaded end-to-end: `TurnManager`'s crit roll → `TakeDamageWithShield(damage, isCrit)` →
+    `OnDamageTaken(amount, true)` + correlated `OnBigHit(0.08f)`.
+  - All of the above are consumed by nothing yet — see "Unity Editor Wiring Checklist" below for
+    the deferred VFX/animator/UI hookup work (HitStopController, camera shake, status icons,
+    damage popups, telegraph highlight, combo/modifier/consumable UI).
 
 ---
 
@@ -206,6 +273,21 @@ outstanding (the combat pipeline fixes may have completed some of these as a sid
 **Combat:**
 - Assign `AnimalSkill` ScriptableObjects to `AnimalData.activeSkill` / `EnemyData.skills`
 - Assign `AnimatorController` to `AnimalData.animatorController` per animal
+
+**Combat Phase 2 (deferred from the AI/strategy/mechanics/event-hooks initiative above):**
+- Create `AnimalSkill` assets using the new `Poison`/`Weakness` `AnimalSkillEffect` values
+- Set `EnemyData.aiBehavior` per enemy asset for variety (currently all default `"Aggressive"`)
+- Set `EnemyData.baseAccuracy` per enemy asset (drives `GetScaledAccuracy`)
+- Set `AnimalData.attackRange`/`EnemyData.attackRange` (Melee/Ranged) per unit
+- Populate `AnimalData.availablePassiveSkills[]` and verify `combatClass`/`animalFamily`
+  consistency across the roster so `ApplyClassSynergies`/`ApplyUnlockedPassiveSkills` have real
+  data to act on
+- Hook up `HitStopController` + camera shake consuming `TurnManager.OnBigHit`
+- Status icon prefabs/controller consuming `CombatUnit.OnStatusApplied`/`OnStatusExpired`
+- Damage/heal number popups consuming `CombatUnit.OnDamageTaken`/`OnHealed`
+- Telegraph visual (target highlight before action) consuming `TurnManager.OnTelegraph`
+- In-battle consumable item UI calling `TurnManager.UseConsumableOnUnit`
+- Combo counter UI, battle modifier banner UI, new animator triggers for crit/poison/weakness
 
 **World Map:**
 - Create WorldMap Canvas + `WorldMapUIController` in farm scene (if not already present)
