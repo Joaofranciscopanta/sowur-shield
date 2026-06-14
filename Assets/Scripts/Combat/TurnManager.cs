@@ -372,6 +372,23 @@ public class TurnManager : MonoBehaviour
         {
             primaryTarget.ApplyStatusEffect(StatusEffectType.Weakness, skill.statusEffectValue, skill.statusEffectDuration > 0 ? skill.statusEffectDuration : 2);
         }
+
+        // Temporary stat buffs (attack/defense/speed multipliers) on self or allies.
+        if (skill.attackMultiplier != 1f || skill.defenseMultiplier != 1f || skill.speedMultiplier != 1f)
+        {
+            int buffDuration = skill.statusEffectDuration > 0 ? skill.statusEffectDuration : 3;
+
+            if (skill.affectsSelf)
+                attacker.ApplyStatBuff(skill.attackMultiplier, skill.defenseMultiplier, skill.speedMultiplier, buffDuration);
+
+            if (skill.affectsAllies)
+            {
+                List<CombatUnit> allies = attacker.isPlayerUnit ? playerUnits : enemyUnits;
+                foreach (var ally in allies)
+                    if (ally != null && ally.IsAlive())
+                        ally.ApplyStatBuff(skill.attackMultiplier, skill.defenseMultiplier, skill.speedMultiplier, buffDuration);
+            }
+        }
     }
 
     /// <summary>Select primary target for a skill.</summary>

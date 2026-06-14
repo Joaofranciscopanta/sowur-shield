@@ -100,6 +100,10 @@ public class CombatUnit : MonoBehaviour
     // ── Status immunities (populated from EnemyData.immunities) ──────────────
     private HashSet<string> statusImmunities = new HashSet<string>(System.StringComparer.OrdinalIgnoreCase);
 
+    // ── Temporary stat buffs (from skills/synergies) ──────────────────────────
+    /// <summary>Active multiplicative stat buffs: (attackMult, defenseMult, speedMult, turnsRemaining).</summary>
+    private List<(float atkMult, float defMult, float spdMult, int turnsRemaining)> statBuffs = new List<(float, float, float, int)>();
+
     /// <summary>
     /// Initialize this CombatUnit from an Animal
     /// </summary>
@@ -381,8 +385,8 @@ public class CombatUnit : MonoBehaviour
     {
         if (!IsAlive()) return;
 
-        // Fill gauge based on speed
-        turnGauge += speed * deltaTime;
+        // Fill gauge based on effective speed (includes active stat buffs)
+        turnGauge += GetSpeed() * deltaTime;
 
         // Clamp to 100
         if (turnGauge > 100f)
@@ -551,14 +555,37 @@ public class CombatUnit : MonoBehaviour
 
     public float GetMaxHealth() => maxHealth;
 
-    /// <summary>Effective attack after Weakness reduction.</summary>
-    public float GetAttack() => attack * (1f - GetWeaknessReduction());
+    /// <summary>Effective attack after Weakness reduction and active stat buffs.</summary>
+    public float GetAttack() => attack * (1f - GetWeaknessReduction()) * GetBuffMultiplier(b => b.atkMult);
 
-    /// <summary>Effective defense after Weakness reduction.</summary>
-    public float GetDefense() => defense * (1f - GetWeaknessReduction());
+    /// <summary>Effective defense after Weakness reduction and active stat buffs.</summary>
+    public float GetDefense() => defense * (1f - GetWeaknessReduction()) * GetBuffMultiplier(b => b.defMult);
 
-    public float GetSpeed() => speed;
+    /// <summary>Effective speed after active stat buffs.</summary>
+    public float GetSpeed() => speed * GetBuffMultiplier(b => b.spdMult);
+
     public float GetAccuracy() => accuracy;
+
+    /// <summary>Product of the given multiplier component across all active stat buffs.</summary>
+    private float GetBuffMultiplier(System.Func<(float atkMult, float defMult, float spdMult, int turnsRemaining), float> selector)
+    {
+        float result = 1f;
+        foreach (var buff in statBuffs)
+            result *= selector(buff);
+        return result;
+    }
+
+    /// <summary>
+    /// Apply a temporary multiplicative stat buff (from skills/synergies). Buffs stack
+    /// multiplicatively and each tracks its own duration independently (no refresh-merge).
+    /// </summary>
+    public void ApplyStatBuff(float atkMult, float defMult, float spdMult, int duration)
+    {
+        statBuffs.Add((atkMult, defMult, spdMult, duration));
+    }
+
+    /// <summary>Number of currently active temporary stat buffs.</summary>
+    public int GetActiveBuffCount() => statBuffs.Count;
 
     public float GetHealthPercent() => maxHealth > 0f ? currentHealth / maxHealth : 0f;
 
@@ -698,6 +725,17 @@ public class CombatUnit : MonoBehaviour
             effect.turnsRemaining--;
             if (effect.turnsRemaining <= 0)
                 statusEffects.RemoveAt(i);
+        }
+
+        // Tick temporary stat buffs (e.g. from skills/synergies) the same way.
+        for (int i = statBuffs.Count - 1; i >= 0; i--)
+        {
+            var buff = statBuffs[i];
+            buff.turnsRemaining--;
+            if (buff.turnsRemaining <= 0)
+                statBuffs.RemoveAt(i);
+            else
+                statBuffs[i] = buff;
         }
 
         return tickDamage;
