@@ -593,6 +593,26 @@ public class TurnManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Use a consumable inventory item on a target unit mid-battle (e.g. a healing
+    /// item on an injured ally). This is a free action — it does not consume a turn.
+    /// Returns true if the item was used and consumed from the player's inventory.
+    /// </summary>
+    public bool UseConsumableOnUnit(Item item, CombatUnit target)
+    {
+        if (item == null || !item.isConsumable || target == null || !target.IsAlive())
+            return false;
+
+        if (item.healthRestore > 0)
+            target.Heal(item.healthRestore);
+
+        Inventory inventory = FindFirstObjectByType<Inventory>();
+        if (inventory != null)
+            inventory.RemoveItem(item, 1);
+
+        return true;
+    }
+
+    /// <summary>
     /// Check if battle has ended
     /// </summary>
     private void CheckBattleEnd()
