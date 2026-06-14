@@ -155,6 +155,7 @@ public class CombatUnit : MonoBehaviour
         // Setup health bar
         SetupHealthBar();
 
+        SetupVFX();
     }
 
     /// <summary>
@@ -181,6 +182,14 @@ public class CombatUnit : MonoBehaviour
         // Setup health bar
         SetupHealthBar();
 
+        SetupVFX();
+    }
+
+    /// <summary>Attach status icon and floating damage/heal text VFX (idempotent).</summary>
+    private void SetupVFX()
+    {
+        if (GetComponent<CombatUnitVFX>() == null)
+            gameObject.AddComponent<CombatUnitVFX>();
     }
 
     /// <summary>
