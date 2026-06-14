@@ -284,6 +284,7 @@ public class CombatTeamSpawner : MonoBehaviour
         combatUnit.isPlayerUnit = isPlayer;
         combatUnit.InitializeFromAnimal(animal, isPlayer);
         combatUnit.InitializePlayerSkill(animal.AnimalData?.activeSkill);
+        ApplyUnlockedPassiveSkills(animal, combatUnit);
 
         // Apply illness stat penalty (attack/defense/health -%, speed unchanged)
         if (animal.IsIll && animalData.illnessStatPenalty < 1f)
@@ -300,6 +301,34 @@ public class CombatTeamSpawner : MonoBehaviour
 
         Debug.LogWarning($"[CombatTeamSpawner] Spawned '{customName}' at {gridPos}, world pos={unitObj.transform.position}.");
         return true;
+    }
+
+    /// <summary>Buff duration (in TickStatusEffects calls) used for effectively-permanent buffs.</summary>
+    private const int PermanentBuffDuration = int.MaxValue;
+
+    /// <summary>
+    /// Apply permanent stat buffs for any of this animal's passive skills whose unlock
+    /// condition is currently met (e.g. combat class or family-count requirements).
+    /// </summary>
+    private void ApplyUnlockedPassiveSkills(Animal animal, CombatUnit combatUnit)
+    {
+        if (animal?.AnimalData?.availablePassiveSkills == null) return;
+
+        int familyCountInRoster = (AnimalRoster.Instance != null && animal.AnimalData != null)
+            ? AnimalRoster.Instance.GetFamilyCount(animal.AnimalData.animalFamily)
+            : 0;
+
+        // No season-singleton exists yet — Season-type unlock conditions simply won't trigger.
+        const string currentSeason = "";
+
+        foreach (AnimalSkill skill in animal.AnimalData.availablePassiveSkills)
+        {
+            if (skill == null || skill.skillType != SkillType.Passive) continue;
+            if (!skill.CanUnlock(animal, familyCountInRoster, currentSeason)) continue;
+
+            if (skill.attackMultiplier != 1f || skill.defenseMultiplier != 1f || skill.speedMultiplier != 1f)
+                combatUnit.ApplyStatBuff(skill.attackMultiplier, skill.defenseMultiplier, skill.speedMultiplier, PermanentBuffDuration);
+        }
     }
 
     /// <summary>Clears and respawns all units (for battle restart).</summary>
