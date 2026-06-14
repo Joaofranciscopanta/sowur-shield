@@ -192,7 +192,31 @@ public class TurnManager : MonoBehaviour
         currentTurn = 0;
         battleResult = BattleResult.Ongoing;
         activeModifier = RollBattleModifier();
+        ApplyClassSynergies();
+    }
 
+    /// <summary>Buff duration (in TickStatusEffects calls) used for effectively-permanent buffs.</summary>
+    private const int PermanentBuffDuration = int.MaxValue;
+
+    /// <summary>
+    /// Grant a +10% attack/defense synergy bonus to player units that share a combat class
+    /// with at least two other teammates (3+ units of the same class).
+    /// </summary>
+    private void ApplyClassSynergies()
+    {
+        var groups = playerUnits
+            .Where(u => u != null && u.GetSourceAnimal() != null && u.GetSourceAnimal().AnimalData != null
+                && !string.IsNullOrEmpty(u.GetSourceAnimal().AnimalData.combatClass))
+            .GroupBy(u => u.GetSourceAnimal().AnimalData.combatClass);
+
+        foreach (var group in groups)
+        {
+            if (group.Count() >= 3)
+            {
+                foreach (CombatUnit unit in group)
+                    unit.ApplyStatBuff(1.1f, 1.1f, 1f, PermanentBuffDuration);
+            }
+        }
     }
 
     private void Update()
