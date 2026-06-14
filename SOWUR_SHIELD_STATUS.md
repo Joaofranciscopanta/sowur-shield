@@ -230,9 +230,8 @@ VFX/animation work. All logic is pure C# on `CombatUnit`/`TurnManager`/`AnimalSk
     (`Action<float>`) fire from `TakeDamage`/`TakeDamageWithShield`/`Heal`. The crit flag is
     threaded end-to-end: `TurnManager`'s crit roll → `TakeDamageWithShield(damage, isCrit)` →
     `OnDamageTaken(amount, true)` + correlated `OnBigHit(0.08f)`.
-  - All of the above are consumed by nothing yet — see "Unity Editor Wiring Checklist" below for
-    the deferred VFX/animator/UI hookup work (HitStopController, camera shake, status icons,
-    damage popups, telegraph highlight, combo/modifier/consumable UI).
+  - All of the above are now consumed by self-spawning VFX/UI controllers — see "Combat Phase 2
+    Wiring — Completed" below.
 
 ---
 
@@ -274,20 +273,42 @@ outstanding (the combat pipeline fixes may have completed some of these as a sid
 - Assign `AnimalSkill` ScriptableObjects to `AnimalData.activeSkill` / `EnemyData.skills`
 - Assign `AnimatorController` to `AnimalData.animatorController` per animal
 
-**Combat Phase 2 (deferred from the AI/strategy/mechanics/event-hooks initiative above):**
-- Create `AnimalSkill` assets using the new `Poison`/`Weakness` `AnimalSkillEffect` values
-- Set `EnemyData.aiBehavior` per enemy asset for variety (currently all default `"Aggressive"`)
-- Set `EnemyData.baseAccuracy` per enemy asset (drives `GetScaledAccuracy`)
-- Set `AnimalData.attackRange`/`EnemyData.attackRange` (Melee/Ranged) per unit
-- Populate `AnimalData.availablePassiveSkills[]` and verify `combatClass`/`animalFamily`
-  consistency across the roster so `ApplyClassSynergies`/`ApplyUnlockedPassiveSkills` have real
-  data to act on
-- Hook up `HitStopController` + camera shake consuming `TurnManager.OnBigHit`
-- Status icon prefabs/controller consuming `CombatUnit.OnStatusApplied`/`OnStatusExpired`
-- Damage/heal number popups consuming `CombatUnit.OnDamageTaken`/`OnHealed`
-- Telegraph visual (target highlight before action) consuming `TurnManager.OnTelegraph`
-- In-battle consumable item UI calling `TurnManager.UseConsumableOnUnit`
-- Combo counter UI, battle modifier banner UI, new animator triggers for crit/poison/weakness
+**Combat Phase 2 Wiring — Completed** (all 12 items from the deferred checklist):
+- New `AnimalSkill` assets under `Assets/Resources/AnimalSkills/`: `PeckOfWeakening` (Chicken,
+  Weakness), `ToxicQuack` (Duck, Poison), `FeatherShield` (Sparrow, Shield), `FlockInstinct`
+  (Chicken passive, FamilyCount unlock), `SupportersBlessing` (Sparrow passive, CombatClass
+  unlock), `VenomousBite` (enemy Poison, spiders/frogs), `DrainingHowl` (enemy Weakness, wolves)
+- `EnemyData.aiBehavior` set per enemy across all 33 enemy assets (Aggressive/Defensive/Support
+  mix by role — tanks Defensive, casters/support Support, attackers Aggressive)
+- `EnemyData.baseAccuracy` set per enemy (0.80–0.95 range, tougher/slower enemies less accurate)
+- `AnimalData.attackRange`/`EnemyData.attackRange` set per unit (Melee/Ranged) across animals and
+  all 33 enemy assets
+- `AnimalData.availablePassiveSkills[]` populated for Chicken/Sparrow; `animalFamily` set
+  (Chicken=Galliformes, Duck=Anatidae, Sparrow=Passeridae); Sparrow `combatClass` changed to
+  `Support` so `SupportersBlessing` (CombatClass-gated) and class synergies have real data
+- `HitStopController.cs` — self-spawning (`RuntimeInitializeOnLoadMethod`), subscribes to
+  `TurnManager.OnBigHit`, applies brief `Time.timeScale` dip + camera shake on `Camera.main`
+- `CombatUnitVFX.cs` — auto-attached to every `CombatUnit` (`SetupVFX()` in both
+  `InitializeFromAnimal`/`InitializeAsEnemy`); procedural `TextMeshPro` status icons
+  (PSN/WKN/BRN/SHD/STN) driven by `OnStatusApplied`/`OnStatusExpired`
+- `CombatUnitVFX.cs` — same component also spawns floating damage/heal numbers (red/gold-crit/
+  green-heal, rise + fade) driven by `OnDamageTaken`/`OnHealed`
+- `TelegraphHighlighter.cs` — self-spawning, subscribes to `TurnManager.OnTelegraph`, spawns a
+  temporary glow sprite behind the acting unit and target
+- `BattleHudOverlay.cs` — self-spawning screen-space overlay showing the active
+  `BattleModifier.description` banner and `Combo x{N}!` counter, polling `TurnManager.Instance`
+- `ConsumableBattleUI.cs` — self-spawning "Items" button + list of consumables from `Inventory`;
+  clicking one calls `TurnManager.UseConsumableOnUnit` on the most-injured living player unit
+- `CombatUnit` animator triggers: `Crit` (fires alongside `Hurt` when `TakeDamage(_, isCrit: true)`),
+  `Poison`/`Weakness` (fire via new `TriggerStatusAnimation(StatusEffectType)`, called from
+  `CombatUnitVFX.HandleStatusApplied`) — all guarded by `unitAnimator != null`, no-op if no
+  `AnimatorController` is assigned
+
+All new VFX/UI controllers are self-spawning (`RuntimeInitializeOnLoadMethod` +
+`DontDestroyOnLoad`) and built procedurally — no `CombatScene.unity`/prefab edits were required.
+Still outstanding: actual `AnimatorController` assets with `Crit`/`Poison`/`Weakness`/`Hurt`/
+`Attack`/`Die` states+transitions don't exist yet for any animal/enemy, so the new triggers are
+currently no-ops in practice (see "Assign `AnimatorController`..." item above).
 
 **World Map:**
 - Create WorldMap Canvas + `WorldMapUIController` in farm scene (if not already present)
