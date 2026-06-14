@@ -250,7 +250,7 @@ public class EnemySpawner : MonoBehaviour
         combatUnit.isPlayerUnit = false;
 
         var (hp, atk, def, spd) = enemyData.GetScaledStats(difficulty);
-        combatUnit.InitializeAsEnemy(enemyData.enemyName, hp, atk, def, spd);
+        combatUnit.InitializeAsEnemy(enemyData.enemyName, hp, atk, def, spd, enemyData.GetScaledAccuracy(difficulty));
 
         // Normalize sprite size
         if (enemyData.sprite != null)
@@ -264,7 +264,7 @@ public class EnemySpawner : MonoBehaviour
         combatUnit.visualObject = unitObj;
 
         // ── Skills ────────────────────────────────────────────────────────────
-        combatUnit.InitializeEnemySkills(enemyData.skills, enemyData.skillUseChance);
+        combatUnit.InitializeEnemySkills(enemyData.skills, enemyData.GetScaledSkillUseChance(difficulty));
         combatUnit.InitializeImmunities(enemyData.immunities);
         combatUnit.SetAIBehavior(enemyData.aiBehavior);
 

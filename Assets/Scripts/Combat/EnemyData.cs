@@ -82,6 +82,10 @@ public class EnemyData : ScriptableObject
     [Range(0f, 1f)]
     public float skillUseChance = 0.3f;
 
+    [Tooltip("Base accuracy (chance for basic attacks/skills to hit) before difficulty scaling")]
+    [Range(0f, 1f)]
+    public float baseAccuracy = 1.0f;
+
     [Header("Drops")]
     [Tooltip("Experience points granted on defeat")]
     public int experienceReward = 20;
@@ -134,6 +138,24 @@ public class EnemyData : ScriptableObject
         }
 
         return (scaledHealth, scaledAttack, scaledDefense, scaledSpeed);
+    }
+
+    /// <summary>
+    /// Accuracy scales slightly with difficulty, capped at 95% so enemies always miss sometimes.
+    /// </summary>
+    public float GetScaledAccuracy(int difficultyLevel)
+    {
+        float scaled = baseAccuracy + (difficultyLevel - 1) * 0.02f;
+        return Mathf.Min(scaled, 0.95f);
+    }
+
+    /// <summary>
+    /// Chance to use a skill instead of a basic attack increases with difficulty, capped at 60%.
+    /// </summary>
+    public float GetScaledSkillUseChance(int difficultyLevel)
+    {
+        float scaled = skillUseChance + (difficultyLevel - 1) * 0.05f;
+        return Mathf.Min(scaled, 0.6f);
     }
 
     /// <summary>

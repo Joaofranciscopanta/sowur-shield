@@ -158,7 +158,7 @@ public class CombatUnit : MonoBehaviour
     /// Initialize this CombatUnit with manual stats (for testing or enemies)
     /// NOTE: Set isPlayerUnit BEFORE calling this!
     /// </summary>
-    public void InitializeAsEnemy(string name, float hp, float atk, float def, float spd)
+    public void InitializeAsEnemy(string name, float hp, float atk, float def, float spd, float acc = 1.0f)
     {
         // NOTE: isPlayerUnit should be set before calling this method!
         // Don't override it here
@@ -170,7 +170,7 @@ public class CombatUnit : MonoBehaviour
         attack = atk;
         defense = def;
         speed = spd;
-        accuracy = 1.0f; // Enemies have 100% accuracy by default
+        accuracy = acc;
 
         // Setup visuals
         SetupVisuals();
