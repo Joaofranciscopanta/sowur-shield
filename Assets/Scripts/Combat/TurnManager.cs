@@ -69,6 +69,32 @@ public class TurnManager : MonoBehaviour
     private const int EnemyFrontColumn = 5;  // Enemy column closest to the player side.
     private const int PlayerFrontColumn = 6; // Player column closest to the enemy side.
 
+    // ── Battle modifiers ───────────────────────────────────────────────────────
+    private BattleModifier activeModifier = new BattleModifier(BattleModifierType.None, "A normal battle.");
+
+    /// <summary>The randomized modifier active for this battle (BattleModifierType.None if no roll has occurred yet).</summary>
+    public BattleModifier GetActiveModifier() => activeModifier;
+
+    /// <summary>Override the active battle modifier (for deterministic testing).</summary>
+    public void SetBattleModifierForTesting(BattleModifier mod)
+    {
+        activeModifier = mod ?? new BattleModifier(BattleModifierType.None, "A normal battle.");
+    }
+
+    /// <summary>
+    /// Weighted roll for this battle's modifier: 60% None, remaining 40% split evenly
+    /// across DoubleSpeed, LowVisibility, HealingRain, and GlassCannon (10% each).
+    /// </summary>
+    private static BattleModifier RollBattleModifier()
+    {
+        float roll = UnityEngine.Random.value;
+        if (roll < 0.6f) return new BattleModifier(BattleModifierType.None, "A normal battle.");
+        if (roll < 0.7f) return new BattleModifier(BattleModifierType.DoubleSpeed, "Turn gauges fill twice as fast!");
+        if (roll < 0.8f) return new BattleModifier(BattleModifierType.LowVisibility, "Reduced accuracy for all combatants.");
+        if (roll < 0.9f) return new BattleModifier(BattleModifierType.HealingRain, "All units heal a little each round.");
+        return new BattleModifier(BattleModifierType.GlassCannon, "Damage dealt and received is doubled!");
+    }
+
     // Battle result
     public enum BattleResult { Ongoing, Victory, Defeat, Draw }
     public BattleResult battleResult = BattleResult.Ongoing;
@@ -165,6 +191,7 @@ public class TurnManager : MonoBehaviour
         combatActive = true;
         currentTurn = 0;
         battleResult = BattleResult.Ongoing;
+        activeModifier = RollBattleModifier();
 
     }
 
@@ -201,11 +228,15 @@ public class TurnManager : MonoBehaviour
     /// </summary>
     private void FillTurnGauges(float deltaTime)
     {
+        float rate = gaugeFilLRate;
+        if (activeModifier.type == BattleModifierType.DoubleSpeed)
+            rate *= 2f;
+
         foreach (CombatUnit unit in allUnits)
         {
             if (unit != null && unit.IsAlive())
             {
-                unit.UpdateTurnGauge(deltaTime * gaugeFilLRate);
+                unit.UpdateTurnGauge(deltaTime * rate);
             }
         }
     }
@@ -277,6 +308,17 @@ public class TurnManager : MonoBehaviour
 
         currentTurn++;
 
+        // HealingRain modifier: heal all alive units at the start of each round
+        // (approximated as the first action after every unit has acted once).
+        if (activeModifier.type == BattleModifierType.HealingRain && allUnits.Count > 0 && currentTurn % allUnits.Count == 1)
+        {
+            foreach (CombatUnit u in allUnits)
+            {
+                if (u != null && u.IsAlive())
+                    u.Heal(BattleModifier.HealingRainAmount);
+            }
+        }
+
         // Tick skill cooldown and status effects
         unit.TickSkillCooldown();
         float burnDamage = unit.TickStatusEffects();
@@ -332,7 +374,7 @@ public class TurnManager : MonoBehaviour
         // Damage component (active skills with damageMultiplier > 0)
         if (skill.damageMultiplier > 0f && !skill.affectsAllies)
         {
-            float accuracy = attacker.GetAccuracy();
+            float accuracy = GetEffectiveAccuracy(attacker);
             if (UnityEngine.Random.value <= accuracy)
             {
                 float baseDamage = attacker.GetAttack() * skill.damageMultiplier;
@@ -342,6 +384,9 @@ public class TurnManager : MonoBehaviour
 
                 bool isCrit = UnityEngine.Random.value < attacker.GetCritChance();
                 finalDamage = CombatUnit.ApplyCrit(finalDamage, isCrit);
+
+                if (activeModifier.type == BattleModifierType.GlassCannon)
+                    finalDamage *= BattleModifier.GlassCannonMultiplier;
 
                 primaryTarget.TakeDamageWithShield(finalDamage);
             }
@@ -534,6 +579,18 @@ public class TurnManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Attacker's accuracy after applying the LowVisibility battle modifier (if active),
+    /// clamped to a minimum of 0.
+    /// </summary>
+    private float GetEffectiveAccuracy(CombatUnit attacker)
+    {
+        float accuracy = attacker.GetAccuracy();
+        if (activeModifier.type == BattleModifierType.LowVisibility)
+            accuracy -= BattleModifier.LowVisibilityAccuracyPenalty;
+        return Mathf.Max(0f, accuracy);
+    }
+
+    /// <summary>
     /// Estimate the damage attacker's basic attack would deal to target, ignoring accuracy
     /// (Shield is applied separately by the caller). Mirrors the formula in ExecuteAttack.
     /// </summary>
@@ -571,7 +628,7 @@ public class TurnManager : MonoBehaviour
         }
 
         // Accuracy check
-        float accuracy = attacker.GetAccuracy();
+        float accuracy = GetEffectiveAccuracy(attacker);
         if (Random.value > accuracy)
         {
             return;
@@ -587,6 +644,11 @@ public class TurnManager : MonoBehaviour
         // Critical hit roll
         bool isCrit = Random.value < attacker.GetCritChance();
         finalDamage = CombatUnit.ApplyCrit(finalDamage, isCrit);
+
+        // GlassCannon modifier: every hit (by either side) deals double damage,
+        // so damage dealt and received are both effectively doubled.
+        if (activeModifier.type == BattleModifierType.GlassCannon)
+            finalDamage *= BattleModifier.GlassCannonMultiplier;
 
         // Apply damage — respects any Shield status effect on target
         target.TakeDamageWithShield(finalDamage);
