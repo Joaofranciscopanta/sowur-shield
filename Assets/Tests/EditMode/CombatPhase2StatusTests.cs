@@ -1,5 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
+using System.Reflection;
+using SowurShield.Animals;
 using SowurShield.Combat;
 
 namespace SowurShield.Tests
@@ -27,6 +29,9 @@ public class CombatPhase2StatusTests
             if (obj != null) Object.DestroyImmediate(obj);
         }
         _cleanupList.Clear();
+
+        if (TurnManager.Instance != null)
+            Object.DestroyImmediate(TurnManager.Instance.gameObject);
     }
 
     private CombatUnit CreateUnit(float hp = 100f, float atk = 10f, float def = 5f, float spd = 10f)
@@ -37,6 +42,35 @@ public class CombatPhase2StatusTests
         unit.isPlayerUnit = false;
         unit.InitializeAsEnemy(go.name, hp, atk, def, spd);
         return unit;
+    }
+
+    /// <summary>Minimal AnimalSkill ScriptableObject for ExecuteSkill tests.</summary>
+    private AnimalSkill CreateSkill(AnimalSkillEffect statusEffect, float statusValue, int statusDuration,
+        bool affectsAllies = false)
+    {
+        var skill = ScriptableObject.CreateInstance<AnimalSkill>();
+        Track(skill);
+        skill.skillType = SkillType.Active;
+        skill.damageMultiplier = 0f;
+        skill.affectsAllies = affectsAllies;
+        skill.statusEffect = statusEffect;
+        skill.statusEffectValue = statusValue;
+        skill.statusEffectDuration = statusDuration;
+        return skill;
+    }
+
+    private TurnManager CreateTurnManager()
+    {
+        var go = new GameObject("TurnManager");
+        Track(go);
+        return go.AddComponent<TurnManager>();
+    }
+
+    private static void InvokeExecuteSkill(TurnManager tm, CombatUnit attacker, AnimalSkill skill, CombatUnit target)
+    {
+        var m = typeof(TurnManager).GetMethod("ExecuteSkill", BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.IsNotNull(m, "Method 'ExecuteSkill' not found on TurnManager");
+        m.Invoke(tm, new object[] { attacker, skill, target });
     }
 
     // =========================================================================
@@ -135,6 +169,69 @@ public class CombatPhase2StatusTests
 
         Assert.AreEqual(0.75f, unit.GetWeaknessReduction(), 0.001f, "Weakness reduction should be capped at 0.75.");
         Assert.AreEqual(25f, unit.GetAttack(), 0.001f, "Attack should be reduced by at most 75% (100 -> 25).");
+    }
+
+    // =========================================================================
+    // ExecuteSkill — Poison / Weakness application
+    // =========================================================================
+
+    [Test]
+    public void ExecuteSkill_PoisonEffect_AppliesPoisonToTarget()
+    {
+        var tm = CreateTurnManager();
+        var attacker = CreateUnit();
+        var target = CreateUnit();
+
+        var skill = CreateSkill(AnimalSkillEffect.Poison, 5f, 3);
+
+        InvokeExecuteSkill(tm, attacker, skill, target);
+
+        Assert.AreEqual(1, target.GetActiveStatusCount(StatusEffectType.Poison), "ExecuteSkill with Poison effect should apply Poison to the target.");
+    }
+
+    [Test]
+    public void ExecuteSkill_WeaknessEffect_AppliesWeaknessToTarget()
+    {
+        var tm = CreateTurnManager();
+        var attacker = CreateUnit();
+        var target = CreateUnit(atk: 20f);
+
+        var skill = CreateSkill(AnimalSkillEffect.Weakness, 0.3f, 2);
+
+        InvokeExecuteSkill(tm, attacker, skill, target);
+
+        Assert.AreEqual(1, target.GetActiveStatusCount(StatusEffectType.Weakness), "ExecuteSkill with Weakness effect should apply Weakness to the target.");
+        Assert.AreEqual(14f, target.GetAttack(), 0.001f, "Target's attack should reflect the new Weakness reduction.");
+    }
+
+    [Test]
+    public void ExecuteSkill_PoisonEffect_ImmuneTargetUnaffected()
+    {
+        var tm = CreateTurnManager();
+        var attacker = CreateUnit();
+        var target = CreateUnit();
+        target.InitializeImmunities(new System.Collections.Generic.List<string> { "Poison" });
+
+        var skill = CreateSkill(AnimalSkillEffect.Poison, 5f, 3);
+
+        InvokeExecuteSkill(tm, attacker, skill, target);
+
+        Assert.AreEqual(0, target.GetActiveStatusCount(StatusEffectType.Poison), "Immune target should not receive Poison from ExecuteSkill.");
+    }
+
+    [Test]
+    public void ExecuteSkill_WeaknessEffect_ImmuneTargetUnaffected()
+    {
+        var tm = CreateTurnManager();
+        var attacker = CreateUnit();
+        var target = CreateUnit();
+        target.InitializeImmunities(new System.Collections.Generic.List<string> { "Weakness" });
+
+        var skill = CreateSkill(AnimalSkillEffect.Weakness, 0.3f, 2);
+
+        InvokeExecuteSkill(tm, attacker, skill, target);
+
+        Assert.AreEqual(0, target.GetActiveStatusCount(StatusEffectType.Weakness), "Immune target should not receive Weakness from ExecuteSkill.");
     }
 }
 

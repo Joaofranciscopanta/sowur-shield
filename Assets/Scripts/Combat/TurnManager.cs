@@ -362,6 +362,16 @@ public class TurnManager : MonoBehaviour
         {
             primaryTarget.ApplyStatusEffect(StatusEffectType.Burn, skill.statusEffectValue, skill.statusEffectDuration > 0 ? skill.statusEffectDuration : 2);
         }
+        else if (skill.statusEffect == AnimalSkillEffect.Poison && !skill.affectsAllies
+            && !primaryTarget.IsImmuneTo(StatusEffectType.Poison))
+        {
+            primaryTarget.ApplyStatusEffect(StatusEffectType.Poison, skill.statusEffectValue, skill.statusEffectDuration > 0 ? skill.statusEffectDuration : 2);
+        }
+        else if (skill.statusEffect == AnimalSkillEffect.Weakness && !skill.affectsAllies
+            && !primaryTarget.IsImmuneTo(StatusEffectType.Weakness))
+        {
+            primaryTarget.ApplyStatusEffect(StatusEffectType.Weakness, skill.statusEffectValue, skill.statusEffectDuration > 0 ? skill.statusEffectDuration : 2);
+        }
     }
 
     /// <summary>Select primary target for a skill.</summary>
