@@ -331,10 +331,16 @@ public class CombatUnit : MonoBehaviour
         return currentHealth > 0;
     }
 
+    /// <summary>Fired after this unit takes damage, with the post-shield amount and whether it was a crit.</summary>
+    public event System.Action<float, bool> OnDamageTaken;
+
+    /// <summary>Fired after this unit is healed, with the amount healed.</summary>
+    public event System.Action<float> OnHealed;
+
     /// <summary>
     /// Take damage from an attack
     /// </summary>
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, bool isCrit = false)
     {
         currentHealth -= damage;
         if (currentHealth < 0) currentHealth = 0;
@@ -343,6 +349,8 @@ public class CombatUnit : MonoBehaviour
         UpdateHealthBar();
         FlashDamage();
         SowurShield.Core.SFXManager.Play("CombatHit");
+
+        OnDamageTaken?.Invoke(damage, isCrit);
 
         // Check death
         if (!IsAlive())
@@ -361,6 +369,7 @@ public class CombatUnit : MonoBehaviour
 
 
         UpdateHealthBar();
+        OnHealed?.Invoke(amount);
     }
 
     /// <summary>
@@ -818,10 +827,10 @@ public class CombatUnit : MonoBehaviour
     }
 
     /// <summary>Modify TakeDamage to respect Shield reduction.</summary>
-    public void TakeDamageWithShield(float rawDamage)
+    public void TakeDamageWithShield(float rawDamage, bool isCrit = false)
     {
         float reduced = rawDamage * (1f - GetShieldReduction());
-        TakeDamage(reduced);
+        TakeDamage(reduced, isCrit);
     }
 }
 
