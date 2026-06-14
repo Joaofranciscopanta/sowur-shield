@@ -454,7 +454,7 @@ public class TurnManager : MonoBehaviour
                     finalDamage *= BattleModifier.GlassCannonMultiplier;
 
                 RaiseBigHitIfQualifying(finalDamage, primaryTarget.GetMaxHealth(), isCrit);
-                primaryTarget.TakeDamageWithShield(finalDamage);
+                primaryTarget.TakeDamageWithShield(finalDamage, isCrit);
             }
         }
 
@@ -719,7 +719,7 @@ public class TurnManager : MonoBehaviour
         RaiseBigHitIfQualifying(finalDamage, target.GetMaxHealth(), isCrit);
 
         // Apply damage — respects any Shield status effect on target
-        target.TakeDamageWithShield(finalDamage);
+        target.TakeDamageWithShield(finalDamage, isCrit);
     }
 
     /// <summary>
