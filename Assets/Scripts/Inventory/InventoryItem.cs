@@ -51,6 +51,10 @@ namespace SowurShield.Inventory
         public int baseValue = 1;
         public bool canBeSold = true;
 
+        [Header("Gifting")]
+        [Tooltip("Relationship points gained when this item is given as a gift to an NPC. 0 = not giftable.")]
+        public float giftAffinityValue = 0f;
+
         // Get the color associated with rarity
         public Color GetRarityColor()
         {

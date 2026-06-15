@@ -17,3 +17,4 @@ MonoBehaviour:
   icon: {fileID: 3464325649027248082, guid: 2762fc741c9e9e844a550c3d7afc9a70, type: 3}
   isStackable: 1
   maxStackSize: 99
+  giftAffinityValue: 15

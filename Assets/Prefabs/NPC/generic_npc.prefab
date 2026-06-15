@@ -148,8 +148,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25a98cb3857bdae43814b27182482d56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  npcId: village_chicken
-  npcDisplayName: Village Chicken
+  npcId:
+  npcDisplayName:
   availableDialogues:
   - {fileID: 11400000, guid: 965fee249edd8874d9e7b484becd8e96, type: 2}
   - {fileID: 11400000, guid: 76f962222e3e0d54fa0d106a6d053fa0, type: 2}

@@ -10,6 +10,9 @@ namespace SowurShield.Dialogue
         [Header("NPC Configuration")]
         [SerializeField] private string npcId;
         [SerializeField] private string npcDisplayName;
+        [SerializeField] private Sprite npcPortrait;
+        [TextArea(2, 5)]
+        [SerializeField] private string npcBio;
 
         [Header("Dialogue Trees")]
         [SerializeField] private DialogueTree[] availableDialogues = new DialogueTree[0];
@@ -25,6 +28,10 @@ namespace SowurShield.Dialogue
         [SerializeField] private bool allowRepeatedConversations = true;
         [SerializeField] private float cooldownBetweenInteractions = 1f;
         [SerializeField] private bool disableMovementDuringDialogue = true;
+
+        [Header("Relationship & Gifting")]
+        [Tooltip("If disabled, the \"Give a gift\" dialogue choice is never shown for this NPC.")]
+        [SerializeField] private bool enableGifting = true;
 
         [Header("Audio")]
         [SerializeField] private AudioClip interactionSound;
@@ -105,10 +112,11 @@ namespace SowurShield.Dialogue
 
         private void InitializeNPC()
         {
-            // Generate NPC ID if not set
+            // Generate NPC ID if not set. Based on gameObject.name (not GetInstanceID()) so
+            // it stays stable across play sessions/saves; scene NPC names must be unique.
             if (string.IsNullOrEmpty(npcId))
             {
-                npcId = $"npc_{gameObject.name}_{GetInstanceID()}";
+                npcId = $"npc_{gameObject.name}";
             }
 
             // Set display name if not set
@@ -274,6 +282,48 @@ namespace SowurShield.Dialogue
         }
 
         /// <summary>
+        /// Whether a gift can still be given to this NPC today.
+        /// </summary>
+        public bool CanGiftToday()
+        {
+            return conversationMemory != null && conversationMemory.CanGiftToday(npcId);
+        }
+
+        /// <summary>
+        /// Gives a gift to this NPC: applies the relationship change via ConversationMemory
+        /// and records today as the last gift day (one gift per NPC per in-game day).
+        /// </summary>
+        public void ReceiveGift(float affinityValue)
+        {
+            conversationMemory?.GiveGift(npcId, affinityValue);
+        }
+
+        /// <summary>
+        /// Portrait sprite for this NPC, used by RelationshipUI. Falls back to the
+        /// default dialogue's start-node speaker portrait if not explicitly assigned.
+        /// </summary>
+        public Sprite GetPortrait()
+        {
+            if (npcPortrait != null) return npcPortrait;
+
+            var startNode = defaultDialogue?.GetStartNode();
+            return startNode?.speakerPortrait;
+        }
+
+        /// <summary>
+        /// Short bio/flavor text for this NPC, shown in RelationshipUI.
+        /// </summary>
+        public string GetBio() => npcBio;
+
+        /// <summary>
+        /// Current relationship level with this NPC (-100..100), via ConversationMemory.
+        /// </summary>
+        public float GetRelationshipLevel()
+        {
+            return conversationMemory != null ? conversationMemory.GetRelationshipLevel(npcId) : 0f;
+        }
+
+        /// <summary>
         /// Starts dialogue with this NPC
         /// </summary>
         public void StartDialogue()
@@ -317,10 +367,55 @@ namespace SowurShield.Dialogue
                 dialogueUI.OnDialogueEnded += OnDialogueEndedCallback;
             }
 
+            // Append "Gift" / "Relationship" as extra choices on the start node, so they
+            // appear inside the dialogue menu instead of as floating screen buttons.
+            dialogueUI.SetExtraStartNodeChoices(BuildExtraChoices());
+
             // Start the dialogue
             dialogueUI.StartDialogue(dialogueToShow);
 
             OnDialogueStarted?.Invoke(dialogueToShow);
+        }
+
+        /// <summary>
+        /// Builds the "Gift" and "Relationship" choices appended to the start node of this
+        /// NPC's dialogue. Both are exit choices: selecting one closes the dialogue box and
+        /// opens the corresponding panel (GiftSelectionUI / RelationshipUI).
+        /// </summary>
+        private List<DialogueChoice> BuildExtraChoices()
+        {
+            var choices = new List<DialogueChoice>();
+
+            if (enableGifting)
+            {
+                bool canGift = CanGiftToday();
+                choices.Add(new DialogueChoice
+                {
+                    choiceText = canGift ? "Give a gift" : "Give a gift (already gifted today)",
+                    isExitChoice = true,
+                    choiceColor = canGift ? Color.white : new Color(0.6f, 0.6f, 0.6f, 1f),
+                    onSelectedRuntime = canGift ? () =>
+                    {
+                        var giftUI = FindFirstObjectByType<GiftSelectionUI>();
+                        if (giftUI != null)
+                            giftUI.OpenForNpc(this);
+                    } : null
+                });
+            }
+
+            choices.Add(new DialogueChoice
+            {
+                choiceText = "View relationship",
+                isExitChoice = true,
+                onSelectedRuntime = () =>
+                {
+                    var relationshipUI = FindFirstObjectByType<RelationshipUI>();
+                    if (relationshipUI != null)
+                        relationshipUI.OpenForNpc(this);
+                }
+            });
+
+            return choices;
         }
 
         private void OnDialogueEndedCallback()
@@ -430,6 +525,11 @@ namespace SowurShield.Dialogue
 
         public void SetPromptVisibility(bool visible)
         {
+            // InteractionManager drives proximity when active, so playerInRange
+            // (used by CanInteract/Interact and GiftSelectionUI) must be kept in
+            // sync here too — CheckPlayerDistance() only runs in fallback mode.
+            playerInRange = visible;
+
             if (interactionPrompt != null)
             {
                 interactionPrompt.SetActive(visible);

@@ -53,6 +53,11 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
     // Choice management
     private List<ChoiceButton> activeChoiceButtons = new List<ChoiceButton>();
     private int selectedChoiceIndex = 0;
+
+    // Extra choices (e.g. "Gift", "Relationship") appended to the start node's choice
+    // list for the current conversation. Set via SetExtraStartNodeChoices() before
+    // StartDialogue() is called; cleared when the dialogue ends.
+    private List<DialogueChoice> extraStartNodeChoices = new List<DialogueChoice>();
     
     // Animation tracking
     private Coroutine currentDialogueCoroutine;
@@ -323,8 +328,8 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
     
     private IEnumerator HandleDialogueNode(DialogueNode node)
     {
-        var availableChoices = node.GetAvailableChoices();
-        
+        var availableChoices = GetChoicesWithExtras(node);
+
         if (availableChoices.Length > 0)
         {
             // Show choices
@@ -347,11 +352,11 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
             }
         }
     }
-    
+
     private IEnumerator HandleChoiceNode(DialogueNode node)
     {
-        var availableChoices = node.GetAvailableChoices();
-        
+        var availableChoices = GetChoicesWithExtras(node);
+
         if (availableChoices.Length > 0)
         {
             yield return ShowChoicesCoroutine(availableChoices);
@@ -360,6 +365,38 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
         {
             ContinueToNextNode();
         }
+    }
+
+    /// <summary>
+    /// Returns this node's available choices, with the extra start-node-only choices
+    /// (e.g. "Gift", "Relationship") appended when this is the conversation's start node.
+    /// </summary>
+    private DialogueChoice[] GetChoicesWithExtras(DialogueNode node)
+    {
+        var availableChoices = node.GetAvailableChoices();
+
+        if (extraStartNodeChoices.Count == 0 || currentDialogueTree == null ||
+            node.nodeId != currentDialogueTree.startNodeId)
+        {
+            return availableChoices;
+        }
+
+        var combined = new DialogueChoice[availableChoices.Length + extraStartNodeChoices.Count];
+        availableChoices.CopyTo(combined, 0);
+        extraStartNodeChoices.CopyTo(combined, availableChoices.Length);
+        return combined;
+    }
+
+    /// <summary>
+    /// Sets extra choices (e.g. "Gift", "Relationship") to be appended to the start node's
+    /// choice list for the next conversation started via StartDialogue(). Cleared automatically
+    /// when the dialogue ends. Pass null or an empty list to show no extra choices.
+    /// </summary>
+    public void SetExtraStartNodeChoices(List<DialogueChoice> choices)
+    {
+        extraStartNodeChoices.Clear();
+        if (choices != null)
+            extraStartNodeChoices.AddRange(choices);
     }
     
     private IEnumerator HandleEventNode(DialogueNode node)
@@ -436,6 +473,11 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
         if (choice.isExitChoice || string.IsNullOrEmpty(choice.nextNodeId))
         {
             EndDialogue();
+
+            // Run any runtime-only callback (e.g. opening the Gift/Relationship panel)
+            // after the dialogue window has closed, so it isn't blocked by UIManager's
+            // single-window stack.
+            choice.onSelectedRuntime?.Invoke();
         }
         else
         {
@@ -517,6 +559,7 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
         isWaitingForChoice = false;
         currentDialogueTree = null;
         currentNode = null;
+        extraStartNodeChoices.Clear();
 
         // Notify UIManager that dialogue has ended
         if (UIManager.Instance != null)

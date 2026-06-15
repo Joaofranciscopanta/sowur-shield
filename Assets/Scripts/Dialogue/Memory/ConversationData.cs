@@ -21,6 +21,9 @@ namespace SowurShield.Dialogue
         [Header("Relationships")]
         public Dictionary<string, float> relationshipLevels = new Dictionary<string, float>();
 
+        [Header("Gifts")]
+        public Dictionary<string, int> lastGiftDay = new Dictionary<string, int>();
+
         [Header("Quest Status")]
         public Dictionary<string, string> questStatuses = new Dictionary<string, string>();
 

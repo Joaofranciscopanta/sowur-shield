@@ -13,6 +13,7 @@ public class ConversationMemory : MonoBehaviour, ISaveable
     private const string CONV_PREFIX    = "conv_done_"; // completed conversation → worldFlags
     private const string QUEST_PREFIX   = "quest_";   // quest status → worldStrings
     private const string VAR_PREFIX     = "dlgvar_";  // custom variable → worldStrings
+    private const string GIFT_PREFIX    = "lastgift_"; // last gift day per NPC → worldCounters (int day)
 
     [Header("Save Settings")]
     [SerializeField] private string saveFileName = "ConversationData";
@@ -30,19 +31,36 @@ public class ConversationMemory : MonoBehaviour, ISaveable
     public System.Action<bool> OnSaveCompleted; // success
     
     // Data
-    private ConversationData conversationData;
+    private ConversationData _conversationData;
     private string saveFilePath;
     private float lastAutoSaveTime;
     private bool hasUnsavedChanges = false;
-    
+
+    /// <summary>
+    /// Lazily initializes conversation data on first access. AddComponent() does not
+    /// run Awake() synchronously in EditMode tests, so the public API (SetRelationship,
+    /// GiveGift, SaveData, etc.) must not rely solely on Awake() having run.
+    /// </summary>
+    private ConversationData conversationData
+    {
+        get
+        {
+            if (_conversationData == null)
+                InitializeMemorySystem();
+            return _conversationData;
+        }
+        set => _conversationData = value;
+    }
+
     private void Awake()
     {
+        InitializeMemorySystem();
+
         // Singleton setup
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            InitializeMemorySystem();
 
             if (SaveManager.Instance != null)
                 SaveManager.Instance.RegisterSaveable(this);
@@ -209,7 +227,39 @@ public class ConversationMemory : MonoBehaviour, ISaveable
     {
         return conversationData?.GetRelationshipLevel(npcId) ?? 0f;
     }
-    
+
+    /// <summary>
+    /// Returns true if the player has not yet given a gift to this NPC today.
+    /// </summary>
+    public bool CanGiftToday(string npcId)
+    {
+        if (conversationData == null || string.IsNullOrEmpty(npcId)) return false;
+
+        int currentDay = GameTimeController.instance != null
+            ? GameTimeController.instance.currentDay
+            : 0;
+
+        return !conversationData.lastGiftDay.TryGetValue(npcId, out int lastDay) || lastDay != currentDay;
+    }
+
+    /// <summary>
+    /// Gives a gift to an NPC: applies the relationship change and records today
+    /// as the last gift day for that NPC (one gift per NPC per in-game day).
+    /// </summary>
+    public void GiveGift(string npcId, float affinityValue)
+    {
+        if (conversationData == null || string.IsNullOrEmpty(npcId)) return;
+
+        ModifyRelationship(npcId, affinityValue);
+
+        int currentDay = GameTimeController.instance != null
+            ? GameTimeController.instance.currentDay
+            : 0;
+
+        conversationData.lastGiftDay[npcId] = currentDay;
+        MarkDataChanged();
+    }
+
     /// <summary>
     /// Sets quest status
     /// </summary>
@@ -384,6 +434,10 @@ public class ConversationMemory : MonoBehaviour, ISaveable
         // ── Custom variables ─────────────────────────────────────────────────
         foreach (var kv in conversationData.customVariables)
             strings[VAR_PREFIX + kv.Key] = kv.Value;
+
+        // ── Last gift day per NPC ─────────────────────────────────────────────
+        foreach (var kv in conversationData.lastGiftDay)
+            counters[GIFT_PREFIX + kv.Key] = kv.Value;
     }
 
     /// <summary>
@@ -439,6 +493,16 @@ public class ConversationMemory : MonoBehaviour, ISaveable
             {
                 string varKey = kv.Key.Substring(VAR_PREFIX.Length);
                 conversationData.customVariables[varKey] = kv.Value;
+            }
+        }
+
+        // ── Last gift day per NPC ─────────────────────────────────────────────
+        foreach (var kv in counters)
+        {
+            if (kv.Key.StartsWith(GIFT_PREFIX))
+            {
+                string npcId = kv.Key.Substring(GIFT_PREFIX.Length);
+                conversationData.lastGiftDay[npcId] = kv.Value;
             }
         }
 

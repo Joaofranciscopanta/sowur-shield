@@ -16,3 +16,4 @@ MonoBehaviour:
   itemDesc: Generic Item
   icon: {fileID: 444988327002669956, guid: 9de6d2c51fda61546822d52ca6cb64e3, type: 3}
   isStackable: 1
+  giftAffinityValue: 10

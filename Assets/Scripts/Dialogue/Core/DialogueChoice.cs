@@ -27,6 +27,16 @@ namespace SowurShield.Dialogue
         public string editorNote; // Internal note for designers
 
         /// <summary>
+        /// Optional runtime-only callback invoked when this choice is selected, in addition
+        /// to <see cref="effects"/>. Used for choices built dynamically at runtime (e.g. the
+        /// "Gift"/"Relationship" options injected by NPCDialogueInteractable) that need to
+        /// open a UI window rather than (or in addition to) mutating ConversationMemory.
+        /// Not serialized — has no effect on choices authored in a DialogueTree asset.
+        /// </summary>
+        [System.NonSerialized]
+        public System.Action onSelectedRuntime;
+
+        /// <summary>
         /// Checks if this choice should be available to the player
         /// </summary>
         public bool IsAvailable()
