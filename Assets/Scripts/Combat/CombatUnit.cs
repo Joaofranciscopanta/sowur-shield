@@ -402,7 +402,7 @@ public class CombatUnit : MonoBehaviour
         {
             Renderer renderer = visualObject.GetComponent<Renderer>();
             if (renderer != null)
-                renderer.material.color = Color.gray;
+                renderer.sharedMaterial.color = Color.gray;
         }
     }
 
@@ -568,7 +568,7 @@ public class CombatUnit : MonoBehaviour
             if (renderer == null) yield break;
 
             // Flash to specified color
-            renderer.material.color = flashColor;
+            renderer.sharedMaterial.color = flashColor;
 
             // Wait
             yield return new WaitForSeconds(0.1f);
@@ -576,7 +576,7 @@ public class CombatUnit : MonoBehaviour
             // Return to team color
             if (IsAlive())
             {
-                renderer.material.color = isPlayerUnit ? playerColor : enemyColor;
+                renderer.sharedMaterial.color = isPlayerUnit ? playerColor : enemyColor;
             }
         }
 
@@ -588,7 +588,7 @@ public class CombatUnit : MonoBehaviour
         if (visualObject != null && IsAlive())
         {
             Renderer renderer = visualObject.GetComponent<Renderer>();
-            renderer.material.color = isPlayerUnit ? playerColor : enemyColor;
+            renderer.sharedMaterial.color = isPlayerUnit ? playerColor : enemyColor;
         }
     }
 

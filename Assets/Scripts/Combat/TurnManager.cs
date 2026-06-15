@@ -343,6 +343,11 @@ public class TurnManager : MonoBehaviour
             }
         }
 
+        // Capture stun state before ticking — TickStatusEffects() decrements and removes
+        // a Stun with turnsRemaining==1 down to 0, which would otherwise make IsStunned
+        // report false for the very turn that should be skipped.
+        bool wasStunned = unit.IsStunned;
+
         // Tick skill cooldown and status effects
         unit.TickSkillCooldown();
         float burnDamage = unit.TickStatusEffects();
@@ -353,7 +358,7 @@ public class TurnManager : MonoBehaviour
             unit.TakeDamageWithShield(burnDamage);
 
         // Stun: unit loses its turn
-        if (unit.IsStunned)
+        if (wasStunned)
         {
             unit.ResetTurnGauge();
             return;
