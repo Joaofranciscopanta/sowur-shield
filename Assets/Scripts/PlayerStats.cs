@@ -60,6 +60,15 @@ public class PlayerStats : MonoBehaviour, ISaveable
 
     private void Start()
     {
+        var teamData = SowurShield.Combat.TeamAssemblerData.Instance;
+        if (teamData.pendingGoldReward != 0 || teamData.pendingXpReward != 0f)
+        {
+            AddMoney(teamData.pendingGoldReward);
+            AddExperience(teamData.pendingXpReward);
+            teamData.pendingGoldReward = 0;
+            teamData.pendingXpReward = 0f;
+        }
+
         UpdateUI();
     }
 

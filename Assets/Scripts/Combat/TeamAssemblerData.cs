@@ -122,6 +122,13 @@ public class TeamAssemblerData : MonoBehaviour
     /// </summary>
     public bool pendingReopenAssembler = false;
 
+    /// <summary>
+    /// Gold/XP awarded by BattleResultsUI.AwardRewards() when PlayerStats isn't present
+    /// in CombatScene; consumed (and cleared) by PlayerStats.Start() in SampleScene.
+    /// </summary>
+    public int pendingGoldReward = 0;
+    public float pendingXpReward = 0f;
+
     // ── MonoBehaviour singleton with DontDestroyOnLoad ────────────────────────
     private static TeamAssemblerData instance;
     public static TeamAssemblerData Instance

@@ -248,9 +248,20 @@ public class BattleResultsUI : MonoBehaviour
         if (pendingRewards == null || !pendingRewards.isVictory || rewardsAwarded) return;
         rewardsAwarded = true;
 
-        // Gold
+        // Gold & XP — PlayerStats lives in SampleScene, not CombatScene, so stash
+        // pending rewards on the persistent TeamAssemblerData and let PlayerStats
+        // apply them when SampleScene loads (mirrors pendingReopenAssembler pattern).
         var stats = FindFirstObjectByType<PlayerStats>();
-        stats?.AddMoney(pendingRewards.goldReward);
+        if (stats != null)
+        {
+            stats.AddMoney(pendingRewards.goldReward);
+            stats.AddExperience(pendingRewards.xpReward);
+        }
+        else
+        {
+            TeamAssemblerData.Instance.pendingGoldReward += pendingRewards.goldReward;
+            TeamAssemblerData.Instance.pendingXpReward += pendingRewards.xpReward;
+        }
 
         // Loot
         var inventory = FindFirstObjectByType<SowurShield.Inventory.Inventory>();
