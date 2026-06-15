@@ -35,9 +35,6 @@ public class GameData
     [Header("Farming Data")]
     public FarmingGameData farmingData;
 
-    [Header("Relationship Data")]
-    public RelationshipGameData relationshipData;
-
     [Header("Combat Data")]
     public CombatGameData combatData;
 
@@ -52,7 +49,6 @@ public class GameData
         timeData = new TimeGameData();
         inventoryData = new InventoryGameData();
         farmingData = new FarmingGameData();
-        relationshipData = new RelationshipGameData();
         combatData = new CombatGameData();
         progressData = new ProgressGameData();
 
@@ -268,48 +264,6 @@ public class FarmingGameData
         public int level = 1;
         public Dictionary<string, string> buildingData = new Dictionary<string, string>();
         public bool isConstructed = false;
-    }
-}
-
-// ============================================================================
-// RELATIONSHIP DATA
-// ============================================================================
-
-[System.Serializable]
-public class RelationshipGameData
-{
-    [Header("NPC Relationships")]
-    public Dictionary<string, NPCRelationshipData> npcRelationships = new Dictionary<string, NPCRelationshipData>();
-
-    [Header("Dialogue Progress")]
-    public Dictionary<string, DialogueProgressData> dialogueProgress = new Dictionary<string, DialogueProgressData>();
-
-    [Header("Romance")]
-    public string currentRomancePartner = "";
-    public Dictionary<string, bool> romanceFlags = new Dictionary<string, bool>();
-
-    [System.Serializable]
-    public class NPCRelationshipData
-    {
-        public string npcName = "";
-        public int friendshipLevel = 0;
-        public float friendshipPoints = 0f;
-        public int romanceLevel = 0;
-        public float romancePoints = 0f;
-        public bool isRomanceable = false;
-        public bool isMarried = false;
-        public Dictionary<string, bool> relationshipFlags = new Dictionary<string, bool>();
-        public List<string> receivedGifts = new List<string>(); // Track daily gifts
-        public string lastGiftDate = "";
-    }
-
-    [System.Serializable]
-    public class DialogueProgressData
-    {
-        public string npcName = "";
-        public List<string> completedDialogues = new List<string>();
-        public Dictionary<string, int> dialogueChoiceHistory = new Dictionary<string, int>();
-        public string lastDialogueDate = "";
     }
 }
 

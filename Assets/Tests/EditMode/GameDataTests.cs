@@ -27,7 +27,6 @@ public class GameDataTests
         Assert.IsNotNull(data.timeData);
         Assert.IsNotNull(data.inventoryData);
         Assert.IsNotNull(data.farmingData);
-        Assert.IsNotNull(data.relationshipData);
         Assert.IsNotNull(data.combatData);
         Assert.IsNotNull(data.progressData);
     }
