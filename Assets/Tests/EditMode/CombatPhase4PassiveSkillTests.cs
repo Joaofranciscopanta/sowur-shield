@@ -151,6 +151,10 @@ public class CombatPhase4PassiveSkillTests
         Track(rosterGo);
         var roster = rosterGo.AddComponent<AnimalRoster>();
 
+        // AddComponent() does not run Awake() synchronously in Edit Mode, so invoke it
+        // manually via reflection to set AnimalRoster.Instance now.
+        InvokePrivate(roster, "Awake", null);
+
         var registeredAnimals = new List<Animal>();
         for (int i = 0; i < 3; i++)
             registeredAnimals.Add(CreateAnimal(combatClass: "Tank", animalFamily: "Bovidae", passiveSkills: null));

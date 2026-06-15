@@ -104,7 +104,12 @@ public class AnimalHusbandryTests
     {
         var rosterGo = new GameObject("AnimalRoster_Test");
         Track(rosterGo);
+
+        // AddComponent() does not run Awake() synchronously in Edit Mode, so invoke it
+        // manually via reflection to set AnimalRoster.Instance now.
         var roster = rosterGo.AddComponent<AnimalRoster>();
+        InvokePrivate(roster, "Awake");
+
         return roster;
     }
 
@@ -734,11 +739,18 @@ public class AnimalHusbandryTests
         var roster = CreateRoster();
         Assert.AreSame(roster, AnimalRoster.Instance);
 
-        Object.DestroyImmediate(roster.gameObject);
-        // Remove from cleanup list since already destroyed
-        cleanupList.Remove(roster.gameObject);
+        var rosterGo = roster.gameObject;
 
-        Assert.IsNull(AnimalRoster.Instance);
+        // AnimalRoster.OnDestroy() clears Instance, but DestroyImmediate doesn't
+        // invoke MonoBehaviour callbacks synchronously in batch Edit Mode tests —
+        // invoke it manually, matching the Awake() workaround used in CreateRoster().
+        InvokePrivate(roster, "OnDestroy");
+
+        Object.DestroyImmediate(rosterGo);
+        // Remove from cleanup list since already destroyed
+        cleanupList.Remove(rosterGo);
+
+        Assert.IsTrue(AnimalRoster.Instance == null);
     }
 
     // =========================================================================
@@ -750,11 +762,13 @@ public class AnimalHusbandryTests
     {
         var roster = CreateRoster();
 
-        // Create two zones
+        // Create two zones (AnimalZone requires a Collider2D)
         var zoneGo1 = new GameObject("Zone1"); Track(zoneGo1);
+        zoneGo1.AddComponent<BoxCollider2D>();
         var zone1 = zoneGo1.AddComponent<AnimalZone>();
 
         var zoneGo2 = new GameObject("Zone2"); Track(zoneGo2);
+        zoneGo2.AddComponent<BoxCollider2D>();
         var zone2 = zoneGo2.AddComponent<AnimalZone>();
 
         var data = CreateAnimalData(); Track(data);
@@ -792,6 +806,7 @@ public class AnimalHusbandryTests
         var roster = CreateRoster();
 
         var zoneGo = new GameObject("ZoneOcc"); Track(zoneGo);
+        zoneGo.AddComponent<BoxCollider2D>();
         var zone = zoneGo.AddComponent<AnimalZone>();
 
         var data = CreateAnimalData(); Track(data);

@@ -25,7 +25,7 @@ public class PlayerStatsPlayModeTests
     [UnityTearDown]
     public IEnumerator TearDown()
     {
-        Object.Destroy(go);
+        Object.DestroyImmediate(go);
         yield return null;
     }
 
@@ -213,7 +213,7 @@ public class PlayerStatsPlayModeTests
         Assert.AreEqual(stats.money, stats2.money);
         Assert.AreEqual(stats.playerLevel, stats2.playerLevel);
 
-        Object.Destroy(go2);
+        Object.DestroyImmediate(go2);
         yield return null;
     }
 }

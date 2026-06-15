@@ -125,6 +125,10 @@ public class QuestManager : MonoBehaviour, ISaveable
             }
         }
 
+        // Ensure lookups by id (AdvanceObjective, GetQuestProgress, save/load, etc.)
+        // work even if this QuestData wasn't loaded via LoadAllQuestAssets().
+        _allQuests[data.questId] = data;
+
         _activeQuestIds.Add(data.questId);
         _objectiveProgress[data.questId] = new int[data.objectives?.Count ?? 0];
 

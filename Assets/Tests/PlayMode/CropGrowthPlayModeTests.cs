@@ -42,7 +42,7 @@ public class CropGrowthPlayModeTests
     public IEnumerator TearDown()
     {
         Object.DestroyImmediate(testCrop);
-        Object.Destroy(soilGo);
+        Object.DestroyImmediate(soilGo);
         yield return null;
     }
 

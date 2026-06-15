@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Reflection;
 using SowurShield.Core;
 using SowurShield.Dialogue;
 
@@ -44,6 +45,14 @@ public class QuestSystemTests
     {
         _managerGO    = new GameObject("QuestManager_Test");
         _questManager = _managerGO.AddComponent<QuestManager>();
+
+        // AddComponent() does not run Awake() synchronously in Edit Mode, and Awake()
+        // itself calls DontDestroyOnLoad() which throws outside Play Mode — so set the
+        // singleton Instance directly via reflection instead of invoking Awake().
+        // None of these tests call StartQuest(string questId), so LoadAllQuestAssets()
+        // (also called from Awake) is not needed.
+        typeof(QuestManager).GetProperty("Instance", BindingFlags.Public | BindingFlags.Static)
+            .SetValue(null, _questManager);
     }
 
     [TearDown]
@@ -111,7 +120,14 @@ public class QuestSystemTests
     [Test]
     public void AdvanceObjective_ClampsAtRequired()
     {
-        var objectives = new List<QuestObjective> { MakeObjective(QuestObjectiveType.Custom, "", 3) };
+        // Second objective keeps the quest active after objective 0 is clamped to its max,
+        // so GetObjectiveProgress still has a tracked entry to read (completing the quest
+        // removes its _objectiveProgress entry — see CompleteQuest).
+        var objectives = new List<QuestObjective>
+        {
+            MakeObjective(QuestObjectiveType.Custom, "", 3),
+            MakeObjective(QuestObjectiveType.Custom, "", 1)
+        };
         var q = MakeQuest("q5", "Clamp Quest", objectives);
         _questManager.StartQuest(q);
 

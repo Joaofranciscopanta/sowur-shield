@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using UnityEngine;
+using System.Reflection;
 using SowurShield.Dialogue;
 
 namespace SowurShield.Tests
@@ -20,6 +21,13 @@ public class DialogueConditionTests
     {
         _go = new GameObject("ConversationMemory_Test");
         _memory = _go.AddComponent<ConversationMemory>();
+
+        // AddComponent() does not run Awake() synchronously in Edit Mode, and Awake()
+        // itself calls DontDestroyOnLoad() which throws outside Play Mode — so set the
+        // singleton Instance directly via reflection instead of invoking Awake().
+        // The conversationData property lazily initializes itself on first access.
+        typeof(ConversationMemory).GetProperty("Instance", BindingFlags.Public | BindingFlags.Static)
+            .SetValue(null, _memory);
     }
 
     [TearDown]

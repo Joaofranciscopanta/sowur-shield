@@ -38,14 +38,14 @@ public class CombatPhase3BattleModifierTests
 
     private static void SetField(object target, string name, object value)
     {
-        var f = target.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Instance);
+        var f = target.GetType().GetField(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
         Assert.IsNotNull(f, $"Field '{name}' not found on {target.GetType().Name}");
         f.SetValue(target, value);
     }
 
     private static object GetField(object target, string name)
     {
-        var f = target.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Instance);
+        var f = target.GetType().GetField(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
         Assert.IsNotNull(f, $"Field '{name}' not found on {target.GetType().Name}");
         return f.GetValue(target);
     }
@@ -260,7 +260,10 @@ public class CombatPhase3BattleModifierTests
         var unitB = CreateUnit(isPlayer: false, hp: 100f, atk: 10f, def: 0f, spd: 10f);
         var tm = CreateTurnManager(new List<CombatUnit> { unitA }, new List<CombatUnit> { unitB });
 
-        InvokePrivate(tm, "FillTurnGauges", new object[] { 1f });
+        // Use a small deltaTime so the filled gauge stays well below the 100 clamp,
+        // otherwise both the normal and doubled runs would saturate at 100 and the
+        // 2x ratio would be unobservable.
+        InvokePrivate(tm, "FillTurnGauges", new object[] { 0.1f });
         float normalGauge = (float)GetField(unitA, "turnGauge");
 
         // Reset gauge and re-run with DoubleSpeed active.
@@ -268,7 +271,7 @@ public class CombatPhase3BattleModifierTests
         SetField(unitB, "turnGauge", 0f);
         tm.SetBattleModifierForTesting(new BattleModifier(BattleModifierType.DoubleSpeed, "test"));
 
-        InvokePrivate(tm, "FillTurnGauges", new object[] { 1f });
+        InvokePrivate(tm, "FillTurnGauges", new object[] { 0.1f });
         float doubledGauge = (float)GetField(unitA, "turnGauge");
 
         Assert.AreEqual(normalGauge * 2f, doubledGauge, 0.001f);
