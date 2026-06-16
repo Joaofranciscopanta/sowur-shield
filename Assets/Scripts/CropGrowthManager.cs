@@ -44,6 +44,7 @@ namespace SowurShield.Core
         public float GrowthProgress => HasCrop ? (float)currentGrowthStage / currentCrop.TotalStages : 0f;
 
         private GameTimeController timeController;
+        private Coroutine harvestPulseCoroutine;
 
         private void Awake()
         {
@@ -85,6 +86,7 @@ namespace SowurShield.Core
                 cropVisualObject = new GameObject("CropVisual");
                 cropVisualObject.transform.SetParent(transform);
                 cropVisualObject.transform.localPosition = new Vector3(0, 0.25f, -0.1f);
+                cropVisualObject.transform.localScale = new Vector3(1.3f, 1.3f, 1f);
             }
 
             // Setup sprite renderer
@@ -232,6 +234,8 @@ namespace SowurShield.Core
             if (!HasCrop || !isReadyForHarvest || isDead)
                 return 0;
 
+            StopHarvestPulse();
+
             int baseYield = currentCrop.GetRandomYield();
             int yield = Mathf.Max(1, Mathf.RoundToInt(baseYield * fertility));
             string harvestedCropName = currentCrop.cropName; // capture before RemoveCrop() can null it
@@ -283,6 +287,8 @@ namespace SowurShield.Core
             if (!HasCrop)
                 return;
 
+            StopHarvestPulse();
+
             currentCrop = null;
             currentGrowthStage = 0;
             daysInCurrentStage = 0;
@@ -319,6 +325,7 @@ namespace SowurShield.Core
             // Show dead sprite if crop is dead
             if (isDead)
             {
+                StopHarvestPulse();
                 Sprite deadSprite = currentCrop.deadCropSprite
                     ?? Resources.Load<Sprite>("Sprites/Crop_Dead");
                 if (deadSprite != null)
@@ -329,8 +336,38 @@ namespace SowurShield.Core
             // Show growth stage sprite
             Sprite stageSprite = currentCrop.GetSpriteForStage(currentGrowthStage);
             if (stageSprite != null)
-            {
                 cropSpriteRenderer.sprite = stageSprite;
+
+            // Pulse when ready for harvest so player knows to interact
+            if (isReadyForHarvest && harvestPulseCoroutine == null)
+                harvestPulseCoroutine = StartCoroutine(HarvestPulse());
+            else if (!isReadyForHarvest)
+                StopHarvestPulse();
+        }
+
+        private void StopHarvestPulse()
+        {
+            if (harvestPulseCoroutine != null)
+            {
+                StopCoroutine(harvestPulseCoroutine);
+                harvestPulseCoroutine = null;
+            }
+            if (cropVisualObject != null)
+                cropVisualObject.transform.localScale = new Vector3(1.3f, 1.3f, 1f);
+        }
+
+        private System.Collections.IEnumerator HarvestPulse()
+        {
+            Vector3 baseScale = new Vector3(1.3f, 1.3f, 1f);
+            Vector3 bigScale = new Vector3(1.5f, 1.5f, 1f);
+            float speed = 2f;
+            float t = 0f;
+            while (true)
+            {
+                t += Time.deltaTime * speed;
+                float s = (Mathf.Sin(t) + 1f) * 0.5f; // 0..1
+                cropVisualObject.transform.localScale = Vector3.Lerp(baseScale, bigScale, s);
+                yield return null;
             }
         }
 
