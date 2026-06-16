@@ -411,7 +411,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
                 Season currentSeason = (Season)timeController.GetCurrentSeasonIndex();
                 if (!cropData.IsValidSeason(currentSeason))
                 {
-                    Debug.LogWarning($"[SoilBlock] Cannot plant '{cropData.cropName}' in {currentSeason}. Build a Greenhouse to plant any season.");
+                    ShowWorldFeedback($"{cropData.cropName} can't grow in {currentSeason}!");
                     return;
                 }
             }
@@ -690,6 +690,46 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
     }
 
     #endregion
+
+    private void ShowWorldFeedback(string message)
+    {
+        // Floating text above the soil block visible in world space
+        GameObject textObj = new GameObject("FeedbackText");
+        textObj.transform.position = transform.position + Vector3.up * 0.8f;
+
+        var canvas = textObj.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.WorldSpace;
+        canvas.sortingOrder = 100;
+        textObj.transform.localScale = Vector3.one * 0.015f;
+
+        var rt = textObj.GetComponent<RectTransform>();
+        rt.sizeDelta = new Vector2(200, 40);
+
+        var tmp = textObj.AddComponent<TMPro.TextMeshProUGUI>();
+        tmp.text = message;
+        tmp.fontSize = 24;
+        tmp.color = new Color(1f, 0.4f, 0.2f);
+        tmp.alignment = TMPro.TextAlignmentOptions.Center;
+        tmp.fontStyle = TMPro.FontStyles.Bold;
+
+        Destroy(textObj, 2f);
+
+        // Float upward
+        StartCoroutine(FloatText(textObj.transform));
+    }
+
+    private System.Collections.IEnumerator FloatText(Transform t)
+    {
+        float elapsed = 0f;
+        Vector3 start = t.position;
+        while (elapsed < 1.5f && t != null)
+        {
+            elapsed += Time.deltaTime;
+            if (t != null)
+                t.position = start + Vector3.up * elapsed * 0.4f;
+            yield return null;
+        }
+    }
 
     #region Audio e Efeitos
 
