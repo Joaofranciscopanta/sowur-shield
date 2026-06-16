@@ -37,6 +37,10 @@ namespace SowurShield.Dialogue
         [Tooltip("If enabled, a \"Browse seeds\" dialogue choice opens the seed shop for this NPC.")]
         [SerializeField] private bool enableSeedShop = false;
 
+        [Header("Codex / Lore")]
+        [Tooltip("Lore entries revealed progressively in the Relationship codex as affinity grows.")]
+        [SerializeField] private NpcLoreEntry[] loreEntries = new NpcLoreEntry[0];
+
         [Header("Audio")]
         [SerializeField] private AudioClip interactionSound;
         [SerializeField] private AudioSource audioSource;
@@ -524,6 +528,23 @@ namespace SowurShield.Dialogue
             return info;
         }
 
+        /// <summary>
+        /// Returns lore entries unlocked at the current relationship level,
+        /// ordered by required level ascending.
+        /// </summary>
+        public NpcLoreEntry[] GetUnlockedLore()
+        {
+            float level = GetRelationshipLevel();
+            var unlocked = new List<NpcLoreEntry>();
+            foreach (var entry in loreEntries)
+            {
+                if (level >= entry.requiredRelationship)
+                    unlocked.Add(entry);
+            }
+            unlocked.Sort((a, b) => a.requiredRelationship.CompareTo(b.requiredRelationship));
+            return unlocked.ToArray();
+        }
+
         // Methods for InteractionManager
         public string GetInteractionPrompt() => $"Talk to {npcDisplayName}";
 
@@ -594,5 +615,19 @@ namespace SowurShield.Dialogue
             // Ensure cooldown is not negative
             cooldownBetweenInteractions = Mathf.Max(0f, cooldownBetweenInteractions);
         }
+    }
+    /// <summary>
+    /// A single codex entry revealed when the player reaches <see cref="requiredRelationship"/>.
+    /// </summary>
+    [System.Serializable]
+    public class NpcLoreEntry
+    {
+        [Tooltip("Minimum relationship level (-100..100) needed to see this entry.")]
+        public float requiredRelationship = 0f;
+        [Tooltip("Short header shown as a section title in the codex.")]
+        public string title;
+        [TextArea(2, 5)]
+        [Tooltip("The lore text revealed at this tier.")]
+        public string body;
     }
 } // namespace SowurShield.Dialogue
