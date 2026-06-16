@@ -27,6 +27,10 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
     private TextMeshProUGUI relationshipValueText;
     private Image relationshipFillImage;
 
+    // Lore section (built dynamically on open)
+    private Transform loreContainer;
+    private TextMeshProUGUI loreTitleHeader;
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
     {
@@ -125,6 +129,10 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         Image panelBg = panelObj.AddComponent<Image>();
         panelBg.color = new Color(0.08f, 0.06f, 0.1f, 0.95f);
 
+        // Allow panel height to grow with lore entries
+        ContentSizeFitter panelFitter = panelObj.AddComponent<ContentSizeFitter>();
+        panelFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
         // --- Left column: portrait ---
         GameObject portraitObj = new GameObject("Portrait");
         portraitObj.transform.SetParent(panel, false);
@@ -213,6 +221,32 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         relationshipValueText.fontSize = 14;
         relationshipValueText.alignment = TextAlignmentOptions.TopLeft;
         SetPreferredHeight(relationshipValueText, 20);
+
+        // --- Lore section ---
+        GameObject loreDivider = new GameObject("LoreDivider");
+        loreDivider.transform.SetParent(infoObj.transform, false);
+        Image divImg = loreDivider.AddComponent<Image>();
+        divImg.color = new Color(0.3f, 0.3f, 0.35f, 1f);
+        LayoutElement divLE = loreDivider.AddComponent<LayoutElement>();
+        divLE.preferredHeight = 1;
+
+        loreTitleHeader = CreateLabel(infoObj.transform, "Codex");
+        loreTitleHeader.fontSize = 13;
+        loreTitleHeader.fontStyle = FontStyles.Bold;
+        loreTitleHeader.color = new Color(0.7f, 0.6f, 1f);
+        loreTitleHeader.alignment = TextAlignmentOptions.TopLeft;
+        SetPreferredHeight(loreTitleHeader, 18);
+
+        GameObject loreContainerObj = new GameObject("LoreContainer");
+        loreContainerObj.transform.SetParent(infoObj.transform, false);
+        loreContainer = loreContainerObj.transform;
+        VerticalLayoutGroup loreLayout = loreContainerObj.AddComponent<VerticalLayoutGroup>();
+        loreLayout.spacing = 4;
+        loreLayout.childControlWidth = true;
+        loreLayout.childControlHeight = true;
+        loreLayout.childForceExpandWidth = true;
+        loreLayout.childForceExpandHeight = false;
+        loreContainerObj.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
         // --- Close button (bottom-right of panel) ---
         GameObject closeButtonObj = new GameObject("CloseButton");
@@ -313,6 +347,55 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         relationshipFillImage.fillAmount = Mathf.Clamp01(normalized);
         relationshipLabelText.text = GetRelationshipLabel(level);
         relationshipValueText.text = $"{level:F0} / 100";
+
+        RefreshLore();
+    }
+
+    private void RefreshLore()
+    {
+        if (loreContainer == null) return;
+
+        // Clear previous entries
+        for (int i = loreContainer.childCount - 1; i >= 0; i--)
+            Destroy(loreContainer.GetChild(i).gameObject);
+
+        var entries = targetNpc?.GetUnlockedLore();
+        if (entries == null || entries.Length == 0)
+        {
+            if (loreTitleHeader != null) loreTitleHeader.gameObject.SetActive(false);
+            return;
+        }
+
+        if (loreTitleHeader != null) loreTitleHeader.gameObject.SetActive(true);
+
+        foreach (var entry in entries)
+        {
+            // Title
+            if (!string.IsNullOrEmpty(entry.title))
+            {
+                var titleObj = new GameObject("LoreTitle");
+                titleObj.transform.SetParent(loreContainer, false);
+                var titleTmp = titleObj.AddComponent<TextMeshProUGUI>();
+                titleTmp.text = entry.title;
+                titleTmp.fontSize = 12;
+                titleTmp.fontStyle = FontStyles.Bold;
+                titleTmp.color = new Color(0.9f, 0.8f, 0.5f);
+                titleTmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
+                titleObj.AddComponent<LayoutElement>().preferredHeight = 16;
+            }
+
+            // Body
+            var bodyObj = new GameObject("LoreBody");
+            bodyObj.transform.SetParent(loreContainer, false);
+            var bodyTmp = bodyObj.AddComponent<TextMeshProUGUI>();
+            bodyTmp.text = entry.body;
+            bodyTmp.fontSize = 11;
+            bodyTmp.color = new Color(0.8f, 0.8f, 0.8f);
+            bodyTmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
+            var bodyLE = bodyObj.AddComponent<LayoutElement>();
+            bodyLE.preferredHeight = 32;
+            bodyLE.flexibleHeight = 1;
+        }
     }
 
     /// <summary>
