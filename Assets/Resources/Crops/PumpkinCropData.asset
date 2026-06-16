@@ -25,7 +25,7 @@ MonoBehaviour:
   - {fileID: -7177808201933976230, guid: 43f46ec67e9b05b479ff8bedf119169f, type: 3}
   - {fileID: 517270127834394861, guid: d54909df2435fb9459ca0317da98bd58, type: 3}
   - {fileID: 8254339349404101146, guid: d447c7e139812f34b92ac7c06bbcea65, type: 3}
-  deadCropSprite: {fileID: 0}
+  deadCropSprite: {fileID: 2683807391007574404, guid: d6e78fac86295a91a5964adf9e8e8550, type: 3}
   seedlingSprite: {fileID: -4826848779537055801, guid: 294ca081750bdc84da91875f8b75e5db, type: 3}
   requiresWater: 1
   maxDaysWithoutWater: 3

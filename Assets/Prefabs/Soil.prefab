@@ -150,9 +150,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: 0
-  regularSprite: {fileID: -4111638827065750665, guid: d241d2c866d81cd488a8246cb0b8cf0f, type: 3}
-  tilledSprite: {fileID: -4738042437726281635, guid: d241d2c866d81cd488a8246cb0b8cf0f, type: 3}
-  wateredSprite: {fileID: -353589913, guid: 9de6d2c51fda61546822d52ca6cb64e3, type: 3}
+  regularSprite: {fileID: 4130772148580111270, guid: c1387ed810af507498f35e819c8d142b, type: 3}
+  tilledSprite: {fileID: 2519391667945175536, guid: 391225c6d9955da99a79a5ff3924de5f, type: 3}
+  wateredSprite: {fileID: 40988747947726939, guid: 95c99bd222cd5ddc95bf671339b7dbb1, type: 3}
   hoeTag: Hoe
   wateringCanTag: WateringCan
   shovelTag: Shovel
