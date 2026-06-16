@@ -11,22 +11,28 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5fe9390976aeace449ceeb0ce9cc35bf, type: 3}
   m_Name: CabbageCropData
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   cropName: Cabbage
-  description: A crop description
-  seedItem: {fileID: 0}
-  harvestItem: {fileID: 0}
+  description: A sturdy leafy vegetable that grows into a dense head.
+  seedItem: {fileID: 11400000, guid: db1d62b0cca74083804ea2ce6371abc5, type: 2}
+  harvestItem: {fileID: 11400000, guid: a06ef0c563ec40b8ab6d61bd7103a75d, type: 2}
   daysPerStage: 1
-  totalStages: 1
-  totalGrowthDays: 1
+  totalStages: 5
+  totalGrowthDays: 5
   growthStages:
-  - {fileID: 0}
+  - {fileID: 5813754070244721525, guid: 9237f24cc62e1fd419f2c63a6487e276, type: 3}
+  - {fileID: 4799065551191520253, guid: 6bbdadbec026b7341b9c4c3ae0c59425, type: 3}
+  - {fileID: 7762289754061512623, guid: 0d0f8d3b15bc7594eaec8b9a4e3a8fbc, type: 3}
+  - {fileID: -3984060853479689674, guid: 1f09a46ae6dbf7e4e82d80f5087cc14b, type: 3}
+  - {fileID: -2967043379679070034, guid: 771057ac41e4e80458ad706b6db1479e, type: 3}
   deadCropSprite: {fileID: 0}
-  seedlingSprite: {fileID: 0}
+  seedlingSprite: {fileID: 5813754070244721525, guid: 9237f24cc62e1fd419f2c63a6487e276, type: 3}
   requiresWater: 1
   maxDaysWithoutWater: 3
-  growsInAllSeasons: 1
-  validSeasons: 
+  growsInAllSeasons: 0
+  validSeasons:
+  - 0
+  - 1
   minYield: 1
   maxYield: 3
   regrowsAfterHarvest: 0
@@ -35,5 +41,5 @@ MonoBehaviour:
   canGrowInWinter: 0
   needsTrellis: 0
   spreadsToCells: 0
-  baseValue: 50
+  baseValue: 60
   qualityMultiplier: 1
