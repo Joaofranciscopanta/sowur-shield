@@ -116,160 +116,144 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
     /// </summary>
     private void BuildCodexPanel()
     {
+        // Root panel — VerticalLayoutGroup drives height; fixed width 520px
         GameObject panelObj = new GameObject("RelationshipPanel");
         panelObj.transform.SetParent(transform, false);
 
         panel = panelObj.AddComponent<RectTransform>();
         panel.anchorMin = new Vector2(0.5f, 0.5f);
         panel.anchorMax = new Vector2(0.5f, 0.5f);
-        panel.pivot = new Vector2(0.5f, 0.5f);
+        panel.pivot    = new Vector2(0.5f, 0.5f);
         panel.anchoredPosition = Vector2.zero;
-        panel.sizeDelta = new Vector2(500, 400);
+        panel.sizeDelta = new Vector2(520, 0); // height driven by fitter
 
-        Image panelBg = panelObj.AddComponent<Image>();
-        panelBg.color = new Color(0.08f, 0.06f, 0.1f, 0.95f);
+        panelObj.AddComponent<Image>().color = new Color(0.08f, 0.06f, 0.1f, 0.95f);
 
-        // Allow panel height to grow with lore entries
-        ContentSizeFitter panelFitter = panelObj.AddComponent<ContentSizeFitter>();
-        panelFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+        var rootVlg = panelObj.AddComponent<VerticalLayoutGroup>();
+        rootVlg.padding = new RectOffset(12, 12, 12, 12);
+        rootVlg.spacing = 0;
+        rootVlg.childControlWidth  = true;
+        rootVlg.childControlHeight = true;
+        rootVlg.childForceExpandWidth  = true;
+        rootVlg.childForceExpandHeight = false;
 
-        // --- Left column: portrait ---
+        panelObj.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+        // ── Row 1: portrait (left, fixed) + info column (right, flex) ──
+        GameObject rowObj = new GameObject("HeaderRow");
+        rowObj.transform.SetParent(panelObj.transform, false);
+        var rowLE = rowObj.AddComponent<LayoutElement>();
+        rowLE.preferredHeight = 200;
+
+        var hlg = rowObj.AddComponent<HorizontalLayoutGroup>();
+        hlg.spacing = 12;
+        hlg.childControlWidth  = true;
+        hlg.childControlHeight = true;
+        hlg.childForceExpandWidth  = false;
+        hlg.childForceExpandHeight = true;
+
+        // Portrait
         GameObject portraitObj = new GameObject("Portrait");
-        portraitObj.transform.SetParent(panel, false);
-
-        RectTransform portraitRect = portraitObj.AddComponent<RectTransform>();
-        portraitRect.anchorMin = new Vector2(0, 0);
-        portraitRect.anchorMax = new Vector2(0, 1);
-        portraitRect.pivot = new Vector2(0, 0.5f);
-        portraitRect.anchoredPosition = new Vector2(10, 0);
-        portraitRect.sizeDelta = new Vector2(180, -20);
-
+        portraitObj.transform.SetParent(rowObj.transform, false);
+        var portLE = portraitObj.AddComponent<LayoutElement>();
+        portLE.preferredWidth  = 150;
+        portLE.flexibleWidth   = 0;
         portraitImage = portraitObj.AddComponent<Image>();
-        portraitImage.color = new Color(0.3f, 0.3f, 0.3f, 1f);
+        portraitImage.color = new Color(0.25f, 0.25f, 0.28f, 1f);
         portraitImage.preserveAspect = true;
 
-        // --- Right column: name, bio, relationship bar ---
+        // Info column (name, bio, bar, value)
         GameObject infoObj = new GameObject("Info");
-        infoObj.transform.SetParent(panel, false);
+        infoObj.transform.SetParent(rowObj.transform, false);
+        infoObj.AddComponent<LayoutElement>().flexibleWidth = 1;
 
-        RectTransform infoRect = infoObj.AddComponent<RectTransform>();
-        infoRect.anchorMin = new Vector2(0, 0);
-        infoRect.anchorMax = new Vector2(1, 1);
-        infoRect.offsetMin = new Vector2(200, 10);
-        infoRect.offsetMax = new Vector2(-10, -10);
+        var infoVlg = infoObj.AddComponent<VerticalLayoutGroup>();
+        infoVlg.spacing = 6;
+        infoVlg.childControlWidth  = true;
+        infoVlg.childControlHeight = true;
+        infoVlg.childForceExpandWidth  = true;
+        infoVlg.childForceExpandHeight = false;
 
-        VerticalLayoutGroup infoLayout = infoObj.AddComponent<VerticalLayoutGroup>();
-        infoLayout.spacing = 8;
-        infoLayout.childControlWidth = true;
-        infoLayout.childControlHeight = true;
-        infoLayout.childForceExpandWidth = true;
-        infoLayout.childForceExpandHeight = false;
-        infoLayout.childAlignment = TextAnchor.UpperLeft;
-
-        // Name
         nameText = CreateLabel(infoObj.transform, "NPC Name");
-        nameText.fontSize = 24;
+        nameText.fontSize  = 22;
         nameText.fontStyle = FontStyles.Bold;
         nameText.alignment = TextAlignmentOptions.TopLeft;
-        SetPreferredHeight(nameText, 32);
+        SetPreferredHeight(nameText, 30);
 
-        // Bio
         bioText = CreateLabel(infoObj.transform, "No information available yet.");
-        bioText.fontSize = 14;
+        bioText.fontSize  = 13;
         bioText.alignment = TextAlignmentOptions.TopLeft;
         bioText.textWrappingMode = TMPro.TextWrappingModes.Normal;
-        SetPreferredHeight(bioText, 140);
+        SetPreferredHeight(bioText, 90);
 
-        // Relationship level label (e.g. "Acquaintance")
         relationshipLabelText = CreateLabel(infoObj.transform, "Acquaintance");
-        relationshipLabelText.fontSize = 16;
+        relationshipLabelText.fontSize  = 14;
         relationshipLabelText.fontStyle = FontStyles.Bold;
         relationshipLabelText.alignment = TextAlignmentOptions.TopLeft;
-        SetPreferredHeight(relationshipLabelText, 24);
+        SetPreferredHeight(relationshipLabelText, 22);
 
-        // Relationship bar (background + fill)
-        GameObject barBgObj = new GameObject("RelationshipBarBackground");
-        barBgObj.transform.SetParent(infoObj.transform, false);
+        // Bar
+        GameObject barBg = new GameObject("BarBg");
+        barBg.transform.SetParent(infoObj.transform, false);
+        barBg.AddComponent<LayoutElement>().preferredHeight = 16;
+        barBg.AddComponent<Image>().color = new Color(0.15f, 0.15f, 0.18f, 1f);
 
-        RectTransform barBgRect = barBgObj.AddComponent<RectTransform>();
-        barBgRect.sizeDelta = new Vector2(280, 20);
-
-        LayoutElement barLayoutElement = barBgObj.AddComponent<LayoutElement>();
-        barLayoutElement.preferredWidth = 280;
-        barLayoutElement.preferredHeight = 20;
-
-        Image barBgImage = barBgObj.AddComponent<Image>();
-        barBgImage.color = new Color(0.15f, 0.15f, 0.18f, 1f);
-
-        GameObject barFillObj = new GameObject("RelationshipBarFill");
-        barFillObj.transform.SetParent(barBgObj.transform, false);
-
-        RectTransform barFillRect = barFillObj.AddComponent<RectTransform>();
-        barFillRect.anchorMin = Vector2.zero;
-        barFillRect.anchorMax = Vector2.one;
-        barFillRect.offsetMin = Vector2.zero;
-        barFillRect.offsetMax = Vector2.zero;
-
-        relationshipFillImage = barFillObj.AddComponent<Image>();
-        relationshipFillImage.color = new Color(0.8f, 0.3f, 0.5f, 1f);
-        relationshipFillImage.type = Image.Type.Filled;
+        GameObject barFill = new GameObject("BarFill");
+        barFill.transform.SetParent(barBg.transform, false);
+        var barFillRT = barFill.AddComponent<RectTransform>();
+        barFillRT.anchorMin = Vector2.zero;
+        barFillRT.anchorMax = Vector2.one;
+        barFillRT.offsetMin = barFillRT.offsetMax = Vector2.zero;
+        relationshipFillImage = barFill.AddComponent<Image>();
+        relationshipFillImage.color      = new Color(0.8f, 0.3f, 0.5f, 1f);
+        relationshipFillImage.type       = Image.Type.Filled;
         relationshipFillImage.fillMethod = Image.FillMethod.Horizontal;
         relationshipFillImage.fillAmount = 0.5f;
 
-        // Relationship numeric value (e.g. "0 / 100")
         relationshipValueText = CreateLabel(infoObj.transform, "0 / 100");
-        relationshipValueText.fontSize = 14;
+        relationshipValueText.fontSize  = 13;
         relationshipValueText.alignment = TextAlignmentOptions.TopLeft;
-        SetPreferredHeight(relationshipValueText, 20);
+        SetPreferredHeight(relationshipValueText, 18);
 
-        // --- Lore section ---
-        GameObject loreDivider = new GameObject("LoreDivider");
-        loreDivider.transform.SetParent(infoObj.transform, false);
-        Image divImg = loreDivider.AddComponent<Image>();
-        divImg.color = new Color(0.3f, 0.3f, 0.35f, 1f);
-        LayoutElement divLE = loreDivider.AddComponent<LayoutElement>();
-        divLE.preferredHeight = 1;
+        // ── Row 2: Codex lore section ──
+        GameObject divObj = new GameObject("Divider");
+        divObj.transform.SetParent(panelObj.transform, false);
+        divObj.AddComponent<Image>().color = new Color(0.3f, 0.3f, 0.35f, 1f);
+        divObj.AddComponent<LayoutElement>().preferredHeight = 1;
 
-        loreTitleHeader = CreateLabel(infoObj.transform, "Codex");
-        loreTitleHeader.fontSize = 13;
+        loreTitleHeader = CreateLabel(panelObj.transform, "Codex");
+        loreTitleHeader.fontSize  = 13;
         loreTitleHeader.fontStyle = FontStyles.Bold;
-        loreTitleHeader.color = new Color(0.7f, 0.6f, 1f);
+        loreTitleHeader.color     = new Color(0.7f, 0.6f, 1f);
         loreTitleHeader.alignment = TextAlignmentOptions.TopLeft;
-        SetPreferredHeight(loreTitleHeader, 18);
+        SetPreferredHeight(loreTitleHeader, 20);
+        loreTitleHeader.gameObject.SetActive(false);
 
         GameObject loreContainerObj = new GameObject("LoreContainer");
-        loreContainerObj.transform.SetParent(infoObj.transform, false);
+        loreContainerObj.transform.SetParent(panelObj.transform, false);
         loreContainer = loreContainerObj.transform;
-        VerticalLayoutGroup loreLayout = loreContainerObj.AddComponent<VerticalLayoutGroup>();
-        loreLayout.spacing = 4;
-        loreLayout.childControlWidth = true;
-        loreLayout.childControlHeight = true;
-        loreLayout.childForceExpandWidth = true;
-        loreLayout.childForceExpandHeight = false;
+
+        var loreVlg = loreContainerObj.AddComponent<VerticalLayoutGroup>();
+        loreVlg.spacing = 4;
+        loreVlg.childControlWidth  = true;
+        loreVlg.childControlHeight = true;
+        loreVlg.childForceExpandWidth  = true;
+        loreVlg.childForceExpandHeight = false;
         loreContainerObj.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
-        // --- Close button (bottom-right of panel) ---
+        // ── Row 3: Close button ──
         GameObject closeButtonObj = new GameObject("CloseButton");
-        closeButtonObj.transform.SetParent(panel, false);
-
-        RectTransform closeRect = closeButtonObj.AddComponent<RectTransform>();
-        closeRect.anchorMin = new Vector2(1, 0);
-        closeRect.anchorMax = new Vector2(1, 0);
-        closeRect.pivot = new Vector2(1, 0);
-        closeRect.anchoredPosition = new Vector2(-10, 10);
-        closeRect.sizeDelta = new Vector2(90, 32);
-
-        Image closeImage = closeButtonObj.AddComponent<Image>();
-        closeImage.color = new Color(0.3f, 0.2f, 0.2f, 0.9f);
+        closeButtonObj.transform.SetParent(panelObj.transform, false);
+        closeButtonObj.AddComponent<LayoutElement>().preferredHeight = 36;
+        closeButtonObj.AddComponent<Image>().color = new Color(0.3f, 0.2f, 0.2f, 0.9f);
 
         Button closeButton = closeButtonObj.AddComponent<Button>();
         closeButton.onClick.AddListener(OnCloseButtonClicked);
 
         TextMeshProUGUI closeLabel = CreateLabel(closeButtonObj.transform, "Close");
         closeLabel.alignment = TextAlignmentOptions.Center;
-        closeLabel.fontSize = 16;
+        closeLabel.fontSize  = 15;
 
-        // Hidden by default; opened via OpenWindow().
         panelObj.SetActive(false);
     }
 
