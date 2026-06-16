@@ -266,6 +266,11 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
 
         targetNpc.ReceiveGift(item.giftAffinityValue);
 
+        // Signal that a gift reaction dialogue should trigger on next interaction
+        var memory = ConversationMemory.Instance;
+        if (memory != null)
+            memory.SetVariable($"{targetNpc.GetNPCId()}_first_gift_pending", "true");
+
         if (UIManager.Instance != null)
             UIManager.Instance.TryCloseWindow(this);
         else

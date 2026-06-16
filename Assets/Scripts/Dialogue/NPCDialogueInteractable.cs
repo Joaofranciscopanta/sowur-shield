@@ -224,7 +224,6 @@ namespace SowurShield.Dialogue
         {
             if (availableDialogues == null || availableDialogues.Length == 0)
             {
-                Debug.LogWarning($"[NPC:{npcDisplayName}] availableDialogues is null or empty, trying defaultDialogue.");
                 if (defaultDialogue != null && ShouldShowDialogue(defaultDialogue))
                     return defaultDialogue;
                 return null;
@@ -236,11 +235,7 @@ namespace SowurShield.Dialogue
             foreach (var dialogue in availableDialogues)
             {
                 if (dialogue == null) continue;
-
-                bool shouldShow = ShouldShowDialogue(dialogue);
-                Debug.Log($"[NPC:{npcDisplayName}] Dialogue '{dialogue.conversationId}' priority={dialogue.priority} shouldShow={shouldShow}");
-
-                if (!shouldShow) continue;
+                if (!ShouldShowDialogue(dialogue)) continue;
 
                 if (dialogue.priority > highestPriority)
                 {
@@ -250,9 +245,7 @@ namespace SowurShield.Dialogue
             }
 
             if (bestDialogue == null && defaultDialogue != null && ShouldShowDialogue(defaultDialogue))
-            {
                 bestDialogue = defaultDialogue;
-            }
 
             return bestDialogue;
         }
@@ -343,18 +336,10 @@ namespace SowurShield.Dialogue
         {
             var dialogueToShow = GetBestAvailableDialogue();
             if (dialogueToShow == null)
-            {
-                Debug.LogWarning($"[NPC:{npcDisplayName}] GetBestAvailableDialogue returned null. availableDialogues.Length={availableDialogues?.Length ?? -1}, defaultDialogue={(defaultDialogue != null ? defaultDialogue.conversationId : "null")}");
                 return;
-            }
 
             if (dialogueUI == null)
-            {
-                Debug.LogWarning($"[NPC:{npcDisplayName}] dialogueUI is null — DialogueTreeUI not found in scene.");
                 return;
-            }
-
-            Debug.Log($"[NPC:{npcDisplayName}] Starting dialogue '{dialogueToShow.conversationId}' with {dialogueToShow.nodes?.Length ?? 0} nodes.");
 
             // Update state
             isDialogueActive = true;
@@ -565,10 +550,9 @@ namespace SowurShield.Dialogue
             return isDialogueActive;
         }
 
-        public string GetNPCDisplayName()
-        {
-            return npcDisplayName;
-        }
+        public string GetNPCDisplayName() => npcDisplayName;
+
+        public string GetNPCId() => npcId;
 
         public void SetPromptVisibility(bool visible)
         {

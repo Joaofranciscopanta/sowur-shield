@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Maren_GiftReaction
   m_EditorClassIdentifier: SowurShield.Dialogue.DialogueTree
   conversationId: maren_gift_reaction
-  conversationDescription: "Short reaction when the player gifts Maren something for
-    the first time. Triggered externally after GiftSelectionUI closes."
+  conversationDescription: "Maren's first-gift reaction. Only shown when maren_first_gift_pending=true (set by GiftSelectionUI). isRepeatable=false ensures it plays exactly once."
   startNodeId: start
   isRepeatable: 0
   saveProgressOnExit: 1
@@ -23,20 +22,29 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 5
     speakerPosition: 0
-    dialogueText: "Oh! Isso e... voce nao precisava. Mas fico muito feliz. Raramente
-      alguem pensa em mim assim."
+    dialogueText: "Oh! Isso e... voce nao precisava. Mas fico muito feliz. Raramente alguem pensa em mim assim."
     nodeType: 0
     choices: []
     nextNodeId: gift_accept
     autoAdvanceDelay: 0
-    displayConditions: []
-    nodeEffects: []
+    displayConditions:
+    - conditionType: 5
+      conditionKey: maren_first_gift_pending
+      conditionOperator: 0
+      conditionValue: "true"
+      invertCondition: 0
+      description: "Só aparece quando GiftSelectionUI setou maren_first_gift_pending=true"
+    nodeEffects:
+    - effectType: 0
+      effectKey: maren_first_gift_pending
+      effectValue: "false"
+      numericValue: 0
+      description: "Limpa o flag ao exibir o diálogo"
   - nodeId: gift_accept
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Vou guardar com cuidado. E que voce plante o dobro do que semear
-      esta estacao — isso e o que eu posso devolver agora."
+    dialogueText: "Vou guardar com cuidado. E que voce plante o dobro do que semear esta estacao — isso e o que eu posso devolver agora."
     nodeType: 0
     choices: []
     nextNodeId: ""
