@@ -131,6 +131,36 @@ public static class MarenNPCSpawner
             idx++;
         }
 
+        // Codex lore entries — revealed progressively by relationship level
+        var loreProp = so.FindProperty("loreEntries");
+        var loreData = new (float rel, string title, string body)[]
+        {
+            (  0f, "Quem é Maren?",
+               "Maren é a vendedora de sementes do vale. Acordo antes do sol só para sentir " +
+               "a terra entre os dedos — há uma magia naquele primeiro momento em que a semente abre."),
+            ( 10f, "O Vale",
+               "Este vale tem história. As pessoas vêm, plantam, colhem e vão embora. Algo aqui " +
+               "te prende — a terra, o ritmo das estações. Dizem que um druida abençoou as " +
+               "camadas mais fundas do solo."),
+            ( 40f, "A Seca do Vale Leste",
+               "Maren perdeu três colheitas seguidas numa seca devastadora no vale leste. " +
+               "Chegou aqui sem nada, mas encontrou uma terra que a acolheu de um jeito diferente. " +
+               "Sua mãe dizia: a semente que sobrevive ao inverno floresce mais forte."),
+            ( 75f, "A Semente do Pai",
+               "Maren carrega uma semente misteriosa que estava no bolso do casaco do pai no " +
+               "dia em que ele morreu. Nunca soube que planta era. Nunca teve coragem de plantá-la — " +
+               "com medo de perder a última coisa que lhe resta dele."),
+        };
+
+        loreProp.arraySize = loreData.Length;
+        for (int i = 0; i < loreData.Length; i++)
+        {
+            var elem = loreProp.GetArrayElementAtIndex(i);
+            elem.FindPropertyRelative("requiredRelationship").floatValue = loreData[i].rel;
+            elem.FindPropertyRelative("title").stringValue               = loreData[i].title;
+            elem.FindPropertyRelative("body").stringValue                = loreData[i].body;
+        }
+
         so.ApplyModifiedProperties();
 
         // ----------------------------------------------------------------
