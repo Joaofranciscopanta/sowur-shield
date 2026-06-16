@@ -309,9 +309,12 @@ namespace SowurShield.Core
             cropSpriteRenderer.enabled = true;
 
             // Show dead sprite if crop is dead
-            if (isDead && currentCrop.deadCropSprite != null)
+            if (isDead)
             {
-                cropSpriteRenderer.sprite = currentCrop.deadCropSprite;
+                Sprite deadSprite = currentCrop.deadCropSprite
+                    ?? Resources.Load<Sprite>("Sprites/Crop_Dead");
+                if (deadSprite != null)
+                    cropSpriteRenderer.sprite = deadSprite;
                 return;
             }
 

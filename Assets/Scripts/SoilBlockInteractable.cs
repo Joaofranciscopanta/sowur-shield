@@ -82,15 +82,21 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     private void InitializeComponents()
     {
-        // Obtém componentes necessários
         soilRenderer = GetComponent<SpriteRenderer>();
         cropGrowthManager = GetComponent<CropGrowthManager>();
 
-        // Adiciona CropGrowthManager se não estiver presente
         if (cropGrowthManager == null)
             cropGrowthManager = gameObject.AddComponent<CropGrowthManager>();
 
-        // Define sprite padrão
+        // Load custom soil sprites from Resources if not wired in Inspector
+        if (regularSprite == null)
+            regularSprite = Resources.Load<Sprite>("Sprites/Plain_Dirt");
+        if (tilledSprite == null)
+            tilledSprite = Resources.Load<Sprite>("Sprites/Tilled_Dirt_Planted");
+        if (wateredSprite == null)
+            wateredSprite = Resources.Load<Sprite>("Sprites/Tilled_Dirt_Watered");
+
+        // Final fallback: use whatever sprite is already on the renderer
         if (regularSprite == null && soilRenderer != null)
             regularSprite = soilRenderer.sprite;
     }
