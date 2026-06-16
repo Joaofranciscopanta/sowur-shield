@@ -33,6 +33,10 @@ namespace SowurShield.Dialogue
         [Tooltip("If disabled, the \"Give a gift\" dialogue choice is never shown for this NPC.")]
         [SerializeField] private bool enableGifting = true;
 
+        [Header("Seed Shop")]
+        [Tooltip("If enabled, a \"Browse seeds\" dialogue choice opens the seed shop for this NPC.")]
+        [SerializeField] private bool enableSeedShop = false;
+
         [Header("Audio")]
         [SerializeField] private AudioClip interactionSound;
         [SerializeField] private AudioSource audioSource;
@@ -414,6 +418,21 @@ namespace SowurShield.Dialogue
                         relationshipUI.OpenForNpc(this);
                 }
             });
+
+            if (enableSeedShop)
+            {
+                choices.Add(new DialogueChoice
+                {
+                    choiceText = "Browse seeds",
+                    isExitChoice = true,
+                    onSelectedRuntime = () =>
+                    {
+                        var seedShopUI = FindFirstObjectByType<SeedShopUI>();
+                        if (seedShopUI != null)
+                            seedShopUI.Open();
+                    }
+                });
+            }
 
             return choices;
         }
