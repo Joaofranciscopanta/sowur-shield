@@ -46,9 +46,9 @@ MonoBehaviour:
     - choiceText: "What are you keeping so close to your heart?"
       nextNodeId: topic_secret
       requirements:
-      - conditionType: 2
+      - conditionType: 3
         conditionKey: maren
-        conditionOperator: 2
+        conditionOperator: 4
         conditionValue: "40"
         invertCondition: 0
         description: "Available only with rel >= 40"
@@ -119,9 +119,9 @@ MonoBehaviour:
     - choiceText: "Is there something mystical about this land?"
       nextNodeId: valley_mystic
       requirements:
-      - conditionType: 2
+      - conditionType: 3
         conditionKey: maren
-        conditionOperator: 2
+        conditionOperator: 4
         conditionValue: "10"
         invertCondition: 0
         description: "Appears only with rel >= 10 (Friend+)"

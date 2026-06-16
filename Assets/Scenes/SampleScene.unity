@@ -14810,10 +14810,10 @@ MonoBehaviour:
   npcId: maren
   npcDisplayName: Maren
   npcPortrait: {fileID: 0}
-  npcBio: "Maren chegou ao vale depois de perder tr\xEAs colheitas seguidas numa
-    seca devastadora. Perdeu tudo que havia plantado no vale leste, mas encontrou
-    nesta terra algo diferente \u2014 uma fertilidade que parece quase aben\xE7oada.
-    Ela vende sementes, mas o que ela realmente vende \xE9 esperan\xE7a."
+  npcBio: "Maren arrived in the valley after losing three harvests in a row to
+    a devastating drought. She lost everything she had planted in the eastern
+    valley, but found something different in this land - a fertility that feels
+    almost blessed. She sells seeds, but what she truly sells is hope."
   availableDialogues:
   - {fileID: 11400000, guid: b5d761df7ae1491ca7f8aa9376dcd455, type: 2}
   - {fileID: 11400000, guid: e043caee31aa4359878ae76b174b29da, type: 2}
@@ -14831,26 +14831,26 @@ MonoBehaviour:
   enableSeedShop: 1
   loreEntries:
   - requiredRelationship: 0
-    title: "Quem \xE9 Maren?"
-    body: "Maren \xE9 a vendedora de sementes do vale. Acordo antes do sol s\xF3
-      para sentir a terra entre os dedos \u2014 h\xE1 uma magia naquele primeiro
-      momento em que a semente abre."
+    title: Who is Maren?
+    body: Maren is the valley's seed merchant. She wakes before sunrise just
+      to feel the soil between her fingers - there is a magic in that first
+      moment when a seed opens.
   - requiredRelationship: 10
-    title: O Vale
-    body: "Este vale tem hist\xF3ria. As pessoas v\xEAm, plantam, colhem e v\xE3o
-      embora. Algo aqui te prende \u2014 a terra, o ritmo das esta\xE7\xF5es. Dizem
-      que um druida aben\xE7oou as camadas mais fundas do solo."
+    title: The Valley
+    body: This valley has history. People come, plant, harvest and leave. Something
+      here keeps you - the land, the rhythm of the seasons. They say a druid
+      blessed the deepest layers of the soil.
   - requiredRelationship: 40
-    title: A Seca do Vale Leste
-    body: "Maren perdeu tr\xEAs colheitas seguidas numa seca devastadora no vale
-      leste. Chegou aqui sem nada, mas encontrou uma terra que a acolheu de um jeito
-      diferente. Sua m\xE3e dizia: a semente que sobrevive ao inverno floresce mais
-      forte."
+    title: The Eastern Valley Drought
+    body: Maren lost three harvests in a row to a devastating drought in the
+      eastern valley. She arrived with nothing, but found a land that welcomed
+      her differently. Her mother used to say the seed that survives winter
+      blooms stronger.
   - requiredRelationship: 75
-    title: A Semente do Pai
-    body: "Maren carrega uma semente misteriosa que estava no bolso do casaco do
-      pai no dia em que ele morreu. Nunca soube que planta era. Nunca teve coragem
-      de plant\xE1-la \u2014 com medo de perder a \xFAltima coisa que lhe resta dele."
+    title: Her Father's Seed
+    body: Maren carries a mysterious seed found in her father's coat pocket
+      the day he died. She never knew what plant it was - she never had the
+      courage to plant it, afraid of losing the last thing she has of him.
   interactionSound: {fileID: 0}
   audioSource: {fileID: 0}
 --- !u!70 &1585185861

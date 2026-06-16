@@ -28,9 +28,9 @@ MonoBehaviour:
     nextNodeId: secret_seed
     autoAdvanceDelay: 0
     displayConditions:
-    - conditionType: 2
+    - conditionType: 3
       conditionKey: maren
-      conditionOperator: 2
+      conditionOperator: 4
       conditionValue: "75"
       invertCondition: 0
       description: "Beloved tier"
