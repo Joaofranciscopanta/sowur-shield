@@ -49,6 +49,10 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
     private Color originalColor;
     private bool playerInRange = false;
 
+    [Header("Fertility")]
+    [Tooltip("Soil nutrient level (0.5–2.0). Boosts harvest yield; depletes after each harvest.")]
+    [SerializeField] [Range(0.5f, 2f)] private float soilFertility = 1.0f;
+
     [Header("Debug")]
 
     // Componentes
@@ -416,6 +420,9 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         // Planta o cultivo
         if (cropGrowthManager.PlantCrop(cropData))
         {
+            // Pass current soil fertility to the crop manager so it affects yield at harvest
+            cropGrowthManager.Fertility = soilFertility;
+
             // If soil was watered, transfer that water to the crop
             if (currentState == SoilState.Watered)
             {
@@ -453,6 +460,9 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
         // Get yield from crop manager
         int yield = cropGrowthManager.HarvestCrop();
+
+        // Harvesting depletes soil nutrients slightly; rests at 0.5 minimum
+        soilFertility = Mathf.Max(0.5f, soilFertility - 0.1f);
 
         if (yield > 0)
         {
@@ -763,7 +773,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             {
                 isTilled = currentState != SoilState.Regular,
                 isWatered = currentState == SoilState.Watered || (currentState == SoilState.WithCrop && cropGrowthManager != null && cropGrowthManager.IsWatered),
-                fertility = 1.0f,
+                fertility = soilFertility,
                 soilType = "Normal"
             }
         };
@@ -782,6 +792,9 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         if (soilStateEntry != null && soilStateEntry.soilData != null)
         {
             var soilData = soilStateEntry.soilData;
+            soilFertility = Mathf.Clamp(soilData.fertility, 0.5f, 2f);
+            if (cropGrowthManager != null)
+                cropGrowthManager.Fertility = soilFertility;
             if (soilData.isTilled)
             {
                 if (soilData.isWatered)

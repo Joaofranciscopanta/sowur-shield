@@ -22,6 +22,9 @@ namespace SowurShield.Core
         public SpriteRenderer cropSpriteRenderer;
         public GameObject cropVisualObject;
 
+        [Header("Soil Fertility")]
+        [SerializeField] [Range(0.5f, 2f)] private float fertility = 1.0f;
+
         [Header("Debug")]
 
         // Events
@@ -35,6 +38,7 @@ namespace SowurShield.Core
         public bool IsReadyForHarvest => isReadyForHarvest && !isDead;
         public bool IsDead => isDead;
         public bool IsWatered => isWatered;
+        public float Fertility { get => fertility; set => fertility = Mathf.Clamp(value, 0.5f, 2f); }
         public CropData CurrentCrop => currentCrop;
         public int CurrentGrowthStage => currentGrowthStage;
         public float GrowthProgress => HasCrop ? (float)currentGrowthStage / currentCrop.TotalStages : 0f;
@@ -228,7 +232,8 @@ namespace SowurShield.Core
             if (!HasCrop || !isReadyForHarvest || isDead)
                 return 0;
 
-            int yield = currentCrop.GetRandomYield();
+            int baseYield = currentCrop.GetRandomYield();
+            int yield = Mathf.Max(1, Mathf.RoundToInt(baseYield * fertility));
             string harvestedCropName = currentCrop.cropName; // capture before RemoveCrop() can null it
 
             // Handle regrowth
