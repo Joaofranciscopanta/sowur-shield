@@ -308,6 +308,14 @@ namespace SowurShield.Core
 
             cropSpriteRenderer.enabled = true;
 
+            // Always render above soil — sync sorting layer and bump order
+            SpriteRenderer soilRenderer = GetComponent<SpriteRenderer>();
+            if (soilRenderer != null)
+            {
+                cropSpriteRenderer.sortingLayerID = soilRenderer.sortingLayerID;
+                cropSpriteRenderer.sortingOrder = soilRenderer.sortingOrder + 1;
+            }
+
             // Show dead sprite if crop is dead
             if (isDead)
             {
