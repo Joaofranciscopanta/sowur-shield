@@ -49,6 +49,10 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
     private Transform playerTransform;
     private SowurShield.Inventory.Inventory playerInventory;
 
+    // Tooltip
+    private SowurShield.Inventory.ItemTooltip tooltip;
+    private bool tooltipShowing = false;
+
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -58,6 +62,8 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
 
     private void OnDestroy()
     {
+        if (tooltipShowing && tooltip != null)
+            tooltip.HideTooltip();
         SaveManager.Instance?.UnregisterSaveable(this);
     }
 
@@ -70,6 +76,7 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
             originalColor = spriteRenderer.color;
         }
 
+        tooltip = Object.FindFirstObjectByType<SowurShield.Inventory.ItemTooltip>();
         StartCoroutine(SpawnAnimation());
     }
 
@@ -77,16 +84,37 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
     {
         if (!itemPicked && enableFloating)
         {
-            // Smooth floating motion
             float y = Mathf.Sin(Time.time * floatSpeed) * floatHeight;
             transform.position = new Vector3(transform.position.x, initialY + y, transform.position.z);
         }
 
         if (!itemPicked && enableRotation)
         {
-            // Gentle rotation for visual depth
             transform.Rotate(0, 0, rotationSpeed * Time.deltaTime);
         }
+
+        if (!itemPicked && item != null && tooltip != null)
+        {
+            bool over = IsMouseOver();
+            if (over && !tooltipShowing)
+            {
+                tooltip.ShowTooltip(item, Input.mousePosition);
+                tooltipShowing = true;
+            }
+            else if (!over && tooltipShowing)
+            {
+                tooltip.HideTooltip();
+                tooltipShowing = false;
+            }
+        }
+    }
+
+    private bool IsMouseOver()
+    {
+        if (Camera.main == null) return false;
+        Vector2 worldMouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.Raycast(worldMouse, Vector2.zero);
+        return hit.collider != null && hit.collider.gameObject == gameObject;
     }
 
     private IEnumerator SpawnAnimation()
