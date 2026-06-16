@@ -1,6 +1,8 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using SowurShield.Inventory;
 
 namespace SowurShield.Core
@@ -49,9 +51,9 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
     private Transform playerTransform;
     private SowurShield.Inventory.Inventory playerInventory;
 
-    // Tooltip
-    private SowurShield.Inventory.ItemTooltip tooltip;
-    private bool tooltipShowing = false;
+    // Hover label (world-space, built procedurally)
+    private GameObject hoverLabel;
+    private bool hoverShowing = false;
 
     private void Awake()
     {
@@ -62,8 +64,8 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
 
     private void OnDestroy()
     {
-        if (tooltipShowing && tooltip != null)
-            tooltip.HideTooltip();
+        if (hoverLabel != null)
+            Destroy(hoverLabel);
         SaveManager.Instance?.UnregisterSaveable(this);
     }
 
@@ -76,7 +78,7 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
             originalColor = spriteRenderer.color;
         }
 
-        tooltip = Object.FindFirstObjectByType<SowurShield.Inventory.ItemTooltip>();
+        BuildHoverLabel();
         StartCoroutine(SpawnAnimation());
     }
 
@@ -93,20 +95,61 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
             transform.Rotate(0, 0, rotationSpeed * Time.deltaTime);
         }
 
-        if (!itemPicked && item != null && tooltip != null)
+        if (!itemPicked && item != null && hoverLabel != null)
         {
             bool over = IsMouseOver();
-            if (over && !tooltipShowing)
+            if (over && !hoverShowing)
             {
-                tooltip.ShowTooltip(item, Input.mousePosition);
-                tooltipShowing = true;
+                hoverLabel.SetActive(true);
+                hoverShowing = true;
             }
-            else if (!over && tooltipShowing)
+            else if (!over && hoverShowing)
             {
-                tooltip.HideTooltip();
-                tooltipShowing = false;
+                hoverLabel.SetActive(false);
+                hoverShowing = false;
             }
         }
+    }
+
+    private void BuildHoverLabel()
+    {
+        if (item == null) return;
+
+        hoverLabel = new GameObject("HoverLabel");
+        hoverLabel.transform.SetParent(transform, false);
+        hoverLabel.transform.localPosition = new Vector3(0f, 0.6f, 0f);
+
+        var canvas = hoverLabel.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.WorldSpace;
+        canvas.sortingOrder = 200;
+        hoverLabel.transform.localScale = Vector3.one * 0.012f;
+
+        var rt = hoverLabel.GetComponent<RectTransform>();
+        rt.sizeDelta = new Vector2(120, 22);
+
+        var bg = new GameObject("Bg");
+        bg.transform.SetParent(hoverLabel.transform, false);
+        var bgImg = bg.AddComponent<Image>();
+        bgImg.color = new Color(0.05f, 0.05f, 0.08f, 0.85f);
+        var bgRt = bg.GetComponent<RectTransform>();
+        bgRt.anchorMin = Vector2.zero;
+        bgRt.anchorMax = Vector2.one;
+        bgRt.offsetMin = bgRt.offsetMax = Vector2.zero;
+
+        var labelObj = new GameObject("Text");
+        labelObj.transform.SetParent(hoverLabel.transform, false);
+        var tmp = labelObj.AddComponent<TextMeshProUGUI>();
+        tmp.text = item.itemName;
+        tmp.fontSize = 14;
+        tmp.color = Color.white;
+        tmp.alignment = TextAlignmentOptions.Center;
+        var labelRt = labelObj.GetComponent<RectTransform>();
+        labelRt.anchorMin = Vector2.zero;
+        labelRt.anchorMax = Vector2.one;
+        labelRt.offsetMin = new Vector2(4, 0);
+        labelRt.offsetMax = new Vector2(-4, 0);
+
+        hoverLabel.SetActive(false);
     }
 
     private bool IsMouseOver()
@@ -425,23 +468,22 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
         }
     }
 
-    // Public method to set the item when spawning dynamically
     public void SetItem(Item newItem)
     {
         item = newItem;
         quantity = 1;
         UpdateVisual();
+        RebuildHoverLabel();
     }
 
-    // Overloaded method to set item with quantity
     public void SetItem(Item newItem, int newQuantity)
     {
         item = newItem;
         quantity = Mathf.Max(1, newQuantity);
         UpdateVisual();
+        RebuildHoverLabel();
     }
 
-    // Method to set item from ItemStack
     public void SetItemStack(ItemStack itemStack)
     {
         if (itemStack != null && !itemStack.IsEmpty)
@@ -449,7 +491,17 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
             item = itemStack.item;
             quantity = itemStack.quantity;
             UpdateVisual();
+            RebuildHoverLabel();
         }
+    }
+
+    private void RebuildHoverLabel()
+    {
+        if (hoverLabel != null)
+            Destroy(hoverLabel);
+        hoverShowing = false;
+        if (Application.isPlaying)
+            BuildHoverLabel();
     }
 
     // ============================================================================

@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Maren_Default
   m_EditorClassIdentifier: SowurShield.Dialogue.DialogueTree
   conversationId: maren_default
-  conversationDescription: "Maren's everyday greeting with topic choices that unlock
-    more lore as relationship grows."
+  conversationDescription: "Maren's everyday greeting with topic choices that unlock more lore as relationship grows."
   startNodeId: start
   isRepeatable: 1
   saveProgressOnExit: 1
@@ -60,15 +59,11 @@ MonoBehaviour:
     autoAdvanceDelay: 0
     displayConditions: []
     nodeEffects: []
-
-  # ---- TOPIC: sobre si mesma ----
   - nodeId: topic_about
     speakerName: Maren
     speakerEmotion: 0
     speakerPosition: 0
-    dialogueText: "Sou filha de agricultores do vale leste. Aprendi a plantar antes
-      de aprender a escrever. Mas a seca nao perdoa ninguem — vim parar aqui depois
-      de perder tudo."
+    dialogueText: "Sou filha de agricultores do vale leste. Aprendi a plantar antes de aprender a escrever. Mas a seca nao perdoa ninguem — vim parar aqui depois de perder tudo."
     nodeType: 0
     choices:
     - choiceText: "Deve ter sido dificil recomecar."
@@ -92,40 +87,33 @@ MonoBehaviour:
     autoAdvanceDelay: 0
     displayConditions: []
     nodeEffects: []
-
   - nodeId: about_restart
     speakerName: Maren
     speakerEmotion: 2
     speakerPosition: 0
-    dialogueText: "Foi. Mas a terra aqui tem algo de especial. Me acolheu de um
-      jeito que o vale leste nunca fez. Talvez seja isso que chamo de lar agora."
+    dialogueText: "Foi. Mas a terra aqui tem algo de especial. Me acolheu de um jeito que o vale leste nunca fez. Talvez seja isso que chamo de lar agora."
     nodeType: 0
     choices: []
     nextNodeId: ""
     autoAdvanceDelay: 0
     displayConditions: []
     nodeEffects: []
-
   - nodeId: about_adapted
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Demorei um pouco. Cada solo e diferente — tem suas manias. Mas
-      aprendi a ouvir o que a terra me pede."
+    dialogueText: "Demorei um pouco. Cada solo e diferente — tem suas manias. Mas aprendi a ouvir o que a terra me pede."
     nodeType: 0
     choices: []
     nextNodeId: ""
     autoAdvanceDelay: 0
     displayConditions: []
     nodeEffects: []
-
-  # ---- TOPIC: sobre o vale ----
   - nodeId: topic_valley
     speakerName: Maren
     speakerEmotion: 0
     speakerPosition: 0
-    dialogueText: "Este vale tem historia. As pessoas vem, plantam, colhem e vao embora.
-      Poucos ficam. Algo aqui te prende — a terra, o ritmo das estacoes, nao sei."
+    dialogueText: "Este vale tem historia. As pessoas vem, plantam, colhem e vao embora. Poucos ficam. Algo aqui te prende — a terra, o ritmo das estacoes, nao sei."
     nodeType: 0
     choices:
     - choiceText: "Ha algo de mistico nesta terra?"
@@ -155,14 +143,11 @@ MonoBehaviour:
     autoAdvanceDelay: 0
     displayConditions: []
     nodeEffects: []
-
   - nodeId: valley_mystic
     speakerName: Maren
     speakerEmotion: 5
     speakerPosition: 0
-    dialogueText: "Dizem que um druida abencou as camadas mais fundas do solo aqui.
-      Nao sei se acredito, mas as plantas crescem rapido demais pra ser so clima.
-      Cuide bem da fertilidade dos seus canteiros — ela e mais valiosa do que parece."
+    dialogueText: "Dizem que um druida abencou as camadas mais fundas do solo aqui. Nao sei se acredito, mas as plantas crescem rapido demais pra ser so clima. Cuide bem da fertilidade dos seus canteiros — ela e mais valiosa do que parece."
     nodeType: 0
     choices: []
     nextNodeId: ""
@@ -174,28 +159,22 @@ MonoBehaviour:
       effectValue: "true"
       numericValue: 0
       description: "Flag: jogador soube do lore do druida"
-
   - nodeId: valley_feel
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Bom. Significa que voce veio pra ficar. As melhores colheitas sao
-      de quem planta com intencao."
+    dialogueText: "Bom. Significa que voce veio pra ficar. As melhores colheitas sao de quem planta com intencao."
     nodeType: 0
     choices: []
     nextNodeId: ""
     autoAdvanceDelay: 0
     displayConditions: []
     nodeEffects: []
-
-  # ---- TOPIC: dica de plantio ----
   - nodeId: topic_tip
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Dica do dia: o solo cansa. Cada colheita tira um pouco da fertilidade.
-      Quanto menos fertil, menos voce colhe. Deixe o solo descansar ou use adubo
-      — mas eu ainda nao vendo isso."
+    dialogueText: "Dica do dia: o solo cansa. Cada colheita tira um pouco da fertilidade. Quanto menos fertil, menos voce colhe. Deixe o solo descansar ou use adubo — mas eu ainda nao vendo isso."
     nodeType: 0
     choices:
     - choiceText: "E as restricoes de estacao?"
@@ -219,29 +198,22 @@ MonoBehaviour:
     autoAdvanceDelay: 0
     displayConditions: []
     nodeEffects: []
-
   - nodeId: tip_season
     speakerName: Maren
     speakerEmotion: 0
     speakerPosition: 0
-    dialogueText: "Cada planta tem sua estacao preferida. Cenoura e repolho na Primavera,
-      tomate no Verao, abobora no Outono, rabanete na Primavera ou Outono. Tente
-      plantar fora de hora e a terra vai recusar."
+    dialogueText: "Cada planta tem sua estacao preferida. Cenoura e repolho na Primavera, tomate no Verao, abobora no Outono, rabanete na Primavera ou Outono. Tente plantar fora de hora e a terra vai recusar."
     nodeType: 0
     choices: []
     nextNodeId: ""
     autoAdvanceDelay: 0
     displayConditions: []
     nodeEffects: []
-
-  # ---- TOPIC: segredo (rel >= 40) ----
   - nodeId: topic_secret
     speakerName: Maren
     speakerEmotion: 7
     speakerPosition: 0
-    dialogueText: "Voce perguntou... entao vou contar. Tenho uma semente no bolso
-      que nunca plantei. Era do meu pai. Nao sei que planta e — e nao tenho
-      coragem de descobrir, porque se morrer, perderei a ultima coisa que me resta dele."
+    dialogueText: "Voce perguntou... entao vou contar. Tenho uma semente no bolso que nunca plantei. Era do meu pai. Nao sei que planta e — e nao tenho coragem de descobrir, porque se morrer, perderei a ultima coisa que me resta dele."
     nodeType: 0
     choices:
     - choiceText: "Voce deveria plantar. E o que ele teria querido."
@@ -265,13 +237,11 @@ MonoBehaviour:
     autoAdvanceDelay: 0
     displayConditions: []
     nodeEffects: []
-
   - nodeId: secret_plant
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Talvez voce tenha razao. Quando eu tiver coragem, voce vai saber
-      primeiro. Prometo. Obrigada... de verdade."
+    dialogueText: "Talvez voce tenha razao. Quando eu tiver coragem, voce vai saber primeiro. Prometo. Obrigada... de verdade."
     nodeType: 0
     choices: []
     nextNodeId: ""
@@ -283,20 +253,17 @@ MonoBehaviour:
       effectValue: "true"
       numericValue: 0
       description: "Flag: encorajou Maren"
-
   - nodeId: secret_keep
     speakerName: Maren
     speakerEmotion: 0
     speakerPosition: 0
-    dialogueText: "E... voce tem razao tambem. Algumas coisas ficam melhores guardadas.
-      Mas e bom poder falar sobre isso com alguem que entende."
+    dialogueText: "E... voce tem razao tambem. Algumas coisas ficam melhores guardadas. Mas e bom poder falar sobre isso com alguem que entende."
     nodeType: 0
     choices: []
     nextNodeId: ""
     autoAdvanceDelay: 0
     displayConditions: []
     nodeEffects: []
-
   tags:
   - default
   - everyday
