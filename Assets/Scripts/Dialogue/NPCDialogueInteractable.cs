@@ -223,7 +223,12 @@ namespace SowurShield.Dialogue
         private DialogueTree GetBestAvailableDialogue()
         {
             if (availableDialogues == null || availableDialogues.Length == 0)
+            {
+                Debug.LogWarning($"[NPC:{npcDisplayName}] availableDialogues is null or empty, trying defaultDialogue.");
+                if (defaultDialogue != null && ShouldShowDialogue(defaultDialogue))
+                    return defaultDialogue;
                 return null;
+            }
 
             DialogueTree bestDialogue = null;
             int highestPriority = int.MinValue;
@@ -232,10 +237,11 @@ namespace SowurShield.Dialogue
             {
                 if (dialogue == null) continue;
 
-                // Check if dialogue should be shown
-                if (!ShouldShowDialogue(dialogue)) continue;
+                bool shouldShow = ShouldShowDialogue(dialogue);
+                Debug.Log($"[NPC:{npcDisplayName}] Dialogue '{dialogue.conversationId}' priority={dialogue.priority} shouldShow={shouldShow}");
 
-                // Check priority
+                if (!shouldShow) continue;
+
                 if (dialogue.priority > highestPriority)
                 {
                     highestPriority = dialogue.priority;
@@ -243,7 +249,6 @@ namespace SowurShield.Dialogue
                 }
             }
 
-            // Fall back to default dialogue if no prioritized dialogue found
             if (bestDialogue == null && defaultDialogue != null && ShouldShowDialogue(defaultDialogue))
             {
                 bestDialogue = defaultDialogue;
@@ -339,15 +344,17 @@ namespace SowurShield.Dialogue
             var dialogueToShow = GetBestAvailableDialogue();
             if (dialogueToShow == null)
             {
-
+                Debug.LogWarning($"[NPC:{npcDisplayName}] GetBestAvailableDialogue returned null. availableDialogues.Length={availableDialogues?.Length ?? -1}, defaultDialogue={(defaultDialogue != null ? defaultDialogue.conversationId : "null")}");
                 return;
             }
 
             if (dialogueUI == null)
             {
-
+                Debug.LogWarning($"[NPC:{npcDisplayName}] dialogueUI is null — DialogueTreeUI not found in scene.");
                 return;
             }
+
+            Debug.Log($"[NPC:{npcDisplayName}] Starting dialogue '{dialogueToShow.conversationId}' with {dialogueToShow.nodes?.Length ?? 0} nodes.");
 
             // Update state
             isDialogueActive = true;

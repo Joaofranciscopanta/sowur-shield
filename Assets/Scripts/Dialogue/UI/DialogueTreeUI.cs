@@ -199,7 +199,9 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
         }
         
         // Validate tree
-        if (!dialogueTree.ValidateTree())
+        bool valid = dialogueTree.ValidateTree();
+        Debug.Log($"[DialogueTreeUI] ValidateTree '{dialogueTree.conversationId}': {valid}, nodes={dialogueTree.nodes?.Length ?? 0}, startNodeId='{dialogueTree.startNodeId}'");
+        if (!valid)
         {
             return;
         }
@@ -329,6 +331,7 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
     private IEnumerator HandleDialogueNode(DialogueNode node)
     {
         var availableChoices = GetChoicesWithExtras(node);
+        Debug.Log($"[DialogueTreeUI] Node '{node.nodeId}': {node.choices?.Length ?? 0} raw choices, {availableChoices.Length} available (incl. extras). isStartNode={node.nodeId == currentDialogueTree?.startNodeId}, extraCount={extraStartNodeChoices.Count}");
 
         if (availableChoices.Length > 0)
         {
