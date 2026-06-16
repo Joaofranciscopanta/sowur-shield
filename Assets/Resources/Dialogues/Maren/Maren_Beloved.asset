@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Maren_Beloved
   m_EditorClassIdentifier: SowurShield.Dialogue.DialogueTree
   conversationId: maren_beloved
-  conversationDescription: "Unlocked at relationship >= 75. Maren reveals her secret
-    — she keeps a special seed she has never dared to plant."
+  conversationDescription: "Unlocked at relationship >= 75. Maren reveals her secret — she keeps a special seed she has never dared to plant."
   startNodeId: start
   isRepeatable: 1
   saveProgressOnExit: 1
@@ -23,8 +22,7 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 7
     speakerPosition: 0
-    dialogueText: "Confio em voce mais do que em qualquer pessoa neste vale. Ha
-      algo que quero te mostrar."
+    dialogueText: "I trust you more than anyone in this valley. There's something I want to show you."
     nodeType: 0
     choices: []
     nextNodeId: secret_seed
@@ -41,12 +39,10 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 7
     speakerPosition: 0
-    dialogueText: "Esta semente... eu encontrei no bolso do casaco do meu pai no
-      dia em que ele morreu. Nunca soube que planta era. Nunca tive coragem de
-      planta-la — e se eu perdesse a ultima coisa que me resta dele?"
+    dialogueText: "This seed... I found it in my father's coat pocket the day he died. I never knew what plant it was. I never had the courage to plant it — what if I lost the last thing I have left of him?"
     nodeType: 0
     choices:
-    - choiceText: "Voce deveria planta-la. E o que ele teria querido."
+    - choiceText: "You should plant it. It's what he would have wanted."
       nextNodeId: encourage_plant
       requirements: []
       effects:
@@ -54,10 +50,10 @@ MonoBehaviour:
         effectKey: maren
         effectValue: ""
         numericValue: 5
-        description: "+5 relacionamento por encorajamento sincero"
+        description: "+5 relationship for sincere encouragement"
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
-    - choiceText: "Nao precisa plantar. Guarde como lembranca."
+    - choiceText: "You don't have to plant it. Keep it as a memory."
       nextNodeId: keep_memory
       requirements: []
       effects: []
@@ -71,8 +67,7 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Talvez voce tenha razao. Ele gostava de ver as coisas crescerem.
-      Quando eu tiver coragem, voce vai saber primeiro. Obrigada... de verdade."
+    dialogueText: "Maybe you're right. He loved watching things grow. When I have the courage, you'll be the first to know. Thank you... truly."
     nodeType: 0
     choices: []
     nextNodeId: gift_reward
@@ -83,13 +78,12 @@ MonoBehaviour:
       effectKey: maren_encouraged_seed
       effectValue: "true"
       numericValue: 0
-      description: "Flag: jogador encorajou Maren a plantar a semente do pai"
+      description: "Flag: player encouraged Maren to plant her father's seed"
   - nodeId: keep_memory
     speakerName: Maren
     speakerEmotion: 0
     speakerPosition: 0
-    dialogueText: "E... voce tem razao tambem. Algumas coisas ficam melhores guardadas
-      no coracao. Mas e bom poder falar sobre isso com alguem."
+    dialogueText: "You're... right too. Some things are better kept in the heart. But it's good to be able to talk about it with someone."
     nodeType: 0
     choices: []
     nextNodeId: gift_reward
@@ -100,8 +94,7 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Aceite isso de presente. Guardo sempre uma remessa especial de
-      sementes pro dia em que encontrar alguem de confianca. Esse dia chegou."
+    dialogueText: "Accept this as a gift. I always keep a special batch of seeds for the day I find someone I can trust. That day has come."
     nodeType: 0
     choices: []
     nextNodeId: ""
@@ -112,12 +105,12 @@ MonoBehaviour:
       effectKey: PumpkinSeed
       effectValue: ""
       numericValue: 3
-      description: "Presenteia 3x Pumpkin Seeds como recompensa de confianca"
+      description: "Gives 3x Pumpkin Seeds as a trust reward"
     - effectType: 0
       effectKey: maren_gave_gift_seeds
       effectValue: "true"
       numericValue: 0
-      description: "Flag: recompensa ja entregue, impede segunda entrega"
+      description: "Flag: reward already given, prevents second delivery"
   tags:
   - beloved
   - lore

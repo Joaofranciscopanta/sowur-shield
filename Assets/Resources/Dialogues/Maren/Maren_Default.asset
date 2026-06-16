@@ -22,28 +22,28 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Bom dia! Os canteiros estao chamando. O que posso fazer por voce?"
+    dialogueText: "Good morning! The garden beds are calling. What can I do for you?"
     nodeType: 0
     choices:
-    - choiceText: "Fale sobre voce mesma."
+    - choiceText: "Tell me about yourself."
       nextNodeId: topic_about
       requirements: []
       effects: []
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
-    - choiceText: "O que voce acha deste vale?"
+    - choiceText: "What do you think of this valley?"
       nextNodeId: topic_valley
       requirements: []
       effects: []
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
-    - choiceText: "Me da uma dica de plantio."
+    - choiceText: "Give me a planting tip."
       nextNodeId: topic_tip
       requirements: []
       effects: []
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
-    - choiceText: "O que voce guarda de tao especial?"
+    - choiceText: "What are you keeping so close to your heart?"
       nextNodeId: topic_secret
       requirements:
       - conditionType: 2
@@ -51,7 +51,7 @@ MonoBehaviour:
         conditionOperator: 2
         conditionValue: "40"
         invertCondition: 0
-        description: "Disponivel somente com rel >= 40"
+        description: "Available only with rel >= 40"
       effects: []
       isExitChoice: 0
       choiceColor: {r: 0.9, g: 0.85, b: 0.5, a: 1}
@@ -63,10 +63,10 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 0
     speakerPosition: 0
-    dialogueText: "Sou filha de agricultores do vale leste. Aprendi a plantar antes de aprender a escrever. Mas a seca nao perdoa ninguem — vim parar aqui depois de perder tudo."
+    dialogueText: "I'm a farmer's daughter from the eastern valley. I learned to plant before I learned to write. But the drought spares no one — I ended up here after losing everything."
     nodeType: 0
     choices:
-    - choiceText: "Deve ter sido dificil recomecar."
+    - choiceText: "That must have been hard to start over."
       nextNodeId: about_restart
       requirements: []
       effects:
@@ -74,10 +74,10 @@ MonoBehaviour:
         effectKey: maren
         effectValue: ""
         numericValue: 2
-        description: "+2 por empatia"
+        description: "+2 for empathy"
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
-    - choiceText: "Voce se adaptou bem."
+    - choiceText: "You've adapted well."
       nextNodeId: about_adapted
       requirements: []
       effects: []
@@ -91,7 +91,7 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 2
     speakerPosition: 0
-    dialogueText: "Foi. Mas a terra aqui tem algo de especial. Me acolheu de um jeito que o vale leste nunca fez. Talvez seja isso que chamo de lar agora."
+    dialogueText: "It was. But the soil here has something special about it. It welcomed me in a way the eastern valley never did. Maybe this is what I call home now."
     nodeType: 0
     choices: []
     nextNodeId: ""
@@ -102,7 +102,7 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Demorei um pouco. Cada solo e diferente — tem suas manias. Mas aprendi a ouvir o que a terra me pede."
+    dialogueText: "It took a while. Every soil is different — it has its own ways. But I learned to listen to what the land asks of me."
     nodeType: 0
     choices: []
     nextNodeId: ""
@@ -113,10 +113,10 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 0
     speakerPosition: 0
-    dialogueText: "Este vale tem historia. As pessoas vem, plantam, colhem e vao embora. Poucos ficam. Algo aqui te prende — a terra, o ritmo das estacoes, nao sei."
+    dialogueText: "This valley has history. People come, plant, harvest and leave. Few stay. Something here keeps you — the land, the rhythm of the seasons, I don't know."
     nodeType: 0
     choices:
-    - choiceText: "Ha algo de mistico nesta terra?"
+    - choiceText: "Is there something mystical about this land?"
       nextNodeId: valley_mystic
       requirements:
       - conditionType: 2
@@ -124,11 +124,11 @@ MonoBehaviour:
         conditionOperator: 2
         conditionValue: "10"
         invertCondition: 0
-        description: "So aparece com rel >= 10 (Friend+)"
+        description: "Appears only with rel >= 10 (Friend+)"
       effects: []
       isExitChoice: 0
       choiceColor: {r: 0.85, g: 0.95, b: 1, a: 1}
-    - choiceText: "Eu entendo essa sensacao."
+    - choiceText: "I understand that feeling."
       nextNodeId: valley_feel
       requirements: []
       effects:
@@ -136,7 +136,7 @@ MonoBehaviour:
         effectKey: maren
         effectValue: ""
         numericValue: 1
-        description: "+1 por concordar"
+        description: "+1 for agreeing"
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
     nextNodeId: ""
@@ -147,7 +147,7 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 5
     speakerPosition: 0
-    dialogueText: "Dizem que um druida abencou as camadas mais fundas do solo aqui. Nao sei se acredito, mas as plantas crescem rapido demais pra ser so clima. Cuide bem da fertilidade dos seus canteiros — ela e mais valiosa do que parece."
+    dialogueText: "They say a druid blessed the deepest layers of soil here. I don't know if I believe it, but the plants grow too fast to just be the climate. Take good care of your beds' fertility — it's more valuable than it looks."
     nodeType: 0
     choices: []
     nextNodeId: ""
@@ -158,12 +158,12 @@ MonoBehaviour:
       effectKey: maren_told_valley_lore
       effectValue: "true"
       numericValue: 0
-      description: "Flag: jogador soube do lore do druida"
+      description: "Flag: player learned the druid lore"
   - nodeId: valley_feel
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Bom. Significa que voce veio pra ficar. As melhores colheitas sao de quem planta com intencao."
+    dialogueText: "Good. That means you came to stay. The best harvests come from those who plant with intention."
     nodeType: 0
     choices: []
     nextNodeId: ""
@@ -174,16 +174,16 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Dica do dia: o solo cansa. Cada colheita tira um pouco da fertilidade. Quanto menos fertil, menos voce colhe. Deixe o solo descansar ou use adubo — mas eu ainda nao vendo isso."
+    dialogueText: "Tip of the day: soil gets tired. Every harvest takes a little fertility away. The less fertile it is, the less you yield. Let the soil rest or use fertilizer — though I don't sell that yet."
     nodeType: 0
     choices:
-    - choiceText: "E as restricoes de estacao?"
+    - choiceText: "What about seasonal restrictions?"
       nextNodeId: tip_season
       requirements: []
       effects: []
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
-    - choiceText: "Obrigado pela dica!"
+    - choiceText: "Thanks for the tip!"
       nextNodeId: ""
       requirements: []
       effects:
@@ -191,7 +191,7 @@ MonoBehaviour:
         effectKey: maren
         effectValue: ""
         numericValue: 1
-        description: "+1 por agradecer"
+        description: "+1 for thanking"
       isExitChoice: 1
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
     nextNodeId: ""
@@ -202,7 +202,7 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 0
     speakerPosition: 0
-    dialogueText: "Cada planta tem sua estacao preferida. Cenoura e repolho na Primavera, tomate no Verao, abobora no Outono, rabanete na Primavera ou Outono. Tente plantar fora de hora e a terra vai recusar."
+    dialogueText: "Every plant has its preferred season. Carrot and cabbage in Spring, tomato in Summer, pumpkin in Fall, radish in Spring or Fall. Try planting out of season and the land will refuse."
     nodeType: 0
     choices: []
     nextNodeId: ""
@@ -213,10 +213,10 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 7
     speakerPosition: 0
-    dialogueText: "Voce perguntou... entao vou contar. Tenho uma semente no bolso que nunca plantei. Era do meu pai. Nao sei que planta e — e nao tenho coragem de descobrir, porque se morrer, perderei a ultima coisa que me resta dele."
+    dialogueText: "You asked... so I'll tell you. I have a seed in my pocket I've never planted. It was my father's. I don't know what plant it is — and I don't have the courage to find out, because if it dies, I'll lose the last thing I have left of him."
     nodeType: 0
     choices:
-    - choiceText: "Voce deveria plantar. E o que ele teria querido."
+    - choiceText: "You should plant it. It's what he would have wanted."
       nextNodeId: secret_plant
       requirements: []
       effects:
@@ -224,10 +224,10 @@ MonoBehaviour:
         effectKey: maren
         effectValue: ""
         numericValue: 5
-        description: "+5 por encorajamento sincero"
+        description: "+5 for sincere encouragement"
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
-    - choiceText: "Guarde como lembranca. E dela tambem."
+    - choiceText: "Keep it as a memory. It belongs to her too."
       nextNodeId: secret_keep
       requirements: []
       effects: []
@@ -241,7 +241,7 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Talvez voce tenha razao. Quando eu tiver coragem, voce vai saber primeiro. Prometo. Obrigada... de verdade."
+    dialogueText: "Maybe you're right. When I have the courage, you'll be the first to know. I promise. Thank you... truly."
     nodeType: 0
     choices: []
     nextNodeId: ""
@@ -252,12 +252,12 @@ MonoBehaviour:
       effectKey: maren_encouraged_seed
       effectValue: "true"
       numericValue: 0
-      description: "Flag: encorajou Maren"
+      description: "Flag: encouraged Maren"
   - nodeId: secret_keep
     speakerName: Maren
     speakerEmotion: 0
     speakerPosition: 0
-    dialogueText: "E... voce tem razao tambem. Algumas coisas ficam melhores guardadas. Mas e bom poder falar sobre isso com alguem que entende."
+    dialogueText: "You're... right too. Some things are better kept. But it's good to be able to talk about it with someone who understands."
     nodeType: 0
     choices: []
     nextNodeId: ""

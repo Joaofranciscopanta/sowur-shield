@@ -13,8 +13,7 @@ MonoBehaviour:
   m_Name: Maren_Friend
   m_EditorClassIdentifier: SowurShield.Dialogue.DialogueTree
   conversationId: maren_friend
-  conversationDescription: "Dialogue unlocked when relationship >= 40. Maren opens
-    up about her past and her reason for settling here."
+  conversationDescription: "Dialogue unlocked when relationship >= 40. Maren opens up about her past and her reason for settling here."
   startNodeId: start
   isRepeatable: 1
   saveProgressOnExit: 1
@@ -23,8 +22,7 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Ah, voce de novo! Sabe, poucos se preocupam em parar e conversar.
-      Fico feliz que seja diferente."
+    dialogueText: "Ah, you again! You know, few people bother to stop and talk. I'm glad you're different."
     nodeType: 0
     choices: []
     nextNodeId: lore_reveal
@@ -35,24 +33,22 @@ MonoBehaviour:
       conditionOperator: 2
       conditionValue: "40"
       invertCondition: 0
-      description: "So exibe se relacionamento >= 40"
+      description: "Only shows if relationship >= 40"
     nodeEffects: []
   - nodeId: lore_reveal
     speakerName: Maren
     speakerEmotion: 0
     speakerPosition: 0
-    dialogueText: "Vim parar aqui depois de uma seca que destruiu tudo que plantei
-      no vale leste. Perdi tres colheitas seguidas. Mas a terra aqui... ela me
-      recebeu de um jeito diferente."
+    dialogueText: "I ended up here after a drought that destroyed everything I planted in the eastern valley. I lost three harvests in a row. But the soil here... it received me differently."
     nodeType: 0
     choices:
-    - choiceText: "O que tem de especial nesta terra?"
+    - choiceText: "What's so special about this soil?"
       nextNodeId: lore_soil
       requirements: []
       effects: []
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
-    - choiceText: "Voce nao sentiu vontade de desistir?"
+    - choiceText: "Didn't you feel like giving up?"
       nextNodeId: lore_persevere
       requirements: []
       effects: []
@@ -66,9 +62,7 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Ha algo nas raizes aqui, nas camadas mais fundas. Dizem que um
-      druida antigo abencou o vale inteiro. Nao sei se acredito em historias,
-      mas as plantas crescem rapido demais para ser so sorte."
+    dialogueText: "There's something in the roots here, in the deepest layers. They say an ancient druid blessed the entire valley. I don't know if I believe in stories, but the plants grow too fast to just be luck."
     nodeType: 0
     choices: []
     nextNodeId: lore_gift_hint
@@ -79,8 +73,7 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 2
     speakerPosition: 0
-    dialogueText: "Muitas vezes. Mas minha mae sempre dizia: a semente que sobrevive
-      ao inverno floresce mais forte. Acabei acreditando."
+    dialogueText: "Many times. But my mother always said: the seed that survives winter blooms stronger. I ended up believing it."
     nodeType: 0
     choices: []
     nextNodeId: lore_gift_hint
@@ -91,9 +84,7 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 0
     speakerPosition: 0
-    dialogueText: "Se voce tratar bem a terra, ela retribui. Cuide da fertilidade
-      dos seus canteiros — o solo cansado da menos. Abubos naturais ajudam,
-      mas o que mais funciona e nao apressar o processo."
+    dialogueText: "If you treat the land well, it gives back. Take care of your beds' fertility — tired soil gives less. Natural fertilizers help, but what works best is not rushing the process."
     nodeType: 0
     choices: []
     nextNodeId: ""
@@ -104,7 +95,7 @@ MonoBehaviour:
       effectKey: maren_shared_lore
       effectValue: "true"
       numericValue: 0
-      description: "Marca que Maren ja compartilhou o lore da fertilidade"
+      description: "Marks that Maren already shared the fertility lore"
   tags:
   - friend
   - lore

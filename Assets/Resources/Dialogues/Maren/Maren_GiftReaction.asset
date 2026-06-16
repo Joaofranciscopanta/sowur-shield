@@ -22,7 +22,7 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 5
     speakerPosition: 0
-    dialogueText: "Oh! Isso e... voce nao precisava. Mas fico muito feliz. Raramente alguem pensa em mim assim."
+    dialogueText: "Oh! This is... you didn't have to. But I'm so glad you did. Rarely does anyone think of me like that."
     nodeType: 0
     choices: []
     nextNodeId: gift_accept
@@ -33,18 +33,18 @@ MonoBehaviour:
       conditionOperator: 0
       conditionValue: "true"
       invertCondition: 0
-      description: "Só aparece quando GiftSelectionUI setou maren_first_gift_pending=true"
+      description: "Only appears when GiftSelectionUI set maren_first_gift_pending=true"
     nodeEffects:
     - effectType: 0
       effectKey: maren_first_gift_pending
       effectValue: "false"
       numericValue: 0
-      description: "Limpa o flag ao exibir o diálogo"
+      description: "Clears the flag when dialogue is shown"
   - nodeId: gift_accept
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Vou guardar com cuidado. E que voce plante o dobro do que semear esta estacao — isso e o que eu posso devolver agora."
+    dialogueText: "I'll keep it safe. And may you harvest twice what you sow this season — that's what I can give back right now."
     nodeType: 0
     choices: []
     nextNodeId: ""
@@ -55,7 +55,7 @@ MonoBehaviour:
       effectKey: maren
       effectValue: ""
       numericValue: 3
-      description: "+3 relacionamento extra pela primeira vez que presenteia"
+      description: "+3 extra relationship for first-time gift"
   tags:
   - gift
   priority: 30
