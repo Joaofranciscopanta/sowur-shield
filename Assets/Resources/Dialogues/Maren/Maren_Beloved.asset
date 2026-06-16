@@ -1,0 +1,125 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9b5041c652cccf43bbd575d56fe419f, type: 3}
+  m_Name: Maren_Beloved
+  m_EditorClassIdentifier: SowurShield.Dialogue.DialogueTree
+  conversationId: maren_beloved
+  conversationDescription: "Unlocked at relationship >= 75. Maren reveals her secret
+    — she keeps a special seed she has never dared to plant."
+  startNodeId: start
+  isRepeatable: 1
+  saveProgressOnExit: 1
+  nodes:
+  - nodeId: start
+    speakerName: Maren
+    speakerEmotion: 7
+    speakerPosition: 0
+    dialogueText: "Confio em voce mais do que em qualquer pessoa neste vale. Ha
+      algo que quero te mostrar."
+    nodeType: 0
+    choices: []
+    nextNodeId: secret_seed
+    autoAdvanceDelay: 0
+    displayConditions:
+    - conditionType: 2
+      conditionKey: maren
+      conditionOperator: 2
+      conditionValue: "75"
+      invertCondition: 0
+      description: "Beloved tier"
+    nodeEffects: []
+  - nodeId: secret_seed
+    speakerName: Maren
+    speakerEmotion: 7
+    speakerPosition: 0
+    dialogueText: "Esta semente... eu encontrei no bolso do casaco do meu pai no
+      dia em que ele morreu. Nunca soube que planta era. Nunca tive coragem de
+      planta-la — e se eu perdesse a ultima coisa que me resta dele?"
+    nodeType: 0
+    choices:
+    - choiceText: "Voce deveria planta-la. E o que ele teria querido."
+      nextNodeId: encourage_plant
+      requirements: []
+      effects:
+      - effectType: 1
+        effectKey: maren
+        effectValue: ""
+        numericValue: 5
+        description: "+5 relacionamento por encorajamento sincero"
+      isExitChoice: 0
+      choiceColor: {r: 1, g: 1, b: 1, a: 1}
+    - choiceText: "Nao precisa plantar. Guarde como lembranca."
+      nextNodeId: keep_memory
+      requirements: []
+      effects: []
+      isExitChoice: 0
+      choiceColor: {r: 1, g: 1, b: 1, a: 1}
+    nextNodeId: ""
+    autoAdvanceDelay: 0
+    displayConditions: []
+    nodeEffects: []
+  - nodeId: encourage_plant
+    speakerName: Maren
+    speakerEmotion: 1
+    speakerPosition: 0
+    dialogueText: "Talvez voce tenha razao. Ele gostava de ver as coisas crescerem.
+      Quando eu tiver coragem, voce vai saber primeiro. Obrigada... de verdade."
+    nodeType: 0
+    choices: []
+    nextNodeId: gift_reward
+    autoAdvanceDelay: 0
+    displayConditions: []
+    nodeEffects:
+    - effectType: 0
+      effectKey: maren_encouraged_seed
+      effectValue: "true"
+      numericValue: 0
+      description: "Flag: jogador encorajou Maren a plantar a semente do pai"
+  - nodeId: keep_memory
+    speakerName: Maren
+    speakerEmotion: 0
+    speakerPosition: 0
+    dialogueText: "E... voce tem razao tambem. Algumas coisas ficam melhores guardadas
+      no coracao. Mas e bom poder falar sobre isso com alguem."
+    nodeType: 0
+    choices: []
+    nextNodeId: gift_reward
+    autoAdvanceDelay: 0
+    displayConditions: []
+    nodeEffects: []
+  - nodeId: gift_reward
+    speakerName: Maren
+    speakerEmotion: 1
+    speakerPosition: 0
+    dialogueText: "Aceite isso de presente. Guardo sempre uma remessa especial de
+      sementes pro dia em que encontrar alguem de confianca. Esse dia chegou."
+    nodeType: 0
+    choices: []
+    nextNodeId: ""
+    autoAdvanceDelay: 0
+    displayConditions: []
+    nodeEffects:
+    - effectType: 3
+      effectKey: PumpkinSeed
+      effectValue: ""
+      numericValue: 3
+      description: "Presenteia 3x Pumpkin Seeds como recompensa de confianca"
+    - effectType: 0
+      effectKey: maren_gave_gift_seeds
+      effectValue: "true"
+      numericValue: 0
+      description: "Flag: recompensa ja entregue, impede segunda entrega"
+  tags:
+  - beloved
+  - lore
+  - secret
+  priority: 20

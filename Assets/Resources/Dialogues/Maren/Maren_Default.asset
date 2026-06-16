@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9b5041c652cccf43bbd575d56fe419f, type: 3}
+  m_Name: Maren_Default
+  m_EditorClassIdentifier: SowurShield.Dialogue.DialogueTree
+  conversationId: maren_default
+  conversationDescription: "Maren's everyday greeting — cycles through small talk depending
+    on the season and the player's relationship level."
+  startNodeId: start
+  isRepeatable: 1
+  saveProgressOnExit: 1
+  nodes:
+  - nodeId: start
+    speakerName: Maren
+    speakerEmotion: 1
+    speakerPosition: 0
+    dialogueText: "Bom dia, forasteiro! Os canteiros estao chamando — voce ja escolheu
+      o que vai plantar hoje?"
+    nodeType: 0
+    choices: []
+    nextNodeId: ask_how_things
+    autoAdvanceDelay: 0
+    displayConditions: []
+    nodeEffects: []
+    editorNote: "Abertura default (nenhuma condicao especial)"
+  - nodeId: ask_how_things
+    speakerName: Maren
+    speakerEmotion: 0
+    speakerPosition: 0
+    dialogueText: "Eu acordo antes do sol so para sentir a terra entre os dedos. Ha
+      uma magia naquele primeiro momento em que a semente abre."
+    nodeType: 0
+    choices:
+    - choiceText: "Concordo — a fazenda e um lugar especial."
+      nextNodeId: reply_agree
+      requirements: []
+      effects:
+      - effectType: 1
+        effectKey: maren
+        effectValue: ""
+        numericValue: 2
+        description: "+2 relacionamento por comentario positivo"
+      isExitChoice: 0
+      choiceColor: {r: 1, g: 1, b: 1, a: 1}
+    - choiceText: "Prefiro que a terra faca o trabalho sozinha."
+      nextNodeId: reply_lazy
+      requirements: []
+      effects: []
+      isExitChoice: 0
+      choiceColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+    - choiceText: "Tenho que ir, ate logo."
+      nextNodeId: ""
+      requirements: []
+      effects: []
+      isExitChoice: 1
+      choiceColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
+    nextNodeId: ""
+    autoAdvanceDelay: 0
+    displayConditions: []
+    nodeEffects: []
+  - nodeId: reply_agree
+    speakerName: Maren
+    speakerEmotion: 1
+    speakerPosition: 0
+    dialogueText: "Sabia que voce entenderia! Faz anos que cuido deste lugar. Cada
+      estacao traz uma licao nova."
+    nodeType: 0
+    choices: []
+    nextNodeId: ""
+    autoAdvanceDelay: 0
+    displayConditions: []
+    nodeEffects: []
+  - nodeId: reply_lazy
+    speakerName: Maren
+    speakerEmotion: 4
+    speakerPosition: 0
+    dialogueText: "Hah! Voce nao conhece a terra ainda. Ela exige atencao — mas devolve
+      tudo com juros."
+    nodeType: 0
+    choices: []
+    nextNodeId: ""
+    autoAdvanceDelay: 0
+    displayConditions: []
+    nodeEffects: []
+  tags:
+  - default
+  - everyday
+  priority: 0
