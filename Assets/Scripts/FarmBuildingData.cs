@@ -31,6 +31,12 @@ public class FarmBuildingData : ScriptableObject
     [Header("Effects (shown in UI — actual logic lives in game systems)")]
     [TextArea(1, 3)]
     public string effectDescription;
+
+    [Header("World Presence (optional)")]
+    [Tooltip("Spawned in SampleScene once this building is constructed (and again on load if already built). Leave null to keep this building purely logical, with no object in the world.")]
+    public GameObject worldPrefab;
+    [Tooltip("World position the prefab is instantiated at.")]
+    public Vector2 worldPosition;
 }
 
 public enum BuildingType

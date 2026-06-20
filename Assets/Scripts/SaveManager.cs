@@ -160,6 +160,29 @@ namespace SowurShield.Core
                 saveableObjects.Remove(saveable);
         }
 
+        /// <summary>
+        /// Re-applies LoadData() to every currently registered ISaveable using the
+        /// in-memory currentGameData, without re-reading the save file from disk.
+        ///
+        /// Needed when a scene is reloaded mid-session (e.g. returning from CombatScene
+        /// to SampleScene) — newly instantiated objects like GroundItem register
+        /// themselves but never receive their persisted state, because only
+        /// LoadGame() (an explicit "load save" action) normally calls LoadData().
+        /// </summary>
+        public void ReapplyLoadedDataToRegisteredObjects()
+        {
+            if (currentGameData == null) return;
+
+            foreach (var saveable in saveableObjects.ToList())
+            {
+                if (saveable != null)
+                {
+                    try { saveable.LoadData(currentGameData); }
+                    catch (System.Exception e) { LogError($"Error re-applying data into {saveable.GetType().Name}: {e.Message}"); }
+                }
+            }
+        }
+
         // ============================================================================
         // SLOT MANAGEMENT
         // ============================================================================

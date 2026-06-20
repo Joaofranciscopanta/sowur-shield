@@ -100,13 +100,9 @@ public class BedInteractable : MonoBehaviour, IInteractable
         {
             // Use new confirmation panel
             confirmationPanel.ShowConfirmation();
-            
+
             playerControls = FindFirstObjectByType<PlayerMove>();
-            if (playerControls != null)
-            {
-                // Desativar controles temporariamente, se necessário
-                // Por exemplo: playerControls.DisableControls();
-            }
+            playerControls?.DisableMovement();
         }
         else if (sleepConfirmUI != null)
         {
@@ -114,11 +110,7 @@ public class BedInteractable : MonoBehaviour, IInteractable
             sleepConfirmUI.SetActive(true);
 
             playerControls = FindFirstObjectByType<PlayerMove>();
-            if (playerControls != null)
-            {
-                // Desativar controles temporariamente, se necessário
-                // Por exemplo: playerControls.DisableControls();
-            }
+            playerControls?.DisableMovement();
         }
         else
         {
@@ -133,8 +125,6 @@ public class BedInteractable : MonoBehaviour, IInteractable
 
     private void CancelSleep()
     {
-
-        
         // Hide confirmation panel (new or legacy)
         if (confirmationPanel != null)
         {
@@ -145,13 +135,7 @@ public class BedInteractable : MonoBehaviour, IInteractable
             sleepConfirmUI.SetActive(false);
         }
 
-        if (playerControls != null)
-        {
-            // Reativar controles, se necessário
-            // Por exemplo: playerControls.EnableControls();
-        }
-        
-
+        playerControls?.EnableMovement();
     }
 
     private IEnumerator SleepSequence()
@@ -172,6 +156,10 @@ public class BedInteractable : MonoBehaviour, IInteractable
         {
             sleepConfirmUI.SetActive(false);
         }
+
+        // Keep the player locked for the entire sleep sequence (fade out, day advance, fade in)
+        playerControls = FindFirstObjectByType<PlayerMove>();
+        playerControls?.DisableMovement();
 
         // Som de dormir
         if (sleepSound != null)
@@ -249,10 +237,7 @@ public class BedInteractable : MonoBehaviour, IInteractable
         }
 
         // Restaura controles do jogador
-        if (playerControls != null)
-        {
-            // Por exemplo: playerControls.EnableControls();
-        }
+        playerControls?.EnableMovement();
 
         isSleeping = false;
     }
