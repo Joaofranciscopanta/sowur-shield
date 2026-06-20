@@ -361,6 +361,15 @@ public class SceneTransitionManager : MonoBehaviour
         {
             GameMusicManager.Instance.OnStartGame();
         }
+
+        // Newly instantiated scene objects (e.g. GroundItem) register themselves with
+        // SaveManager on Awake but never get their persisted state otherwise — only an
+        // explicit LoadGame() call does that. Re-apply it here so items already picked
+        // up before a trip to CombatScene don't reappear when the farm scene reloads.
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.ReapplyLoadedDataToRegisteredObjects();
+        }
     }
 
     private void OnCombatSceneLoaded()

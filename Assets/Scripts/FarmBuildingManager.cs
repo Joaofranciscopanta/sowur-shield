@@ -23,6 +23,7 @@ public class FarmBuildingManager : MonoBehaviour, ISaveable
     public System.Action<BuildingType> OnBuildingConstructed;
 
     private readonly HashSet<BuildingType> _builtBuildings = new HashSet<BuildingType>();
+    private readonly Dictionary<BuildingType, GameObject> _spawnedWorldObjects = new Dictionary<BuildingType, GameObject>();
 
     private const string SAVE_PREFIX = "building_";
 
@@ -101,8 +102,44 @@ public class FarmBuildingManager : MonoBehaviour, ISaveable
         playerStats.SpendMoney(data.goldCost);
         _builtBuildings.Add(data.buildingType);
 
+        SpawnWorldObject(data);
+
         OnBuildingConstructed?.Invoke(data.buildingType);
         return true;
+    }
+
+    /// <summary>
+    /// Instantiates data.worldPrefab at data.worldPosition if configured, and not already
+    /// spawned for this building type. No-op for buildings with no worldPrefab assigned.
+    /// </summary>
+    private void SpawnWorldObject(FarmBuildingData data)
+    {
+        if (data == null || data.worldPrefab == null) return;
+        if (_spawnedWorldObjects.TryGetValue(data.buildingType, out GameObject existing) && existing != null) return;
+
+        GameObject instance = Instantiate(data.worldPrefab, data.worldPosition, Quaternion.identity);
+        instance.name = $"{data.buildingType}_Building";
+        _spawnedWorldObjects[data.buildingType] = instance;
+    }
+
+    /// <summary>
+    /// Looks up the FarmBuildingData asset for a given type from Resources/Buildings
+    /// (same source BuildingShopUI reads from) and spawns its world object if not present.
+    /// Used by LoadData() to restore world objects for buildings built in a previous session.
+    /// </summary>
+    private void SpawnWorldObjectIfBuilt(BuildingType type)
+    {
+        if (!_builtBuildings.Contains(type)) return;
+
+        FarmBuildingData[] allBuildings = Resources.LoadAll<FarmBuildingData>("Buildings");
+        foreach (FarmBuildingData data in allBuildings)
+        {
+            if (data.buildingType == type)
+            {
+                SpawnWorldObject(data);
+                return;
+            }
+        }
     }
 
     // =========================================================================
@@ -143,6 +180,12 @@ public class FarmBuildingManager : MonoBehaviour, ISaveable
             if (flags.TryGetValue(key, out bool built) && built)
                 _builtBuildings.Add(type);
         }
+
+        // Restore world objects for already-built buildings — needed both on the initial
+        // load and whenever SampleScene is reloaded (e.g. returning from CombatScene),
+        // since the previously spawned instances are destroyed along with the old scene.
+        foreach (BuildingType type in _builtBuildings)
+            SpawnWorldObjectIfBuilt(type);
     }
 }
 
