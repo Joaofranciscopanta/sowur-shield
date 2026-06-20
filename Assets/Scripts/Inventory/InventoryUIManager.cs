@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using SowurShield.UI;
 
 namespace SowurShield.Inventory
 {
@@ -60,11 +61,40 @@ namespace SowurShield.Inventory
         public SowurShield.Inventory.Inventory inventory;
         public GameObject slotPrefab;
 
+        [Header("Theme")]
+        [SerializeField] private UITheme theme;
+
         // Internal state
         private ItemType currentFilterType = (ItemType)(-1); // -1 means show all
         private InventorySorting.SortMode currentSortMode = InventorySorting.SortMode.Type;
         private string currentSearchTerm = "";
         private List<EnhancedInventorySlot> enhancedSlots = new List<EnhancedInventorySlot>();
+
+        private void Awake()
+        {
+            if (theme == null)
+                theme = Resources.Load<UITheme>("UI/CozyUITheme");
+
+            ApplyThemeColors();
+        }
+
+        // Maps the cozy UITheme palette onto this manager's color fields. rareColor/epicColor
+        // are intentionally left untouched — UITheme has no blue/purple token, and forcing a
+        // fit would hurt rarity-tier legibility against uncommon (green) and legendary (warm).
+        private void ApplyThemeColors()
+        {
+            if (theme == null) return;
+
+            activeTabColor    = theme.highlightGold;
+            inactiveTabColor  = theme.backgroundTan;
+            slotNormalColor   = new Color(theme.backgroundTan.r, theme.backgroundTan.g, theme.backgroundTan.b, 0.9f);
+            slotHoverColor    = theme.woodLight;
+            slotSelectedColor = theme.highlightYellow;
+            slotEmptyColor    = new Color(theme.backgroundCream.r, theme.backgroundCream.g, theme.backgroundCream.b, 0.6f);
+            commonColor       = theme.textDark;
+            uncommonColor     = theme.positive;
+            legendaryColor    = theme.warning;
+        }
 
         private void Start()
         {
