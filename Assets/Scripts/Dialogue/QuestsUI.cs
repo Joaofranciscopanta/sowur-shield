@@ -47,7 +47,6 @@ public class QuestsUI : MonoBehaviour, IUIWindow
 
     private readonly List<GameObject> _activeRows = new List<GameObject>();
     private readonly List<GameObject> _completedRows = new List<GameObject>();
-    private bool _dirty = true;
 
     // =========================================================================
     // IUIWindow
@@ -64,7 +63,6 @@ public class QuestsUI : MonoBehaviour, IUIWindow
         ShowTab(activeTabPanel, completedTabPanel, activeTabButton, completedTabButton);
         RefreshActiveTab();
         RefreshCompletedTab();
-        _dirty = false;
         DisablePlayerMovement();
     }
 
@@ -158,14 +156,14 @@ public class QuestsUI : MonoBehaviour, IUIWindow
 
     private void OnQuestStarted(QuestData quest)
     {
+        // Closed windows just rebuild from scratch in OpenWindow() — no need to track
+        // dirtiness while invisible.
         if (IsWindowOpen) RefreshActiveTab();
-        else _dirty = true;
     }
 
     private void OnObjectiveUpdated(QuestData quest, int objIndex, int newCount)
     {
         if (IsWindowOpen) RefreshActiveTab();
-        else _dirty = true;
     }
 
     private void OnQuestCompleted(QuestData quest)
@@ -174,10 +172,6 @@ public class QuestsUI : MonoBehaviour, IUIWindow
         {
             RefreshActiveTab();
             RefreshCompletedTab();
-        }
-        else
-        {
-            _dirty = true;
         }
     }
 
