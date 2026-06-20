@@ -757,6 +757,17 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     }
 
     /// <summary>
+    /// Assigns the AnimalData and zone for an animal spawned at runtime (e.g. by AnimalMarketUI
+    /// after a purchase). Must be called immediately after AddComponent&lt;Animal&gt;(), before
+    /// Start() runs — Start() is the first place animalData/assignedZone are read.
+    /// </summary>
+    public void InitializeFromMarket(AnimalData data, AnimalZone zone)
+    {
+        animalData = data;
+        assignedZone = zone;
+    }
+
+    /// <summary>
     /// Set the animal's zone (useful for runtime assignment)
     /// </summary>
     public void SetZone(AnimalZone zone)
