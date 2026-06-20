@@ -19477,7 +19477,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f866997d69d4ffa98714374d12b86c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Animals.AnimalMarketNPC
-  marketData: {fileID: 0}
+  marketData: {fileID: 11400000, guid: b1c2216cd77e41e38751a7870b78c14a, type: 2}
   npcName: Animal Trader
   interactionRange: 2
 --- !u!61 &1482121133
