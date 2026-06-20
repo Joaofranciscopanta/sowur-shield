@@ -34,6 +34,13 @@ namespace SowurShield.Core
         public System.Action<CropGrowthManager> OnCropHarvested; // When crop is harvested
         public System.Action<CropGrowthManager> OnCropDayTick; // Every day the crop is alive, even without a stage change
 
+        /// <summary>
+        /// Static, fired alongside the instance OnCropHarvested event whenever ANY crop on the
+        /// farm is harvested. Lets global listeners (e.g. AchievementManager) subscribe once
+        /// instead of having to find and hook every CropGrowthManager instance in the scene.
+        /// </summary>
+        public static System.Action<CropGrowthManager> OnAnyCropHarvested;
+
         // Properties for external access
         public bool HasCrop => currentCrop != null;
         public bool IsReadyForHarvest => isReadyForHarvest && !isDead;
@@ -266,6 +273,7 @@ namespace SowurShield.Core
             }
 
             OnCropHarvested?.Invoke(this);
+            OnAnyCropHarvested?.Invoke(this);
             TutorialManager.NotifyStepComplete("harvest");
             SowurShield.Dialogue.QuestManager.Instance?.NotifyObjective(
                 SowurShield.Dialogue.QuestObjectiveType.HarvestCrop, harvestedCropName);

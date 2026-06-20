@@ -94,6 +94,9 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     public System.Action<int> OnItemsSold;
     public System.Action OnSellBoxToggled;
 
+    /// <summary>Static, fired alongside OnItemsSold whenever ANY SellBox sells items, so global listeners (e.g. AchievementManager) don't need to find/hook every SellBox instance.</summary>
+    public static System.Action<int> OnAnyItemsSold;
+
     public bool IsOpen => isSellBoxOpen;
     public int TotalValue => CalculateTotalValue();
 
@@ -795,6 +798,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         {
             playerStats.AddMoney(totalEarnings);
             OnItemsSold?.Invoke(totalEarnings);
+            OnAnyItemsSold?.Invoke(totalEarnings);
         }
 
         UpdateTotalValueDisplay();

@@ -23,6 +23,9 @@ public static class StageManager
     // Cache of all loaded stages
     private static Dictionary<int, StageData> stageCache = new Dictionary<int, StageData>();
 
+    /// <summary>Fired the first time a given stage is completed (not re-fired on repeat clears).</summary>
+    public static System.Action<StageData> OnStageCompleted;
+
     // ============================================================================
     // STAGE SELECTION
     // ============================================================================
@@ -66,9 +69,11 @@ public static class StageManager
         if (stage == null) return;
 
         string stageKey = GetStageKey(stage);
-        if (!completedStages.Contains(stageKey))
+        bool isFirstClear = !completedStages.Contains(stageKey);
+        if (isFirstClear)
         {
             completedStages.Add(stageKey);
+            OnStageCompleted?.Invoke(stage);
         }
 
         // Advance any CompleteBattle quest objectives that target this stage
