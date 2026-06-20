@@ -54,11 +54,11 @@ public class BuildingShopUIBuilder : EditorWindow
         // Title bar
         CreateTMPText(buildingPanel.transform, "TitleText", "Farm Buildings",
             new Vector2(0, 1), new Vector2(0.7f, 1),
-            new Vector2(16, -48), new Vector2(0, -8), 22, FontStyles.Bold);
+            new Vector2(16, -48), new Vector2(0, -8), 22, FontStyles.Bold, noWrap: true);
 
         var goldText = CreateTMPText(buildingPanel.transform, "PlayerGoldText", "Gold: 0g",
             new Vector2(0.7f, 1), new Vector2(1f, 1),
-            new Vector2(0, -48), new Vector2(-16, -8), 18, FontStyles.Bold);
+            new Vector2(0, -48), new Vector2(-16, -8), 18, FontStyles.Bold, noWrap: true);
         goldText.alignment = TextAlignmentOptions.Right;
         goldText.color = new Color(1f, 0.85f, 0.2f);
 
@@ -134,7 +134,7 @@ public class BuildingShopUIBuilder : EditorWindow
 
         var confirmCostText = CreateTMPText(confirmPanel.transform, "ConfirmCostText", "0g",
             new Vector2(0, 0.4f), new Vector2(1, 0.85f),
-            new Vector2(12, 0), new Vector2(-12, 0), 14);
+            new Vector2(12, 0), new Vector2(-12, 0), 14, FontStyles.Normal, noWrap: false);
         confirmCostText.alignment = TextAlignmentOptions.Center;
 
         var confirmButtonRow = new GameObject("ConfirmButtonRow");
@@ -225,10 +225,14 @@ public class BuildingShopUIBuilder : EditorWindow
 
         var rowGO = new GameObject("BuildingRow");
         var rowRT = rowGO.AddComponent<RectTransform>();
-        rowRT.sizeDelta = new Vector2(0, 96);
+        // Explicit non-zero width so child anchors (fractions of this rect) resolve correctly
+        // both in the Editor preview and when first instantiated, before the parent
+        // VerticalLayoutGroup gets a chance to stretch it via childForceExpandWidth.
+        rowRT.sizeDelta = new Vector2(600, 96);
         rowGO.AddComponent<Image>().color = new Color(0.15f, 0.15f, 0.15f, 0.9f);
         var rowLE = rowGO.AddComponent<LayoutElement>();
         rowLE.preferredHeight = 96;
+        rowLE.minWidth = 400;
         rowLE.flexibleWidth = 1;
 
         // Icon
@@ -246,8 +250,10 @@ public class BuildingShopUIBuilder : EditorWindow
         // Text block (name + effect), anchored after the icon
         var nameText = CreateTMPText(rowGO.transform, "NameText", "Building Name",
             new Vector2(0, 0.55f), new Vector2(0.62f, 1f),
-            new Vector2(92, -4), new Vector2(-4, -4), 16, FontStyles.Bold);
+            new Vector2(92, -4), new Vector2(-4, -4), 16, FontStyles.Bold, noWrap: true);
 
+        // Effect description can legitimately wrap across two lines, but needs a
+        // real starting width — keep Normal wrap here, NoWrap everywhere else.
         var effectText = CreateTMPText(rowGO.transform, "EffectText", "Effect description",
             new Vector2(0, 0f), new Vector2(0.62f, 0.55f),
             new Vector2(92, 4), new Vector2(-4, 0), 12);
@@ -256,18 +262,18 @@ public class BuildingShopUIBuilder : EditorWindow
         // Cost + material + status column
         var costText = CreateTMPText(rowGO.transform, "CostText", "0g",
             new Vector2(0.62f, 0.62f), new Vector2(0.85f, 1f),
-            new Vector2(4, -4), new Vector2(-4, -4), 16, FontStyles.Bold);
+            new Vector2(4, -4), new Vector2(-4, -4), 16, FontStyles.Bold, noWrap: true);
         costText.alignment = TextAlignmentOptions.Center;
         costText.color = new Color(1f, 0.85f, 0.2f);
 
         var materialText = CreateTMPText(rowGO.transform, "MaterialText", "",
             new Vector2(0.62f, 0.32f), new Vector2(0.85f, 0.62f),
-            new Vector2(4, 0), new Vector2(-4, 0), 11);
+            new Vector2(4, 0), new Vector2(-4, 0), 11, FontStyles.Normal, noWrap: true);
         materialText.alignment = TextAlignmentOptions.Center;
 
         var statusText = CreateTMPText(rowGO.transform, "StatusText", "",
             new Vector2(0.62f, 0f), new Vector2(0.85f, 0.32f),
-            new Vector2(4, 0), new Vector2(-4, 0), 11, FontStyles.Bold);
+            new Vector2(4, 0), new Vector2(-4, 0), 11, FontStyles.Bold, noWrap: true);
         statusText.alignment = TextAlignmentOptions.Center;
 
         // Buy button
@@ -315,7 +321,7 @@ public class BuildingShopUIBuilder : EditorWindow
 
     private static TextMeshProUGUI CreateTMPText(Transform parent, string name, string text,
         Vector2 anchorMin, Vector2 anchorMax, Vector2 offsetMin, Vector2 offsetMax,
-        float fontSize = 14, FontStyles style = FontStyles.Normal)
+        float fontSize = 14, FontStyles style = FontStyles.Normal, bool noWrap = false)
     {
         var go = new GameObject(name);
         go.transform.SetParent(parent, false);
@@ -324,7 +330,8 @@ public class BuildingShopUIBuilder : EditorWindow
         tmp.fontSize = fontSize;
         tmp.fontStyle = style;
         tmp.color = Color.white;
-        tmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
+        tmp.textWrappingMode = noWrap ? TMPro.TextWrappingModes.NoWrap : TMPro.TextWrappingModes.Normal;
+        if (noWrap) tmp.overflowMode = TMPro.TextOverflowModes.Ellipsis;
         var rt = go.GetComponent<RectTransform>();
         rt.anchorMin = anchorMin;
         rt.anchorMax = anchorMax;
