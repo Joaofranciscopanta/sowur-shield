@@ -240,8 +240,14 @@ public class QuestsUIBuilder : EditorWindow
         rowComponent.objectiveLinePrefab = linePrefab;
 
         if (AssetDatabase.LoadAssetAtPath<GameObject>(path) != null)
+        {
             AssetDatabase.DeleteAsset(path);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
         GameObject prefab = PrefabUtility.SaveAsPrefabAsset(rowGO, path);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
         Object.DestroyImmediate(rowGO);
 
         return prefab;
@@ -275,8 +281,14 @@ public class QuestsUIBuilder : EditorWindow
         rowComponent.descriptionText = descText;
 
         if (AssetDatabase.LoadAssetAtPath<GameObject>(path) != null)
+        {
             AssetDatabase.DeleteAsset(path);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
         GameObject prefab = PrefabUtility.SaveAsPrefabAsset(rowGO, path);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
         Object.DestroyImmediate(rowGO);
 
         return prefab;

@@ -284,8 +284,14 @@ public class AnimalMarketUIBuilder : EditorWindow
         rowComponent.buyButton = buyBtn;
 
         if (AssetDatabase.LoadAssetAtPath<GameObject>(path) != null)
+        {
             AssetDatabase.DeleteAsset(path);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
         GameObject prefab = PrefabUtility.SaveAsPrefabAsset(rowGO, path);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
         Object.DestroyImmediate(rowGO);
 
         return prefab;
@@ -346,8 +352,14 @@ public class AnimalMarketUIBuilder : EditorWindow
         rowComponent.sellButton = sellBtn;
 
         if (AssetDatabase.LoadAssetAtPath<GameObject>(path) != null)
+        {
             AssetDatabase.DeleteAsset(path);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
         GameObject prefab = PrefabUtility.SaveAsPrefabAsset(rowGO, path);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
         Object.DestroyImmediate(rowGO);
 
         return prefab;
