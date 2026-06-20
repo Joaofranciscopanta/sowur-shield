@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c65f8e0d472f014dbf96907bc1b7296, type: 3}
+  m_Name: Quest_GetToKnowMaren
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Dialogue.QuestData
+  questId: get_to_know_maren
+  questTitle: Getting to Know Maren
+  questDescription: Maren's new in town too. Stop by and say hello.
+  objectives:
+  - description: Talk to Maren
+    type: 1
+    targetId: maren_default
+    requiredCount: 1
+  prerequisiteQuestIds: []
+  rewardGold: 20
+  rewardItems: []
+  rewardRelationships:
+  - npcId: maren
+    amount: 10
