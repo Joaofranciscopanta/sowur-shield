@@ -15,6 +15,16 @@ namespace SowurShield.Core
         public Item seedItem; // The seed item needed to plant
         public Item harvestItem; // What you get when harvesting
 
+        [Header("Mystery Seed")]
+        [Tooltip("If true, this CropData represents a Mystery Seed: planting it rolls a random unlocked crop instead of growing this crop directly.")]
+        public bool isMysterySeed = false;
+        [Tooltip("Crops this mystery seed can roll. Each crop only becomes eligible once the player has harvested it at least once (tracked via CropUnlockTracker).")]
+        public CropData[] possibleOutcomes;
+        [Tooltip("Relative weight per outcome, same length/order as possibleOutcomes. Defaults to 1 if left empty.")]
+        public int[] outcomeWeights;
+        [Tooltip("If true, this crop is always eligible as a Mystery Seed outcome, even before it's ever been harvested.")]
+        public bool startsUnlocked = false;
+
         [Header("Growth Configuration")]
         [Tooltip("Days each growth stage takes")]
         public int daysPerStage = 1;
@@ -110,6 +120,60 @@ namespace SowurShield.Core
         public int GetRandomYield()
         {
             return Random.Range(minYield, maxYield + 1);
+        }
+
+        /// <summary>
+        /// Rolls a random crop from possibleOutcomes, weighted by outcomeWeights.
+        /// Only crops already unlocked (harvested at least once) are eligible, mirroring
+        /// the Hades II "Mystery Seed" pattern. Falls back to any outcome if none are unlocked yet.
+        /// </summary>
+        public CropData RollMysteryOutcome()
+        {
+            if (possibleOutcomes == null || possibleOutcomes.Length == 0)
+                return null;
+
+            var eligible = new System.Collections.Generic.List<CropData>();
+            var eligibleWeights = new System.Collections.Generic.List<int>();
+
+            for (int i = 0; i < possibleOutcomes.Length; i++)
+            {
+                CropData candidate = possibleOutcomes[i];
+                if (candidate == null) continue;
+                if (!CropUnlockTracker.IsUnlocked(candidate) && !candidate.startsUnlocked) continue;
+
+                eligible.Add(candidate);
+                int weight = (outcomeWeights != null && i < outcomeWeights.Length) ? outcomeWeights[i] : 1;
+                eligibleWeights.Add(Mathf.Max(1, weight));
+            }
+
+            // Nothing unlocked yet — fall back to the full pool so mystery seeds are never dead items
+            if (eligible.Count == 0)
+            {
+                for (int i = 0; i < possibleOutcomes.Length; i++)
+                {
+                    if (possibleOutcomes[i] == null) continue;
+                    eligible.Add(possibleOutcomes[i]);
+                    int weight = (outcomeWeights != null && i < outcomeWeights.Length) ? outcomeWeights[i] : 1;
+                    eligibleWeights.Add(Mathf.Max(1, weight));
+                }
+            }
+
+            if (eligible.Count == 0)
+                return null;
+
+            int totalWeight = 0;
+            foreach (int w in eligibleWeights) totalWeight += w;
+
+            int roll = Random.Range(0, totalWeight);
+            int cumulative = 0;
+            for (int i = 0; i < eligible.Count; i++)
+            {
+                cumulative += eligibleWeights[i];
+                if (roll < cumulative)
+                    return eligible[i];
+            }
+
+            return eligible[eligible.Count - 1];
         }
     }
 

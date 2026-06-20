@@ -405,4 +405,48 @@ public class CropGrowthManagerTests
         Assert.DoesNotThrow(() => cropManager.LoadData(gd));
         Assert.IsFalse(cropManager.HasCrop, "CropGrowthManager should have no crop after loading empty data.");
     }
+
+    // =========================================================================
+    // DAYS UNTIL NEXT STAGE (floating status text support)
+    // =========================================================================
+
+    [Test]
+    public void DaysUntilNextStage_IsZero_WhenNoCropPlanted()
+    {
+        Assert.AreEqual(0, cropManager.DaysUntilNextStage);
+    }
+
+    [Test]
+    public void DaysUntilNextStage_EqualsDaysPerStage_RightAfterPlanting()
+    {
+        testCrop.daysPerStage = 3;
+        cropManager.PlantCrop(testCrop);
+        Assert.AreEqual(3, cropManager.DaysUntilNextStage);
+    }
+
+    [Test]
+    public void DaysUntilNextStage_DecreasesEachWateredDay()
+    {
+        testCrop.daysPerStage = 3;
+        cropManager.PlantCrop(testCrop);
+        cropManager.WaterCrop();
+        SimulateDayChange();
+
+        Assert.AreEqual(2, cropManager.DaysUntilNextStage);
+    }
+
+    [Test]
+    public void DaysUntilNextStage_IsZero_WhenReadyForHarvest()
+    {
+        GrowToHarvest();
+        Assert.AreEqual(0, cropManager.DaysUntilNextStage);
+    }
+
+    [Test]
+    public void DaysUntilNextStage_IsZero_WhenCropIsDead()
+    {
+        cropManager.PlantCrop(testCrop);
+        KillCropDirectly();
+        Assert.AreEqual(0, cropManager.DaysUntilNextStage);
+    }
 }

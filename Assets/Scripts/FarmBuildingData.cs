@@ -37,8 +37,8 @@ public enum BuildingType
 {
     Barn,           // Increases AnimalZone capacity (default 5 → 10)
     Greenhouse,     // Allows planting crops out of season
-    Silo,           // Reserved for future use
-    Workshop        // Reserved for future use
+    Silo,           // Harvest-All Upgrade: harvesting one ready crop harvests all ready crops on the farm
+    Workshop        // Lucky Seed Upgrade: chance to refund the planted seed on harvest
 }
 
 } // namespace SowurShield.Core

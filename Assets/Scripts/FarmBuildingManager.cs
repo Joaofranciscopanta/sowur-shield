@@ -115,6 +115,12 @@ public class FarmBuildingManager : MonoBehaviour, ISaveable
     /// <summary>Barn doubles the animal zone capacity (default 5 → 10).</summary>
     public bool HasBarn => IsBuilt(BuildingType.Barn);
 
+    /// <summary>Silo lets harvesting one ready crop harvest all other ready crops on the farm.</summary>
+    public bool HasHarvestAllUpgrade => IsBuilt(BuildingType.Silo);
+
+    /// <summary>Workshop gives a chance to refund the planted seed when harvesting.</summary>
+    public bool HasLuckySeedUpgrade => IsBuilt(BuildingType.Workshop);
+
     // =========================================================================
     // ISaveable
     // =========================================================================

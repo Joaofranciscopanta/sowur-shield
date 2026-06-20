@@ -55,12 +55,20 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     [Header("Debug")]
 
+    [SerializeField] private GameBalance balance;
+
     // Componentes
     private SpriteRenderer soilRenderer;
     private CropGrowthManager cropGrowthManager;
     private SowurShield.Inventory.Inventory playerInventory;
     private Transform playerTransform;
     private Vector3Int gridPosition;
+
+    // Status text / empty-plot indicator (Hades II Garden-inspired UI polish)
+    private GameObject statusTextObj;
+    private TMPro.TextMeshProUGUI statusTextMesh;
+    private GameObject emptyPlotIndicatorObj;
+    private bool hasShownEmptyPlotIndicator = false;
 
     // Propriedades para acesso externo
     public SoilState CurrentState => currentState;
@@ -84,6 +92,9 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
     {
         soilRenderer = GetComponent<SpriteRenderer>();
         cropGrowthManager = GetComponent<CropGrowthManager>();
+
+        if (balance == null)
+            balance = Resources.Load<GameBalance>("GameBalance");
 
         if (cropGrowthManager == null)
             cropGrowthManager = gameObject.AddComponent<CropGrowthManager>();
@@ -217,6 +228,9 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             {
                 soilRenderer.color = highlightColor;
             }
+
+            UpdateStatusIndicator();
+            UpdateStatusText();
         }
     }
 
@@ -231,6 +245,8 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             {
                 soilRenderer.color = originalColor;
             }
+
+            HideStatusText();
         }
     }
 
@@ -406,6 +422,18 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             return;
         }
 
+        // Mystery Seed: roll the actual crop now, restricted to already-unlocked outcomes
+        if (cropData.isMysterySeed)
+        {
+            CropData rolledCrop = cropData.RollMysteryOutcome();
+            if (rolledCrop == null)
+            {
+                ProvideFeedback(seedItem);
+                return;
+            }
+            cropData = rolledCrop;
+        }
+
         // Enforce seasonal restrictions — Greenhouse bypasses them
         bool greenhouseBuilt = SowurShield.Core.FarmBuildingManager.Instance != null
                                && SowurShield.Core.FarmBuildingManager.Instance.HasGreenhouse;
@@ -444,6 +472,9 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
             PlayEffect(plantEffect);
             PlaySound(plantSound);
+
+            UpdateStatusIndicator();
+            UpdateStatusText();
         }
     }
 
@@ -452,10 +483,27 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         if (!HasCrop || !IsReadyForHarvest)
             return;
 
-        StartCoroutine(HarvestWithAnimation());
+        // Silo upgrade: harvesting this plot harvests every other ready plot on the farm too,
+        // staggered slightly so it doesn't feel instant (mirrors Hades II's Garden "harvest all").
+        bool harvestAllUpgrade = FarmBuildingManager.Instance != null && FarmBuildingManager.Instance.HasHarvestAllUpgrade;
+        if (harvestAllUpgrade)
+        {
+            SoilBlockInteractable[] allSoils = FindObjectsByType<SoilBlockInteractable>(FindObjectsSortMode.None);
+            int delayIndex = 0;
+            foreach (SoilBlockInteractable soil in allSoils)
+            {
+                if (soil == this || !soil.HasCrop || !soil.IsReadyForHarvest)
+                    continue;
+
+                soil.StartCoroutine(soil.HarvestWithAnimation(delayIndex * 0.5f));
+                delayIndex++;
+            }
+        }
+
+        StartCoroutine(HarvestWithAnimation(0f));
     }
 
-    private IEnumerator HarvestWithAnimation()
+    private IEnumerator HarvestWithAnimation(float presentationDelay)
     {
         // IMPORTANT: Store crop data BEFORE calling HarvestCrop()
         // because HarvestCrop() might remove the crop (set currentCrop to null)
@@ -464,8 +512,13 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         if (cropToHarvest == null)
             yield break;
 
+        if (presentationDelay > 0f)
+            yield return new WaitForSeconds(presentationDelay);
+
         // Get yield from crop manager
         int yield = cropGrowthManager.HarvestCrop();
+
+        CropUnlockTracker.MarkUnlocked(cropToHarvest);
 
         // Harvesting depletes soil nutrients slightly; rests at 0.5 minimum
         soilFertility = Mathf.Max(0.5f, soilFertility - 0.1f);
@@ -486,6 +539,15 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             // Visual and sound effects
             PlayEffect(harvestEffect);
             PlaySound(harvestSound);
+
+            // Workshop upgrade: chance to refund the planted seed (Hades II "Lucky Seed")
+            bool luckySeedUpgrade = FarmBuildingManager.Instance != null && FarmBuildingManager.Instance.HasLuckySeedUpgrade;
+            float luckySeedChance = balance != null ? balance.luckySeedChance : 0.25f;
+            if (luckySeedUpgrade && cropToHarvest.seedItem != null && Random.value < luckySeedChance)
+            {
+                SpawnGroundItem(cropToHarvest.seedItem, 0, 1);
+                ShowWorldFeedback($"Bonus {cropToHarvest.seedItem.itemName}!");
+            }
 
             // Small pause for harvest animation
             yield return new WaitForSeconds(0.5f);
@@ -580,6 +642,9 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         UpdateAppearance();
         PlayEffect(shovelEffect);
         PlaySound(shovelSound);
+        hasShownEmptyPlotIndicator = false;
+        HideStatusText();
+        UpdateStatusIndicator();
 
         // Fornece feedback baseado no que foi removido
         switch (previousState)
@@ -600,22 +665,26 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
     private void OnCropGrown(CropGrowthManager manager)
     {
         UpdateAppearance();
+        UpdateStatusText();
     }
 
     private void OnCropReadyForHarvest(CropGrowthManager manager)
     {
         UpdateAppearance();
+        UpdateStatusText();
     }
 
     private void OnCropDied(CropGrowthManager manager)
     {
         UpdateAppearance();
+        HideStatusText();
     }
 
     private void OnCropHarvested(CropGrowthManager manager)
     {
         // Tratado no método HarvestCrop
         UpdateAppearance();
+        UpdateStatusIndicator();
     }
 
     #endregion
@@ -736,6 +805,120 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             yield return null;
         }
     }
+
+    #region Status Text e Indicador de Vaso Vazio (inspirado no Garden do Hades II)
+
+    /// <summary>
+    /// Shows/refreshes a persistent floating status label (crop name + days remaining)
+    /// above the plant while the player is in range. Hidden again on OnTriggerExit2D.
+    /// </summary>
+    private void UpdateStatusText()
+    {
+        if (!playerInRange || !HasCrop || IsCropDead)
+        {
+            HideStatusText();
+            return;
+        }
+
+        string label = IsReadyForHarvest
+            ? $"{CurrentCrop.cropName} - Ready!"
+            : $"{CurrentCrop.cropName} - {GetDaysRemaining()}d";
+
+        if (statusTextObj == null)
+        {
+            statusTextObj = new GameObject("CropStatusText");
+            statusTextObj.transform.SetParent(transform);
+            statusTextObj.transform.localPosition = new Vector3(0, 0.9f, -0.1f);
+
+            var canvas = statusTextObj.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.WorldSpace;
+            canvas.sortingOrder = 100;
+            statusTextObj.transform.localScale = Vector3.one * 0.015f;
+
+            var rt = statusTextObj.GetComponent<RectTransform>();
+            rt.sizeDelta = new Vector2(220, 40);
+
+            statusTextMesh = statusTextObj.AddComponent<TMPro.TextMeshProUGUI>();
+            statusTextMesh.fontSize = 20;
+            statusTextMesh.alignment = TMPro.TextAlignmentOptions.Center;
+            statusTextMesh.fontStyle = TMPro.FontStyles.Bold;
+        }
+
+        statusTextObj.SetActive(true);
+        statusTextMesh.text = label;
+        statusTextMesh.color = IsReadyForHarvest ? new Color(1f, 0.85f, 0.2f) : Color.white;
+    }
+
+    private void HideStatusText()
+    {
+        if (statusTextObj != null)
+            statusTextObj.SetActive(false);
+    }
+
+    private int GetDaysRemaining()
+    {
+        return cropGrowthManager != null ? cropGrowthManager.DaysUntilNextStage : 0;
+    }
+
+    /// <summary>
+    /// Shows a one-time "!" marker above empty, tilled plots when the player has seeds
+    /// in their inventory and hasn't planted here yet — mirrors GardenPlotSetupPresentation's
+    /// StatusIconWantsToTalkImportant nudge from Hades II.
+    /// </summary>
+    private void UpdateStatusIndicator()
+    {
+        bool shouldShow = !hasShownEmptyPlotIndicator
+            && !HasCrop
+            && currentState != SoilState.Regular
+            && PlayerHasAnySeed();
+
+        if (!shouldShow)
+        {
+            if (emptyPlotIndicatorObj != null)
+                emptyPlotIndicatorObj.SetActive(false);
+            return;
+        }
+
+        if (emptyPlotIndicatorObj == null)
+        {
+            emptyPlotIndicatorObj = new GameObject("EmptyPlotIndicator");
+            emptyPlotIndicatorObj.transform.SetParent(transform);
+            emptyPlotIndicatorObj.transform.localPosition = new Vector3(0, 0.9f, -0.1f);
+            emptyPlotIndicatorObj.transform.localScale = Vector3.one * 0.015f;
+
+            var canvas = emptyPlotIndicatorObj.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.WorldSpace;
+            canvas.sortingOrder = 100;
+
+            var rt = emptyPlotIndicatorObj.GetComponent<RectTransform>();
+            rt.sizeDelta = new Vector2(60, 60);
+
+            var tmp = emptyPlotIndicatorObj.AddComponent<TMPro.TextMeshProUGUI>();
+            tmp.text = "!";
+            tmp.fontSize = 36;
+            tmp.color = new Color(1f, 0.9f, 0.3f);
+            tmp.alignment = TMPro.TextAlignmentOptions.Center;
+            tmp.fontStyle = TMPro.FontStyles.Bold;
+        }
+
+        emptyPlotIndicatorObj.SetActive(true);
+        hasShownEmptyPlotIndicator = true;
+    }
+
+    private bool PlayerHasAnySeed()
+    {
+        if (playerInventory == null)
+            return false;
+
+        foreach (ItemStack stack in playerInventory.GetAllItems())
+        {
+            if (stack?.item != null && stack.item.itemType == ItemType.Seed)
+                return true;
+        }
+        return false;
+    }
+
+    #endregion
 
     #region Audio e Efeitos
 

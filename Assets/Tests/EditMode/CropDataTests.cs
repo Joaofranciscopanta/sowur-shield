@@ -207,4 +207,70 @@ public class CropDataTests
         crop.maxYield = 3;
         Assert.AreEqual(3, crop.GetRandomYield());
     }
+
+    // =========================================================================
+    // MYSTERY SEED ROLLING
+    // =========================================================================
+
+    [Test]
+    public void RollMysteryOutcome_ReturnsNull_WhenNoOutcomesConfigured()
+    {
+        crop.possibleOutcomes = null;
+        Assert.IsNull(crop.RollMysteryOutcome());
+
+        crop.possibleOutcomes = new CropData[0];
+        Assert.IsNull(crop.RollMysteryOutcome());
+    }
+
+    [Test]
+    public void RollMysteryOutcome_FallsBackToFullPool_WhenNothingUnlocked()
+    {
+        // No SaveManager in EditMode tests, so CropUnlockTracker.IsUnlocked always
+        // returns false — RollMysteryOutcome must still return a valid outcome.
+        var outcomeA = ScriptableObject.CreateInstance<CropData>();
+        var outcomeB = ScriptableObject.CreateInstance<CropData>();
+        crop.possibleOutcomes = new CropData[] { outcomeA, outcomeB };
+        crop.outcomeWeights = new int[] { 1, 1 };
+
+        for (int i = 0; i < 50; i++)
+        {
+            CropData rolled = crop.RollMysteryOutcome();
+            Assert.IsTrue(rolled == outcomeA || rolled == outcomeB);
+        }
+
+        Object.DestroyImmediate(outcomeA);
+        Object.DestroyImmediate(outcomeB);
+    }
+
+    [Test]
+    public void RollMysteryOutcome_AlwaysReturnsStartsUnlockedCrop_WhenItIsOnlyEligibleOutcome()
+    {
+        var locked = ScriptableObject.CreateInstance<CropData>();
+        locked.startsUnlocked = false;
+        var unlocked = ScriptableObject.CreateInstance<CropData>();
+        unlocked.startsUnlocked = true;
+
+        crop.possibleOutcomes = new CropData[] { locked, unlocked };
+        crop.outcomeWeights = new int[] { 1, 1 };
+
+        for (int i = 0; i < 50; i++)
+        {
+            Assert.AreSame(unlocked, crop.RollMysteryOutcome());
+        }
+
+        Object.DestroyImmediate(locked);
+        Object.DestroyImmediate(unlocked);
+    }
+
+    [Test]
+    public void RollMysteryOutcome_IgnoresNullEntriesInPool()
+    {
+        var outcomeA = ScriptableObject.CreateInstance<CropData>();
+        crop.possibleOutcomes = new CropData[] { null, outcomeA };
+        crop.outcomeWeights = new int[] { 1, 1 };
+
+        Assert.AreSame(outcomeA, crop.RollMysteryOutcome());
+
+        Object.DestroyImmediate(outcomeA);
+    }
 }
