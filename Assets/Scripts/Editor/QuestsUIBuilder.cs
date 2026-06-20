@@ -123,12 +123,26 @@ public class QuestsUIBuilder : EditorWindow
         GameObject activeRowPrefab = CreateActiveQuestRowPrefab(theme);
         GameObject completedRowPrefab = CreateCompletedQuestRowPrefab();
 
+        // ── Persistent HUD toggle button ────────────────────────────────────────
+        // Created before QuestsUI wiring so its reference can be assigned as a real
+        // SerializeField — a plain runtime AddListener() here would not survive a scene save.
+        var toggleBtn = CreateButton(canvasGO.transform, "QuestsToggleButton", "Quests", backgroundTan);
+        {
+            var rt = toggleBtn.GetComponent<RectTransform>();
+            rt.anchorMin = new Vector2(1, 0);
+            rt.anchorMax = new Vector2(1, 0);
+            rt.pivot = new Vector2(1, 0);
+            rt.anchoredPosition = new Vector2(-16, 16);
+            rt.sizeDelta = new Vector2(100, 36);
+        }
+
         // ── Assign QuestsUI script ─────────────────────────────────────────────
         var uiScript = canvasGO.AddComponent<QuestsUI>();
 
         var so = new SerializedObject(uiScript);
         so.FindProperty("questsPanel").objectReferenceValue = questsPanel;
         so.FindProperty("closeButton").objectReferenceValue = closeBtn;
+        so.FindProperty("questsToggleButton").objectReferenceValue = toggleBtn;
         so.FindProperty("activeTabButton").objectReferenceValue = activeTabBtn;
         so.FindProperty("completedTabButton").objectReferenceValue = completedTabBtn;
         so.FindProperty("activeTabPanel").objectReferenceValue = activeTabPanel;
@@ -140,18 +154,6 @@ public class QuestsUIBuilder : EditorWindow
         so.FindProperty("completedQuestRowPrefab").objectReferenceValue = completedRowPrefab;
         so.FindProperty("completedEmptyText").objectReferenceValue = completedEmptyText;
         so.ApplyModifiedProperties();
-
-        // ── Persistent HUD toggle button ────────────────────────────────────────
-        var toggleBtn = CreateButton(canvasGO.transform, "QuestsToggleButton", "Quests", backgroundTan);
-        {
-            var rt = toggleBtn.GetComponent<RectTransform>();
-            rt.anchorMin = new Vector2(1, 0);
-            rt.anchorMax = new Vector2(1, 0);
-            rt.pivot = new Vector2(1, 0);
-            rt.anchoredPosition = new Vector2(-16, 16);
-            rt.sizeDelta = new Vector2(100, 36);
-        }
-        toggleBtn.onClick.AddListener(uiScript.OpenQuests);
 
         Debug.Log("[QuestsUIBuilder] QuestsCanvas created and wired.");
 
