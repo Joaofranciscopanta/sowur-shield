@@ -58,7 +58,12 @@ MonoBehaviour:
     nextNodeId: ""
     autoAdvanceDelay: 0
     displayConditions: []
-    nodeEffects: []
+    nodeEffects:
+    - effectType: 7
+      effectKey: get_to_know_maren
+      effectValue: ""
+      numericValue: 0
+      description: "Start the 'Getting to Know Maren' quest. StartQuest() is a no-op if already active/completed."
   - nodeId: topic_about
     speakerName: Maren
     speakerEmotion: 0

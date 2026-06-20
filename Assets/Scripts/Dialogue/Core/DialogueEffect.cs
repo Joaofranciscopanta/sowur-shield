@@ -41,6 +41,10 @@ namespace SowurShield.Dialogue
                     memory.SetQuestStatus(effectKey, effectValue);
                     break;
 
+                case EffectType.StartQuest:
+                    StartQuest();
+                    break;
+
                 case EffectType.GiveItem:
                     GiveItemToInventory(effectKey, Mathf.RoundToInt(numericValue));
                     break;
@@ -126,6 +130,20 @@ namespace SowurShield.Dialogue
             // Example: You could use Unity Events or a custom event system
             // GameEvents.Instance?.TriggerEvent(effectKey, effectValue);
         }
+
+        /// <summary>effectKey is the QuestData.questId to start. No-ops if already active/completed or prerequisites aren't met.</summary>
+        private void StartQuest()
+        {
+            if (string.IsNullOrEmpty(effectKey)) return;
+
+            if (QuestManager.Instance == null)
+            {
+                Debug.LogWarning("[DialogueEffect] StartQuest: no QuestManager in scene.");
+                return;
+            }
+
+            QuestManager.Instance.StartQuest(effectKey);
+        }
     }
 
     public enum EffectType
@@ -136,6 +154,7 @@ namespace SowurShield.Dialogue
         GiveItem,          // Add items to player inventory
         TakeItem,          // Remove items from player inventory
         PlaySound,         // Play a sound effect
-        TriggerEvent       // Trigger custom game event
+        TriggerEvent,      // Trigger custom game event
+        StartQuest         // Start a quest by QuestData.questId (effectKey)
     }
 } // namespace SowurShield.Dialogue
