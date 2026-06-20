@@ -167,8 +167,6 @@ public class AchievementNotificationUI : MonoBehaviour
         _toastGO = toastGO;
     }
 
-    private GameObject _toastGO;
-
     private IEnumerator ShowToast(AchievementData achievement)
     {
         if (_iconImage != null)
