@@ -232,7 +232,7 @@ public class BuildingShopUI : MonoBehaviour, IUIWindow
 
     private void OnConfirmPurchase()
     {
-        HideConfirmation();
+        if (confirmationPanel != null) confirmationPanel.SetActive(false);
         ExecutePurchase();
     }
 
