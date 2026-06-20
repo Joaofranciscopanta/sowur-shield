@@ -232,7 +232,7 @@ public class BuildingShopUI : MonoBehaviour, IUIWindow
 
     private void OnConfirmPurchase()
     {
-        HideConfirmation();
+        if (confirmationPanel != null) confirmationPanel.SetActive(false);
         ExecutePurchase();
     }
 
@@ -241,14 +241,7 @@ public class BuildingShopUI : MonoBehaviour, IUIWindow
         if (_pendingPurchase == null || FarmBuildingManager.Instance == null ||
             _playerStats == null || _inventory == null)
         {
-            string missing = "";
-            if (_pendingPurchase == null) missing += "pendingPurchase ";
-            if (FarmBuildingManager.Instance == null) missing += "FarmBuildingManager ";
-            if (_playerStats == null) missing += "playerStats ";
-            if (_inventory == null) missing += "inventory ";
-
-            Debug.LogWarning($"[BuildingShopUI] Purchase failed — missing: {missing.Trim()}");
-            ShowFeedback($"Purchase failed — missing: {missing.Trim()}", true);
+            ShowFeedback("Purchase failed — missing references.", true);
             return;
         }
 
