@@ -160,6 +160,11 @@ public class BuildingShopUI : MonoBehaviour, IUIWindow
             GameObject rowGO = Instantiate(buildingRowPrefab, buildingListContainer);
             BuildingRow row = rowGO.GetComponent<BuildingRow>();
 
+            Debug.Log($"[BuildingShopUI] Instantiated row for '{data.buildingName}': " +
+                $"rowGO active={rowGO.activeSelf}, rowGO activeInHierarchy={rowGO.activeInHierarchy}, " +
+                $"BuildingRow component={(row == null ? "NULL" : "OK")}, " +
+                $"RectTransform sizeDelta={rowGO.GetComponent<RectTransform>()?.sizeDelta}");
+
             if (row == null)
             {
                 // Fallback for prefabs without a BuildingRow component
