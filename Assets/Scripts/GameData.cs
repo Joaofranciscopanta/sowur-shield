@@ -87,8 +87,8 @@ public class PlayerGameData
     public int premiumCurrency = 0;
 
     [Header("Skills")]
-    public Dictionary<string, int> skillLevels = new Dictionary<string, int>();
-    public Dictionary<string, float> skillExperience = new Dictionary<string, float>();
+    public SerializableDictionary<string, int> skillLevels = new SerializableDictionary<string, int>();
+    public SerializableDictionary<string, float> skillExperience = new SerializableDictionary<string, float>();
 
     public PlayerGameData()
     {
@@ -113,9 +113,9 @@ public class PlayerGameData
 public class WorldGameData
 {
     [Header("World State")]
-    public Dictionary<string, bool> worldFlags = new Dictionary<string, bool>();
-    public Dictionary<string, int> worldCounters = new Dictionary<string, int>();
-    public Dictionary<string, string> worldStrings = new Dictionary<string, string>();
+    public SerializableDictionary<string, bool> worldFlags = new SerializableDictionary<string, bool>();
+    public SerializableDictionary<string, int> worldCounters = new SerializableDictionary<string, int>();
+    public SerializableDictionary<string, string> worldStrings = new SerializableDictionary<string, string>();
 
     [Header("Discovered Locations")]
     public List<string> discoveredAreas = new List<string>();
@@ -150,7 +150,7 @@ public class TimeGameData
     public float minutesPerRealSecond = 10f;
 
     [Header("Special Events")]
-    public Dictionary<string, bool> completedEvents = new Dictionary<string, bool>();
+    public SerializableDictionary<string, bool> completedEvents = new SerializableDictionary<string, bool>();
     public List<string> scheduledEvents = new List<string>();
 }
 
@@ -167,14 +167,20 @@ public class InventoryGameData
     public int inventorySize = 36;
 
     [Header("Storage")]
-    public Dictionary<string, List<ItemStackData>> storageContainers = new Dictionary<string, List<ItemStackData>>();
+    public SerializableDictionary<string, ItemStackDataList> storageContainers = new SerializableDictionary<string, ItemStackDataList>();
+
+    [System.Serializable]
+    public class ItemStackDataList
+    {
+        public List<ItemStackData> items = new List<ItemStackData>();
+    }
 
     [System.Serializable]
     public class ItemStackData
     {
         public string itemName = "";
         public int quantity = 0;
-        public Dictionary<string, string> itemData = new Dictionary<string, string>(); // For special item properties
+        public SerializableDictionary<string, string> itemData = new SerializableDictionary<string, string>(); // For special item properties
 
         public ItemStackData() { }
 
@@ -262,7 +268,7 @@ public class FarmingGameData
         public string buildingType = "";
         public Vector2Int position;
         public int level = 1;
-        public Dictionary<string, string> buildingData = new Dictionary<string, string>();
+        public SerializableDictionary<string, string> buildingData = new SerializableDictionary<string, string>();
         public bool isConstructed = false;
     }
 }
@@ -285,7 +291,7 @@ public class CombatGameData
 
     [Header("Combat Unlocks")]
     public List<string> unlockedAnimalTypes = new List<string>();
-    public Dictionary<string, bool> combatFeatures = new Dictionary<string, bool>();
+    public SerializableDictionary<string, bool> combatFeatures = new SerializableDictionary<string, bool>();
 
     [System.Serializable]
     public class AnimalSaveData
@@ -297,9 +303,9 @@ public class CombatGameData
         public float experience = 0f;
         public float health = 100f;
         public float maxHealth = 100f;
-        public Dictionary<string, float> stats = new Dictionary<string, float>(); // attack, defense, speed, etc.
+        public SerializableDictionary<string, float> stats = new SerializableDictionary<string, float>(); // attack, defense, speed, etc.
         public List<string> abilities = new List<string>();
-        public Dictionary<string, string> animalData = new Dictionary<string, string>(); // special properties
+        public SerializableDictionary<string, string> animalData = new SerializableDictionary<string, string>(); // special properties
         public bool isActive = true;
         public Vector2Int barnPosition = Vector2Int.zero;
 
@@ -324,20 +330,20 @@ public class CombatGameData
 public class ProgressGameData
 {
     [Header("Achievements")]
-    public Dictionary<string, bool> achievementsUnlocked = new Dictionary<string, bool>();
-    public Dictionary<string, float> achievementProgress = new Dictionary<string, float>();
+    public SerializableDictionary<string, bool> achievementsUnlocked = new SerializableDictionary<string, bool>();
+    public SerializableDictionary<string, float> achievementProgress = new SerializableDictionary<string, float>();
 
     [Header("Game Milestones")]
-    public Dictionary<string, bool> milestonesReached = new Dictionary<string, bool>();
-    public Dictionary<string, int> statisticCounters = new Dictionary<string, int>();
+    public SerializableDictionary<string, bool> milestonesReached = new SerializableDictionary<string, bool>();
+    public SerializableDictionary<string, int> statisticCounters = new SerializableDictionary<string, int>();
 
     [Header("Tutorial Progress")]
-    public Dictionary<string, bool> tutorialSteps = new Dictionary<string, bool>();
+    public SerializableDictionary<string, bool> tutorialSteps = new SerializableDictionary<string, bool>();
     public bool hasCompletedTutorial = false;
 
     [Header("Settings")]
-    public Dictionary<string, float> gameSettings = new Dictionary<string, float>();
-    public Dictionary<string, bool> gamePreferences = new Dictionary<string, bool>();
+    public SerializableDictionary<string, float> gameSettings = new SerializableDictionary<string, float>();
+    public SerializableDictionary<string, bool> gamePreferences = new SerializableDictionary<string, bool>();
 
     public ProgressGameData()
     {

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using SowurShield.Core;
 
 namespace SowurShield.Dialogue
 {
@@ -13,25 +14,25 @@ namespace SowurShield.Dialogue
 
         [Header("Conversation Progress")]
         public List<string> completedConversations = new List<string>();
-        public Dictionary<string, string> lastNodeReached = new Dictionary<string, string>();
+        public SerializableDictionary<string, string> lastNodeReached = new SerializableDictionary<string, string>();
 
         [Header("Choice History")]
         public List<ChoiceRecord> choiceHistory = new List<ChoiceRecord>();
 
         [Header("Relationships")]
-        public Dictionary<string, float> relationshipLevels = new Dictionary<string, float>();
+        public SerializableDictionary<string, float> relationshipLevels = new SerializableDictionary<string, float>();
 
         [Header("Gifts")]
-        public Dictionary<string, int> lastGiftDay = new Dictionary<string, int>();
+        public SerializableDictionary<string, int> lastGiftDay = new SerializableDictionary<string, int>();
 
         [Header("Quest Status")]
-        public Dictionary<string, string> questStatuses = new Dictionary<string, string>();
+        public SerializableDictionary<string, string> questStatuses = new SerializableDictionary<string, string>();
 
         [Header("Custom Variables")]
-        public Dictionary<string, string> customVariables = new Dictionary<string, string>();
+        public SerializableDictionary<string, string> customVariables = new SerializableDictionary<string, string>();
 
         [Header("Inventory Tracking")]
-        public Dictionary<string, int> trackedItems = new Dictionary<string, int>();
+        public SerializableDictionary<string, int> trackedItems = new SerializableDictionary<string, int>();
 
         public ConversationData()
         {
