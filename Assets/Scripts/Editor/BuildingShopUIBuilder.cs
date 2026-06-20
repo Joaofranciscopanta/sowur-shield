@@ -16,9 +16,51 @@ namespace SowurShield.Editor
 /// </summary>
 public class BuildingShopUIBuilder : EditorWindow
 {
+    [MenuItem("Tools/Sowur Shield/Ensure Farm Building Manager")]
+    public static void EnsureFarmBuildingManagerMenuItem()
+    {
+        bool created = EnsureFarmBuildingManager();
+
+        if (created)
+        {
+            EditorUtility.DisplayDialog("Done!",
+                "FarmBuildingManager created.\n\n" +
+                "Without this component in the scene, FarmBuildingManager.Instance stays " +
+                "null and every building purchase fails with 'missing references' — " +
+                "this is the singleton BuildingShopUI/SoilBlockInteractable query to check " +
+                "which upgrades (Silo, Workshop, Barn, Greenhouse) are built.",
+                "OK");
+        }
+        else
+        {
+            Debug.Log("[BuildingShopUIBuilder] FarmBuildingManager already present in the scene — nothing to do.");
+        }
+    }
+
+    /// <summary>Creates a FarmBuildingManager GameObject if one isn't already in the scene. Returns true if created.</summary>
+    private static bool EnsureFarmBuildingManager()
+    {
+        var manager = Object.FindFirstObjectByType<FarmBuildingManager>();
+        if (manager != null)
+        {
+            Selection.activeGameObject = manager.gameObject;
+            return false;
+        }
+
+        var managerGO = new GameObject("FarmBuildingManager");
+        Undo.RegisterCreatedObjectUndo(managerGO, "Create FarmBuildingManager");
+        managerGO.AddComponent<FarmBuildingManager>();
+
+        Selection.activeGameObject = managerGO;
+        EditorGUIUtility.PingObject(managerGO);
+        return true;
+    }
+
     [MenuItem("Tools/Sowur Shield/Rebuild Building Shop UI")]
     public static void RebuildUI()
     {
+        EnsureFarmBuildingManager();
+
         var existing = GameObject.Find("BuildingShopCanvas");
         if (existing != null)
         {
