@@ -21,8 +21,10 @@ public class QuestsUI : MonoBehaviour, IUIWindow
     [Header("Panel")]
     [SerializeField] private GameObject questsPanel;
     [SerializeField] private Button closeButton;
-    [Tooltip("Persistent HUD button that opens this window. Wired here (not via Editor-time AddListener) so the click handler survives scene saves.")]
-    [SerializeField] private Button questsToggleButton;
+
+    [Header("Hotkey")]
+    [Tooltip("Pressing this key toggles the Quests window open/closed (ignored while another window is blocking it).")]
+    [SerializeField] private KeyCode toggleKey = KeyCode.J;
 
     [Header("Tabs")]
     [SerializeField] private Button activeTabButton;
@@ -91,7 +93,6 @@ public class QuestsUI : MonoBehaviour, IUIWindow
         if (closeButton != null) closeButton.onClick.AddListener(CloseQuests);
         if (activeTabButton != null) activeTabButton.onClick.AddListener(OnActiveTabClicked);
         if (completedTabButton != null) completedTabButton.onClick.AddListener(OnCompletedTabClicked);
-        if (questsToggleButton != null) questsToggleButton.onClick.AddListener(OpenQuests);
 
         if (UIManager.Instance != null)
             UIManager.Instance.RegisterWindow(this);
@@ -104,6 +105,17 @@ public class QuestsUI : MonoBehaviour, IUIWindow
             QuestManager.Instance.OnQuestStarted += OnQuestStarted;
             QuestManager.Instance.OnObjectiveUpdated += OnObjectiveUpdated;
             QuestManager.Instance.OnQuestCompleted += OnQuestCompleted;
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(toggleKey))
+        {
+            if (IsWindowOpen)
+                CloseQuests();
+            else
+                OpenQuests();
         }
     }
 

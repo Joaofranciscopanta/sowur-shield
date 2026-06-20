@@ -123,26 +123,12 @@ public class QuestsUIBuilder : EditorWindow
         GameObject activeRowPrefab = CreateActiveQuestRowPrefab(theme);
         GameObject completedRowPrefab = CreateCompletedQuestRowPrefab();
 
-        // ── Persistent HUD toggle button ────────────────────────────────────────
-        // Created before QuestsUI wiring so its reference can be assigned as a real
-        // SerializeField — a plain runtime AddListener() here would not survive a scene save.
-        var toggleBtn = CreateButton(canvasGO.transform, "QuestsToggleButton", "Quests", backgroundTan);
-        {
-            var rt = toggleBtn.GetComponent<RectTransform>();
-            rt.anchorMin = new Vector2(1, 0);
-            rt.anchorMax = new Vector2(1, 0);
-            rt.pivot = new Vector2(1, 0);
-            rt.anchoredPosition = new Vector2(-16, 16);
-            rt.sizeDelta = new Vector2(100, 36);
-        }
-
         // ── Assign QuestsUI script ─────────────────────────────────────────────
         var uiScript = canvasGO.AddComponent<QuestsUI>();
 
         var so = new SerializedObject(uiScript);
         so.FindProperty("questsPanel").objectReferenceValue = questsPanel;
         so.FindProperty("closeButton").objectReferenceValue = closeBtn;
-        so.FindProperty("questsToggleButton").objectReferenceValue = toggleBtn;
         so.FindProperty("activeTabButton").objectReferenceValue = activeTabBtn;
         so.FindProperty("completedTabButton").objectReferenceValue = completedTabBtn;
         so.FindProperty("activeTabPanel").objectReferenceValue = activeTabPanel;
@@ -159,8 +145,8 @@ public class QuestsUIBuilder : EditorWindow
 
         Selection.activeGameObject = canvasGO;
         EditorUtility.DisplayDialog("Done!",
-            "QuestsCanvas created!\n\nA 'Quests' button now sits in the bottom-right corner of the HUD — " +
-            "click it any time to open the quest log.",
+            "QuestsCanvas created!\n\nPress J at any time to open/close the quest log " +
+            "(change the key via the toggleKey field on the QuestsUI component).",
             "OK");
     }
 
