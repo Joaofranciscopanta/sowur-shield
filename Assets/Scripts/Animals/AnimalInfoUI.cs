@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using SowurShield.Core;
+using SowurShield.UI;
 
 namespace SowurShield.Animals
 {
@@ -45,6 +46,9 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
     [SerializeField] private Color neutralColor = new Color(0.8f, 0.8f, 0.3f);
     [SerializeField] private Color sadColor = new Color(0.8f, 0.3f, 0.3f);
 
+    [Header("Theme")]
+    [SerializeField] private UITheme theme;
+
     private Animal currentAnimal;
 
     // =========================================================================
@@ -86,6 +90,10 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
 
     private void Awake()
     {
+        if (theme == null)
+            theme = Resources.Load<UITheme>("UI/CozyUITheme");
+        ApplyThemeColors();
+
         if (infoPanel != null)
             infoPanel.SetActive(false);
 
@@ -111,6 +119,18 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
     {
         if (UIManager.Instance != null)
             UIManager.Instance.UnregisterWindow(this);
+    }
+
+    private void ApplyThemeColors()
+    {
+        if (theme == null) return;
+
+        wellFedColor = theme.positive;
+        hungryColor = theme.negative;
+        partiallyFedColor = theme.warning;
+        happyColor = theme.positive;
+        neutralColor = theme.warning;
+        sadColor = theme.negative;
     }
 
     // =========================================================================

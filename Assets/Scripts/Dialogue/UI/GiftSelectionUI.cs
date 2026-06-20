@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using SowurShield.Core;
 using SowurShield.Inventory;
+using SowurShield.UI;
 
 namespace SowurShield.Dialogue
 {
@@ -22,6 +23,7 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
     private bool isOpen = false;
 
     private NPCDialogueInteractable targetNpc;
+    private UITheme theme;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
@@ -36,6 +38,7 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
 
     private void Awake()
     {
+        theme = Resources.Load<UITheme>("UI/CozyUITheme");
         BuildUI();
     }
 
@@ -109,8 +112,10 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
         listPanel.anchoredPosition = Vector2.zero;
         listPanel.sizeDelta = new Vector2(320, 0);
 
+        Color backgroundDark = theme != null ? theme.woodDark : new Color(0.1f, 0.1f, 0.15f);
+
         Image panelBg = panelObj.AddComponent<Image>();
-        panelBg.color = new Color(0.1f, 0.1f, 0.15f, 0.95f);
+        panelBg.color = new Color(backgroundDark.r, backgroundDark.g, backgroundDark.b, 0.95f);
 
         VerticalLayoutGroup vlg = panelObj.AddComponent<VerticalLayoutGroup>();
         vlg.padding = new RectOffset(12, 12, 12, 12);
@@ -141,7 +146,7 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
         closeRect.sizeDelta = new Vector2(0, 36);
 
         Image closeImage = closeButtonObj.AddComponent<Image>();
-        closeImage.color = new Color(0.3f, 0.25f, 0.25f, 0.9f);
+        closeImage.color = theme != null ? theme.woodDark : new Color(0.3f, 0.25f, 0.25f, 0.9f);
 
         Button closeButton = closeButtonObj.AddComponent<Button>();
         closeButton.onClick.AddListener(OnCloseButtonClicked);
@@ -166,7 +171,7 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
         TextMeshProUGUI tmp = obj.AddComponent<TextMeshProUGUI>();
         tmp.text = text;
         tmp.fontSize = 18;
-        tmp.color = Color.white;
+        tmp.color = theme != null ? theme.backgroundCream : Color.white;
 
         return tmp;
     }
@@ -220,8 +225,9 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
         RectTransform rowRect = rowObj.AddComponent<RectTransform>();
         rowRect.sizeDelta = new Vector2(0, 32);
 
+        Color rowTint = theme != null ? theme.woodLight : new Color(0.25f, 0.25f, 0.3f);
         Image rowImage = rowObj.AddComponent<Image>();
-        rowImage.color = item != null ? new Color(0.25f, 0.25f, 0.3f, 0.9f) : new Color(0f, 0f, 0f, 0f);
+        rowImage.color = item != null ? new Color(rowTint.r, rowTint.g, rowTint.b, 0.9f) : new Color(0f, 0f, 0f, 0f);
 
         TextMeshProUGUI rowLabel = CreateLabel(rowObj.transform, label);
         rowLabel.fontSize = 16;
@@ -241,7 +247,7 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
             giveRect.anchoredPosition = new Vector2(-4, 0);
 
             Image giveImage = giveButtonObj.AddComponent<Image>();
-            giveImage.color = new Color(0.3f, 0.5f, 0.3f, 0.9f);
+            giveImage.color = theme != null ? theme.positive : new Color(0.3f, 0.5f, 0.3f, 0.9f);
 
             Button giveButton = giveButtonObj.AddComponent<Button>();
             giveButton.onClick.AddListener(() => GiveItem(item));

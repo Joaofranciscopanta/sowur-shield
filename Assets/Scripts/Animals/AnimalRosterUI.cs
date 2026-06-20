@@ -4,6 +4,7 @@ using TMPro;
 using System.Collections.Generic;
 using System.Linq;
 using SowurShield.Core;
+using SowurShield.UI;
 
 namespace SowurShield.Animals
 {
@@ -38,6 +39,11 @@ public class AnimalRosterUI : MonoBehaviour, IUIWindow
     [SerializeField] private Color sadColor = new Color(0.8f, 0.3f, 0.3f);
     [SerializeField] private Color fedColor = new Color(0.3f, 0.8f, 0.3f);
     [SerializeField] private Color hungryTextColor = new Color(0.8f, 0.3f, 0.3f);
+
+    [Header("Theme")]
+    [SerializeField] private UITheme theme;
+
+    private Color cardBackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.8f);
 
     private bool isOpen = false;
     private List<GameObject> spawnedUIElements = new List<GameObject>();
@@ -82,11 +88,27 @@ public class AnimalRosterUI : MonoBehaviour, IUIWindow
 
     private void Awake()
     {
+        if (theme == null)
+            theme = Resources.Load<UITheme>("UI/CozyUITheme");
+        ApplyThemeColors();
+
         if (rosterPanel != null)
             rosterPanel.SetActive(false);
 
         if (closeButton != null)
             closeButton.onClick.AddListener(CloseRoster);
+    }
+
+    private void ApplyThemeColors()
+    {
+        if (theme == null) return;
+
+        happyColor = theme.positive;
+        neutralColor = theme.warning;
+        sadColor = theme.negative;
+        fedColor = theme.positive;
+        hungryTextColor = theme.negative;
+        cardBackgroundColor = new Color(theme.backgroundTan.r, theme.backgroundTan.g, theme.backgroundTan.b, 0.8f);
     }
 
     private void Start()
@@ -301,7 +323,7 @@ public class AnimalRosterUI : MonoBehaviour, IUIWindow
 
         // Background
         Image bg = card.AddComponent<Image>();
-        bg.color = new Color(0.2f, 0.2f, 0.2f, 0.8f);
+        bg.color = cardBackgroundColor;
 
         // Layout
         HorizontalLayoutGroup hlg = card.AddComponent<HorizontalLayoutGroup>();
