@@ -111,7 +111,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 38136173063681502}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41467cb537f14820834959b5c8d04792, type: 3}
+  m_Script: {fileID: 11500000, guid: ed3d5543a993484ead8c0e38b0268311, type: 3}
   m_Name:
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Animals.AnimalMarketSellRow
   iconImage: {fileID: 8170820338303861348}

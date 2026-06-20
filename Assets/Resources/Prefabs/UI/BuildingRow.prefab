@@ -188,7 +188,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 811554876383893442}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b36ec81c0ea08784188f19fa0f322c7e, type: 3}
+  m_Script: {fileID: 11500000, guid: 4965ce0b4a1741eab74902953d8c58a1, type: 3}
   m_Name:
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.BuildingRow
   iconImage: {fileID: 4416736040995770299}
