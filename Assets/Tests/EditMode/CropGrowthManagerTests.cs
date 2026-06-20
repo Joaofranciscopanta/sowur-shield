@@ -211,6 +211,32 @@ public class CropGrowthManagerTests
         Assert.IsFalse(fired, "OnCropGrown should NOT fire when the crop was not watered.");
     }
 
+    [Test]
+    public void OnCropDayTick_Fires_EveryDay_EvenWithoutStageAdvance()
+    {
+        testCrop.daysPerStage = 3; // stage won't advance on day 1
+        cropManager.PlantCrop(testCrop);
+        cropManager.WaterCrop();
+
+        bool tickFired = false;
+        cropManager.OnCropDayTick += _ => tickFired = true;
+
+        SimulateDayChange();
+
+        Assert.IsTrue(tickFired, "OnCropDayTick should fire every day the crop is alive, regardless of stage advance.");
+    }
+
+    [Test]
+    public void OnCropDayTick_DoesNotFire_WhenNoCropPlanted()
+    {
+        bool tickFired = false;
+        cropManager.OnCropDayTick += _ => tickFired = true;
+
+        SimulateDayChange();
+
+        Assert.IsFalse(tickFired, "OnCropDayTick should not fire when there is no crop.");
+    }
+
     // =========================================================================
     // NON-WATER CROPS (requiresWater = false)
     // =========================================================================

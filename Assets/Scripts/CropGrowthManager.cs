@@ -32,6 +32,7 @@ namespace SowurShield.Core
         public System.Action<CropGrowthManager> OnCropReadyForHarvest; // When crop is ready
         public System.Action<CropGrowthManager> OnCropDied; // When crop dies
         public System.Action<CropGrowthManager> OnCropHarvested; // When crop is harvested
+        public System.Action<CropGrowthManager> OnCropDayTick; // Every day the crop is alive, even without a stage change
 
         // Properties for external access
         public bool HasCrop => currentCrop != null;
@@ -201,6 +202,8 @@ namespace SowurShield.Core
                     AdvanceGrowthStage();
                 }
             }
+
+            OnCropDayTick?.Invoke(this);
         }
 
         // Advance to next growth stage

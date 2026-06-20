@@ -138,6 +138,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             cropGrowthManager.OnCropReadyForHarvest += OnCropReadyForHarvest;
             cropGrowthManager.OnCropDied += OnCropDied;
             cropGrowthManager.OnCropHarvested += OnCropHarvested;
+            cropGrowthManager.OnCropDayTick += OnCropDayTick;
         }
     }
 
@@ -194,6 +195,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             cropGrowthManager.OnCropReadyForHarvest -= OnCropReadyForHarvest;
             cropGrowthManager.OnCropDied -= OnCropDied;
             cropGrowthManager.OnCropHarvested -= OnCropHarvested;
+            cropGrowthManager.OnCropDayTick -= OnCropDayTick;
         }
     }
 
@@ -665,6 +667,12 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
     private void OnCropGrown(CropGrowthManager manager)
     {
         UpdateAppearance();
+        UpdateStatusText();
+    }
+
+    private void OnCropDayTick(CropGrowthManager manager)
+    {
+        // Refreshes the "days remaining" label even on days the stage doesn't advance
         UpdateStatusText();
     }
 
