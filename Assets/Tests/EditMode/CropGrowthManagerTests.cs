@@ -211,6 +211,32 @@ public class CropGrowthManagerTests
         Assert.IsFalse(fired, "OnCropGrown should NOT fire when the crop was not watered.");
     }
 
+    [Test]
+    public void OnCropDayTick_Fires_EveryDay_EvenWithoutStageAdvance()
+    {
+        testCrop.daysPerStage = 3; // stage won't advance on day 1
+        cropManager.PlantCrop(testCrop);
+        cropManager.WaterCrop();
+
+        bool tickFired = false;
+        cropManager.OnCropDayTick += _ => tickFired = true;
+
+        SimulateDayChange();
+
+        Assert.IsTrue(tickFired, "OnCropDayTick should fire every day the crop is alive, regardless of stage advance.");
+    }
+
+    [Test]
+    public void OnCropDayTick_DoesNotFire_WhenNoCropPlanted()
+    {
+        bool tickFired = false;
+        cropManager.OnCropDayTick += _ => tickFired = true;
+
+        SimulateDayChange();
+
+        Assert.IsFalse(tickFired, "OnCropDayTick should not fire when there is no crop.");
+    }
+
     // =========================================================================
     // NON-WATER CROPS (requiresWater = false)
     // =========================================================================
@@ -404,5 +430,49 @@ public class CropGrowthManagerTests
         var gd = new GameData(); // empty — no activeCrops
         Assert.DoesNotThrow(() => cropManager.LoadData(gd));
         Assert.IsFalse(cropManager.HasCrop, "CropGrowthManager should have no crop after loading empty data.");
+    }
+
+    // =========================================================================
+    // DAYS UNTIL NEXT STAGE (floating status text support)
+    // =========================================================================
+
+    [Test]
+    public void DaysUntilNextStage_IsZero_WhenNoCropPlanted()
+    {
+        Assert.AreEqual(0, cropManager.DaysUntilNextStage);
+    }
+
+    [Test]
+    public void DaysUntilNextStage_EqualsDaysPerStage_RightAfterPlanting()
+    {
+        testCrop.daysPerStage = 3;
+        cropManager.PlantCrop(testCrop);
+        Assert.AreEqual(3, cropManager.DaysUntilNextStage);
+    }
+
+    [Test]
+    public void DaysUntilNextStage_DecreasesEachWateredDay()
+    {
+        testCrop.daysPerStage = 3;
+        cropManager.PlantCrop(testCrop);
+        cropManager.WaterCrop();
+        SimulateDayChange();
+
+        Assert.AreEqual(2, cropManager.DaysUntilNextStage);
+    }
+
+    [Test]
+    public void DaysUntilNextStage_IsZero_WhenReadyForHarvest()
+    {
+        GrowToHarvest();
+        Assert.AreEqual(0, cropManager.DaysUntilNextStage);
+    }
+
+    [Test]
+    public void DaysUntilNextStage_IsZero_WhenCropIsDead()
+    {
+        cropManager.PlantCrop(testCrop);
+        KillCropDirectly();
+        Assert.AreEqual(0, cropManager.DaysUntilNextStage);
     }
 }

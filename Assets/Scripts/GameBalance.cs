@@ -47,6 +47,10 @@ public class GameBalance : ScriptableObject
     [Tooltip("Stat multiplier applied to combat when happiness is at the ceiling (happinessCeiling).")]
     public float happinessMultiplierMax = 1.5f;
 
+    [Header("Farming — Garden Upgrades")]
+    [Tooltip("Chance (0-1) that harvesting a crop refunds its planted seed, when the Workshop Lucky Seed upgrade is built.")]
+    public float luckySeedChance = 0.25f;
+
     [Header("Interaction Distances")]
     [Tooltip("Default proximity range for the E-key interaction system (most interactables).")]
     public float defaultInteractionRange = 2f;

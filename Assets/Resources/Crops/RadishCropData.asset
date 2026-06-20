@@ -16,9 +16,9 @@ MonoBehaviour:
   description: A fast-growing root vegetable. Perfect for the impatient farmer.
   seedItem: {fileID: 11400000, guid: b08a7959708b40fc9f1c479060ffa24c, type: 2}
   harvestItem: {fileID: 11400000, guid: e429b91939144d1e962013ae08ce13ed, type: 2}
-  daysPerStage: 1
+  daysPerStage: 4
   totalStages: 4
-  totalGrowthDays: 4
+  totalGrowthDays: 16
   growthStages:
   - {fileID: 1735781140512758740, guid: a59416ae131f12a44897c3e29dabb12f, type: 3}
   - {fileID: -1627548589801466467, guid: 25ee898ab3dff8548a52a0d08ec1c49c, type: 3}

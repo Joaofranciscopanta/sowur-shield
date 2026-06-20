@@ -16,9 +16,9 @@ MonoBehaviour:
   description: A sturdy leafy vegetable that grows into a dense head.
   seedItem: {fileID: 11400000, guid: db1d62b0cca74083804ea2ce6371abc5, type: 2}
   harvestItem: {fileID: 11400000, guid: a06ef0c563ec40b8ab6d61bd7103a75d, type: 2}
-  daysPerStage: 1
+  daysPerStage: 4
   totalStages: 5
-  totalGrowthDays: 5
+  totalGrowthDays: 20
   growthStages:
   - {fileID: 5813754070244721525, guid: 9237f24cc62e1fd419f2c63a6487e276, type: 3}
   - {fileID: 4799065551191520253, guid: 6bbdadbec026b7341b9c4c3ae0c59425, type: 3}
