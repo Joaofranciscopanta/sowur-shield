@@ -150,6 +150,9 @@ public class BuildingShopUI : MonoBehaviour, IUIWindow
         RefreshGoldText();
 
         FarmBuildingData[] allBuildings = Resources.LoadAll<FarmBuildingData>("Buildings");
+        Debug.Log($"[BuildingShopUI] BuildRows: found {allBuildings.Length} FarmBuildingData assets. " +
+            $"buildingListContainer={(buildingListContainer == null ? "NULL" : "OK")}, " +
+            $"buildingRowPrefab={(buildingRowPrefab == null ? "NULL" : "OK")}");
         if (buildingListContainer == null || buildingRowPrefab == null) return;
 
         foreach (FarmBuildingData data in allBuildings)
