@@ -15,8 +15,10 @@ MonoBehaviour:
   buildingType: 3
   buildingName: Workshop
   description: A tinkerer's workshop for getting more out of every harvest.
-  icon: {fileID: 0}
+  icon: {fileID: 7876219675878430416, guid: 75463d63bccd73b4181830c3a56fe5cb, type: 3}
   goldCost: 600
-  materialItemName:
+  materialItemName: 
   materialQuantity: 0
   effectDescription: Chance to refund the planted seed whenever you harvest a crop.
+  worldPrefab: {fileID: 9178039506123589827, guid: e88951e5930bb0a45bfd9e22b98ba79e, type: 3}
+  worldPosition: {x: -2000, y: 0}

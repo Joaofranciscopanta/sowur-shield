@@ -16,9 +16,9 @@ MonoBehaviour:
   description: Orange but not the fruit.
   seedItem: {fileID: 11400000, guid: 1d1dc028cd86ee34dae41fd60504525b, type: 2}
   harvestItem: {fileID: 11400000, guid: 566455dc0cf7a584989abffa663605db, type: 2}
-  daysPerStage: 1
+  daysPerStage: 2
   totalStages: 4
-  totalGrowthDays: 4
+  totalGrowthDays: 8
   growthStages:
   - {fileID: -8703343332176484395, guid: 45fc2f01bb040d3458f7f86e31c6f2d7, type: 3}
   - {fileID: 5419748070003510852, guid: f0a9e1801c49058418c3ce22d97ad1fc, type: 3}

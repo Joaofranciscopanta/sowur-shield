@@ -15,8 +15,11 @@ MonoBehaviour:
   buildingType: 2
   buildingName: Silo
   description: A grain silo that lets you work the whole farm at once.
-  icon: {fileID: 0}
+  icon: {fileID: -7044273301420770227, guid: d21594cf0db02ed459722a82b685cc0a, type: 3}
   goldCost: 800
-  materialItemName:
+  materialItemName: 
   materialQuantity: 0
-  effectDescription: Harvesting one ready crop now harvests every other ready crop on the farm too.
+  effectDescription: Harvesting one ready crop now harvests every other ready crop
+    on the farm too.
+  worldPrefab: {fileID: 6424809178870496382, guid: 93c00cd95fb75df4d880bd4625403d02, type: 3}
+  worldPosition: {x: -2500, y: 0}
