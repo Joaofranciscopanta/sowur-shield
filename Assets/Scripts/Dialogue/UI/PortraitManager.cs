@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using DG.Tweening;
+using SowurShield.UI;
 
 namespace SowurShield.Dialogue
 {
@@ -23,6 +24,9 @@ public class PortraitManager : MonoBehaviour
     [Header("Portrait States")]
     [SerializeField] private Color activePortraitColor = Color.white;
     [SerializeField] private Color inactivePortraitColor = new Color(0.7f, 0.7f, 0.7f, 0.8f);
+
+    [Header("Theme")]
+    [SerializeField] private UITheme theme;
     
     [Header("Size Settings")]
     [SerializeField] private Vector3 activePortraitScale = Vector3.one;
@@ -40,6 +44,14 @@ public class PortraitManager : MonoBehaviour
     
     private void Awake()
     {
+        if (theme == null)
+            theme = Resources.Load<UITheme>("UI/CozyUITheme");
+        if (theme != null)
+        {
+            Color woodLight = theme.woodLight;
+            inactivePortraitColor = new Color(woodLight.r, woodLight.g, woodLight.b, 0.8f);
+        }
+
         ValidateComponents();
         InitializePortraits();
     }

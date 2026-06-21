@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 using DG.Tweening;
+using SowurShield.UI;
 
 namespace SowurShield.Dialogue
 {
@@ -20,6 +21,9 @@ public class ChoiceButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     [SerializeField] private Color highlightedColor = new Color(1f, 1f, 0.8f, 1f);
     [SerializeField] private Color selectedColor = new Color(0.8f, 1f, 0.8f, 1f);
     [SerializeField] private Color disabledColor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+
+    [Header("Theme")]
+    [SerializeField] private UITheme theme;
     
     [Header("Animation Settings")]
     [SerializeField] private float animationDuration = 0.2f;
@@ -45,6 +49,15 @@ public class ChoiceButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     
     private void Awake()
     {
+        if (theme == null)
+            theme = Resources.Load<UITheme>("UI/CozyUITheme");
+        if (theme != null)
+        {
+            normalColor = theme.backgroundCream;
+            highlightedColor = theme.highlightGold;
+            selectedColor = theme.highlightYellow;
+        }
+
         ValidateComponents();
         SetupAudio();
         SetupButton();

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using SowurShield.Core;
 using SowurShield.Inventory;
+using SowurShield.UI;
 
 namespace SowurShield.Dialogue
 {
@@ -20,6 +21,7 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
     private RectTransform listPanel;
     private TextMeshProUGUI goldLabel;
     private bool isOpen = false;
+    private UITheme theme;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
@@ -34,6 +36,7 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
 
     private void Awake()
     {
+        theme = Resources.Load<UITheme>("UI/CozyUITheme");
         BuildUI();
     }
 
@@ -94,8 +97,9 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
         listPanel.anchoredPosition = Vector2.zero;
         listPanel.sizeDelta = new Vector2(360, 0);
 
+        Color panelTint = theme != null ? theme.woodDark : new Color(0.08f, 0.06f, 0.1f);
         Image panelBg = panelObj.AddComponent<Image>();
-        panelBg.color = new Color(0.08f, 0.06f, 0.1f, 0.95f);
+        panelBg.color = new Color(panelTint.r, panelTint.g, panelTint.b, 0.95f);
 
         VerticalLayoutGroup vlg = panelObj.AddComponent<VerticalLayoutGroup>();
         vlg.padding = new RectOffset(12, 12, 12, 12);
@@ -124,13 +128,13 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
         goldLabel = CreateLabel(goldObj.transform, "Gold: 0");
         goldLabel.fontSize = 16;
         goldLabel.alignment = TextAlignmentOptions.Center;
-        goldLabel.color = new Color(1f, 0.85f, 0.2f);
+        goldLabel.color = theme != null ? theme.highlightGold : new Color(1f, 0.85f, 0.2f);
 
         // Close button
         GameObject closeButtonObj = new GameObject("CloseButton");
         closeButtonObj.transform.SetParent(panelObj.transform, false);
         closeButtonObj.AddComponent<RectTransform>().sizeDelta = new Vector2(0, 36);
-        closeButtonObj.AddComponent<Image>().color = new Color(0.3f, 0.25f, 0.25f, 0.9f);
+        closeButtonObj.AddComponent<Image>().color = theme != null ? theme.woodDark : new Color(0.3f, 0.25f, 0.25f, 0.9f);
         Button closeButton = closeButtonObj.AddComponent<Button>();
         closeButton.onClick.AddListener(OnCloseClicked);
         var closeLabel = CreateLabel(closeButtonObj.transform, "Close");
@@ -151,7 +155,7 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
         TextMeshProUGUI tmp = obj.AddComponent<TextMeshProUGUI>();
         tmp.text = text;
         tmp.fontSize = 18;
-        tmp.color = Color.white;
+        tmp.color = theme != null ? theme.backgroundCream : Color.white;
         return tmp;
     }
 
@@ -204,8 +208,9 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
         rowObj.transform.SetParent(listPanel, false);
         rowObj.transform.SetSiblingIndex(siblingIndex);
         rowObj.AddComponent<RectTransform>().sizeDelta = new Vector2(0, 34);
+        Color rowTint = theme != null ? theme.woodLight : new Color(0.2f, 0.2f, 0.25f);
         rowObj.AddComponent<Image>().color = seed != null
-            ? new Color(0.2f, 0.2f, 0.25f, 0.9f)
+            ? new Color(rowTint.r, rowTint.g, rowTint.b, 0.9f)
             : new Color(0f, 0f, 0f, 0f);
 
         var rowLabel = CreateLabel(rowObj.transform, label);
@@ -225,8 +230,9 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
             buyRect.pivot = new Vector2(1, 0.5f);
             buyRect.sizeDelta = new Vector2(60, 0);
             buyRect.anchoredPosition = new Vector2(-4, 0);
+            Color buyColor = theme != null ? theme.positive : new Color(0.2f, 0.5f, 0.2f);
             buyObj.AddComponent<Image>().color = canAfford
-                ? new Color(0.2f, 0.5f, 0.2f, 0.9f)
+                ? new Color(buyColor.r, buyColor.g, buyColor.b, 0.9f)
                 : new Color(0.3f, 0.3f, 0.3f, 0.7f);
             Button buyBtn = buyObj.AddComponent<Button>();
             buyBtn.interactable = canAfford;
