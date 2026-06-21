@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using SowurShield.UI;
 
 namespace SowurShield.Inventory
 {
@@ -36,6 +37,9 @@ namespace SowurShield.Inventory
         public float iconSize = 48f;
         public Vector2 screenPadding = new Vector2(20f, 20f);
 
+        [Header("Theme")]
+        public UITheme theme;
+
         private Canvas canvas;
         private CanvasGroup canvasGroup;
         private bool isVisible = false;
@@ -44,6 +48,15 @@ namespace SowurShield.Inventory
 
         private void Awake()
         {
+            if (theme == null)
+                theme = Resources.Load<UITheme>("UI/CozyUITheme");
+            if (theme != null)
+            {
+                commonColor = theme.textDark;
+                uncommonColor = theme.positive;
+                legendaryColor = theme.warning;
+            }
+
             SetupComponents();
             SetupLayout();
             Hide();
@@ -90,7 +103,8 @@ namespace SowurShield.Inventory
             }
 
             // Style the background
-            background.color = new Color(0.1f, 0.1f, 0.15f, 0.95f);
+            Color bgTint = theme != null ? theme.woodDark : new Color(0.1f, 0.1f, 0.15f);
+            background.color = new Color(bgTint.r, bgTint.g, bgTint.b, 0.95f);
             background.type = Image.Type.Sliced;
 
             // Add shadow effect
@@ -234,7 +248,7 @@ namespace SowurShield.Inventory
             // Style the name text
             itemNameText.fontSize = 16;
             itemNameText.fontStyle = FontStyles.Bold;
-            itemNameText.color = Color.white;
+            itemNameText.color = theme != null ? theme.backgroundCream : Color.white;
             itemNameText.alignment = TextAlignmentOptions.Left;
             itemNameText.overflowMode = TextOverflowModes.Ellipsis;
 

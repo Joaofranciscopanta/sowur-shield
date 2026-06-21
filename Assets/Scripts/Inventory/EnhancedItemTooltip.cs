@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using SowurShield.UI;
 
 namespace SowurShield.Inventory
 {
@@ -36,6 +37,9 @@ namespace SowurShield.Inventory
         public float maxWidth = 300f;
         public bool followMouse = true;
 
+        [Header("Theme")]
+        public UITheme theme;
+
         private Canvas canvas;
         private RectTransform canvasRect;
         private bool isVisible = false;
@@ -45,6 +49,15 @@ namespace SowurShield.Inventory
             canvas = GetComponentInParent<Canvas>();
             if (canvas != null)
                 canvasRect = canvas.GetComponent<RectTransform>();
+
+            if (theme == null)
+                theme = Resources.Load<UITheme>("UI/CozyUITheme");
+            if (theme != null)
+            {
+                commonColor = theme.textDark;
+                uncommonColor = theme.positive;
+                legendaryColor = theme.warning;
+            }
 
             HideTooltip();
         }
