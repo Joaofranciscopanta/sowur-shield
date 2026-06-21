@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using SowurShield.Core;
+using SowurShield.UI;
 
 namespace SowurShield.Dialogue
 {
@@ -31,6 +32,8 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
     private Transform loreContainer;
     private TextMeshProUGUI loreTitleHeader;
 
+    private UITheme theme;
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
     {
@@ -44,6 +47,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
 
     private void Awake()
     {
+        theme = Resources.Load<UITheme>("UI/CozyUITheme");
         BuildUI();
     }
 
@@ -116,6 +120,10 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
     /// </summary>
     private void BuildCodexPanel()
     {
+        Color backgroundDark = theme != null ? theme.woodDark : new Color(0.08f, 0.06f, 0.1f);
+        Color textCream = theme != null ? theme.backgroundCream : Color.white;
+        Color highlightGold = theme != null ? theme.highlightGold : new Color(0.96f, 0.83f, 0.37f);
+
         // Root panel — VerticalLayoutGroup drives height; fixed width 520px
         GameObject panelObj = new GameObject("RelationshipPanel");
         panelObj.transform.SetParent(transform, false);
@@ -127,7 +135,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         panel.anchoredPosition = Vector2.zero;
         panel.sizeDelta = new Vector2(520, 0); // height driven by fitter
 
-        panelObj.AddComponent<Image>().color = new Color(0.08f, 0.06f, 0.1f, 0.95f);
+        panelObj.AddComponent<Image>().color = new Color(backgroundDark.r, backgroundDark.g, backgroundDark.b, 0.95f);
 
         var rootVlg = panelObj.AddComponent<VerticalLayoutGroup>();
         rootVlg.padding = new RectOffset(12, 12, 12, 12);
@@ -159,7 +167,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         portLE.preferredWidth  = 150;
         portLE.flexibleWidth   = 0;
         portraitImage = portraitObj.AddComponent<Image>();
-        portraitImage.color = new Color(0.25f, 0.25f, 0.28f, 1f);
+        portraitImage.color = theme != null ? theme.woodLight : new Color(0.25f, 0.25f, 0.28f, 1f);
         portraitImage.preserveAspect = true;
 
         // Info column (name, bio, bar, value)
@@ -196,7 +204,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         GameObject barBg = new GameObject("BarBg");
         barBg.transform.SetParent(infoObj.transform, false);
         barBg.AddComponent<LayoutElement>().preferredHeight = 16;
-        barBg.AddComponent<Image>().color = new Color(0.15f, 0.15f, 0.18f, 1f);
+        barBg.AddComponent<Image>().color = theme != null ? theme.woodDark : new Color(0.15f, 0.15f, 0.18f, 1f);
 
         GameObject barFill = new GameObject("BarFill");
         barFill.transform.SetParent(barBg.transform, false);
@@ -205,7 +213,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         barFillRT.anchorMax = Vector2.one;
         barFillRT.offsetMin = barFillRT.offsetMax = Vector2.zero;
         relationshipFillImage = barFill.AddComponent<Image>();
-        relationshipFillImage.color      = new Color(0.8f, 0.3f, 0.5f, 1f);
+        relationshipFillImage.color      = highlightGold;
         relationshipFillImage.type       = Image.Type.Filled;
         relationshipFillImage.fillMethod = Image.FillMethod.Horizontal;
         relationshipFillImage.fillAmount = 0.5f;
@@ -218,13 +226,13 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         // ── Row 2: Codex lore section ──
         GameObject divObj = new GameObject("Divider");
         divObj.transform.SetParent(panelObj.transform, false);
-        divObj.AddComponent<Image>().color = new Color(0.3f, 0.3f, 0.35f, 1f);
+        divObj.AddComponent<Image>().color = theme != null ? theme.woodLight : new Color(0.3f, 0.3f, 0.35f, 1f);
         divObj.AddComponent<LayoutElement>().preferredHeight = 1;
 
         loreTitleHeader = CreateLabel(panelObj.transform, "Codex");
         loreTitleHeader.fontSize  = 13;
         loreTitleHeader.fontStyle = FontStyles.Bold;
-        loreTitleHeader.color     = new Color(0.7f, 0.6f, 1f);
+        loreTitleHeader.color     = highlightGold;
         loreTitleHeader.alignment = TextAlignmentOptions.TopLeft;
         SetPreferredHeight(loreTitleHeader, 20);
         loreTitleHeader.gameObject.SetActive(false);
@@ -245,7 +253,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         GameObject closeButtonObj = new GameObject("CloseButton");
         closeButtonObj.transform.SetParent(panelObj.transform, false);
         closeButtonObj.AddComponent<LayoutElement>().preferredHeight = 36;
-        closeButtonObj.AddComponent<Image>().color = new Color(0.3f, 0.2f, 0.2f, 0.9f);
+        closeButtonObj.AddComponent<Image>().color = theme != null ? theme.woodDark : new Color(0.3f, 0.2f, 0.2f, 0.9f);
 
         Button closeButton = closeButtonObj.AddComponent<Button>();
         closeButton.onClick.AddListener(OnCloseButtonClicked);
@@ -271,7 +279,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         TextMeshProUGUI tmp = obj.AddComponent<TextMeshProUGUI>();
         tmp.text = text;
         tmp.fontSize = 18;
-        tmp.color = Color.white;
+        tmp.color = theme != null ? theme.backgroundCream : Color.white;
 
         return tmp;
     }
@@ -317,7 +325,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         else
         {
             portraitImage.sprite = null;
-            portraitImage.color = new Color(0.3f, 0.3f, 0.3f, 1f);
+            portraitImage.color = theme != null ? theme.woodLight : new Color(0.3f, 0.3f, 0.3f, 1f);
         }
 
         nameText.text = targetNpc.GetNPCDisplayName();
@@ -363,7 +371,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
                 titleTmp.text = entry.title;
                 titleTmp.fontSize = 12;
                 titleTmp.fontStyle = FontStyles.Bold;
-                titleTmp.color = new Color(0.9f, 0.8f, 0.5f);
+                titleTmp.color = theme != null ? theme.highlightGold : new Color(0.9f, 0.8f, 0.5f);
                 titleTmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
                 titleObj.AddComponent<LayoutElement>().preferredHeight = 16;
             }
@@ -374,7 +382,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
             var bodyTmp = bodyObj.AddComponent<TextMeshProUGUI>();
             bodyTmp.text = entry.body;
             bodyTmp.fontSize = 11;
-            bodyTmp.color = new Color(0.8f, 0.8f, 0.8f);
+            bodyTmp.color = theme != null ? theme.backgroundCream : new Color(0.8f, 0.8f, 0.8f);
             bodyTmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
             var bodyLE = bodyObj.AddComponent<LayoutElement>();
             bodyLE.preferredHeight = 32;

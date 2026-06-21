@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using SowurShield.Inventory;
+using SowurShield.UI;
 
 namespace SowurShield.Combat
 {
@@ -19,6 +20,7 @@ public class ConsumableBattleUI : MonoBehaviour
     private RectTransform listPanel;
     private GameObject toggleButtonObj;
     private bool isOpen = false;
+    private UITheme theme;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
@@ -33,6 +35,7 @@ public class ConsumableBattleUI : MonoBehaviour
 
     private void Awake()
     {
+        theme = Resources.Load<UITheme>("UI/CozyUITheme");
         BuildUI();
     }
 
@@ -56,8 +59,9 @@ public class ConsumableBattleUI : MonoBehaviour
         btnRect.anchoredPosition = new Vector2(20, 20);
         btnRect.sizeDelta = new Vector2(120, 40);
 
+        Color woodDark = theme != null ? theme.woodDark : new Color(0.2f, 0.2f, 0.25f);
         Image btnImage = toggleButtonObj.AddComponent<Image>();
-        btnImage.color = new Color(0.2f, 0.2f, 0.25f, 0.85f);
+        btnImage.color = new Color(woodDark.r, woodDark.g, woodDark.b, 0.85f);
 
         Button toggleButton = toggleButtonObj.AddComponent<Button>();
         toggleButton.onClick.AddListener(ToggleList);
@@ -76,8 +80,9 @@ public class ConsumableBattleUI : MonoBehaviour
         listPanel.anchoredPosition = new Vector2(20, 70);
         listPanel.sizeDelta = new Vector2(220, 0);
 
+        Color panelTint = theme != null ? theme.woodDark : new Color(0.1f, 0.1f, 0.15f);
         Image panelBg = panelObj.AddComponent<Image>();
-        panelBg.color = new Color(0.1f, 0.1f, 0.15f, 0.9f);
+        panelBg.color = new Color(panelTint.r, panelTint.g, panelTint.b, 0.9f);
 
         VerticalLayoutGroup vlg = panelObj.AddComponent<VerticalLayoutGroup>();
         vlg.padding = new RectOffset(8, 8, 8, 8);
@@ -110,7 +115,7 @@ public class ConsumableBattleUI : MonoBehaviour
         TextMeshProUGUI tmp = obj.AddComponent<TextMeshProUGUI>();
         tmp.text = text;
         tmp.fontSize = 18;
-        tmp.color = Color.white;
+        tmp.color = theme != null ? theme.backgroundCream : Color.white;
 
         return tmp;
     }
@@ -159,8 +164,9 @@ public class ConsumableBattleUI : MonoBehaviour
         RectTransform rowRect = rowObj.AddComponent<RectTransform>();
         rowRect.sizeDelta = new Vector2(0, 32);
 
+        Color rowTint = theme != null ? theme.woodLight : new Color(0.25f, 0.25f, 0.3f);
         Image rowImage = rowObj.AddComponent<Image>();
-        rowImage.color = item != null ? new Color(0.25f, 0.25f, 0.3f, 0.9f) : new Color(0f, 0f, 0f, 0f);
+        rowImage.color = item != null ? new Color(rowTint.r, rowTint.g, rowTint.b, 0.9f) : new Color(0f, 0f, 0f, 0f);
 
         TextMeshProUGUI rowLabel = CreateLabel(rowObj.transform, label);
         rowLabel.fontSize = 16;

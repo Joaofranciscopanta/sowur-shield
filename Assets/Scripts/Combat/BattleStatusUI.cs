@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using System.Linq;
+using SowurShield.UI;
 
 namespace SowurShield.Combat
 {
@@ -44,6 +45,9 @@ public class BattleStatusUI : MonoBehaviour
     [SerializeField] private Color playerTeamColor = new Color(0.3f, 0.8f, 1f); // Blue
     [SerializeField] private Color enemyTeamColor = new Color(1f, 0.3f, 0.3f); // Red
 
+    [Header("Theme")]
+    [SerializeField] private UITheme theme;
+
     // Turn order icon pool
     private List<Image> turnOrderIcons = new List<Image>();
 
@@ -58,6 +62,14 @@ public class BattleStatusUI : MonoBehaviour
             return;
         }
         Instance = this;
+
+        if (theme == null)
+            theme = Resources.Load<UITheme>("UI/CozyUITheme");
+        if (theme != null)
+        {
+            playerTeamColor = theme.positive;
+            enemyTeamColor = theme.negative;
+        }
 
         // Initialize turn order icons
         InitializeTurnOrderIcons();

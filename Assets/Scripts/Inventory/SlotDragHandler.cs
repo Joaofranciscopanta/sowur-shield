@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using TMPro;
 using System.Collections.Generic;
 using SowurShield.Core;
+using SowurShield.UI;
 
 namespace SowurShield.Inventory
 {
@@ -31,6 +32,8 @@ namespace SowurShield.Inventory
 
         // Visual settings for drag preview
         private AnimationCurve scaleCurve;
+
+        private UITheme theme;
 
         /// <summary>
         /// Get the currently dragged item stack
@@ -222,8 +225,12 @@ namespace SowurShield.Inventory
             GameObject backgroundObj = new GameObject("Background");
             backgroundObj.transform.SetParent(dragPreview.transform, false);
 
+            if (theme == null)
+                theme = Resources.Load<UITheme>("UI/CozyUITheme");
+
             Image backgroundImg = backgroundObj.AddComponent<Image>();
-            backgroundImg.color = new Color(0.1f, 0.1f, 0.15f, 0.3f);
+            Color dragBgTint = theme != null ? theme.woodDark : new Color(0.1f, 0.1f, 0.15f);
+            backgroundImg.color = new Color(dragBgTint.r, dragBgTint.g, dragBgTint.b, 0.3f);
 
             RectTransform bgRect = backgroundObj.GetComponent<RectTransform>();
             bgRect.anchorMin = Vector2.zero;
@@ -395,10 +402,13 @@ namespace SowurShield.Inventory
 
         private Color GetRarityGlowColor(ItemRarity rarity)
         {
-            Color rarityGlowUncommon = Color.green;
+            if (theme == null)
+                theme = Resources.Load<UITheme>("UI/CozyUITheme");
+
+            Color rarityGlowUncommon = theme != null ? theme.positive : Color.green;
             Color rarityGlowRare = Color.blue;
             Color rarityGlowEpic = new Color(0.6f, 0f, 0f);
-            Color rarityGlowLegendary = new Color(1f, 0.5f, 0f);
+            Color rarityGlowLegendary = theme != null ? theme.warning : new Color(1f, 0.5f, 0f);
 
             return rarity switch
             {
