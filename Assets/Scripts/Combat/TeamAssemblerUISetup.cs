@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using SowurShield.UI;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -709,6 +710,7 @@ public class TeamAssemblerUISetup : MonoBehaviour
     /// </summary>
     private GameObject CreateAnimalCardPrefab(string assetPath)
     {
+        UITheme theme = Resources.Load<UITheme>("UI/CozyUITheme");
 
         // Create root card object - will expand to fill container width
         GameObject card = new GameObject("AnimalCardPrefab");
@@ -717,7 +719,7 @@ public class TeamAssemblerUISetup : MonoBehaviour
 
         // Add background image with nice color
         Image cardBackground = card.AddComponent<Image>();
-        cardBackground.color = new Color(0.95f, 0.95f, 0.95f, 1f); // Light gray background
+        cardBackground.color = theme != null ? theme.backgroundCream : new Color(0.95f, 0.95f, 0.95f, 1f);
         cardBackground.raycastTarget = true; // Allow clicking
 
         // Add shadow for depth
@@ -756,7 +758,7 @@ public class TeamAssemblerUISetup : MonoBehaviour
         portraitRect.localScale = new Vector3(0.9f, 0.9f, 1f);
 
         Image portrait = portraitObj.AddComponent<Image>();
-        portrait.color = new Color(0.7f, 0.7f, 0.7f, 1f); // Lighter gray placeholder
+        portrait.color = theme != null ? theme.woodLight : new Color(0.7f, 0.7f, 0.7f, 1f);
         portrait.preserveAspect = true; // Maintain aspect ratio for animal sprites
 
         // Add border to portrait for definition
@@ -776,7 +778,7 @@ public class TeamAssemblerUISetup : MonoBehaviour
         nameText.fontSize = 18; // Bigger font
         nameText.fontStyle = FontStyles.Bold;
         nameText.alignment = TextAlignmentOptions.TopLeft;
-        nameText.color = new Color(0.15f, 0.15f, 0.15f, 1f); // Dark text
+        nameText.color = theme != null ? theme.textDark : new Color(0.15f, 0.15f, 0.15f, 1f);
 
         // Create happiness text (MIDDLE RIGHT - adjusted for 40% portrait width)
         GameObject happinessObj = new GameObject("HappinessText");
@@ -789,7 +791,7 @@ public class TeamAssemblerUISetup : MonoBehaviour
         TextMeshProUGUI happinessText = happinessObj.AddComponent<TextMeshProUGUI>();
         happinessText.fontSize = 15; // Slightly bigger
         happinessText.alignment = TextAlignmentOptions.TopLeft;
-        happinessText.color = new Color(0.8f, 0.3f, 0.3f, 1f); // Red-ish for heart icon
+        happinessText.color = theme != null ? theme.negative : new Color(0.8f, 0.3f, 0.3f, 1f);
 
         // Create food status text (BOTTOM - full width, 20px from bottom)
         GameObject foodObj = new GameObject("FoodStatusText");
@@ -802,7 +804,7 @@ public class TeamAssemblerUISetup : MonoBehaviour
         TextMeshProUGUI foodText = foodObj.AddComponent<TextMeshProUGUI>();
         foodText.fontSize = 13;
         foodText.alignment = TextAlignmentOptions.TopLeft;
-        foodText.color = new Color(0.2f, 0.4f, 0.2f, 1f); // Darker green for visibility on light background
+        foodText.color = theme != null ? theme.positive : new Color(0.2f, 0.4f, 0.2f, 1f);
 
         // Assign references via SerializedObject
         SerializedObject so = new SerializedObject(cardScript);
@@ -813,9 +815,9 @@ public class TeamAssemblerUISetup : MonoBehaviour
         so.FindProperty("cardBackground").objectReferenceValue = cardBackground;
 
         // Set colors to prevent yellow hover default
-        so.FindProperty("normalColor").colorValue = new Color(0.95f, 0.95f, 0.95f, 1f); // Light gray
-        so.FindProperty("hoverColor").colorValue = new Color(1f, 1f, 0.9f, 1f); // Very light yellow (subtle hover)
-        so.FindProperty("inTeamColor").colorValue = new Color(0.8f, 1f, 0.8f, 1f); // Light green
+        so.FindProperty("normalColor").colorValue = theme != null ? theme.backgroundCream : new Color(0.95f, 0.95f, 0.95f, 1f);
+        so.FindProperty("hoverColor").colorValue = theme != null ? theme.highlightGold : new Color(1f, 1f, 0.9f, 1f);
+        so.FindProperty("inTeamColor").colorValue = theme != null ? theme.positive : new Color(0.8f, 1f, 0.8f, 1f);
 
         so.ApplyModifiedProperties();
 
