@@ -400,6 +400,18 @@ MonoBehaviour:
   fillImage: {fileID: 0}
   offsetAboveUnit: {x: 0, y: 0.6, z: 0}
   faceCamera: 1
+  healthFractionText_Localized:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: combat.healthbar.fraction
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &7678242789747693967
 GameObject:
   m_ObjectHideFlags: 0

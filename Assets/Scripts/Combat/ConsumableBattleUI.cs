@@ -3,6 +3,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization;
+using SowurShield.Core;
 using SowurShield.Inventory;
 using SowurShield.UI;
 
@@ -19,13 +21,19 @@ public class ConsumableBattleUI : MonoBehaviour
 {
     private RectTransform listPanel;
     private GameObject toggleButtonObj;
+    private TextMeshProUGUI toggleButtonLabel;
     private bool isOpen = false;
     private UITheme theme;
+
+    [SerializeField] private LocalizedString titleText_Localized; // table "Combat", key "combat.consumables.title"
+    [SerializeField] private LocalizedString noInventoryText_Localized; // table "Combat", key "combat.consumables.no_inventory"
+    [SerializeField] private LocalizedString noneText_Localized; // table "Combat", key "combat.consumables.none"
+    [SerializeField] private LocalizedString itemRowText_Localized; // table "Combat", key "combat.consumables.item_row"
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
     {
-        if (FindFirstObjectByType<ConsumableBattleUI>() != null)
+        if (FindFirstObjectByType<ConsumableBattleUI>(FindObjectsInactive.Include) != null)
             return;
 
         var go = new GameObject("ConsumableBattleUI");
@@ -33,10 +41,64 @@ public class ConsumableBattleUI : MonoBehaviour
         DontDestroyOnLoad(go);
     }
 
+    // This component is created at runtime (never saved to a scene/prefab), so the
+    // Tools > Sowur Shield > Auto-Wire Localized Fields editor pass can never reach it —
+    // wire its LocalizedString table/key references here instead.
+    private void WireLocalizedStrings()
+    {
+        titleText_Localized = new LocalizedString("Combat", "combat.consumables.title");
+        noInventoryText_Localized = new LocalizedString("Combat", "combat.consumables.no_inventory");
+        noneText_Localized = new LocalizedString("Combat", "combat.consumables.none");
+        itemRowText_Localized = new LocalizedString("Combat", "combat.consumables.item_row");
+    }
+
     private void Awake()
     {
+        TryBuildUI();
+        LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    private void OnDestroy()
+    {
+        LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
+    {
+        if (toggleButtonLabel != null) toggleButtonLabel.text = titleText_Localized.SafeGetLocalizedString();
+        if (isOpen) RefreshList();
+    }
+
+    private void TryBuildUI()
+    {
         theme = Resources.Load<UITheme>("UI/CozyUITheme");
-        BuildUI();
+        WireLocalizedStrings();
+        try
+        {
+            BuildUI();
+        }
+        catch (System.Exception e)
+        {
+            // Localization tables may not be configured yet (see MOBILE_LOCALIZATION_SETUP.md) —
+            // fail safe rather than leaving a half-built panel visible, but retry shortly instead
+            // of staying broken for the rest of the session. Clear any partially-built children
+            // first (BuildUI may have thrown partway through), and keep the root active so the
+            // Invoke below can still fire.
+            Debug.LogError($"[ConsumableBattleUI] BuildUI failed (Localization not configured?): {e}");
+            for (int i = transform.childCount - 1; i >= 0; i--)
+                Destroy(transform.GetChild(i).gameObject);
+            foreach (var c in new System.Type[] { typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster) })
+            {
+                var comp = GetComponent(c);
+                if (comp != null) Destroy(comp);
+            }
+            Invoke(nameof(RetryBuildUI), 1f);
+        }
+    }
+
+    private void RetryBuildUI()
+    {
+        TryBuildUI();
     }
 
     private void BuildUI()
@@ -66,8 +128,8 @@ public class ConsumableBattleUI : MonoBehaviour
         Button toggleButton = toggleButtonObj.AddComponent<Button>();
         toggleButton.onClick.AddListener(ToggleList);
 
-        TextMeshProUGUI btnLabel = CreateLabel(toggleButtonObj.transform, "Items");
-        btnLabel.alignment = TextAlignmentOptions.Center;
+        toggleButtonLabel = CreateLabel(toggleButtonObj.transform, titleText_Localized.SafeGetLocalizedString());
+        toggleButtonLabel.alignment = TextAlignmentOptions.Center;
 
         // List panel (above the toggle button, hidden by default)
         GameObject panelObj = new GameObject("ConsumableList");
@@ -138,7 +200,7 @@ public class ConsumableBattleUI : MonoBehaviour
         SowurShield.Inventory.Inventory inventory = FindFirstObjectByType<SowurShield.Inventory.Inventory>();
         if (inventory == null)
         {
-            CreateRow("No inventory found", null, 0);
+            CreateRow(noInventoryText_Localized.SafeGetLocalizedString(), null, 0);
             return;
         }
 
@@ -148,12 +210,15 @@ public class ConsumableBattleUI : MonoBehaviour
 
         if (consumables.Count == 0)
         {
-            CreateRow("No consumables", null, 0);
+            CreateRow(noneText_Localized.SafeGetLocalizedString(), null, 0);
             return;
         }
 
         foreach (ItemStack stack in consumables)
-            CreateRow($"{stack.item.itemName} x{stack.quantity} (+{stack.item.healthRestore} HP)", stack.item, stack.quantity);
+        {
+            itemRowText_Localized.Arguments = new object[] { stack.item.itemName, stack.quantity, stack.item.healthRestore };
+            CreateRow(itemRowText_Localized.SafeGetLocalizedString(), stack.item, stack.quantity);
+        }
     }
 
     private void CreateRow(string label, Item item, int quantity)

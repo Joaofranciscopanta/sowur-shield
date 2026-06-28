@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization;
+using SowurShield.Core;
 
 namespace SowurShield.Combat
 {
@@ -14,6 +16,8 @@ public class BattleHudOverlay : MonoBehaviour
 {
     private TextMeshProUGUI modifierText;
     private TextMeshProUGUI comboText;
+
+    [SerializeField] private LocalizedString comboText_Localized; // table "Combat", key "combat.hud.combo"
 
     private TurnManager activeManager;
     private BattleModifierType lastShownModifier = BattleModifierType.None;
@@ -29,8 +33,17 @@ public class BattleHudOverlay : MonoBehaviour
         DontDestroyOnLoad(go);
     }
 
+    // This component is created at runtime (never saved to a scene/prefab), so the
+    // Tools > Sowur Shield > Auto-Wire Localized Fields editor pass can never reach it —
+    // wire its LocalizedString table/key reference here instead.
+    private void WireLocalizedStrings()
+    {
+        comboText_Localized = new LocalizedString("Combat", "combat.hud.combo");
+    }
+
     private void Awake()
     {
+        WireLocalizedStrings();
         BuildUI();
     }
 
@@ -125,7 +138,9 @@ public class BattleHudOverlay : MonoBehaviour
             return;
         }
 
-        comboText.text = $"Combo x{combo}!";
+        comboText_Localized.Arguments = new object[] { combo };
+        string text = comboText_Localized.SafeGetLocalizedString();
+        comboText.text = string.IsNullOrEmpty(text) ? $"Combo x{combo}!" : text;
         if (!comboText.gameObject.activeSelf)
             comboText.gameObject.SetActive(true);
     }

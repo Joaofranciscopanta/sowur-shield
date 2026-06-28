@@ -1,0 +1,226 @@
+Table,Key,en,pt,es
+UI_Common,ui_common.yes,Yes,Sim,Sí
+UI_Common,ui_common.no,No,Não,No
+UI_Common,ui_common.ok,OK,OK,OK
+UI_Common,ui_common.cancel,Cancel,Cancelar,Cancelar
+UI_Common,ui_common.close,Close,Fechar,Cerrar
+UI_Common,ui_common.buy,Buy,Comprar,Comprar
+UI_Common,ui_common.give,Give,Dar,Dar
+UI_Common,ui_common.unassigned,Unassigned,Não atribuído,Sin asignar
+UI_Common,ui_common.gold_amount,{0}g,{0}g,{0}g
+UI_Common,ui_common.gold_label,Gold: {0},Ouro: {0},Oro: {0}
+UI_Common,ui_common.money_label,Money: ${0},Dinheiro: ${0},Dinero: ${0}
+MainMenu,mainmenu.quit_confirm,Are you sure you want to quit the game?,Tem certeza de que deseja sair do jogo?,¿Seguro que quieres salir del juego?
+MainMenu,mainmenu.quit_title,Quit Game,Sair do Jogo,Salir del juego
+MainMenu,mainmenu.load_game_title,Load Game,Carregar Jogo,Cargar partida
+MainMenu,mainmenu.new_game_title,New Game — Choose Slot,Novo Jogo — Escolha o Slot,Nueva partida — Elige ranura
+MainMenu,mainmenu.loading_progress,Loading... {0:P0},Carregando... {0:P0},Cargando... {0:P0}
+MainMenu,mainmenu.loading_save_data,Loading save data...,Carregando dados salvos...,Cargando datos guardados...
+MainMenu,mainmenu.initializing_new_game,Initializing new game...,Inicializando novo jogo...,Inicializando nueva partida...
+MainMenu,mainmenu.save_file_found_title,Save File Found,Arquivo de Save Encontrado,Archivo de guardado encontrado
+MainMenu,mainmenu.save_file_label,File: {0},Arquivo: {0},Archivo: {0}
+MainMenu,mainmenu.save_size_label,Size: {0}KB,Tamanho: {0}KB,Tamaño: {0}KB
+MainMenu,mainmenu.save_last_saved_label,Last Saved: {0},Último salvamento: {0},Último guardado: {0}
+MainMenu,mainmenu.gamemenu.settings_not_configured,Settings panel not configured!,Painel de configurações não configurado!,¡Panel de ajustes no configurado!
+MainMenu,mainmenu.gamemenu.saveinfo_not_configured,Save info panel not configured!,Painel de informações de save não configurado!,¡Panel de información de guardado no configurado!
+MainMenu,mainmenu.gamemenu.save_info_found,"📄 Save File Information\n\n📁 File: {0}\n📅 Created: {1}\n🕒 Last Saved: {2}\n💾 Size: {3}\n\n💡 Game saves automatically when you sleep in bed","📄 Informações do Save\n\n📁 Arquivo: {0}\n📅 Criado: {1}\n🕒 Último salvamento: {2}\n💾 Tamanho: {3}\n\n💡 O jogo salva automaticamente quando você dorme na cama","📄 Información de guardado\n\n📁 Archivo: {0}\n📅 Creado: {1}\n🕒 Último guardado: {2}\n💾 Tamaño: {3}\n\n💡 El juego se guarda automáticamente cuando duermes en la cama"
+MainMenu,mainmenu.gamemenu.save_info_not_found,"❌ No save file found\n\n🛏️ Sleep in a bed to save your progress automatically.\n\nThe game will create a save file when you go to sleep for the first time.","❌ Nenhum arquivo de save encontrado\n\n🛏️ Durma em uma cama para salvar seu progresso automaticamente.\n\nO jogo criará um arquivo de save quando você dormir pela primeira vez.","❌ No se encontró archivo de guardado\n\n🛏️ Duerme en una cama para guardar tu progreso automáticamente.\n\nEl juego creará un archivo de guardado la primera vez que duermas."
+MainMenu,mainmenu.gamemenu.save_slot_title,Save Game — Choose Slot,Salvar Jogo — Escolha o Slot,Guardar partida — Elige ranura
+MainMenu,mainmenu.gamemenu.load_slot_title,Load Game — Choose Slot,Carregar Jogo — Escolha o Slot,Cargar partida — Elige ranura
+MainMenu,mainmenu.gamemenu.overwrite_confirm,Overwrite save in {0}?,Sobrescrever o save em {0}?,¿Sobrescribir guardado en {0}?
+MainMenu,mainmenu.gamemenu.load_confirm,Load this save? Unsaved progress will be lost.,Carregar este save? O progresso não salvo será perdido.,¿Cargar esta partida? El progreso no guardado se perderá.
+MainMenu,mainmenu.gamemenu.saved_to_slot,Saved to {0}!,Salvo em {0}!,¡Guardado en {0}!
+MainMenu,mainmenu.gamemenu.confirm_quit_desktop,"Quit to Desktop?\n\nAny unsaved progress will be lost.\nMake sure to sleep in a bed to save!","Sair para a Área de Trabalho?\n\nQualquer progresso não salvo será perdido.\nCertifique-se de dormir em uma cama para salvar!","¿Salir al escritorio?\n\nSe perderá cualquier progreso no guardado.\n¡Asegúrate de dormir en una cama para guardar!"
+MainMenu,mainmenu.gamemenu.confirm_quit_mainmenu,"Return to Main Menu?\n\nAny unsaved progress will be lost.\nMake sure to sleep in a bed to save!","Voltar ao Menu Principal?\n\nQualquer progresso não salvo será perdido.\nCertifique-se de dormir em uma cama para salvar!","¿Volver al menú principal?\n\nSe perderá cualquier progreso no guardado.\n¡Asegúrate de dormir en una cama para guardar!"
+MainMenu,mainmenu.gamemenu.confirm_delete_save,"Delete Save File?\n\nThis action cannot be undone.\nAll your progress will be permanently lost!","Excluir Arquivo de Save?\n\nEsta ação não pode ser desfeita.\nTodo o seu progresso será perdido permanentemente!","¿Eliminar archivo de guardado?\n\nEsta acción no se puede deshacer.\n¡Todo tu progreso se perderá permanentemente!"
+MainMenu,mainmenu.gamemenu.save_deleted,Save file deleted!,Arquivo de save excluído!,¡Archivo de guardado eliminado!
+MainMenu,mainmenu.gamemenu.test_notification,Test notification message!,Mensagem de notificação de teste!,¡Mensaje de notificación de prueba!
+MainMenu,mainmenu.gamemenu.test_error,Test error message!,Mensagem de erro de teste!,¡Mensaje de error de prueba!
+MainMenu,mainmenu.quittomainmenu.confirm,"Return to Main Menu?\n\nAny unsaved progress will be lost.\nMake sure to save your game first!","Voltar ao Menu Principal?\n\nQualquer progresso não salvo será perdido.\nCertifique-se de salvar o jogo primeiro!","¿Volver al menú principal?\n\nSe perderá cualquier progreso no guardado.\n¡Asegúrate de guardar tu partida primero!"
+MainMenu,mainmenu.savegameui.save_info_found,"Save File Information:\n\nFile: {0}\nCreated: {1}\nLast Modified: {2}\nSize: {3}\n\n💡 Game saves automatically when you sleep in bed","Informações do Arquivo de Save:\n\nArquivo: {0}\nCriado: {1}\nÚltima Modificação: {2}\nTamanho: {3}\n\n💡 O jogo salva automaticamente quando você dorme na cama","Información del archivo de guardado:\n\nArchivo: {0}\nCreado: {1}\nÚltima modificación: {2}\nTamaño: {3}\n\n💡 El juego se guarda automáticamente cuando duermes en la cama"
+MainMenu,mainmenu.savegameui.save_info_not_found,"No save file found.\n\n🛏️ Sleep in a bed to save your progress automatically.\n\nThe game will create a save file when you go to sleep.","Nenhum arquivo de save encontrado.\n\n🛏️ Durma em uma cama para salvar seu progresso automaticamente.\n\nO jogo criará um arquivo de save quando você dormir.","No se encontró archivo de guardado.\n\n🛏️ Duerme en una cama para guardar tu progreso automáticamente.\n\nEl juego creará un archivo de guardado cuando duermas."
+MainMenu,mainmenu.saveslotbutton.autosave,Auto Save,Save Automático,Guardado automático
+MainMenu,mainmenu.saveslotbutton.slot_prefix,Slot ,Slot ,Ranura
+MainMenu,mainmenu.saveslotbutton.day_label,"Day {0} — {1}, Year {2}","Dia {0} — {1}, Ano {2}","Día {0} — {1}, Año {2}"
+MainMenu,mainmenu.saveslotbutton.money_label,${0},${0},${0}
+Inventory,inventory.title,Inventory,Inventário,Inventario
+Inventory,inventory.sort_label,Sort: {0},Ordenar: {0},Ordenar: {0}
+Inventory,inventory.count_fraction,{0}/{1},{0}/{1},{0}/{1}
+Inventory,inventory.tooltip.italic_text,<i>{0}</i>,<i>{0}</i>,<i>{0}</i>
+Inventory,inventory.tooltip.value_coins,<color=#FFD700>Value: {0} coins</color>,<color=#FFD700>Valor: {0} moedas</color>,<color=#FFD700>Valor: {0} monedas</color>
+Inventory,inventory.tooltip.cannot_be_sold,<color=#888888>Cannot be sold</color>,<color=#888888>Não pode ser vendido</color>,<color=#888888>No se puede vender</color>
+Inventory,inventory.tooltip.max_stack,<color=#AAAAAA>Max Stack: {0}</color>,<color=#AAAAAA>Pilha Máxima: {0}</color>,<color=#AAAAAA>Pila Máxima: {0}</color>
+Inventory,inventory.tooltip.consumable,<color=#90EE90>Consumable</color>,<color=#90EE90>Consumível</color>,<color=#90EE90>Consumible</color>
+Inventory,inventory.tooltip.energy,"  <color=#FFD700>+{0} Energy</color>","  <color=#FFD700>+{0} Energia</color>","  <color=#FFD700>+{0} Energía</color>"
+Inventory,inventory.tooltip.health,"  <color=#FF6B6B>+{0} Health</color>","  <color=#FF6B6B>+{0} Vida</color>","  <color=#FF6B6B>+{0} Vida</color>"
+Inventory,inventory.tooltip.tool_level,<color=#87CEEB>Tool Level: {0}</color>,<color=#87CEEB>Nível da Ferramenta: {0}</color>,<color=#87CEEB>Nivel de Herramienta: {0}</color>
+Inventory,inventory.tooltip.durability,<color=#FFA500>Durability: {0}</color>,<color=#FFA500>Durabilidade: {0}</color>,<color=#FFA500>Durabilidad: {0}</color>
+Inventory,inventory.tooltip.unbreakable,<color=#90EE90>Unbreakable</color>,<color=#90EE90>Inquebrável</color>,<color=#90EE90>Indestructible</color>
+Inventory,inventory.tooltip.description,<size=11><color=#888888>{0}</color></size>,<size=11><color=#888888>{0}</color></size>,<size=11><color=#888888>{0}</color></size>
+Animals,animals.info.daily_food_header,Daily Food Needs:\n,Necessidades de Alimentação Diárias:\n,Necesidades de alimentación diarias:\n
+Animals,animals.info.food_line,"• {0}x {1}\n","• {0}x {1}\n","• {0}x {1}\n"
+Animals,animals.info.no_special_food,No special food needed,Nenhum alimento especial necessário,No necesita alimento especial
+Animals,animals.info.status_header,Status:\n,Status:\n,Estado:\n
+Animals,animals.info.status_ill,"• ILL — use {0} to cure\n","• DOENTE — use {0} para curar\n","• ENFERMO — usa {0} para curar\n"
+Animals,animals.info.status_happy,"• Happy (Petted today)\n","• Feliz (Acariciado hoje)\n","• Feliz (Acariciado hoy)\n"
+Animals,animals.info.status_well_fed,"• Well Fed\n","• Bem Alimentado\n","• Bien Alimentado\n"
+Animals,animals.info.status_hungry,"• Hungry\n","• Com Fome\n","• Hambriento\n"
+Animals,animals.info.fed_today,Fed Today: {0}/{1},Alimentado Hoje: {0}/{1},Alimentado Hoy: {0}/{1}
+Animals,animals.info.happiness,Happiness: {0:F0}/100,Felicidade: {0:F0}/100,Felicidad: {0:F0}/100
+Animals,animals.info.stat_multiplier,Stat Multiplier: {0:F2}x,Multiplicador de Status: {0:F2}x,Multiplicador de Estadística: {0:F2}x
+Animals,animals.info.no_production,No production,Sem produção,Sin producción
+Animals,animals.info.produces,"Produces: {0}\n","Produz: {0}\n","Produce: {0}\n"
+Animals,animals.market.buy_price,{0}g,{0}g,{0}g
+Animals,animals.market.sell_price,+{0}g,+{0}g,+{0}g
+Animals,animals.market.unassigned,Unassigned,Não atribuído,Sin asignar
+Animals,animals.market.not_enough_gold,Not enough gold.,Ouro insuficiente.,Oro insuficiente.
+Animals,animals.market.zones_full,All zones are full! Build a Barn or free up space.,Todas as zonas estão cheias! Construa um Celeiro ou libere espaço.,¡Todas las zonas están llenas! Construye un Granero o libera espacio.
+Animals,animals.market.welcome,"Welcome, {0}!","Bem-vindo(a), {0}!","¡Bienvenido(a), {0}!"
+Animals,animals.market.sell_confirm,Sell {0}?,Vender {0}?,¿Vender {0}?
+Animals,animals.market.sell_gold_gain,+{0} gold,+{0} ouro,+{0} oro
+Animals,animals.market.sale_failed,Sale failed — missing references.,Falha na venda — referências ausentes.,Venta fallida — referencias faltantes.
+Animals,animals.market.sold,Sold {0}.,{0} vendido.,{0} vendido.
+Animals,animals.market.friendship_discount,Friendship Discount: {0}% off,Desconto de Amizade: {0}% off,Descuento de Amistad: {0}% de descuento
+Animals,animals.market.gold_label,Gold: {0},Ouro: {0},Oro: {0}
+Animals,animals.roster.group_header,{0} ({1} animals),{0} ({1} animais),{0} ({1} animales)
+Animals,animals.roster.mood_happy,☺,☺,☺
+Animals,animals.roster.mood_neutral,•,•,•
+Animals,animals.roster.mood_sad,☹,☹,☹
+Animals,animals.roster.hungry,Hungry,Com Fome,Hambriento
+Animals,animals.roster.fed,Fed,Alimentado,Alimentado
+Animals,animals.roster.row_status,"{0} {1:F0}%  |  {2}","{0} {1:F0}%  |  {2}","{0} {1:F0}%  |  {2}"
+Animals,animals.roster.title,Animal Roster — {0} Animal{1},Lista de Animais — {0} Animal{1},Lista de Animales — {0} Animal{1}
+Animals,animals.roster.empty,No animals registered yet.,Nenhum animal registrado ainda.,Aún no hay animales registrados.
+Animals,animals.roster.avg_happiness,"Avg Happiness: {0:F0}  |  Hungry: {1}/{2}","Felicidade Média: {0:F0}  |  Com Fome: {1}/{2}","Felicidad Promedio: {0:F0}  |  Hambrientos: {1}/{2}"
+Animals,animals.skill.requires,Requires: ,Requer: ,Requiere:
+Animals,animals.skill.and,  AND  ,  E  ,  Y
+Animals,animals.skill.full_info_header,"<b>{0}</b> ({1})\n","<b>{0}</b> ({1})\n","<b>{0}</b> ({1})\n"
+Animals,animals.skill.full_info_desc,"{0}\n\n","{0}\n\n","{0}\n\n"
+Animals,animals.skill.full_info_unlock,Unlock: {0},Desbloqueio: {0},Desbloqueo: {0}
+Animals,animals.trough.title,Feeding Trough,Comedouro,Comedero
+Animals,animals.trough.status,"Food stored: {0} items\nCan feed: {1}/{2} animals tomorrow","Comida armazenada: {0} itens\nPode alimentar: {1}/{2} animais amanhã","Comida almacenada: {0} artículos\nPuede alimentar: {1}/{2} animales mañana"
+Combat,combat.selection.happiness,Happiness: {0:F0}%,Felicidade: {0:F0}%,Felicidad: {0:F0}%
+Combat,combat.selection.fed,Fed,Alimentado,Alimentado
+Combat,combat.selection.no_food_needed,No food needed,Nenhum alimento necessário,No necesita alimento
+Combat,combat.selection.needs,Needs: ,Precisa: ,Necesita:
+Combat,combat.selection.food_line,"{0}x {1} ","{0}x {1} ","{0}x {1} "
+Combat,combat.hud.combo,Combo x{0}!,Combo x{0}!,¡Combo x{0}!
+Combat,combat.results.victory,*** VICTORY! ***,*** VITÓRIA! ***,*** ¡VICTORIA! ***
+Combat,combat.results.defeat,-- DEFEAT --,-- DERROTA --,-- DERROTA --
+Combat,combat.results.draw,⏱️ DRAW ⏱️,⏱️ EMPATE ⏱️,⏱️ EMPATE ⏱️
+Combat,combat.results.turn_limit,"\n\nTurn limit reached!","\n\nLimite de turnos atingido!","\n\n¡Límite de turnos alcanzado!"
+Combat,combat.results.partial_rewards,"Partial Rewards:\nGold: 50\nXP: 25 (all units)","Recompensas Parciais:\nOuro: 50\nXP: 25 (todas as unidades)","Recompensas Parciales:\nOro: 50\nXP: 25 (todas las unidades)"
+Combat,combat.results.stats,"<b>Battle Statistics</b>\n\nTurns: {0}\nYour Survivors: {1}\nEnemy Survivors: {2}\n","<b>Estatísticas da Batalha</b>\n\nTurnos: {0}\nSeus Sobreviventes: {1}\nSobreviventes Inimigos: {2}\n","<b>Estadísticas de la Batalla</b>\n\nTurnos: {0}\nTus Sobrevivientes: {1}\nSobrevivientes Enemigos: {2}\n"
+Combat,combat.results.no_rewards,No rewards.,Sem recompensas.,Sin recompensas.
+Combat,combat.results.rewards_header,"<b>Rewards</b>\n\n","<b>Recompensas</b>\n\n","<b>Recompensas</b>\n\n"
+Combat,combat.results.gold,Gold: {0},Ouro: {0},Oro: {0}
+Combat,combat.results.xp,XP: +{0} (surviving units),XP: +{0} (unidades sobreviventes),XP: +{0} (unidades sobrevivientes)
+Combat,combat.results.item_reward,{0} x{1},{0} x{1},{0} x{1}
+Combat,combat.results.animal_happiness,Animal Happiness: +{0},Felicidade Animal: +{0},Felicidad Animal: +{0}
+Combat,combat.status.turn_counter,Turn: {0}/{1},Turno: {0}/{1},Turno: {0}/{1}
+Combat,combat.status.your_team,Your Team: {0}/{1},Seu Time: {0}/{1},Tu Equipo: {0}/{1}
+Combat,combat.status.enemies,Enemies: {0}/{1},Inimigos: {0}/{1},Enemigos: {0}/{1}
+Combat,combat.consumables.title,Items,Itens,Objetos
+Combat,combat.consumables.no_inventory,No inventory found,Inventário não encontrado,Inventario no encontrado
+Combat,combat.consumables.none,No consumables,Nenhum consumível,Sin consumibles
+Combat,combat.consumables.item_row,{0} x{1} (+{2} HP),{0} x{1} (+{2} PV),{0} x{1} (+{2} PV)
+Combat,combat.grid.position_label,"({0},{1})","({0},{1})","({0},{1})"
+Combat,combat.teamassembler.zone_label,Zone: {0},Zona: {0},Zona: {0}
+Combat,combat.teamassembler.team_count,Team: {0}/15,Time: {0}/15,Equipo: {0}/15
+Combat,combat.teamassembler.all_fed,All animals fed!,Todos os animais alimentados!,¡Todos los animales alimentados!
+Combat,combat.teamassembler.required_food_header,"Required Food:\n","Comida Necessária:\n","Comida Necesaria:\n"
+Combat,combat.teamassembler.food_line,"• {0}x {1}\n","• {0}x {1}\n","• {0}x {1}\n"
+Combat,combat.teamassembler.synergies_header,"Synergies:\n","Sinergias:\n","Sinergias:\n"
+Combat,combat.teamassembler.synergy_line,"• {0}x {1} (Stack Bonus)\n","• {0}x {1} (Bônus de Pilha)\n","• {0}x {1} (Bono de Pila)\n"
+Combat,combat.teamassembler.no_synergies,No active synergies,Nenhuma sinergia ativa,Sin sinergias activas
+Combat,combat.teamassemblersetup.available_animals,Available Animals,Animais Disponíveis,Animales Disponibles
+Combat,combat.healthbar.fraction,{0}/{1},{0}/{1},{0}/{1}
+Dialogue,dialogue.shop.friendship_discount,Friendship Discount: {0}% off,Desconto de Amizade: {0}% off,Descuento de Amistad: {0}% de descuento
+Dialogue,dialogue.shop.gold_label,Gold: {0},Ouro: {0},Oro: {0}
+Dialogue,dialogue.shop.price,{0}g,{0}g,{0}g
+Dialogue,dialogue.shop.unlimited_stock,∞,∞,∞
+Dialogue,dialogue.shop.stock_count,x{0},x{0},x{0}
+Dialogue,dialogue.gift.choose_title,Choose a gift,Escolha um presente,Elige un regalo
+Dialogue,dialogue.gift.close,Close,Fechar,Cerrar
+Dialogue,dialogue.gift.no_giftable_items,No giftable items,Nenhum item para presentear,Sin artículos para regalar
+Dialogue,dialogue.gift.item_row,{0} x{1} (+{2} relationship),{0} x{1} (+{2} relacionamento),{0} x{1} (+{2} relación)
+Dialogue,dialogue.gift.give,Give,Dar,Dar
+Dialogue,dialogue.gift.no_inventory_found,No inventory found,Inventário não encontrado,Inventario no encontrado
+Dialogue,dialogue.seedshop.no_seeds_available,No seeds available.,Nenhuma semente disponível.,No hay semillas disponibles.
+Dialogue,dialogue.relationship.codex_header,Codex,Códex,Códice
+Dialogue,dialogue.relationship.no_info,No information available yet.,Nenhuma informação disponível ainda.,Aún no hay información disponible.
+Dialogue,dialogue.relationship.score,{0:F0} / 100,{0:F0} / 100,{0:F0} / 100
+Dialogue,dialogue.relationship.beloved,Beloved,Amado,Amado
+Dialogue,dialogue.relationship.close_friend,Close Friend,Amigo Próximo,Amigo Cercano
+Dialogue,dialogue.relationship.friend,Friend,Amigo,Amigo
+Dialogue,dialogue.relationship.acquaintance,Acquaintance,Conhecido,Conocido
+Dialogue,dialogue.relationship.tense,Tense,Tenso,Tenso
+Dialogue,dialogue.relationship.hostile,Hostile,Hostil,Hostil
+Dialogue,dialogue.seedshop.title,Seed Shop,Loja de Semente,Tienda de Semillas
+Dialogue,dialogue.seedshop.gold_zero,Gold: 0,Ouro: 0,Oro: 0
+Dialogue,dialogue.seedshop.close,Close,Fechar,Cerrar
+Dialogue,dialogue.seedshop.gold_label,Gold: {0},Ouro: {0},Oro: {0}
+Dialogue,dialogue.seedshop.item_row,{0}  — {1}g,{0}  — {1}g,{0}  — {1}g
+Dialogue,dialogue.seedshop.buy,Buy,Comprar,Comprar
+Farming,farming.building.cost_progress,{0}: {1} / {2},{0}: {1} / {2},{0}: {1} / {2}
+Farming,farming.building.built,✓ Built,✓ Construído,✓ Construido
+Farming,farming.building.cannot_afford,Cannot afford,Não pode pagar,No se puede pagar
+Farming,farming.buildingshop.gold_cost,{0} gold,{0} ouro,{0} oro
+Farming,farming.buildingshop.extra_cost,"\n+ {0}x {1}","\n+ {0}x {1}","\n+ {0}x {1}"
+Farming,farming.buildingshop.purchase_failed,Purchase failed — missing references.,Falha na compra — referências ausentes.,Compra fallida — referencias faltantes.
+Farming,farming.buildingshop.construction_complete,Construction complete!,Construção concluída!,¡Construcción completa!
+Farming,farming.buildingshop.cannot_build,Cannot build.,Não é possível construir.,No se puede construir.
+Farming,farming.buildingshop.not_enough_gold,Not enough gold.,Ouro insuficiente.,Oro insuficiente.
+Farming,farming.buildingshop.missing_materials,Missing {0}x {1}.,Faltam {0}x {1}.,Faltan {0}x {1}.
+Farming,farming.buildingshop.gold_label,Gold: {0}g,Ouro: {0}g,Oro: {0}g
+Farming,farming.soil.wrong_season,{0} can't grow in {1}!,{0} não pode crescer em {1}!,¡{0} no puede crecer en {1}!
+Farming,farming.soil.bonus,Bonus {0}!,Bônus {0}!,¡Bono {0}!
+Farming,farming.soil.ready,{0} - Ready!,{0} - Pronto!,¡{0} - Listo!
+Farming,farming.soil.days_left,{0} - {1}d,{0} - {1}d,{0} - {1}d
+Farming,farming.soil.empty_marker,!,!,¡
+Farming,farming.sellbox.title,Sell Box,Caixa de Venda,Caja de Venta
+Farming,farming.sellbox.total_value,Total Value: {0} coins,Valor Total: {0} moedas,Valor Total: {0} monedas
+Farming,farming.sleep.title,Sleep Until Morning?,Dormir Até de Manhã?,¿Dormir Hasta la Mañana?
+Farming,farming.sleep.confirm,Sleep,Dormir,Dormir
+Farming,farming.sleep.cancel,Cancel,Cancelar,Cancelar
+Farming,farming.sleep.current_time,"Current: Day {0}, {1}\nYou will wake up tomorrow at 6:00 AM","Atual: Dia {0}, {1}\nVocê vai acordar amanhã às 6:00","Actual: Día {0}, {1}\nDespertarás mañana a las 6:00"
+Farming,farming.sleep.wake_tomorrow,You will wake up tomorrow morning,Você vai acordar amanhã de manhã,Despertarás mañana por la mañana
+Farming,farming.sleep.sellbox_summary,SellBox: {0} items will be sold for {1}g,Caixa de Venda: {0} itens serão vendidos por {1}g,Caja de Venta: {0} artículos se venderán por {1}g
+Farming,farming.sleep.sellbox_empty,SellBox: No items to sell,Caixa de Venda: Nenhum item para vender,Caja de Venta: Sin artículos para vender
+Farming,farming.sleep.trough_summary,Feeding Troughs: {0} animal{1} will be fed,Comedouros: {0} animal{1} será(ão) alimentado(s),Comederos: {0} animal{1} será(n) alimentado(s)
+Farming,farming.sleep.trough_empty,Feeding Troughs: No food available,Comedouros: Nenhuma comida disponível,Comederos: Sin comida disponible
+Farming,farming.sleep.autosave_on,Game will be auto-saved,O jogo será salvo automaticamente,El juego se guardará automáticamente
+Farming,farming.sleep.autosave_off,Auto-save not available,Save automático não disponível,Guardado automático no disponible
+UI_Common,ui_common.achievement_unlocked,ACHIEVEMENT UNLOCKED,CONQUISTA DESBLOQUEADA,LOGRO DESBLOQUEADO
+MapEditor,mapeditor.tile_label,Tile: {0},Tile: {0},Tile: {0}
+MapEditor,mapeditor.tool_label,Tool: {0},Ferramenta: {0},Herramienta: {0}
+MapEditor,mapeditor.pos_label,"Pos: {0}, {1}","Pos: {0}, {1}","Pos: {0}, {1}"
+MapEditor,mapeditor.map_label,Map: {0},Mapa: {0},Mapa: {0}
+MapEditor,mapeditor.tiles_label,Tiles: {0},Tiles: {0},Tiles: {0}
+Minimap,minimap.zoom_label,Zoom: {0:F1}x,Zoom: {0:F1}x,Zoom: {0:F1}x
+Minimap,minimap.coords_label,"X: {0:F1}, Y: {1:F1}","X: {0:F1}, Y: {1:F1}","X: {0:F1}, Y: {1:F1}"
+Minimap,minimap.mode_label,Mode: {0},Modo: {0},Modo: {0}
+UI_Common,ui_common.time_label,Time: {0},Hora: {0},Hora: {0}
+UI_Common,ui_common.season_day_label,{0} {1},{0} {1},{0} {1}
+UI_Common,ui_common.day_label,Day {0},Dia {0},Día {0}
+Worldmap,worldmap.biome_completed,{0}/{1} completed,{0}/{1} completo,{0}/{1} completado
+LoadingTips,loadingtips.tip01,Tip: Water your crops regularly to prevent them from dying!,Dica: Regue suas plantações regularmente para evitar que morram!,Consejo: ¡Riega tus cultivos regularmente para evitar que se marchiten!
+LoadingTips,loadingtips.tip02,Tip: Use the SellBox to automatically sell items when you sleep.,Dica: Use a Caixa de Venda para vender itens automaticamente quando você dormir.,Consejo: Usa la Caja de Venta para vender artículos automáticamente cuando duermas.
+LoadingTips,loadingtips.tip03,Tip: Different crops grow in different seasons.,Dica: Plantações diferentes crescem em estações diferentes.,Consejo: Diferentes cultivos crecen en diferentes estaciones.
+LoadingTips,loadingtips.tip04,Tip: Talk to NPCs to learn more about farming techniques.,Dica: Converse com NPCs para aprender mais sobre técnicas de cultivo.,Consejo: Habla con los NPC para aprender más sobre técnicas de cultivo.
+LoadingTips,loadingtips.tip05,Tip: Upgrade your tools to work more efficiently.,Dica: Melhore suas ferramentas para trabalhar com mais eficiência.,Consejo: Mejora tus herramientas para trabajar de forma más eficiente.
+LoadingTips,loadingtips.tip06,Tip: Save your game regularly to avoid losing progress.,Dica: Salve seu jogo regularmente para evitar perder o progresso.,Consejo: Guarda tu partida regularmente para evitar perder el progreso.
+LoadingTips,loadingtips.tip07,Tip: Explore the world to find new seeds and resources.,Dica: Explore o mundo para encontrar novas semente e recursos.,Consejo: Explora el mundo para encontrar nuevas semillas y recursos.
+Tutorial,tutorial.till_soil.title,Till the soil,Are o solo,Ara la tierra
+Tutorial,tutorial.till_soil.description,"Welcome to your farm!\n\nEquip the <b>Hoe</b> from your hotbar, then <b>left-click</b> on a soil tile to till it.","Bem-vindo à sua fazenda!\n\nEquipe a <b>Enxada</b> da sua barra de itens e, em seguida, <b>clique com o botão esquerdo</b> em um bloco de terra para arar.","¡Bienvenido a tu granja!\n\nEquipa la <b>Azada</b> desde tu barra de acceso rápido, luego haz <b>clic izquierdo</b> en una parcela de tierra para ararla."
+Tutorial,tutorial.plant_seed.title,Plant a seed,Plante uma semente,Planta una semilla
+Tutorial,tutorial.plant_seed.description,"Great! Now equip a <b>Seed</b> and <b>left-click</b> the tilled soil to plant it.","Ótimo! Agora equipe uma <b>Semente</b> e <b>clique com o botão esquerdo</b> no solo arado para plantá-la.","¡Genial! Ahora equipa una <b>Semilla</b> y haz <b>clic izquierdo</b> en la tierra arada para plantarla."
+Tutorial,tutorial.water_crop.title,Water the crop,Regue a plantação,Riega el cultivo
+Tutorial,tutorial.water_crop.description,"Crops need water to grow. Equip the <b>Watering Can</b> and <b>left-click</b> the planted soil.","As plantações precisam de água para crescer. Equipe o <b>Regador</b> e <b>clique com o botão esquerdo</b> no solo plantado.","Los cultivos necesitan agua para crecer. Equipa la <b>Regadera</b> y haz <b>clic izquierdo</b> en la tierra plantada."
+Tutorial,tutorial.pet_animal.title,Pet an animal,Acaricie um animal,Acaricia a un animal
+Tutorial,tutorial.pet_animal.description,"Visit an animal and press <b>E</b> to pet it. Happy animals produce more!","Visite um animal e pressione <b>E</b> para acariciá-lo. Animais felizes produzem mais!","Visita a un animal y presiona <b>E</b> para acariciarlo. ¡Los animales felices producen más!"
+Tutorial,tutorial.sleep.title,Sleep to advance the day,Durma para avançar o dia,Duerme para avanzar el día
+Tutorial,tutorial.sleep.description,"Time passes when you sleep. Walk to the <b>bed</b> and press <b>E</b> to sleep.","O tempo passa quando você dorme. Caminhe até a <b>cama</b> e pressione <b>E</b> para dormir.","El tiempo pasa cuando duermes. Camina hasta la <b>cama</b> y presiona <b>E</b> para dormir."
+Tutorial,tutorial.harvest.title,Harvest a crop,Colha uma plantação,Cosecha un cultivo
+Tutorial,tutorial.harvest.description,"Your crops have grown! Walk to a <b>ready crop</b> and press <b>E</b> or left-click to harvest.","Suas plantações cresceram! Caminhe até uma <b>plantação pronta</b> e pressione <b>E</b> ou clique com o botão esquerdo para colher.","¡Tus cultivos han crecido! Camina hasta un <b>cultivo listo</b> y presiona <b>E</b> o haz clic izquierdo para cosechar."
+Tutorial,tutorial.step_progress,Step {0}/{1}: {2},Passo {0}/{1}: {2},Paso {0}/{1}: {2}

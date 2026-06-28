@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization;
 
 namespace SowurShield.Core
 {
@@ -16,6 +17,12 @@ public class UIManagerPlayer : MonoBehaviour
     [Header("Configurações")]
     public bool showAmPm = false;    // Se deve mostrar tempo em formato AM/PM
     public bool showSeasons = true;  // Se deve mostrar estações
+
+    [Header("Localization")]
+    [SerializeField] private LocalizedString moneyLabelLocalized; // table "UI_Common", key "ui_common.money_label"
+    [SerializeField] private LocalizedString timeLabelLocalized; // table "UI_Common", key "ui_common.time_label"
+    [SerializeField] private LocalizedString seasonDayLabelLocalized; // table "UI_Common", key "ui_common.season_day_label"
+    [SerializeField] private LocalizedString dayLabelLocalized; // table "UI_Common", key "ui_common.day_label"
 
     // Referência para o sistema de tempo
     private GameTimeController timeController;
@@ -46,6 +53,15 @@ public class UIManagerPlayer : MonoBehaviour
         
         // Inicializa a UI com dados reais
         UpdateAllUI();
+
+        LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(Locale locale)
+    {
+        UpdateAllUI();
+        UpdateTimeDisplay();
+        UpdateDayDisplay();
     }
 
     // Handlers específicos para os eventos
@@ -61,6 +77,8 @@ public class UIManagerPlayer : MonoBehaviour
 
     private void OnDestroy()
     {
+        LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+
         // Remove os callbacks ao destruir para evitar memory leaks
         if (timeController != null)
         {
@@ -105,7 +123,10 @@ public class UIManagerPlayer : MonoBehaviour
     private void UpdateMoneyUI(int money)
     {
         if (moneyText != null)
-            moneyText.text = $"Money: ${money}";
+        {
+            moneyLabelLocalized.Arguments = new object[] { money };
+            moneyText.text = moneyLabelLocalized.SafeGetLocalizedString();
+        }
     }
     
     // Método público para compatibilidade (caso outros scripts chamem)
@@ -158,7 +179,8 @@ public class UIManagerPlayer : MonoBehaviour
         }
 
         // Atualiza o texto de hora
-        timeText.text = $"Time: {timeString}";
+        timeLabelLocalized.Arguments = new object[] { timeString };
+        timeText.text = timeLabelLocalized.SafeGetLocalizedString();
     }
 
     // Método para atualizar o display do dia
@@ -174,11 +196,13 @@ public class UIManagerPlayer : MonoBehaviour
 
         if (showSeasons && !string.IsNullOrEmpty(seasonName))
         {
-            dayText.text = $"{seasonName} {dayOfSeason}";
+            seasonDayLabelLocalized.Arguments = new object[] { seasonName, dayOfSeason };
+            dayText.text = seasonDayLabelLocalized.SafeGetLocalizedString();
         }
         else
         {
-            dayText.text = $"Day {currentDay}";
+            dayLabelLocalized.Arguments = new object[] { currentDay };
+            dayText.text = dayLabelLocalized.SafeGetLocalizedString();
         }
 
     }

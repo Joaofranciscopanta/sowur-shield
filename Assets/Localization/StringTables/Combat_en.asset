@@ -1,0 +1,168 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Combat_en
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 964a1c34d06cb564bbea51ec96ceeee4, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 300670976
+    m_Localized: 'Happiness: {0:F0}%'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448192
+    m_Localized: Fed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448193
+    m_Localized: No food needed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448194
+    m_Localized: 'Needs: '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448195
+    m_Localized: '{0}x {1} '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448196
+    m_Localized: Combo x{0}!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448197
+    m_Localized: '*** VICTORY! ***'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448198
+    m_Localized: -- DEFEAT --
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448199
+    m_Localized: "\u23F1\uFE0F DRAW \u23F1\uFE0F"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448200
+    m_Localized: \n\nTurn limit reached!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448201
+    m_Localized: 'Partial Rewards:\nGold: 50\nXP: 25 (all units)'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448202
+    m_Localized: '<b>Battle Statistics</b>\n\nTurns: {0}\nYour Survivors: {1}\nEnemy
+      Survivors: {2}\n'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448203
+    m_Localized: No rewards.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448204
+    m_Localized: <b>Rewards</b>\n\n
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448205
+    m_Localized: 'Gold: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448206
+    m_Localized: 'XP: +{0} (surviving units)'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448207
+    m_Localized: '{0} x{1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448208
+    m_Localized: 'Animal Happiness: +{0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448209
+    m_Localized: 'Turn: {0}/{1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448210
+    m_Localized: 'Your Team: {0}/{1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448211
+    m_Localized: 'Enemies: {0}/{1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448212
+    m_Localized: Items
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448213
+    m_Localized: No inventory found
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448214
+    m_Localized: No consumables
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448215
+    m_Localized: '{0} x{1} (+{2} HP)'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448216
+    m_Localized: ({0},{1})
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448217
+    m_Localized: 'Zone: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448218
+    m_Localized: 'Team: {0}/15'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448219
+    m_Localized: All animals fed!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448220
+    m_Localized: Required Food:\n
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448221
+    m_Localized: "\u2022 {0}x {1}\\n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448222
+    m_Localized: Synergies:\n
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448223
+    m_Localized: "\u2022 {0}x {1} (Stack Bonus)\\n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448224
+    m_Localized: No active synergies
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448225
+    m_Localized: Available Animals
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448226
+    m_Localized: '{0}/{1}'
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

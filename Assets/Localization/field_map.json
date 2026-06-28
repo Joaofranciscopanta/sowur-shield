@@ -1,0 +1,1542 @@
+[
+  {
+    "class": "BuildingRow",
+    "field": "costProgressText",
+    "table": "Farming",
+    "key": "farming.building.cost_progress",
+    "file": "Assets/Scripts/BuildingRow.cs"
+  },
+  {
+    "class": "BuildingRow",
+    "field": "builtText",
+    "table": "Farming",
+    "key": "farming.building.built",
+    "file": "Assets/Scripts/BuildingRow.cs"
+  },
+  {
+    "class": "BuildingRow",
+    "field": "cannotAffordText",
+    "table": "Farming",
+    "key": "farming.building.cannot_afford",
+    "file": "Assets/Scripts/BuildingRow.cs"
+  },
+  {
+    "class": "BuildingShopUI",
+    "field": "goldCostText",
+    "table": "Farming",
+    "key": "farming.buildingshop.gold_cost",
+    "file": "Assets/Scripts/BuildingShopUI.cs"
+  },
+  {
+    "class": "BuildingShopUI",
+    "field": "extraCostText",
+    "table": "Farming",
+    "key": "farming.buildingshop.extra_cost",
+    "file": "Assets/Scripts/BuildingShopUI.cs"
+  },
+  {
+    "class": "BuildingShopUI",
+    "field": "purchaseFailedText",
+    "table": "Farming",
+    "key": "farming.buildingshop.purchase_failed",
+    "file": "Assets/Scripts/BuildingShopUI.cs"
+  },
+  {
+    "class": "BuildingShopUI",
+    "field": "constructionCompleteText",
+    "table": "Farming",
+    "key": "farming.buildingshop.construction_complete",
+    "file": "Assets/Scripts/BuildingShopUI.cs"
+  },
+  {
+    "class": "BuildingShopUI",
+    "field": "cannotBuildText",
+    "table": "Farming",
+    "key": "farming.buildingshop.cannot_build",
+    "file": "Assets/Scripts/BuildingShopUI.cs"
+  },
+  {
+    "class": "BuildingShopUI",
+    "field": "notEnoughGoldText",
+    "table": "Farming",
+    "key": "farming.buildingshop.not_enough_gold",
+    "file": "Assets/Scripts/BuildingShopUI.cs"
+  },
+  {
+    "class": "BuildingShopUI",
+    "field": "missingMaterialsText",
+    "table": "Farming",
+    "key": "farming.buildingshop.missing_materials",
+    "file": "Assets/Scripts/BuildingShopUI.cs"
+  },
+  {
+    "class": "BuildingShopUI",
+    "field": "goldLabelText",
+    "table": "Farming",
+    "key": "farming.buildingshop.gold_label",
+    "file": "Assets/Scripts/BuildingShopUI.cs"
+  },
+  {
+    "class": "GameMenuUI",
+    "field": "settingsNotConfiguredText",
+    "table": "MainMenu",
+    "key": "mainmenu.gamemenu.settings_not_configured",
+    "file": "Assets/Scripts/GameMenuUI.cs"
+  },
+  {
+    "class": "GameMenuUI",
+    "field": "saveInfoNotConfiguredText",
+    "table": "MainMenu",
+    "key": "mainmenu.gamemenu.saveinfo_not_configured",
+    "file": "Assets/Scripts/GameMenuUI.cs"
+  },
+  {
+    "class": "GameMenuUI",
+    "field": "saveInfoFoundText",
+    "table": "MainMenu",
+    "key": "mainmenu.gamemenu.save_info_found",
+    "file": "Assets/Scripts/GameMenuUI.cs"
+  },
+  {
+    "class": "GameMenuUI",
+    "field": "saveInfoNotFoundText",
+    "table": "MainMenu",
+    "key": "mainmenu.gamemenu.save_info_not_found",
+    "file": "Assets/Scripts/GameMenuUI.cs"
+  },
+  {
+    "class": "GameMenuUI",
+    "field": "saveSlotTitleText",
+    "table": "MainMenu",
+    "key": "mainmenu.gamemenu.save_slot_title",
+    "file": "Assets/Scripts/GameMenuUI.cs"
+  },
+  {
+    "class": "GameMenuUI",
+    "field": "loadSlotTitleText",
+    "table": "MainMenu",
+    "key": "mainmenu.gamemenu.load_slot_title",
+    "file": "Assets/Scripts/GameMenuUI.cs"
+  },
+  {
+    "class": "GameMenuUI",
+    "field": "overwriteConfirmText",
+    "table": "MainMenu",
+    "key": "mainmenu.gamemenu.overwrite_confirm",
+    "file": "Assets/Scripts/GameMenuUI.cs"
+  },
+  {
+    "class": "GameMenuUI",
+    "field": "loadConfirmText",
+    "table": "MainMenu",
+    "key": "mainmenu.gamemenu.load_confirm",
+    "file": "Assets/Scripts/GameMenuUI.cs"
+  },
+  {
+    "class": "GameMenuUI",
+    "field": "savedToSlotText",
+    "table": "MainMenu",
+    "key": "mainmenu.gamemenu.saved_to_slot",
+    "file": "Assets/Scripts/GameMenuUI.cs"
+  },
+  {
+    "class": "GameMenuUI",
+    "field": "confirmQuitDesktopText",
+    "table": "MainMenu",
+    "key": "mainmenu.gamemenu.confirm_quit_desktop",
+    "file": "Assets/Scripts/GameMenuUI.cs"
+  },
+  {
+    "class": "GameMenuUI",
+    "field": "confirmQuitMainMenuText",
+    "table": "MainMenu",
+    "key": "mainmenu.gamemenu.confirm_quit_mainmenu",
+    "file": "Assets/Scripts/GameMenuUI.cs"
+  },
+  {
+    "class": "GameMenuUI",
+    "field": "confirmDeleteSaveText",
+    "table": "MainMenu",
+    "key": "mainmenu.gamemenu.confirm_delete_save",
+    "file": "Assets/Scripts/GameMenuUI.cs"
+  },
+  {
+    "class": "GameMenuUI",
+    "field": "saveDeletedText",
+    "table": "MainMenu",
+    "key": "mainmenu.gamemenu.save_deleted",
+    "file": "Assets/Scripts/GameMenuUI.cs"
+  },
+  {
+    "class": "GameMenuUI",
+    "field": "testNotificationText",
+    "table": "MainMenu",
+    "key": "mainmenu.gamemenu.test_notification",
+    "file": "Assets/Scripts/GameMenuUI.cs"
+  },
+  {
+    "class": "GameMenuUI",
+    "field": "testErrorText",
+    "table": "MainMenu",
+    "key": "mainmenu.gamemenu.test_error",
+    "file": "Assets/Scripts/GameMenuUI.cs"
+  },
+  {
+    "class": "MainMenuUI",
+    "field": "loadGameTitleText",
+    "table": "MainMenu",
+    "key": "mainmenu.load_game_title",
+    "file": "Assets/Scripts/MainMenuUI.cs"
+  },
+  {
+    "class": "MainMenuUI",
+    "field": "newGameTitleText",
+    "table": "MainMenu",
+    "key": "mainmenu.new_game_title",
+    "file": "Assets/Scripts/MainMenuUI.cs"
+  },
+  {
+    "class": "MainMenuUI",
+    "field": "quitConfirmText",
+    "table": "MainMenu",
+    "key": "mainmenu.quit_confirm",
+    "file": "Assets/Scripts/MainMenuUI.cs"
+  },
+  {
+    "class": "MainMenuUI",
+    "field": "quitTitleText",
+    "table": "MainMenu",
+    "key": "mainmenu.quit_title",
+    "file": "Assets/Scripts/MainMenuUI.cs"
+  },
+  {
+    "class": "MainMenuUI",
+    "field": "loadingProgressText",
+    "table": "MainMenu",
+    "key": "mainmenu.loading_progress",
+    "file": "Assets/Scripts/MainMenuUI.cs"
+  },
+  {
+    "class": "MainMenuUI",
+    "field": "loadingSaveDataText",
+    "table": "MainMenu",
+    "key": "mainmenu.loading_save_data",
+    "file": "Assets/Scripts/MainMenuUI.cs"
+  },
+  {
+    "class": "MainMenuUI",
+    "field": "initializingNewGameText",
+    "table": "MainMenu",
+    "key": "mainmenu.initializing_new_game",
+    "file": "Assets/Scripts/MainMenuUI.cs"
+  },
+  {
+    "class": "MainMenuUI",
+    "field": "saveFileFoundTitleText",
+    "table": "MainMenu",
+    "key": "mainmenu.save_file_found_title",
+    "file": "Assets/Scripts/MainMenuUI.cs"
+  },
+  {
+    "class": "MainMenuUI",
+    "field": "saveFileLabelText",
+    "table": "MainMenu",
+    "key": "mainmenu.save_file_label",
+    "file": "Assets/Scripts/MainMenuUI.cs"
+  },
+  {
+    "class": "MainMenuUI",
+    "field": "saveSizeLabelText",
+    "table": "MainMenu",
+    "key": "mainmenu.save_size_label",
+    "file": "Assets/Scripts/MainMenuUI.cs"
+  },
+  {
+    "class": "MainMenuUI",
+    "field": "saveLastSavedLabelText",
+    "table": "MainMenu",
+    "key": "mainmenu.save_last_saved_label",
+    "file": "Assets/Scripts/MainMenuUI.cs"
+  },
+  {
+    "class": "PlayerStats",
+    "field": "moneyLabelLocalized",
+    "table": "UI_Common",
+    "key": "ui_common.money_label",
+    "file": "Assets/Scripts/PlayerStats.cs"
+  },
+  {
+    "class": "QuitToMainMenuButton",
+    "field": "confirmText",
+    "table": "MainMenu",
+    "key": "mainmenu.quittomainmenu.confirm",
+    "file": "Assets/Scripts/QuitToMainMenuButton.cs"
+  },
+  {
+    "class": "SaveGameUI",
+    "field": "saveInfoFoundText",
+    "table": "MainMenu",
+    "key": "mainmenu.savegameui.save_info_found",
+    "file": "Assets/Scripts/SaveGameUI.cs"
+  },
+  {
+    "class": "SaveGameUI",
+    "field": "saveInfoNotFoundText",
+    "table": "MainMenu",
+    "key": "mainmenu.savegameui.save_info_not_found",
+    "file": "Assets/Scripts/SaveGameUI.cs"
+  },
+  {
+    "class": "SceneTransitionManager",
+    "field": "loadingTip01_Localized",
+    "table": "LoadingTips",
+    "key": "loadingtips.tip01",
+    "file": "Assets/Scripts/SceneTransitionManager.cs"
+  },
+  {
+    "class": "SceneTransitionManager",
+    "field": "loadingTip02_Localized",
+    "table": "LoadingTips",
+    "key": "loadingtips.tip02",
+    "file": "Assets/Scripts/SceneTransitionManager.cs"
+  },
+  {
+    "class": "SceneTransitionManager",
+    "field": "loadingTip03_Localized",
+    "table": "LoadingTips",
+    "key": "loadingtips.tip03",
+    "file": "Assets/Scripts/SceneTransitionManager.cs"
+  },
+  {
+    "class": "SceneTransitionManager",
+    "field": "loadingTip04_Localized",
+    "table": "LoadingTips",
+    "key": "loadingtips.tip04",
+    "file": "Assets/Scripts/SceneTransitionManager.cs"
+  },
+  {
+    "class": "SceneTransitionManager",
+    "field": "loadingTip05_Localized",
+    "table": "LoadingTips",
+    "key": "loadingtips.tip05",
+    "file": "Assets/Scripts/SceneTransitionManager.cs"
+  },
+  {
+    "class": "SceneTransitionManager",
+    "field": "loadingTip06_Localized",
+    "table": "LoadingTips",
+    "key": "loadingtips.tip06",
+    "file": "Assets/Scripts/SceneTransitionManager.cs"
+  },
+  {
+    "class": "SceneTransitionManager",
+    "field": "loadingTip07_Localized",
+    "table": "LoadingTips",
+    "key": "loadingtips.tip07",
+    "file": "Assets/Scripts/SceneTransitionManager.cs"
+  },
+  {
+    "class": "SellBox",
+    "field": "titleText",
+    "table": "Farming",
+    "key": "farming.sellbox.title",
+    "file": "Assets/Scripts/SellBox.cs"
+  },
+  {
+    "class": "SellBox",
+    "field": "totalValueLocalizedText",
+    "table": "Farming",
+    "key": "farming.sellbox.total_value",
+    "file": "Assets/Scripts/SellBox.cs"
+  },
+  {
+    "class": "SleepConfirmationPanel",
+    "field": "titleLocalizedText",
+    "table": "Farming",
+    "key": "farming.sleep.title",
+    "file": "Assets/Scripts/SleepConfirmationPanel.cs"
+  },
+  {
+    "class": "SleepConfirmationPanel",
+    "field": "confirmLocalizedText",
+    "table": "Farming",
+    "key": "farming.sleep.confirm",
+    "file": "Assets/Scripts/SleepConfirmationPanel.cs"
+  },
+  {
+    "class": "SleepConfirmationPanel",
+    "field": "cancelLocalizedText",
+    "table": "Farming",
+    "key": "farming.sleep.cancel",
+    "file": "Assets/Scripts/SleepConfirmationPanel.cs"
+  },
+  {
+    "class": "SleepConfirmationPanel",
+    "field": "currentTimeText",
+    "table": "Farming",
+    "key": "farming.sleep.current_time",
+    "file": "Assets/Scripts/SleepConfirmationPanel.cs"
+  },
+  {
+    "class": "SleepConfirmationPanel",
+    "field": "wakeTomorrowText",
+    "table": "Farming",
+    "key": "farming.sleep.wake_tomorrow",
+    "file": "Assets/Scripts/SleepConfirmationPanel.cs"
+  },
+  {
+    "class": "SleepConfirmationPanel",
+    "field": "sellboxSummaryText",
+    "table": "Farming",
+    "key": "farming.sleep.sellbox_summary",
+    "file": "Assets/Scripts/SleepConfirmationPanel.cs"
+  },
+  {
+    "class": "SleepConfirmationPanel",
+    "field": "sellboxEmptyText",
+    "table": "Farming",
+    "key": "farming.sleep.sellbox_empty",
+    "file": "Assets/Scripts/SleepConfirmationPanel.cs"
+  },
+  {
+    "class": "SleepConfirmationPanel",
+    "field": "troughSummaryText",
+    "table": "Farming",
+    "key": "farming.sleep.trough_summary",
+    "file": "Assets/Scripts/SleepConfirmationPanel.cs"
+  },
+  {
+    "class": "SleepConfirmationPanel",
+    "field": "troughEmptyText",
+    "table": "Farming",
+    "key": "farming.sleep.trough_empty",
+    "file": "Assets/Scripts/SleepConfirmationPanel.cs"
+  },
+  {
+    "class": "SleepConfirmationPanel",
+    "field": "autosaveOnText",
+    "table": "Farming",
+    "key": "farming.sleep.autosave_on",
+    "file": "Assets/Scripts/SleepConfirmationPanel.cs"
+  },
+  {
+    "class": "SleepConfirmationPanel",
+    "field": "autosaveOffText",
+    "table": "Farming",
+    "key": "farming.sleep.autosave_off",
+    "file": "Assets/Scripts/SleepConfirmationPanel.cs"
+  },
+  {
+    "class": "SoilBlockInteractable",
+    "field": "wrongSeasonText",
+    "table": "Farming",
+    "key": "farming.soil.wrong_season",
+    "file": "Assets/Scripts/SoilBlockInteractable.cs"
+  },
+  {
+    "class": "SoilBlockInteractable",
+    "field": "bonusText",
+    "table": "Farming",
+    "key": "farming.soil.bonus",
+    "file": "Assets/Scripts/SoilBlockInteractable.cs"
+  },
+  {
+    "class": "SoilBlockInteractable",
+    "field": "readyText",
+    "table": "Farming",
+    "key": "farming.soil.ready",
+    "file": "Assets/Scripts/SoilBlockInteractable.cs"
+  },
+  {
+    "class": "SoilBlockInteractable",
+    "field": "daysLeftText",
+    "table": "Farming",
+    "key": "farming.soil.days_left",
+    "file": "Assets/Scripts/SoilBlockInteractable.cs"
+  },
+  {
+    "class": "SoilBlockInteractable",
+    "field": "emptyMarkerText",
+    "table": "Farming",
+    "key": "farming.soil.empty_marker",
+    "file": "Assets/Scripts/SoilBlockInteractable.cs"
+  },
+  {
+    "class": "TutorialManager",
+    "field": "tillSoilTitle_Localized",
+    "table": "Tutorial",
+    "key": "tutorial.till_soil.title",
+    "file": "Assets/Scripts/TutorialManager.cs"
+  },
+  {
+    "class": "TutorialManager",
+    "field": "tillSoilDescription_Localized",
+    "table": "Tutorial",
+    "key": "tutorial.till_soil.description",
+    "file": "Assets/Scripts/TutorialManager.cs"
+  },
+  {
+    "class": "TutorialManager",
+    "field": "plantSeedTitle_Localized",
+    "table": "Tutorial",
+    "key": "tutorial.plant_seed.title",
+    "file": "Assets/Scripts/TutorialManager.cs"
+  },
+  {
+    "class": "TutorialManager",
+    "field": "plantSeedDescription_Localized",
+    "table": "Tutorial",
+    "key": "tutorial.plant_seed.description",
+    "file": "Assets/Scripts/TutorialManager.cs"
+  },
+  {
+    "class": "TutorialManager",
+    "field": "waterCropTitle_Localized",
+    "table": "Tutorial",
+    "key": "tutorial.water_crop.title",
+    "file": "Assets/Scripts/TutorialManager.cs"
+  },
+  {
+    "class": "TutorialManager",
+    "field": "waterCropDescription_Localized",
+    "table": "Tutorial",
+    "key": "tutorial.water_crop.description",
+    "file": "Assets/Scripts/TutorialManager.cs"
+  },
+  {
+    "class": "TutorialManager",
+    "field": "petAnimalTitle_Localized",
+    "table": "Tutorial",
+    "key": "tutorial.pet_animal.title",
+    "file": "Assets/Scripts/TutorialManager.cs"
+  },
+  {
+    "class": "TutorialManager",
+    "field": "petAnimalDescription_Localized",
+    "table": "Tutorial",
+    "key": "tutorial.pet_animal.description",
+    "file": "Assets/Scripts/TutorialManager.cs"
+  },
+  {
+    "class": "TutorialManager",
+    "field": "sleepTitle_Localized",
+    "table": "Tutorial",
+    "key": "tutorial.sleep.title",
+    "file": "Assets/Scripts/TutorialManager.cs"
+  },
+  {
+    "class": "TutorialManager",
+    "field": "sleepDescription_Localized",
+    "table": "Tutorial",
+    "key": "tutorial.sleep.description",
+    "file": "Assets/Scripts/TutorialManager.cs"
+  },
+  {
+    "class": "TutorialManager",
+    "field": "harvestTitle_Localized",
+    "table": "Tutorial",
+    "key": "tutorial.harvest.title",
+    "file": "Assets/Scripts/TutorialManager.cs"
+  },
+  {
+    "class": "TutorialManager",
+    "field": "harvestDescription_Localized",
+    "table": "Tutorial",
+    "key": "tutorial.harvest.description",
+    "file": "Assets/Scripts/TutorialManager.cs"
+  },
+  {
+    "class": "TutorialManager",
+    "field": "stepProgressText_Localized",
+    "table": "Tutorial",
+    "key": "tutorial.step_progress",
+    "file": "Assets/Scripts/TutorialManager.cs"
+  },
+  {
+    "class": "UIDataConnector",
+    "field": "moneyLabelLocalized",
+    "table": "UI_Common",
+    "key": "ui_common.money_label",
+    "file": "Assets/Scripts/UIDataConnector.cs"
+  },
+  {
+    "class": "MoneyTextUpdater",
+    "field": "moneyLabelLocalized",
+    "table": "UI_Common",
+    "key": "ui_common.money_label",
+    "file": "Assets/Scripts/UIDataConnector.cs"
+  },
+  {
+    "class": "UIManagerPlayer",
+    "field": "moneyLabelLocalized",
+    "table": "UI_Common",
+    "key": "ui_common.money_label",
+    "file": "Assets/Scripts/UIManagerPlayer.cs"
+  },
+  {
+    "class": "UIManagerPlayer",
+    "field": "timeLabelLocalized",
+    "table": "UI_Common",
+    "key": "ui_common.time_label",
+    "file": "Assets/Scripts/UIManagerPlayer.cs"
+  },
+  {
+    "class": "UIManagerPlayer",
+    "field": "seasonDayLabelLocalized",
+    "table": "UI_Common",
+    "key": "ui_common.season_day_label",
+    "file": "Assets/Scripts/UIManagerPlayer.cs"
+  },
+  {
+    "class": "UIManagerPlayer",
+    "field": "dayLabelLocalized",
+    "table": "UI_Common",
+    "key": "ui_common.day_label",
+    "file": "Assets/Scripts/UIManagerPlayer.cs"
+  },
+  {
+    "class": "AnimalInfoUI",
+    "field": "dailyFoodHeaderText",
+    "table": "Animals",
+    "key": "animals.info.daily_food_header",
+    "file": "Assets/Scripts/Animals/AnimalInfoUI.cs"
+  },
+  {
+    "class": "AnimalInfoUI",
+    "field": "foodLineText",
+    "table": "Animals",
+    "key": "animals.info.food_line",
+    "file": "Assets/Scripts/Animals/AnimalInfoUI.cs"
+  },
+  {
+    "class": "AnimalInfoUI",
+    "field": "noSpecialFoodText",
+    "table": "Animals",
+    "key": "animals.info.no_special_food",
+    "file": "Assets/Scripts/Animals/AnimalInfoUI.cs"
+  },
+  {
+    "class": "AnimalInfoUI",
+    "field": "statusHeaderText",
+    "table": "Animals",
+    "key": "animals.info.status_header",
+    "file": "Assets/Scripts/Animals/AnimalInfoUI.cs"
+  },
+  {
+    "class": "AnimalInfoUI",
+    "field": "statusIllText",
+    "table": "Animals",
+    "key": "animals.info.status_ill",
+    "file": "Assets/Scripts/Animals/AnimalInfoUI.cs"
+  },
+  {
+    "class": "AnimalInfoUI",
+    "field": "statusHappyText",
+    "table": "Animals",
+    "key": "animals.info.status_happy",
+    "file": "Assets/Scripts/Animals/AnimalInfoUI.cs"
+  },
+  {
+    "class": "AnimalInfoUI",
+    "field": "statusWellFedText",
+    "table": "Animals",
+    "key": "animals.info.status_well_fed",
+    "file": "Assets/Scripts/Animals/AnimalInfoUI.cs"
+  },
+  {
+    "class": "AnimalInfoUI",
+    "field": "statusHungryText",
+    "table": "Animals",
+    "key": "animals.info.status_hungry",
+    "file": "Assets/Scripts/Animals/AnimalInfoUI.cs"
+  },
+  {
+    "class": "AnimalInfoUI",
+    "field": "fedTodayText",
+    "table": "Animals",
+    "key": "animals.info.fed_today",
+    "file": "Assets/Scripts/Animals/AnimalInfoUI.cs"
+  },
+  {
+    "class": "AnimalInfoUI",
+    "field": "happinessLabelText",
+    "table": "Animals",
+    "key": "animals.info.happiness",
+    "file": "Assets/Scripts/Animals/AnimalInfoUI.cs"
+  },
+  {
+    "class": "AnimalInfoUI",
+    "field": "statMultiplierText",
+    "table": "Animals",
+    "key": "animals.info.stat_multiplier",
+    "file": "Assets/Scripts/Animals/AnimalInfoUI.cs"
+  },
+  {
+    "class": "AnimalInfoUI",
+    "field": "noProductionText",
+    "table": "Animals",
+    "key": "animals.info.no_production",
+    "file": "Assets/Scripts/Animals/AnimalInfoUI.cs"
+  },
+  {
+    "class": "AnimalInfoUI",
+    "field": "producesText",
+    "table": "Animals",
+    "key": "animals.info.produces",
+    "file": "Assets/Scripts/Animals/AnimalInfoUI.cs"
+  },
+  {
+    "class": "AnimalMarketBuyRow",
+    "field": "buyPriceText",
+    "table": "Animals",
+    "key": "animals.market.buy_price",
+    "file": "Assets/Scripts/Animals/AnimalMarketBuyRow.cs"
+  },
+  {
+    "class": "AnimalMarketSellRow",
+    "field": "sellPriceText",
+    "table": "Animals",
+    "key": "animals.market.sell_price",
+    "file": "Assets/Scripts/Animals/AnimalMarketSellRow.cs"
+  },
+  {
+    "class": "AnimalMarketSellRow",
+    "field": "unassignedText",
+    "table": "Animals",
+    "key": "animals.market.unassigned",
+    "file": "Assets/Scripts/Animals/AnimalMarketSellRow.cs"
+  },
+  {
+    "class": "AnimalMarketUI",
+    "field": "notEnoughGoldText",
+    "table": "Animals",
+    "key": "animals.market.not_enough_gold",
+    "file": "Assets/Scripts/Animals/AnimalMarketUI.cs"
+  },
+  {
+    "class": "AnimalMarketUI",
+    "field": "zonesFullText",
+    "table": "Animals",
+    "key": "animals.market.zones_full",
+    "file": "Assets/Scripts/Animals/AnimalMarketUI.cs"
+  },
+  {
+    "class": "AnimalMarketUI",
+    "field": "welcomeText",
+    "table": "Animals",
+    "key": "animals.market.welcome",
+    "file": "Assets/Scripts/Animals/AnimalMarketUI.cs"
+  },
+  {
+    "class": "AnimalMarketUI",
+    "field": "sellConfirmText",
+    "table": "Animals",
+    "key": "animals.market.sell_confirm",
+    "file": "Assets/Scripts/Animals/AnimalMarketUI.cs"
+  },
+  {
+    "class": "AnimalMarketUI",
+    "field": "sellGoldGainText",
+    "table": "Animals",
+    "key": "animals.market.sell_gold_gain",
+    "file": "Assets/Scripts/Animals/AnimalMarketUI.cs"
+  },
+  {
+    "class": "AnimalMarketUI",
+    "field": "saleFailedText",
+    "table": "Animals",
+    "key": "animals.market.sale_failed",
+    "file": "Assets/Scripts/Animals/AnimalMarketUI.cs"
+  },
+  {
+    "class": "AnimalMarketUI",
+    "field": "soldText",
+    "table": "Animals",
+    "key": "animals.market.sold",
+    "file": "Assets/Scripts/Animals/AnimalMarketUI.cs"
+  },
+  {
+    "class": "AnimalMarketUI",
+    "field": "friendshipDiscountText",
+    "table": "Animals",
+    "key": "animals.market.friendship_discount",
+    "file": "Assets/Scripts/Animals/AnimalMarketUI.cs"
+  },
+  {
+    "class": "AnimalMarketUI",
+    "field": "goldLabelText",
+    "table": "Animals",
+    "key": "animals.market.gold_label",
+    "file": "Assets/Scripts/Animals/AnimalMarketUI.cs"
+  },
+  {
+    "class": "AnimalRosterUI",
+    "field": "groupHeaderText",
+    "table": "Animals",
+    "key": "animals.roster.group_header",
+    "file": "Assets/Scripts/Animals/AnimalRosterUI.cs"
+  },
+  {
+    "class": "AnimalRosterUI",
+    "field": "moodHappyText",
+    "table": "Animals",
+    "key": "animals.roster.mood_happy",
+    "file": "Assets/Scripts/Animals/AnimalRosterUI.cs"
+  },
+  {
+    "class": "AnimalRosterUI",
+    "field": "moodNeutralText",
+    "table": "Animals",
+    "key": "animals.roster.mood_neutral",
+    "file": "Assets/Scripts/Animals/AnimalRosterUI.cs"
+  },
+  {
+    "class": "AnimalRosterUI",
+    "field": "moodSadText",
+    "table": "Animals",
+    "key": "animals.roster.mood_sad",
+    "file": "Assets/Scripts/Animals/AnimalRosterUI.cs"
+  },
+  {
+    "class": "AnimalRosterUI",
+    "field": "hungryText",
+    "table": "Animals",
+    "key": "animals.roster.hungry",
+    "file": "Assets/Scripts/Animals/AnimalRosterUI.cs"
+  },
+  {
+    "class": "AnimalRosterUI",
+    "field": "fedText",
+    "table": "Animals",
+    "key": "animals.roster.fed",
+    "file": "Assets/Scripts/Animals/AnimalRosterUI.cs"
+  },
+  {
+    "class": "AnimalRosterUI",
+    "field": "rowStatusText",
+    "table": "Animals",
+    "key": "animals.roster.row_status",
+    "file": "Assets/Scripts/Animals/AnimalRosterUI.cs"
+  },
+  {
+    "class": "AnimalRosterUI",
+    "field": "rosterTitleText",
+    "table": "Animals",
+    "key": "animals.roster.title",
+    "file": "Assets/Scripts/Animals/AnimalRosterUI.cs"
+  },
+  {
+    "class": "AnimalRosterUI",
+    "field": "rosterEmptyText",
+    "table": "Animals",
+    "key": "animals.roster.empty",
+    "file": "Assets/Scripts/Animals/AnimalRosterUI.cs"
+  },
+  {
+    "class": "AnimalRosterUI",
+    "field": "avgHappinessText",
+    "table": "Animals",
+    "key": "animals.roster.avg_happiness",
+    "file": "Assets/Scripts/Animals/AnimalRosterUI.cs"
+  },
+  {
+    "class": "AnimalRosterUI",
+    "field": "unassignedText",
+    "table": "Animals",
+    "key": "animals.market.unassigned",
+    "file": "Assets/Scripts/Animals/AnimalRosterUI.cs"
+  },
+  {
+    "class": "SkillUnlockCondition",
+    "field": "requiresText",
+    "table": "Animals",
+    "key": "animals.skill.requires",
+    "file": "Assets/Scripts/Animals/AnimalSkill.cs"
+  },
+  {
+    "class": "SkillUnlockCondition",
+    "field": "andText",
+    "table": "Animals",
+    "key": "animals.skill.and",
+    "file": "Assets/Scripts/Animals/AnimalSkill.cs"
+  },
+  {
+    "class": "AnimalSkill",
+    "field": "fullInfoHeaderText",
+    "table": "Animals",
+    "key": "animals.skill.full_info_header",
+    "file": "Assets/Scripts/Animals/AnimalSkill.cs"
+  },
+  {
+    "class": "AnimalSkill",
+    "field": "fullInfoDescText",
+    "table": "Animals",
+    "key": "animals.skill.full_info_desc",
+    "file": "Assets/Scripts/Animals/AnimalSkill.cs"
+  },
+  {
+    "class": "AnimalSkill",
+    "field": "fullInfoUnlockText",
+    "table": "Animals",
+    "key": "animals.skill.full_info_unlock",
+    "file": "Assets/Scripts/Animals/AnimalSkill.cs"
+  },
+  {
+    "class": "FeedingTrough",
+    "field": "troughTitleText",
+    "table": "Animals",
+    "key": "animals.trough.title",
+    "file": "Assets/Scripts/Animals/FeedingTrough.cs"
+  },
+  {
+    "class": "FeedingTrough",
+    "field": "troughStatusText",
+    "table": "Animals",
+    "key": "animals.trough.status",
+    "file": "Assets/Scripts/Animals/FeedingTrough.cs"
+  },
+  {
+    "class": "AnimalSelectionCard",
+    "field": "happinessText_Localized",
+    "table": "Combat",
+    "key": "combat.selection.happiness",
+    "file": "Assets/Scripts/Combat/AnimalSelectionCard.cs"
+  },
+  {
+    "class": "AnimalSelectionCard",
+    "field": "fedText_Localized",
+    "table": "Combat",
+    "key": "combat.selection.fed",
+    "file": "Assets/Scripts/Combat/AnimalSelectionCard.cs"
+  },
+  {
+    "class": "AnimalSelectionCard",
+    "field": "noFoodNeededText_Localized",
+    "table": "Combat",
+    "key": "combat.selection.no_food_needed",
+    "file": "Assets/Scripts/Combat/AnimalSelectionCard.cs"
+  },
+  {
+    "class": "AnimalSelectionCard",
+    "field": "needsText_Localized",
+    "table": "Combat",
+    "key": "combat.selection.needs",
+    "file": "Assets/Scripts/Combat/AnimalSelectionCard.cs"
+  },
+  {
+    "class": "AnimalSelectionCard",
+    "field": "foodLineText_Localized",
+    "table": "Combat",
+    "key": "combat.selection.food_line",
+    "file": "Assets/Scripts/Combat/AnimalSelectionCard.cs"
+  },
+  {
+    "class": "BattleHudOverlay",
+    "field": "comboText_Localized",
+    "table": "Combat",
+    "key": "combat.hud.combo",
+    "file": "Assets/Scripts/Combat/BattleHudOverlay.cs"
+  },
+  {
+    "class": "BattleResultsUI",
+    "field": "victoryTitle_Localized",
+    "table": "Combat",
+    "key": "combat.results.victory",
+    "file": "Assets/Scripts/Combat/BattleResultsUI.cs"
+  },
+  {
+    "class": "BattleResultsUI",
+    "field": "defeatTitle_Localized",
+    "table": "Combat",
+    "key": "combat.results.defeat",
+    "file": "Assets/Scripts/Combat/BattleResultsUI.cs"
+  },
+  {
+    "class": "BattleResultsUI",
+    "field": "drawTitle_Localized",
+    "table": "Combat",
+    "key": "combat.results.draw",
+    "file": "Assets/Scripts/Combat/BattleResultsUI.cs"
+  },
+  {
+    "class": "BattleResultsUI",
+    "field": "turnLimitText_Localized",
+    "table": "Combat",
+    "key": "combat.results.turn_limit",
+    "file": "Assets/Scripts/Combat/BattleResultsUI.cs"
+  },
+  {
+    "class": "BattleResultsUI",
+    "field": "partialRewardsText_Localized",
+    "table": "Combat",
+    "key": "combat.results.partial_rewards",
+    "file": "Assets/Scripts/Combat/BattleResultsUI.cs"
+  },
+  {
+    "class": "BattleResultsUI",
+    "field": "statsText_Localized",
+    "table": "Combat",
+    "key": "combat.results.stats",
+    "file": "Assets/Scripts/Combat/BattleResultsUI.cs"
+  },
+  {
+    "class": "BattleResultsUI",
+    "field": "noRewardsText_Localized",
+    "table": "Combat",
+    "key": "combat.results.no_rewards",
+    "file": "Assets/Scripts/Combat/BattleResultsUI.cs"
+  },
+  {
+    "class": "BattleResultsUI",
+    "field": "rewardsHeaderText_Localized",
+    "table": "Combat",
+    "key": "combat.results.rewards_header",
+    "file": "Assets/Scripts/Combat/BattleResultsUI.cs"
+  },
+  {
+    "class": "BattleResultsUI",
+    "field": "goldText_Localized",
+    "table": "Combat",
+    "key": "combat.results.gold",
+    "file": "Assets/Scripts/Combat/BattleResultsUI.cs"
+  },
+  {
+    "class": "BattleResultsUI",
+    "field": "xpText_Localized",
+    "table": "Combat",
+    "key": "combat.results.xp",
+    "file": "Assets/Scripts/Combat/BattleResultsUI.cs"
+  },
+  {
+    "class": "BattleResultsUI",
+    "field": "itemRewardText_Localized",
+    "table": "Combat",
+    "key": "combat.results.item_reward",
+    "file": "Assets/Scripts/Combat/BattleResultsUI.cs"
+  },
+  {
+    "class": "BattleResultsUI",
+    "field": "animalHappinessText_Localized",
+    "table": "Combat",
+    "key": "combat.results.animal_happiness",
+    "file": "Assets/Scripts/Combat/BattleResultsUI.cs"
+  },
+  {
+    "class": "BattleStatusUI",
+    "field": "turnCounterText_Localized",
+    "table": "Combat",
+    "key": "combat.status.turn_counter",
+    "file": "Assets/Scripts/Combat/BattleStatusUI.cs"
+  },
+  {
+    "class": "BattleStatusUI",
+    "field": "playerTeamText_Localized",
+    "table": "Combat",
+    "key": "combat.status.your_team",
+    "file": "Assets/Scripts/Combat/BattleStatusUI.cs"
+  },
+  {
+    "class": "BattleStatusUI",
+    "field": "enemyTeamText_Localized",
+    "table": "Combat",
+    "key": "combat.status.enemies",
+    "file": "Assets/Scripts/Combat/BattleStatusUI.cs"
+  },
+  {
+    "class": "ConsumableBattleUI",
+    "field": "titleText_Localized",
+    "table": "Combat",
+    "key": "combat.consumables.title",
+    "file": "Assets/Scripts/Combat/ConsumableBattleUI.cs"
+  },
+  {
+    "class": "ConsumableBattleUI",
+    "field": "noInventoryText_Localized",
+    "table": "Combat",
+    "key": "combat.consumables.no_inventory",
+    "file": "Assets/Scripts/Combat/ConsumableBattleUI.cs"
+  },
+  {
+    "class": "ConsumableBattleUI",
+    "field": "noneText_Localized",
+    "table": "Combat",
+    "key": "combat.consumables.none",
+    "file": "Assets/Scripts/Combat/ConsumableBattleUI.cs"
+  },
+  {
+    "class": "ConsumableBattleUI",
+    "field": "itemRowText_Localized",
+    "table": "Combat",
+    "key": "combat.consumables.item_row",
+    "file": "Assets/Scripts/Combat/ConsumableBattleUI.cs"
+  },
+  {
+    "class": "GridPositionSlot",
+    "field": "positionLabelText_Localized",
+    "table": "Combat",
+    "key": "combat.grid.position_label",
+    "file": "Assets/Scripts/Combat/GridPositionSlot.cs"
+  },
+  {
+    "class": "TeamAssemblerUI",
+    "field": "zoneLabelText_Localized",
+    "table": "Combat",
+    "key": "combat.teamassembler.zone_label",
+    "file": "Assets/Scripts/Combat/TeamAssemblerUI.cs"
+  },
+  {
+    "class": "TeamAssemblerUI",
+    "field": "teamCountText_Localized",
+    "table": "Combat",
+    "key": "combat.teamassembler.team_count",
+    "file": "Assets/Scripts/Combat/TeamAssemblerUI.cs"
+  },
+  {
+    "class": "TeamAssemblerUI",
+    "field": "allFedText_Localized",
+    "table": "Combat",
+    "key": "combat.teamassembler.all_fed",
+    "file": "Assets/Scripts/Combat/TeamAssemblerUI.cs"
+  },
+  {
+    "class": "TeamAssemblerUI",
+    "field": "requiredFoodHeaderText_Localized",
+    "table": "Combat",
+    "key": "combat.teamassembler.required_food_header",
+    "file": "Assets/Scripts/Combat/TeamAssemblerUI.cs"
+  },
+  {
+    "class": "TeamAssemblerUI",
+    "field": "foodLineText_Localized",
+    "table": "Combat",
+    "key": "combat.teamassembler.food_line",
+    "file": "Assets/Scripts/Combat/TeamAssemblerUI.cs"
+  },
+  {
+    "class": "TeamAssemblerUI",
+    "field": "synergiesHeaderText_Localized",
+    "table": "Combat",
+    "key": "combat.teamassembler.synergies_header",
+    "file": "Assets/Scripts/Combat/TeamAssemblerUI.cs"
+  },
+  {
+    "class": "TeamAssemblerUI",
+    "field": "synergyLineText_Localized",
+    "table": "Combat",
+    "key": "combat.teamassembler.synergy_line",
+    "file": "Assets/Scripts/Combat/TeamAssemblerUI.cs"
+  },
+  {
+    "class": "TeamAssemblerUI",
+    "field": "noSynergiesText_Localized",
+    "table": "Combat",
+    "key": "combat.teamassembler.no_synergies",
+    "file": "Assets/Scripts/Combat/TeamAssemblerUI.cs"
+  },
+  {
+    "class": "TeamAssemblerUISetup",
+    "field": "availableAnimalsText_Localized",
+    "table": "Combat",
+    "key": "combat.teamassemblersetup.available_animals",
+    "file": "Assets/Scripts/Combat/TeamAssemblerUISetup.cs"
+  },
+  {
+    "class": "UnitHealthBar",
+    "field": "healthFractionText_Localized",
+    "table": "Combat",
+    "key": "combat.healthbar.fraction",
+    "file": "Assets/Scripts/Combat/UnitHealthBar.cs"
+  },
+  {
+    "class": "ShopUI",
+    "field": "friendshipDiscountText",
+    "table": "Dialogue",
+    "key": "dialogue.shop.friendship_discount",
+    "file": "Assets/Scripts/Dialogue/ShopUI.cs"
+  },
+  {
+    "class": "ShopUI",
+    "field": "goldLabelText",
+    "table": "Dialogue",
+    "key": "dialogue.shop.gold_label",
+    "file": "Assets/Scripts/Dialogue/ShopUI.cs"
+  },
+  {
+    "class": "ShopItemRow",
+    "field": "priceLabelText",
+    "table": "Dialogue",
+    "key": "dialogue.shop.price",
+    "file": "Assets/Scripts/Dialogue/ShopUI.cs"
+  },
+  {
+    "class": "ShopItemRow",
+    "field": "unlimitedStockText",
+    "table": "Dialogue",
+    "key": "dialogue.shop.unlimited_stock",
+    "file": "Assets/Scripts/Dialogue/ShopUI.cs"
+  },
+  {
+    "class": "ShopItemRow",
+    "field": "stockCountText",
+    "table": "Dialogue",
+    "key": "dialogue.shop.stock_count",
+    "file": "Assets/Scripts/Dialogue/ShopUI.cs"
+  },
+  {
+    "class": "GiftSelectionUI",
+    "field": "chooseGiftTitleText",
+    "table": "Dialogue",
+    "key": "dialogue.gift.choose_title",
+    "file": "Assets/Scripts/Dialogue/UI/GiftSelectionUI.cs"
+  },
+  {
+    "class": "GiftSelectionUI",
+    "field": "closeButtonText",
+    "table": "Dialogue",
+    "key": "dialogue.gift.close",
+    "file": "Assets/Scripts/Dialogue/UI/GiftSelectionUI.cs"
+  },
+  {
+    "class": "GiftSelectionUI",
+    "field": "noGiftableItemsText",
+    "table": "Dialogue",
+    "key": "dialogue.gift.no_giftable_items",
+    "file": "Assets/Scripts/Dialogue/UI/GiftSelectionUI.cs"
+  },
+  {
+    "class": "GiftSelectionUI",
+    "field": "itemRowText",
+    "table": "Dialogue",
+    "key": "dialogue.gift.item_row",
+    "file": "Assets/Scripts/Dialogue/UI/GiftSelectionUI.cs"
+  },
+  {
+    "class": "GiftSelectionUI",
+    "field": "giveButtonText",
+    "table": "Dialogue",
+    "key": "dialogue.gift.give",
+    "file": "Assets/Scripts/Dialogue/UI/GiftSelectionUI.cs"
+  },
+  {
+    "class": "GiftSelectionUI",
+    "field": "noInventoryFoundText",
+    "table": "Dialogue",
+    "key": "dialogue.gift.no_inventory_found",
+    "file": "Assets/Scripts/Dialogue/UI/GiftSelectionUI.cs"
+  },
+  {
+    "class": "RelationshipUI",
+    "field": "noInfoText",
+    "table": "Dialogue",
+    "key": "dialogue.relationship.no_info",
+    "file": "Assets/Scripts/Dialogue/UI/RelationshipUI.cs"
+  },
+  {
+    "class": "RelationshipUI",
+    "field": "scoreText",
+    "table": "Dialogue",
+    "key": "dialogue.relationship.score",
+    "file": "Assets/Scripts/Dialogue/UI/RelationshipUI.cs"
+  },
+  {
+    "class": "RelationshipUI",
+    "field": "belovedText",
+    "table": "Dialogue",
+    "key": "dialogue.relationship.beloved",
+    "file": "Assets/Scripts/Dialogue/UI/RelationshipUI.cs"
+  },
+  {
+    "class": "RelationshipUI",
+    "field": "closeFriendText",
+    "table": "Dialogue",
+    "key": "dialogue.relationship.close_friend",
+    "file": "Assets/Scripts/Dialogue/UI/RelationshipUI.cs"
+  },
+  {
+    "class": "RelationshipUI",
+    "field": "friendText",
+    "table": "Dialogue",
+    "key": "dialogue.relationship.friend",
+    "file": "Assets/Scripts/Dialogue/UI/RelationshipUI.cs"
+  },
+  {
+    "class": "RelationshipUI",
+    "field": "acquaintanceText",
+    "table": "Dialogue",
+    "key": "dialogue.relationship.acquaintance",
+    "file": "Assets/Scripts/Dialogue/UI/RelationshipUI.cs"
+  },
+  {
+    "class": "RelationshipUI",
+    "field": "tenseText",
+    "table": "Dialogue",
+    "key": "dialogue.relationship.tense",
+    "file": "Assets/Scripts/Dialogue/UI/RelationshipUI.cs"
+  },
+  {
+    "class": "RelationshipUI",
+    "field": "hostileText",
+    "table": "Dialogue",
+    "key": "dialogue.relationship.hostile",
+    "file": "Assets/Scripts/Dialogue/UI/RelationshipUI.cs"
+  },
+  {
+    "class": "RelationshipUI",
+    "field": "closeButtonText",
+    "table": "Dialogue",
+    "key": "dialogue.gift.close",
+    "file": "Assets/Scripts/Dialogue/UI/RelationshipUI.cs"
+  },
+  {
+    "class": "RelationshipUI",
+    "field": "codexHeaderText",
+    "table": "Dialogue",
+    "key": "dialogue.relationship.codex_header",
+    "file": "Assets/Scripts/Dialogue/UI/RelationshipUI.cs"
+  },
+  {
+    "class": "SeedShopUI",
+    "field": "seedShopTitleText",
+    "table": "Dialogue",
+    "key": "dialogue.seedshop.title",
+    "file": "Assets/Scripts/Dialogue/UI/SeedShopUI.cs"
+  },
+  {
+    "class": "SeedShopUI",
+    "field": "goldZeroText",
+    "table": "Dialogue",
+    "key": "dialogue.seedshop.gold_zero",
+    "file": "Assets/Scripts/Dialogue/UI/SeedShopUI.cs"
+  },
+  {
+    "class": "SeedShopUI",
+    "field": "closeButtonText",
+    "table": "Dialogue",
+    "key": "dialogue.seedshop.close",
+    "file": "Assets/Scripts/Dialogue/UI/SeedShopUI.cs"
+  },
+  {
+    "class": "SeedShopUI",
+    "field": "goldLabelText",
+    "table": "Dialogue",
+    "key": "dialogue.seedshop.gold_label",
+    "file": "Assets/Scripts/Dialogue/UI/SeedShopUI.cs"
+  },
+  {
+    "class": "SeedShopUI",
+    "field": "itemRowText",
+    "table": "Dialogue",
+    "key": "dialogue.seedshop.item_row",
+    "file": "Assets/Scripts/Dialogue/UI/SeedShopUI.cs"
+  },
+  {
+    "class": "SeedShopUI",
+    "field": "buyButtonText",
+    "table": "Dialogue",
+    "key": "dialogue.seedshop.buy",
+    "file": "Assets/Scripts/Dialogue/UI/SeedShopUI.cs"
+  },
+  {
+    "class": "SeedShopUI",
+    "field": "noSeedsAvailableText",
+    "table": "Dialogue",
+    "key": "dialogue.seedshop.no_seeds_available",
+    "file": "Assets/Scripts/Dialogue/UI/SeedShopUI.cs"
+  },
+  {
+    "class": "EnhancedItemTooltip",
+    "field": "italicTextLocalized",
+    "table": "Inventory",
+    "key": "inventory.tooltip.italic_text",
+    "file": "Assets/Scripts/Inventory/EnhancedItemTooltip.cs"
+  },
+  {
+    "class": "EnhancedItemTooltip",
+    "field": "valueCoinsLocalized",
+    "table": "Inventory",
+    "key": "inventory.tooltip.value_coins",
+    "file": "Assets/Scripts/Inventory/EnhancedItemTooltip.cs"
+  },
+  {
+    "class": "EnhancedItemTooltip",
+    "field": "cannotBeSoldLocalized",
+    "table": "Inventory",
+    "key": "inventory.tooltip.cannot_be_sold",
+    "file": "Assets/Scripts/Inventory/EnhancedItemTooltip.cs"
+  },
+  {
+    "class": "EnhancedItemTooltip",
+    "field": "maxStackLocalized",
+    "table": "Inventory",
+    "key": "inventory.tooltip.max_stack",
+    "file": "Assets/Scripts/Inventory/EnhancedItemTooltip.cs"
+  },
+  {
+    "class": "EnhancedItemTooltip",
+    "field": "consumableLocalized",
+    "table": "Inventory",
+    "key": "inventory.tooltip.consumable",
+    "file": "Assets/Scripts/Inventory/EnhancedItemTooltip.cs"
+  },
+  {
+    "class": "EnhancedItemTooltip",
+    "field": "energyLocalized",
+    "table": "Inventory",
+    "key": "inventory.tooltip.energy",
+    "file": "Assets/Scripts/Inventory/EnhancedItemTooltip.cs"
+  },
+  {
+    "class": "EnhancedItemTooltip",
+    "field": "healthLocalized",
+    "table": "Inventory",
+    "key": "inventory.tooltip.health",
+    "file": "Assets/Scripts/Inventory/EnhancedItemTooltip.cs"
+  },
+  {
+    "class": "EnhancedItemTooltip",
+    "field": "toolLevelLocalized",
+    "table": "Inventory",
+    "key": "inventory.tooltip.tool_level",
+    "file": "Assets/Scripts/Inventory/EnhancedItemTooltip.cs"
+  },
+  {
+    "class": "EnhancedItemTooltip",
+    "field": "durabilityLocalized",
+    "table": "Inventory",
+    "key": "inventory.tooltip.durability",
+    "file": "Assets/Scripts/Inventory/EnhancedItemTooltip.cs"
+  },
+  {
+    "class": "EnhancedItemTooltip",
+    "field": "unbreakableLocalized",
+    "table": "Inventory",
+    "key": "inventory.tooltip.unbreakable",
+    "file": "Assets/Scripts/Inventory/EnhancedItemTooltip.cs"
+  },
+  {
+    "class": "EnhancedItemTooltip",
+    "field": "descriptionLocalized",
+    "table": "Inventory",
+    "key": "inventory.tooltip.description",
+    "file": "Assets/Scripts/Inventory/EnhancedItemTooltip.cs"
+  },
+  {
+    "class": "InventoryUIManager",
+    "field": "titleLocalized",
+    "table": "Inventory",
+    "key": "inventory.title",
+    "file": "Assets/Scripts/Inventory/InventoryUIManager.cs"
+  },
+  {
+    "class": "InventoryUIManager",
+    "field": "sortLabelLocalized",
+    "table": "Inventory",
+    "key": "inventory.sort_label",
+    "file": "Assets/Scripts/Inventory/InventoryUIManager.cs"
+  },
+  {
+    "class": "InventoryUIManager",
+    "field": "countFractionLocalized",
+    "table": "Inventory",
+    "key": "inventory.count_fraction",
+    "file": "Assets/Scripts/Inventory/InventoryUIManager.cs"
+  },
+  {
+    "class": "MapEditorUI",
+    "field": "tileLabelText",
+    "table": "MapEditor",
+    "key": "mapeditor.tile_label",
+    "file": "Assets/Scripts/MapEditor/MapEditorUI.cs"
+  },
+  {
+    "class": "MapEditorUI",
+    "field": "toolLabelText",
+    "table": "MapEditor",
+    "key": "mapeditor.tool_label",
+    "file": "Assets/Scripts/MapEditor/MapEditorUI.cs"
+  },
+  {
+    "class": "MapEditorUI",
+    "field": "posLabelText",
+    "table": "MapEditor",
+    "key": "mapeditor.pos_label",
+    "file": "Assets/Scripts/MapEditor/MapEditorUI.cs"
+  },
+  {
+    "class": "MapEditorUI",
+    "field": "mapLabelText",
+    "table": "MapEditor",
+    "key": "mapeditor.map_label",
+    "file": "Assets/Scripts/MapEditor/MapEditorUI.cs"
+  },
+  {
+    "class": "MapEditorUI",
+    "field": "tilesLabelText",
+    "table": "MapEditor",
+    "key": "mapeditor.tiles_label",
+    "file": "Assets/Scripts/MapEditor/MapEditorUI.cs"
+  },
+  {
+    "class": "MinimapUI",
+    "field": "zoomLabelLocalized",
+    "table": "Minimap",
+    "key": "minimap.zoom_label",
+    "file": "Assets/Scripts/Minimap/MinimapUI.cs"
+  },
+  {
+    "class": "MinimapUI",
+    "field": "coordsLabelLocalized",
+    "table": "Minimap",
+    "key": "minimap.coords_label",
+    "file": "Assets/Scripts/Minimap/MinimapUI.cs"
+  },
+  {
+    "class": "MinimapUI",
+    "field": "modeLabelLocalized",
+    "table": "Minimap",
+    "key": "minimap.mode_label",
+    "file": "Assets/Scripts/Minimap/MinimapUI.cs"
+  },
+  {
+    "class": "AchievementNotificationUI",
+    "field": "achievementUnlockedLocalized",
+    "table": "UI_Common",
+    "key": "ui_common.achievement_unlocked",
+    "file": "Assets/Scripts/UI Systems/AchievementNotificationUI.cs"
+  },
+  {
+    "class": "SaveSlotButton",
+    "field": "autoSaveText",
+    "table": "MainMenu",
+    "key": "mainmenu.saveslotbutton.autosave",
+    "file": "Assets/Scripts/UI Systems/SaveSlotButton.cs"
+  },
+  {
+    "class": "SaveSlotButton",
+    "field": "slotPrefixText",
+    "table": "MainMenu",
+    "key": "mainmenu.saveslotbutton.slot_prefix",
+    "file": "Assets/Scripts/UI Systems/SaveSlotButton.cs"
+  },
+  {
+    "class": "SaveSlotButton",
+    "field": "dayLabelText",
+    "table": "MainMenu",
+    "key": "mainmenu.saveslotbutton.day_label",
+    "file": "Assets/Scripts/UI Systems/SaveSlotButton.cs"
+  },
+  {
+    "class": "SaveSlotButton",
+    "field": "moneyLabelText",
+    "table": "MainMenu",
+    "key": "mainmenu.saveslotbutton.money_label",
+    "file": "Assets/Scripts/UI Systems/SaveSlotButton.cs"
+  },
+  {
+    "class": "WorldMapBiomePanel",
+    "field": "biomeCompletedLocalized",
+    "table": "Worldmap",
+    "key": "worldmap.biome_completed",
+    "file": "Assets/Scripts/Worldmap/WorldMapBiomePanel.cs"
+  }
+]

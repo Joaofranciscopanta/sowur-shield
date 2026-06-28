@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization;
+using SowurShield.Core;
 using SowurShield.UI;
 
 #if UNITY_EDITOR
@@ -24,6 +26,9 @@ public class TeamAssemblerUISetup : MonoBehaviour
     [Header("References to Find")]
     [Tooltip("The TeamAssemblerUI script to configure")]
     public TeamAssemblerUI assemblerUI;
+
+    [Header("Localization")]
+    [SerializeField] private LocalizedString availableAnimalsText_Localized; // table "Combat", key "combat.teamassemblersetup.available_animals"
 
     [Header("Status")]
 #pragma warning disable CS0414
@@ -372,7 +377,7 @@ public class TeamAssemblerUISetup : MonoBehaviour
             rect.sizeDelta = new Vector2(-20, 50); // Taller text area
 
             TextMeshProUGUI text = textObj.AddComponent<TextMeshProUGUI>();
-            text.text = "Available Animals";
+            text.text = availableAnimalsText_Localized.SafeGetLocalizedString();
             text.fontSize = 20;
             text.fontStyle = FontStyles.Bold;
             text.alignment = TextAlignmentOptions.Center;

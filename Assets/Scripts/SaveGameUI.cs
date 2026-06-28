@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using UnityEngine.Localization;
 
 namespace SowurShield.Core
 {
@@ -33,6 +34,10 @@ public class SaveGameUI : MonoBehaviour
     [SerializeField] private AudioClip saveSuccessSound;
     [SerializeField] private AudioClip saveErrorSound;
     [SerializeField] private AudioSource audioSource;
+
+    [Header("Localized Strings")]
+    [SerializeField] private LocalizedString saveInfoFoundText; // table "MainMenu", key "mainmenu.savegameui.save_info_found"
+    [SerializeField] private LocalizedString saveInfoNotFoundText; // table "MainMenu", key "mainmenu.savegameui.save_info_not_found"
     
     private Coroutine notificationCoroutine;
     private bool isShowingSaveInfo = false;
@@ -42,11 +47,20 @@ public class SaveGameUI : MonoBehaviour
         SetupUI();
         SubscribeToSaveEvents();
         UpdateSaveFileInfo();
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
     }
-    
+
     private void OnDestroy()
     {
         UnsubscribeFromSaveEvents();
+        SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(Locale locale)
+    {
+        if (isShowingSaveInfo)
+            UpdateSaveFileInfo();
     }
     
     private void SetupUI()
@@ -256,15 +270,15 @@ public class SaveGameUI : MonoBehaviour
         
         if (saveInfo != null)
         {
-            string infoText = $"Save File Information:\n\n" +
-                             $"File: {saveInfo.fileName}\n" +
-                             $"Created: {saveInfo.creationTime:yyyy-MM-dd HH:mm:ss}\n" +
-                             $"Last Modified: {saveInfo.lastWriteTime:yyyy-MM-dd HH:mm:ss}\n" +
-                             $"Size: {FormatFileSize(saveInfo.fileSizeBytes)}\n\n" +
-                             $"💡 Game saves automatically when you sleep in bed";
-            
-            saveFileInfoText.text = infoText;
-            
+            saveInfoFoundText.Arguments = new object[]
+            {
+                saveInfo.fileName,
+                saveInfo.creationTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                saveInfo.lastWriteTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                FormatFileSize(saveInfo.fileSizeBytes)
+            };
+            saveFileInfoText.text = saveInfoFoundText.SafeGetLocalizedString();
+
             // Enable buttons that require a save file
             if (loadGameButton != null)
                 loadGameButton.interactable = true;
@@ -273,8 +287,8 @@ public class SaveGameUI : MonoBehaviour
         }
         else
         {
-            saveFileInfoText.text = "No save file found.\n\n🛏️ Sleep in a bed to save your progress automatically.\n\nThe game will create a save file when you go to sleep.";
-            
+            saveFileInfoText.text = saveInfoNotFoundText.SafeGetLocalizedString();
+
             // Disable buttons that require a save file
             if (loadGameButton != null)
                 loadGameButton.interactable = false;

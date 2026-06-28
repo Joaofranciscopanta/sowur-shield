@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Localization;
 using SowurShield.Core;
 
 namespace SowurShield.UI
@@ -19,7 +20,7 @@ public class AchievementNotificationUI : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
     {
-        if (FindFirstObjectByType<AchievementNotificationUI>() != null)
+        if (FindFirstObjectByType<AchievementNotificationUI>(FindObjectsInactive.Include) != null)
             return;
 
         var go = new GameObject("AchievementNotificationUI");
@@ -43,9 +44,47 @@ public class AchievementNotificationUI : MonoBehaviour
     private Image _iconImage;
     private UITheme _theme;
 
+    [Header("Localization")]
+    [SerializeField] private LocalizedString achievementUnlockedLocalized; // table "UI_Common", key "ui_common.achievement_unlocked"
+
+    // This component is created at runtime (never saved to a scene/prefab), so the
+    // Tools > Sowur Shield > Auto-Wire Localized Fields editor pass can never reach it —
+    // wire its LocalizedString table/key reference here instead.
+    private void WireLocalizedStrings()
+    {
+        achievementUnlockedLocalized = new LocalizedString("UI_Common", "ui_common.achievement_unlocked");
+    }
+
+    private bool _buildSucceeded = false;
+
     private void Awake()
     {
-        BuildUI();
+        TryBuildUI();
+        LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
+    {
+        if (_unlockedLabel != null) _unlockedLabel.text = achievementUnlockedLocalized.SafeGetLocalizedString();
+    }
+
+    private void TryBuildUI()
+    {
+        WireLocalizedStrings();
+        try
+        {
+            BuildUI();
+            _buildSucceeded = true;
+        }
+        catch (System.Exception e)
+        {
+            // Localization tables may not be configured yet (see MOBILE_LOCALIZATION_SETUP.md) —
+            // fail safe rather than leaving a half-built toast visible, but keep retrying on the
+            // next unlock instead of staying broken for the rest of the session.
+            Debug.LogError($"[AchievementNotificationUI] BuildUI failed (Localization not configured?): {e}");
+            _buildSucceeded = false;
+            gameObject.SetActive(false);
+        }
     }
 
     private void Start()
@@ -67,10 +106,19 @@ public class AchievementNotificationUI : MonoBehaviour
     {
         if (AchievementManager.Instance != null)
             AchievementManager.Instance.OnAchievementUnlocked -= OnAchievementUnlocked;
+        LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
     }
 
     private void OnAchievementUnlocked(AchievementData achievement)
     {
+        if (!_buildSucceeded)
+        {
+            gameObject.SetActive(true);
+            TryBuildUI();
+            if (!_buildSucceeded)
+                return;
+        }
+
         _pending.Enqueue(achievement);
         if (!_isShowing)
             StartCoroutine(ProcessQueue());
@@ -140,7 +188,7 @@ public class AchievementNotificationUI : MonoBehaviour
         var labelGO = new GameObject("UnlockedLabel");
         labelGO.transform.SetParent(toastGO.transform, false);
         _unlockedLabel = labelGO.AddComponent<TextMeshProUGUI>();
-        _unlockedLabel.text = "ACHIEVEMENT UNLOCKED";
+        _unlockedLabel.text = achievementUnlockedLocalized.SafeGetLocalizedString();
         _unlockedLabel.fontSize = 12;
         _unlockedLabel.fontStyle = FontStyles.Bold;
         _unlockedLabel.color = highlightGold;

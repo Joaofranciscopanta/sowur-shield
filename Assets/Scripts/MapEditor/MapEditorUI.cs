@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using SowurShield.Farming;
+using UnityEngine.Localization;
+using SowurShield.Core;
 
 namespace SowurShield.MapEditor
 {
@@ -56,6 +58,13 @@ public class MapEditorUI : MonoBehaviour
     [Header("Shortcuts Info")]
     [SerializeField] private GameObject shortcutsPanel;
     [SerializeField] private Button helpButton;
+
+    [Header("Localized Strings")]
+    [SerializeField] private LocalizedString tileLabelText; // table "MapEditor", key "mapeditor.tile_label"
+    [SerializeField] private LocalizedString toolLabelText; // table "MapEditor", key "mapeditor.tool_label"
+    [SerializeField] private LocalizedString posLabelText; // table "MapEditor", key "mapeditor.pos_label"
+    [SerializeField] private LocalizedString mapLabelText; // table "MapEditor", key "mapeditor.map_label"
+    [SerializeField] private LocalizedString tilesLabelText; // table "MapEditor", key "mapeditor.tiles_label"
     
     // Runtime references
     private RuntimeMapEditor mapEditor;
@@ -339,12 +348,14 @@ public class MapEditorUI : MonoBehaviour
     {
         if (selectedTileText != null)
         {
-            selectedTileText.text = $"Tile: {currentSelectedTile}";
+            tileLabelText.Arguments = new object[] { currentSelectedTile };
+            selectedTileText.text = tileLabelText.SafeGetLocalizedString();
         }
-        
+
         if (selectedToolText != null)
         {
-            selectedToolText.text = $"Tool: {currentSelectedTool}";
+            toolLabelText.Arguments = new object[] { currentSelectedTool };
+            selectedToolText.text = toolLabelText.SafeGetLocalizedString();
         }
     }
     
@@ -359,20 +370,23 @@ public class MapEditorUI : MonoBehaviour
                 Mathf.FloorToInt(mouseWorldPos.y),
                 0
             );
-            coordinatesText.text = $"Pos: {tilePos.x}, {tilePos.y}";
+            posLabelText.Arguments = new object[] { tilePos.x, tilePos.y };
+            coordinatesText.text = posLabelText.SafeGetLocalizedString();
         }
-        
+
         // Update map info
         if (mapEditor?.CurrentMapData != null)
         {
             if (mapNameText != null)
             {
-                mapNameText.text = $"Map: {mapEditor.CurrentMapData.mapName}";
+                mapLabelText.Arguments = new object[] { mapEditor.CurrentMapData.mapName };
+                mapNameText.text = mapLabelText.SafeGetLocalizedString();
             }
-            
+
             if (tilesCountText != null)
             {
-                tilesCountText.text = $"Tiles: {mapEditor.CurrentMapData.tileData.Count}";
+                tilesLabelText.Arguments = new object[] { mapEditor.CurrentMapData.tileData.Count };
+                tilesCountText.text = tilesLabelText.SafeGetLocalizedString();
             }
         }
     }

@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Localization;
+using SowurShield.Core;
 using SowurShield.UI;
 
 namespace SowurShield.Combat
@@ -48,6 +50,11 @@ public class BattleStatusUI : MonoBehaviour
     [Header("Theme")]
     [SerializeField] private UITheme theme;
 
+    [Header("Localization")]
+    [SerializeField] private LocalizedString turnCounterText_Localized; // table "Combat", key "combat.status.turn_counter"
+    [SerializeField] private LocalizedString playerTeamText_Localized; // table "Combat", key "combat.status.your_team"
+    [SerializeField] private LocalizedString enemyTeamText_Localized; // table "Combat", key "combat.status.enemies"
+
     // Turn order icon pool
     private List<Image> turnOrderIcons = new List<Image>();
 
@@ -73,6 +80,22 @@ public class BattleStatusUI : MonoBehaviour
 
         // Initialize turn order icons
         InitializeTurnOrderIcons();
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    private void OnDestroy()
+    {
+        SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private int lastCurrentTurn, lastMaxTurns;
+    private int lastPlayerAlive, lastPlayerTotal, lastEnemyAlive, lastEnemyTotal;
+
+    private void HandleLanguageChanged(Locale locale)
+    {
+        UpdateTurnCounter(lastCurrentTurn, lastMaxTurns);
+        UpdateTeamCounts(lastPlayerAlive, lastPlayerTotal, lastEnemyAlive, lastEnemyTotal);
     }
 
     /// <summary>
@@ -106,9 +129,12 @@ public class BattleStatusUI : MonoBehaviour
     /// </summary>
     public void UpdateTurnCounter(int currentTurn, int maxTurns)
     {
+        lastCurrentTurn = currentTurn;
+        lastMaxTurns = maxTurns;
         if (turnCounterText != null)
         {
-            turnCounterText.text = $"Turn: {currentTurn}/{maxTurns}";
+            turnCounterText_Localized.Arguments = new object[] { currentTurn, maxTurns };
+            turnCounterText.text = turnCounterText_Localized.SafeGetLocalizedString();
         }
     }
 
@@ -117,14 +143,21 @@ public class BattleStatusUI : MonoBehaviour
     /// </summary>
     public void UpdateTeamCounts(int playerAlive, int playerTotal, int enemyAlive, int enemyTotal)
     {
+        lastPlayerAlive = playerAlive;
+        lastPlayerTotal = playerTotal;
+        lastEnemyAlive = enemyAlive;
+        lastEnemyTotal = enemyTotal;
+
         if (playerTeamText != null)
         {
-            playerTeamText.text = $"Your Team: {playerAlive}/{playerTotal}";
+            playerTeamText_Localized.Arguments = new object[] { playerAlive, playerTotal };
+            playerTeamText.text = playerTeamText_Localized.SafeGetLocalizedString();
         }
 
         if (enemyTeamText != null)
         {
-            enemyTeamText.text = $"Enemies: {enemyAlive}/{enemyTotal}";
+            enemyTeamText_Localized.Arguments = new object[] { enemyAlive, enemyTotal };
+            enemyTeamText.text = enemyTeamText_Localized.SafeGetLocalizedString();
         }
     }
 

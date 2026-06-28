@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization;
 
 namespace SowurShield.Core
 {
@@ -23,12 +24,31 @@ public class UIDataConnector : MonoBehaviour
     public Slider staminaSlider;
     public TextMeshProUGUI moneyText;
     public Text legacyMoneyText; // For regular UI Text component
-    
+
+    [Header("Localization")]
+    [SerializeField] private LocalizedString moneyLabelLocalized; // table "UI_Common", key "ui_common.money_label"
+
     private void Start()
     {
         if (autoConnectOnStart)
         {
             ConnectUIElements();
+        }
+
+        LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    private void OnDestroy()
+    {
+        LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
+    {
+        if (legacyMoneyText != null && playerStats != null)
+        {
+            moneyLabelLocalized.Arguments = new object[] { playerStats.money };
+            legacyMoneyText.text = moneyLabelLocalized.SafeGetLocalizedString();
         }
     }
     
@@ -88,7 +108,8 @@ public class UIDataConnector : MonoBehaviour
 
             
             // Initial update
-            legacyMoneyText.text = $"Money: ${playerStats.money}";
+            moneyLabelLocalized.Arguments = new object[] { playerStats.money };
+            legacyMoneyText.text = moneyLabelLocalized.SafeGetLocalizedString();
         }
         else
         {
@@ -121,7 +142,8 @@ public class UIDataConnector : MonoBehaviour
     {
         if (moneyText != null && playerStats != null)
         {
-            moneyText.text = $"Money: ${playerStats.money}";
+            moneyLabelLocalized.Arguments = new object[] { playerStats.money };
+            moneyText.text = moneyLabelLocalized.SafeGetLocalizedString();
         }
     }
     
@@ -153,7 +175,9 @@ public class MoneyTextUpdater : MonoBehaviour
 {
     private PlayerStats playerStats;
     private TextMeshProUGUI moneyText;
-    
+
+    [SerializeField] private LocalizedString moneyLabelLocalized; // table "UI_Common", key "ui_common.money_label"
+
     public void Initialize(PlayerStats stats, TextMeshProUGUI textComponent)
     {
         // Unsubscribe from previous if any
@@ -168,20 +192,30 @@ public class MoneyTextUpdater : MonoBehaviour
             playerStats.OnMoneyChanged += UpdateMoneyText;
             UpdateMoneyText(playerStats.money); // Initial update
         }
+
+        LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
     }
-    
+
     private void UpdateMoneyText(int newMoney)
     {
         if (moneyText != null)
         {
-            moneyText.text = $"Money: ${newMoney}";
+            moneyLabelLocalized.Arguments = new object[] { newMoney };
+            moneyText.text = moneyLabelLocalized.SafeGetLocalizedString();
         }
     }
-    
+
+    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
+    {
+        if (playerStats != null)
+            UpdateMoneyText(playerStats.money);
+    }
+
     private void OnDestroy()
     {
         if (playerStats != null)
             playerStats.OnMoneyChanged -= UpdateMoneyText;
+        LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
     }
 }
 

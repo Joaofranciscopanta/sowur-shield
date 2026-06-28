@@ -598,13 +598,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a645cfb05aaa46fba07e8e1419b4afc0, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Animals.AnimalMarketBuyRow
   iconImage: {fileID: 1876694793944713613}
   nameText: {fileID: 8441399273275327871}
   priceText: {fileID: 5010466181360228841}
   stockText: {fileID: 4761808366365503165}
   buyButton: {fileID: 5392723791707893485}
+  buyPriceText:
+    m_TableReference:
+      m_TableCollectionName: Animals
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: animals.market.buy_price
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &7416739365348805531
 GameObject:
   m_ObjectHideFlags: 0

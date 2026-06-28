@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization;
 using SowurShield.Core;
 using SowurShield.Inventory;
 using SowurShield.UI;
@@ -24,11 +25,20 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
 
     private NPCDialogueInteractable targetNpc;
     private UITheme theme;
+    private TextMeshProUGUI titleLabelRef;
+    private TextMeshProUGUI closeLabelRef;
+
+    [SerializeField] private LocalizedString chooseGiftTitleText; // table "Dialogue", key "dialogue.gift.choose_title"
+    [SerializeField] private LocalizedString closeButtonText; // table "Dialogue", key "dialogue.gift.close"
+    [SerializeField] private LocalizedString noGiftableItemsText; // table "Dialogue", key "dialogue.gift.no_giftable_items"
+    [SerializeField] private LocalizedString itemRowText; // table "Dialogue", key "dialogue.gift.item_row"
+    [SerializeField] private LocalizedString giveButtonText; // table "Dialogue", key "dialogue.gift.give"
+    [SerializeField] private LocalizedString noInventoryFoundText; // table "Dialogue", key "dialogue.gift.no_inventory_found"
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
     {
-        if (FindFirstObjectByType<GiftSelectionUI>() != null)
+        if (FindFirstObjectByType<GiftSelectionUI>(FindObjectsInactive.Include) != null)
             return;
 
         var go = new GameObject("GiftSelectionUI");
@@ -36,10 +46,50 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
         DontDestroyOnLoad(go);
     }
 
+    // This component is created at runtime (never saved to a scene/prefab), so the
+    // Tools > Sowur Shield > Auto-Wire Localized Fields editor pass can never reach it —
+    // wire its LocalizedString table/key references here instead.
+    private void WireLocalizedStrings()
+    {
+        chooseGiftTitleText = new LocalizedString("Dialogue", "dialogue.gift.choose_title");
+        closeButtonText = new LocalizedString("Dialogue", "dialogue.gift.close");
+        noGiftableItemsText = new LocalizedString("Dialogue", "dialogue.gift.no_giftable_items");
+        itemRowText = new LocalizedString("Dialogue", "dialogue.gift.item_row");
+        giveButtonText = new LocalizedString("Dialogue", "dialogue.gift.give");
+        noInventoryFoundText = new LocalizedString("Dialogue", "dialogue.gift.no_inventory_found");
+    }
+
+    private bool _buildSucceeded = false;
+
     private void Awake()
     {
+        TryBuildUI();
+        LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    private void OnDestroy()
+    {
+        LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void TryBuildUI()
+    {
         theme = Resources.Load<UITheme>("UI/CozyUITheme");
-        BuildUI();
+        WireLocalizedStrings();
+        try
+        {
+            BuildUI();
+            _buildSucceeded = true;
+        }
+        catch (System.Exception e)
+        {
+            // Localization tables may not be configured yet (see MOBILE_LOCALIZATION_SETUP.md) —
+            // fail safe rather than leaving a half-built panel visible over the menu, but keep
+            // retrying on next OpenForNpc() instead of staying broken for the rest of the session.
+            Debug.LogError($"[GiftSelectionUI] BuildUI failed (Localization not configured?): {e}");
+            _buildSucceeded = false;
+            gameObject.SetActive(false);
+        }
     }
 
     // =========================================================================
@@ -78,6 +128,14 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
     {
         if (npc == null || !npc.CanGiftToday())
             return;
+
+        if (!_buildSucceeded)
+        {
+            gameObject.SetActive(true);
+            TryBuildUI();
+            if (!_buildSucceeded)
+                return;
+        }
 
         targetNpc = npc;
         RefreshList();
@@ -133,10 +191,10 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
         titleObj.transform.SetParent(panelObj.transform, false);
         RectTransform titleRect = titleObj.AddComponent<RectTransform>();
         titleRect.sizeDelta = new Vector2(0, 28);
-        TextMeshProUGUI titleLabel = CreateLabel(titleObj.transform, "Choose a gift");
-        titleLabel.fontSize = 20;
-        titleLabel.fontStyle = FontStyles.Bold;
-        titleLabel.alignment = TextAlignmentOptions.Center;
+        titleLabelRef = CreateLabel(titleObj.transform, chooseGiftTitleText.SafeGetLocalizedString());
+        titleLabelRef.fontSize = 20;
+        titleLabelRef.fontStyle = FontStyles.Bold;
+        titleLabelRef.alignment = TextAlignmentOptions.Center;
 
         // Close button
         GameObject closeButtonObj = new GameObject("CloseButton");
@@ -151,10 +209,17 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
         Button closeButton = closeButtonObj.AddComponent<Button>();
         closeButton.onClick.AddListener(OnCloseButtonClicked);
 
-        TextMeshProUGUI closeLabel = CreateLabel(closeButtonObj.transform, "Close");
-        closeLabel.alignment = TextAlignmentOptions.Center;
+        closeLabelRef = CreateLabel(closeButtonObj.transform, closeButtonText.SafeGetLocalizedString());
+        closeLabelRef.alignment = TextAlignmentOptions.Center;
 
         panelObj.SetActive(false);
+    }
+
+    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
+    {
+        if (titleLabelRef != null) titleLabelRef.text = chooseGiftTitleText.SafeGetLocalizedString();
+        if (closeLabelRef != null) closeLabelRef.text = closeButtonText.SafeGetLocalizedString();
+        if (isOpen) RefreshList();
     }
 
     private TextMeshProUGUI CreateLabel(Transform parent, string text)
@@ -198,7 +263,7 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
         SowurShield.Inventory.Inventory inventory = FindFirstObjectByType<SowurShield.Inventory.Inventory>();
         if (inventory == null)
         {
-            CreateRow("No inventory found", null, 1);
+            CreateRow(noInventoryFoundText.SafeGetLocalizedString(), null, 1);
             return;
         }
 
@@ -208,12 +273,15 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
 
         if (giftableItems.Count == 0)
         {
-            CreateRow("No giftable items", null, 1);
+            CreateRow(noGiftableItemsText.SafeGetLocalizedString(), null, 1);
             return;
         }
 
         foreach (ItemStack stack in giftableItems)
-            CreateRow($"{stack.item.itemName} x{stack.quantity} (+{stack.item.giftAffinityValue} relationship)", stack.item, 1);
+        {
+            itemRowText.Arguments = new object[] { stack.item.itemName, stack.quantity, stack.item.giftAffinityValue };
+            CreateRow(itemRowText.SafeGetLocalizedString(), stack.item, 1);
+        }
     }
 
     private void CreateRow(string label, Item item, int siblingIndex)
@@ -252,7 +320,7 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
             Button giveButton = giveButtonObj.AddComponent<Button>();
             giveButton.onClick.AddListener(() => GiveItem(item));
 
-            TextMeshProUGUI giveLabel = CreateLabel(giveButtonObj.transform, "Give");
+            TextMeshProUGUI giveLabel = CreateLabel(giveButtonObj.transform, giveButtonText.SafeGetLocalizedString());
             giveLabel.fontSize = 14;
             giveLabel.alignment = TextAlignmentOptions.Center;
         }

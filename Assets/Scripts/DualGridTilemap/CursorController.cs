@@ -72,8 +72,8 @@ public partial class CursorController : MonoBehaviour {
             cursorRenderer.enabled = true;
         }
 
-        // Obter posição do cursor
-        Vector2 mouseScreenPos = mouse.position.ReadValue();
+        // Obter posição do cursor (stick direito do gamepad tem prioridade quando ativo)
+        Vector2 mouseScreenPos = GamepadVirtualCursor.OverridePosition ?? mouse.position.ReadValue();
         Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(new Vector3(mouseScreenPos.x, mouseScreenPos.y, mainCamera.nearClipPlane));
         Vector3Int tilePos = GetWorldPosTile(mouseWorldPos);
 
@@ -114,7 +114,8 @@ public partial class CursorController : MonoBehaviour {
 
         // Process left-click interactions with proper priority
         // Don't process clicks while dragging inventory items or when mouse is over UI
-        if (mouse.leftButton.wasPressedThisFrame &&
+        bool clickPressed = mouse.leftButton.wasPressedThisFrame || GamepadVirtualCursor.WasClickPressedThisFrame();
+        if (clickPressed &&
             !InventorySlot.IsAnySlotDragging &&
             !IsMouseOverUI()) {
             ProcessHexInteraction(activeTilePos);
@@ -244,9 +245,9 @@ public partial class CursorController : MonoBehaviour {
     /// </summary>
     private GameObject CheckForDirectMouseHit() {
         if (mouse == null || mainCamera == null) return null;
-        
-        // Get mouse position in world space
-        Vector2 mouseScreenPos = mouse.position.ReadValue();
+
+        // Get cursor position in world space (gamepad virtual cursor takes priority when active)
+        Vector2 mouseScreenPos = GamepadVirtualCursor.OverridePosition ?? mouse.position.ReadValue();
         Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(new Vector3(mouseScreenPos.x, mouseScreenPos.y, mainCamera.nearClipPlane));
         Vector2 mousePos2D = new Vector2(mouseWorldPos.x, mouseWorldPos.y);
         

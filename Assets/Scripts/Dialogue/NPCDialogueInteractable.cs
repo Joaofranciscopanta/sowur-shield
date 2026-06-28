@@ -396,7 +396,7 @@ namespace SowurShield.Dialogue
                     choiceColor = canGift ? Color.white : new Color(0.6f, 0.6f, 0.6f, 1f),
                     onSelectedRuntime = canGift ? () =>
                     {
-                        var giftUI = FindFirstObjectByType<GiftSelectionUI>();
+                        var giftUI = FindFirstObjectByType<GiftSelectionUI>(FindObjectsInactive.Include);
                         if (giftUI != null)
                             giftUI.OpenForNpc(this);
                     } : null
@@ -409,7 +409,7 @@ namespace SowurShield.Dialogue
                 isExitChoice = true,
                 onSelectedRuntime = () =>
                 {
-                    var relationshipUI = FindFirstObjectByType<RelationshipUI>();
+                    var relationshipUI = FindFirstObjectByType<RelationshipUI>(FindObjectsInactive.Include);
                     if (relationshipUI != null)
                         relationshipUI.OpenForNpc(this);
                 }
@@ -423,7 +423,7 @@ namespace SowurShield.Dialogue
                     isExitChoice = true,
                     onSelectedRuntime = () =>
                     {
-                        var seedShopUI = FindFirstObjectByType<SeedShopUI>();
+                        var seedShopUI = FindFirstObjectByType<SeedShopUI>(FindObjectsInactive.Include);
                         if (seedShopUI != null)
                             seedShopUI.Open();
                     }

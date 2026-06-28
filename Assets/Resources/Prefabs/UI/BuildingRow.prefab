@@ -189,7 +189,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4965ce0b4a1741eab74902953d8c58a1, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.BuildingRow
   iconImage: {fileID: 4416736040995770299}
   nameText: {fileID: 5727262375323616418}
@@ -198,6 +198,36 @@ MonoBehaviour:
   materialText: {fileID: 4111091095162131200}
   statusText: {fileID: 504486967553951563}
   buyButton: {fileID: 882541433723161634}
+  costProgressText:
+    m_TableReference:
+      m_TableCollectionName: Farming
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: farming.building.cost_progress
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  builtText:
+    m_TableReference:
+      m_TableCollectionName: Farming
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: farming.building.built
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  cannotAffordText:
+    m_TableReference:
+      m_TableCollectionName: Farming
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: farming.building.cannot_afford
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1279686825001548399
 GameObject:
   m_ObjectHideFlags: 0

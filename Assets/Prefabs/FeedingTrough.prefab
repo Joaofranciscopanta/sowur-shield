@@ -118,6 +118,27 @@ MonoBehaviour:
   closeButton: {fileID: 0}
   interactionRange: 2
   interactionPrompt: Open Feeding Trough
+  troughTitleText:
+    m_TableReference:
+      m_TableCollectionName: Animals
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: animals.trough.title
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  troughStatusText:
+    m_TableReference:
+      m_TableCollectionName: Animals
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: animals.trough.status
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!61 &3927922005134202337
 BoxCollider2D:
   m_ObjectHideFlags: 0

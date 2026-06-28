@@ -6,6 +6,7 @@ using System.Collections;
 using System.IO;
 using System.Linq;
 using SowurShield.UI;
+using UnityEngine.Localization;
 
 namespace SowurShield.Core
 {
@@ -33,12 +34,31 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private GameObject confirmationPanel;
     [SerializeField] private GameObject loadingPanel;
 
+    [Header("First-Boot Language Prompt")]
+    [SerializeField] private GameObject languageSelectPanel;
+    [SerializeField] private Button languageSelectEnglishButton;
+    [SerializeField] private Button languageSelectPortugueseButton;
+    [SerializeField] private Button languageSelectSpanishButton;
+
     [Header("Slot Picker Panel")]
     [SerializeField] private GameObject slotPickerPanel;
     [SerializeField] private Transform slotListParent;
     [SerializeField] private GameObject saveSlotButtonPrefab;
     [SerializeField] private Button slotPickerBackButton;
     [SerializeField] private TextMeshProUGUI slotPickerTitleText;
+
+    [Header("Localized Strings")]
+    [SerializeField] private LocalizedString loadGameTitleText; // table "MainMenu", key "mainmenu.load_game_title"
+    [SerializeField] private LocalizedString newGameTitleText; // table "MainMenu", key "mainmenu.new_game_title"
+    [SerializeField] private LocalizedString quitConfirmText; // table "MainMenu", key "mainmenu.quit_confirm"
+    [SerializeField] private LocalizedString quitTitleText; // table "MainMenu", key "mainmenu.quit_title"
+    [SerializeField] private LocalizedString loadingProgressText; // table "MainMenu", key "mainmenu.loading_progress"
+    [SerializeField] private LocalizedString loadingSaveDataText; // table "MainMenu", key "mainmenu.loading_save_data"
+    [SerializeField] private LocalizedString initializingNewGameText; // table "MainMenu", key "mainmenu.initializing_new_game"
+    [SerializeField] private LocalizedString saveFileFoundTitleText; // table "MainMenu", key "mainmenu.save_file_found_title"
+    [SerializeField] private LocalizedString saveFileLabelText; // table "MainMenu", key "mainmenu.save_file_label"
+    [SerializeField] private LocalizedString saveSizeLabelText; // table "MainMenu", key "mainmenu.save_size_label"
+    [SerializeField] private LocalizedString saveLastSavedLabelText; // table "MainMenu", key "mainmenu.save_last_saved_label"
     
     [Header("Settings Panel (Reuse GameMenuUI components)")]
     [SerializeField] private Slider masterVolumeSlider;
@@ -46,6 +66,7 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private Slider sfxVolumeSlider;
     [SerializeField] private Toggle fullscreenToggle;
     [SerializeField] private TMP_Dropdown resolutionDropdown;
+    [SerializeField] private TMP_Dropdown languageDropdown;
     [SerializeField] private Button settingsBackButton;
     
     [Header("Confirmation Dialog")]
@@ -81,8 +102,23 @@ public class MainMenuUI : MonoBehaviour
         SetupUI();
         // Delay save file check to ensure all components are initialized
         StartCoroutine(DelayedSaveFileCheck());
+
+        LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
     }
-    
+
+    private void OnDestroy()
+    {
+        LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
+    {
+        // Re-run the dynamic text writers so already-visible labels reflect the new language
+        // immediately, without needing a scene reload (static button labels in prefabs are
+        // unaffected — those need a "Localize String Event" component, see MOBILE_LOCALIZATION_SETUP.md).
+        UpdateSaveInfoDisplay();
+    }
+
     private IEnumerator DelayedSaveFileCheck()
     {
         // Wait one frame to ensure all initialization is complete
@@ -145,9 +181,25 @@ public class MainMenuUI : MonoBehaviour
         if (confirmNoButton != null)
             confirmNoButton.onClick.AddListener(OnConfirmationNo);
         
-        // Initialize panels
-        ShowMainPanel();
-        
+        // Setup first-boot language prompt
+        if (languageSelectEnglishButton != null)
+            languageSelectEnglishButton.onClick.AddListener(() => OnLanguageSelectClicked("en"));
+        if (languageSelectPortugueseButton != null)
+            languageSelectPortugueseButton.onClick.AddListener(() => OnLanguageSelectClicked("pt"));
+        if (languageSelectSpanishButton != null)
+            languageSelectSpanishButton.onClick.AddListener(() => OnLanguageSelectClicked("es"));
+
+        // Initialize panels — show the language prompt instead of the main panel on first boot
+        if (languageSelectPanel != null && LocalizationManager.Instance != null && LocalizationManager.Instance.IsFirstBoot)
+        {
+            SetPanelActive(mainPanel, false);
+            SetPanelActive(languageSelectPanel, true);
+        }
+        else
+        {
+            ShowMainPanel();
+        }
+
         // Find audio source if not assigned
         if (audioSource == null)
             audioSource = GetComponent<AudioSource>();
@@ -235,7 +287,54 @@ public class MainMenuUI : MonoBehaviour
         
         // Setup resolution dropdown
         SetupResolutionDropdown();
-        
+
+        // Setup language dropdown
+        SetupLanguageDropdown();
+
+    }
+
+    private void SetupLanguageDropdown()
+    {
+        if (languageDropdown == null)
+            return;
+
+        languageDropdown.ClearOptions();
+        languageDropdown.AddOptions(new System.Collections.Generic.List<string> { "English", "Português", "Español" });
+
+        string currentCode = LocalizationManager.Instance != null
+            ? LocalizationManager.Instance.GetCurrentLanguageCode()
+            : PlayerPrefs.GetString(LocalizationManager.PlayerPrefsKey, "en");
+
+        languageDropdown.value = currentCode switch
+        {
+            "pt" => 1,
+            "es" => 2,
+            _ => 0
+        };
+
+        languageDropdown.onValueChanged.AddListener(OnLanguageDropdownChanged);
+    }
+
+    private void OnLanguageDropdownChanged(int index)
+    {
+        string code = index switch
+        {
+            1 => "pt",
+            2 => "es",
+            _ => "en"
+        };
+
+        LocalizationManager.Instance?.SetLanguage(code);
+        PlaySound(buttonClickSound);
+    }
+
+    private void OnLanguageSelectClicked(string localeCode)
+    {
+        PlaySound(buttonClickSound);
+        LocalizationManager.Instance?.SetLanguage(localeCode);
+
+        SetPanelActive(languageSelectPanel, false);
+        ShowMainPanel();
     }
     
     private void SetupResolutionDropdown()
@@ -336,8 +435,8 @@ public class MainMenuUI : MonoBehaviour
     {
         PlaySound(buttonClickSound);
         ShowConfirmationDialog(
-            "Are you sure you want to quit the game?",
-            "Quit Game"
+            quitConfirmText.SafeGetLocalizedString(),
+            quitTitleText.SafeGetLocalizedString()
         );
         isNewGameOverwrite = false; // Use this flag to distinguish quit vs new game
     }
@@ -357,7 +456,7 @@ public class MainMenuUI : MonoBehaviour
         currentSlotPickerMode = mode;
 
         if (slotPickerTitleText != null)
-            slotPickerTitleText.text = mode == SlotPickerMode.Load ? "Load Game" : "New Game — Choose Slot";
+            slotPickerTitleText.text = mode == SlotPickerMode.Load ? loadGameTitleText.SafeGetLocalizedString() : newGameTitleText.SafeGetLocalizedString();
 
         PopulateSlotPicker(mode);
 
@@ -593,13 +692,16 @@ public class MainMenuUI : MonoBehaviour
                 loadingProgressBar.value = progress;
                 
             if (loadingText != null)
-                loadingText.text = $"Loading... {progress:P0}";
-            
+            {
+                loadingProgressText.Arguments = new object[] { progress };
+                loadingText.text = loadingProgressText.SafeGetLocalizedString();
+            }
+
             // Check if loading is almost done
             if (asyncLoad.progress >= 0.9f)
             {
                 if (loadingText != null)
-                    loadingText.text = loadExistingSave ? "Loading save data..." : "Initializing new game...";
+                    loadingText.text = loadExistingSave ? loadingSaveDataText.SafeGetLocalizedString() : initializingNewGameText.SafeGetLocalizedString();
                     
                 // Allow scene activation
                 asyncLoad.allowSceneActivation = true;
@@ -945,16 +1047,25 @@ public class MainMenuUI : MonoBehaviour
                 {
                     // Show file metadata since we can't get game data without loading the full save
                     if (playerNameText != null)
-                        playerNameText.text = "Save File Found";
-                        
+                        playerNameText.text = saveFileFoundTitleText.SafeGetLocalizedString();
+
                     if (dayText != null)
-                        dayText.text = $"File: {saveInfo.fileName}";
-                        
+                    {
+                        saveFileLabelText.Arguments = new object[] { saveInfo.fileName };
+                        dayText.text = saveFileLabelText.SafeGetLocalizedString();
+                    }
+
                     if (moneyText != null)
-                        moneyText.text = $"Size: {saveInfo.fileSizeBytes / 1024}KB";
-                        
+                    {
+                        saveSizeLabelText.Arguments = new object[] { saveInfo.fileSizeBytes / 1024 };
+                        moneyText.text = saveSizeLabelText.SafeGetLocalizedString();
+                    }
+
                     if (lastPlayedText != null)
-                        lastPlayedText.text = $"Last Saved: {saveInfo.lastWriteTime:MM/dd/yyyy HH:mm}";
+                    {
+                        saveLastSavedLabelText.Arguments = new object[] { saveInfo.lastWriteTime.ToString("MM/dd/yyyy HH:mm") };
+                        lastPlayedText.text = saveLastSavedLabelText.SafeGetLocalizedString();
+                    }
                         
                     saveInfoPanel.SetActive(true);
                 }

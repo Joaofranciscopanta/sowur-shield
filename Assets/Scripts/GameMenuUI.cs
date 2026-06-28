@@ -4,6 +4,7 @@ using TMPro;
 using System.Collections;
 using System;
 using SowurShield.UI;
+using UnityEngine.Localization;
 
 namespace SowurShield.Core
 {
@@ -30,6 +31,7 @@ public class GameMenuUI : MonoBehaviour
     [SerializeField] private Slider sfxVolumeSlider;
     [SerializeField] private Toggle fullscreenToggle;
     [SerializeField] private TMP_Dropdown resolutionDropdown;
+    [SerializeField] private TMP_Dropdown languageDropdown;
     [SerializeField] private Button settingsBackButton;
     
     [Header("Save Info Panel")]
@@ -50,7 +52,24 @@ public class GameMenuUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI confirmationText;
     [SerializeField] private Button confirmYesButton;
     [SerializeField] private Button confirmNoButton;
-    
+
+    [Header("Localized Strings")]
+    [SerializeField] private LocalizedString settingsNotConfiguredText; // table "MainMenu", key "mainmenu.gamemenu.settings_not_configured"
+    [SerializeField] private LocalizedString saveInfoNotConfiguredText; // table "MainMenu", key "mainmenu.gamemenu.saveinfo_not_configured"
+    [SerializeField] private LocalizedString saveInfoFoundText; // table "MainMenu", key "mainmenu.gamemenu.save_info_found"
+    [SerializeField] private LocalizedString saveInfoNotFoundText; // table "MainMenu", key "mainmenu.gamemenu.save_info_not_found"
+    [SerializeField] private LocalizedString saveSlotTitleText; // table "MainMenu", key "mainmenu.gamemenu.save_slot_title"
+    [SerializeField] private LocalizedString loadSlotTitleText; // table "MainMenu", key "mainmenu.gamemenu.load_slot_title"
+    [SerializeField] private LocalizedString overwriteConfirmText; // table "MainMenu", key "mainmenu.gamemenu.overwrite_confirm"
+    [SerializeField] private LocalizedString loadConfirmText; // table "MainMenu", key "mainmenu.gamemenu.load_confirm"
+    [SerializeField] private LocalizedString savedToSlotText; // table "MainMenu", key "mainmenu.gamemenu.saved_to_slot"
+    [SerializeField] private LocalizedString confirmQuitDesktopText; // table "MainMenu", key "mainmenu.gamemenu.confirm_quit_desktop"
+    [SerializeField] private LocalizedString confirmQuitMainMenuText; // table "MainMenu", key "mainmenu.gamemenu.confirm_quit_mainmenu"
+    [SerializeField] private LocalizedString confirmDeleteSaveText; // table "MainMenu", key "mainmenu.gamemenu.confirm_delete_save"
+    [SerializeField] private LocalizedString saveDeletedText; // table "MainMenu", key "mainmenu.gamemenu.save_deleted"
+    [SerializeField] private LocalizedString testNotificationText; // table "MainMenu", key "mainmenu.gamemenu.test_notification"
+    [SerializeField] private LocalizedString testErrorText; // table "MainMenu", key "mainmenu.gamemenu.test_error"
+
     [Header("Notification System")]
     [SerializeField] private GameObject notificationPanel;
     [SerializeField] private TextMeshProUGUI notificationText;
@@ -64,6 +83,7 @@ public class GameMenuUI : MonoBehaviour
     
     // State tracking
     private bool isQuitToDesktop = false;
+    private bool isPendingDeleteConfirmation = false;
     private Coroutine notificationCoroutine;
 
     private enum InGameSlotMode { Save, Load }
@@ -90,6 +110,22 @@ public class GameMenuUI : MonoBehaviour
         SetupSettings();
         InitializePanels();
         LoadSettings();
+
+        LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    private void OnDestroy()
+    {
+        LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(Locale locale)
+    {
+        if (settingsPanel != null && settingsPanel.activeSelf)
+            RefreshSettingsUI();
+
+        if (saveInfoPanel != null && saveInfoPanel.activeSelf)
+            UpdateSaveInfoDisplay();
     }
 
     /// <summary>
@@ -116,6 +152,7 @@ public class GameMenuUI : MonoBehaviour
         sfxVolumeSlider = other.sfxVolumeSlider;
         fullscreenToggle = other.fullscreenToggle;
         resolutionDropdown = other.resolutionDropdown;
+        languageDropdown = other.languageDropdown;
         settingsBackButton = other.settingsBackButton;
 
         saveInfoPanel = other.saveInfoPanel;
@@ -259,6 +296,45 @@ public class GameMenuUI : MonoBehaviour
             PopulateResolutionDropdown();
             resolutionDropdown.onValueChanged.AddListener(OnResolutionChanged);
         }
+
+        // Language dropdown
+        SetupLanguageDropdown();
+    }
+
+    private void SetupLanguageDropdown()
+    {
+        if (languageDropdown == null)
+            return;
+
+        languageDropdown.onValueChanged.RemoveListener(OnLanguageDropdownChanged);
+
+        languageDropdown.ClearOptions();
+        languageDropdown.AddOptions(new System.Collections.Generic.List<string> { "English", "Português", "Español" });
+
+        string currentCode = LocalizationManager.Instance != null
+            ? LocalizationManager.Instance.GetCurrentLanguageCode()
+            : PlayerPrefs.GetString(LocalizationManager.PlayerPrefsKey, "en");
+
+        languageDropdown.value = currentCode switch
+        {
+            "pt" => 1,
+            "es" => 2,
+            _ => 0
+        };
+
+        languageDropdown.onValueChanged.AddListener(OnLanguageDropdownChanged);
+    }
+
+    private void OnLanguageDropdownChanged(int index)
+    {
+        string code = index switch
+        {
+            1 => "pt",
+            2 => "es",
+            _ => "en"
+        };
+
+        LocalizationManager.Instance?.SetLanguage(code);
     }
     
     private void InitializePanels()
@@ -293,7 +369,7 @@ public class GameMenuUI : MonoBehaviour
         if (settingsPanel == null)
         {
 
-            ShowNotification("Settings panel not configured!", true);
+            ShowNotification(settingsNotConfiguredText.SafeGetLocalizedString(), true);
             return;
         }
         
@@ -312,7 +388,7 @@ public class GameMenuUI : MonoBehaviour
         if (saveInfoPanel == null)
         {
 
-            ShowNotification("Save info panel not configured!", true);
+            ShowNotification(saveInfoNotConfiguredText.SafeGetLocalizedString(), true);
             return;
         }
         
@@ -366,6 +442,17 @@ public class GameMenuUI : MonoBehaviour
         // Refresh UI elements to show current values
         if (masterVolumeSlider != null)
             AudioListener.volume = masterVolumeSlider.value;
+
+        if (languageDropdown != null && LocalizationManager.Instance != null)
+        {
+            string currentCode = LocalizationManager.Instance.GetCurrentLanguageCode();
+            languageDropdown.SetValueWithoutNotify(currentCode switch
+            {
+                "pt" => 1,
+                "es" => 2,
+                _ => 0
+            });
+        }
     }
     
     private void OnMasterVolumeChanged(float value)
@@ -486,25 +573,23 @@ public class GameMenuUI : MonoBehaviour
         
         if (saveInfo != null)
         {
-            string infoText = $"📄 Save File Information\n\n" +
-                             $"📁 File: {saveInfo.fileName}\n" +
-                             $"📅 Created: {saveInfo.creationTime:MMM dd, yyyy HH:mm}\n" +
-                             $"🕒 Last Saved: {saveInfo.lastWriteTime:MMM dd, yyyy HH:mm}\n" +
-                             $"💾 Size: {FormatFileSize(saveInfo.fileSizeBytes)}\n\n" +
-                             $"💡 Game saves automatically when you sleep in bed";
-            
-            saveInfoText.text = infoText;
-            
+            saveInfoFoundText.Arguments = new object[]
+            {
+                saveInfo.fileName,
+                saveInfo.creationTime.ToString("MMM dd, yyyy HH:mm"),
+                saveInfo.lastWriteTime.ToString("MMM dd, yyyy HH:mm"),
+                FormatFileSize(saveInfo.fileSizeBytes)
+            };
+            saveInfoText.text = saveInfoFoundText.SafeGetLocalizedString();
+
             // Enable delete button
             if (deleteSaveButton != null)
                 deleteSaveButton.interactable = true;
         }
         else
         {
-            saveInfoText.text = "❌ No save file found\n\n" +
-                               "🛏️ Sleep in a bed to save your progress automatically.\n\n" +
-                               "The game will create a save file when you go to sleep for the first time.";
-            
+            saveInfoText.text = saveInfoNotFoundText.SafeGetLocalizedString();
+
             // Disable delete button
             if (deleteSaveButton != null)
                 deleteSaveButton.interactable = false;
@@ -539,7 +624,7 @@ public class GameMenuUI : MonoBehaviour
         currentInGameSlotMode = InGameSlotMode.Save;
 
         if (saveSlotPanelTitle != null)
-            saveSlotPanelTitle.text = "Save Game — Choose Slot";
+            saveSlotPanelTitle.text = saveSlotTitleText.SafeGetLocalizedString();
 
         PopulateInGameSlotPanel();
 
@@ -552,7 +637,7 @@ public class GameMenuUI : MonoBehaviour
         currentInGameSlotMode = InGameSlotMode.Load;
 
         if (saveSlotPanelTitle != null)
-            saveSlotPanelTitle.text = "Load Game — Choose Slot";
+            saveSlotPanelTitle.text = loadSlotTitleText.SafeGetLocalizedString();
 
         PopulateInGameSlotPanel();
 
@@ -627,7 +712,10 @@ public class GameMenuUI : MonoBehaviour
             SetPanelActive(saveSlotPanel, false);
             SetPanelActive(confirmationPanel, true);
             if (confirmationText != null)
-                confirmationText.text = $"Overwrite save in {slotName}?";
+            {
+                overwriteConfirmText.Arguments = new object[] { slotName };
+                confirmationText.text = overwriteConfirmText.SafeGetLocalizedString();
+            }
         }
         else
         {
@@ -642,7 +730,7 @@ public class GameMenuUI : MonoBehaviour
         SetPanelActive(saveSlotPanel, false);
         SetPanelActive(confirmationPanel, true);
         if (confirmationText != null)
-            confirmationText.text = "Load this save? Unsaved progress will be lost.";
+            confirmationText.text = loadConfirmText.SafeGetLocalizedString();
     }
 
     private void ExecuteInGameSave(string slotName)
@@ -650,7 +738,8 @@ public class GameMenuUI : MonoBehaviour
         if (SaveManager.Instance != null)
         {
             SaveManager.Instance.SaveToSlot(slotName);
-            ShowNotification($"Saved to {slotName}!", false);
+            savedToSlotText.Arguments = new object[] { slotName };
+            ShowNotification(savedToSlotText.SafeGetLocalizedString(), false);
         }
         ShowMainPanel();
     }
@@ -671,6 +760,7 @@ public class GameMenuUI : MonoBehaviour
     public void ShowQuitConfirmation(bool quitToDesktop)
     {
         isQuitToDesktop = quitToDesktop;
+        isPendingDeleteConfirmation = false;
 
         confirmationReturnPanel = mainMenuPanel;
         SetPanelActive(mainMenuPanel, false);
@@ -678,17 +768,16 @@ public class GameMenuUI : MonoBehaviour
 
         if (confirmationText != null)
         {
-            string message = quitToDesktop ?
-                "Quit to Desktop?\n\nAny unsaved progress will be lost.\nMake sure to sleep in a bed to save!" :
-                "Return to Main Menu?\n\nAny unsaved progress will be lost.\nMake sure to sleep in a bed to save!";
-
-            confirmationText.text = message;
+            confirmationText.text = quitToDesktop
+                ? confirmQuitDesktopText.SafeGetLocalizedString()
+                : confirmQuitMainMenuText.SafeGetLocalizedString();
         }
     }
 
     private void ShowDeleteSaveConfirmation()
     {
         isQuitToDesktop = false; // Reuse confirmation dialog for delete
+        isPendingDeleteConfirmation = true;
 
         confirmationReturnPanel = mainMenuPanel;
         SetPanelActive(mainMenuPanel, false);
@@ -696,7 +785,7 @@ public class GameMenuUI : MonoBehaviour
 
         if (confirmationText != null)
         {
-            confirmationText.text = "Delete Save File?\n\nThis action cannot be undone.\nAll your progress will be permanently lost!";
+            confirmationText.text = confirmDeleteSaveText.SafeGetLocalizedString();
         }
     }
     
@@ -718,13 +807,15 @@ public class GameMenuUI : MonoBehaviour
             return;
         }
 
-        if (confirmationText != null && confirmationText.text.Contains("Delete"))
+        if (isPendingDeleteConfirmation)
         {
+            isPendingDeleteConfirmation = false;
+
             // Delete save confirmation
             if (SaveManager.Instance != null)
             {
                 SaveManager.Instance.DeleteSaveFile();
-                ShowNotification("Save file deleted!", false);
+                ShowNotification(saveDeletedText.SafeGetLocalizedString(), false);
                 UpdateSaveInfoDisplay();
                 UpdateLoadButtonState();
             }
@@ -745,6 +836,7 @@ public class GameMenuUI : MonoBehaviour
 
     private void OnConfirmNo()
     {
+        isPendingDeleteConfirmation = false;
         SetPanelActive(confirmationPanel, false);
         SetPanelActive(confirmationReturnPanel, true);
         confirmationReturnPanel = null;
@@ -805,13 +897,13 @@ public class GameMenuUI : MonoBehaviour
     [ContextMenu("Test Notification")]
     public void TestNotification()
     {
-        ShowNotification("Test notification message!", false);
+        ShowNotification(testNotificationText.SafeGetLocalizedString(), false);
     }
-    
+
     [ContextMenu("Test Error Notification")]
     public void TestErrorNotification()
     {
-        ShowNotification("Test error message!", true);
+        ShowNotification(testErrorText.SafeGetLocalizedString(), true);
     }
     
     [ContextMenu("Show Settings Panel")]

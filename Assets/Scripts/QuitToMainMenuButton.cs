@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Localization;
 
 namespace SowurShield.Core
 {
@@ -26,6 +27,9 @@ public class QuitToMainMenuButton : MonoBehaviour
     [Header("Audio (Optional)")]
     [SerializeField] private AudioClip clickSound;
     [SerializeField] private AudioSource audioSource;
+
+    [Header("Localized Strings")]
+    [SerializeField] private LocalizedString confirmText; // table "MainMenu", key "mainmenu.quittomainmenu.confirm"
     
     private Button quitButton;
     
@@ -93,7 +97,7 @@ public class QuitToMainMenuButton : MonoBehaviour
             // Update confirmation text
             if (confirmationText != null)
             {
-                confirmationText.text = "Return to Main Menu?\n\nAny unsaved progress will be lost.\nMake sure to save your game first!";
+                confirmationText.text = confirmText.SafeGetLocalizedString();
             }
             
 

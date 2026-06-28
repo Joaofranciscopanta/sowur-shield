@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Linq;
 using SowurShield.Inventory;
+using UnityEngine.Localization;
 
 namespace SowurShield.Core
 {
@@ -72,6 +73,10 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     public GameObject sellBoxSlotPrefab;
     public UnityEngine.UI.Text totalValueText;
     public UnityEngine.UI.Text sellBoxTitleText;
+
+    [Header("Localized Strings")]
+    [SerializeField] private LocalizedString titleText; // table "Farming", key "farming.sellbox.title"
+    [SerializeField] private LocalizedString totalValueLocalizedText; // table "Farming", key "farming.sellbox.total_value"
 
     [Header("Visual Feedback")]
     public AudioClip sellSound;
@@ -148,6 +153,8 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         UpdateBoxSprite();
         CloseSellBox();
 
+        SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+
         // Ensure main panel starts inactive
         if (sellBoxMainPanel != null)
             sellBoxMainPanel.SetActive(false);
@@ -166,6 +173,14 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     {
         UnregisterFromInteractionManager();
         UnregisterFromUIManager();
+        SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(Locale locale)
+    {
+        if (sellBoxTitleText != null)
+            sellBoxTitleText.text = titleText.SafeGetLocalizedString();
+        UpdateTotalValueDisplay();
     }
 
     private void RegisterWithUIManager()
@@ -361,7 +376,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         }
 
         if (sellBoxTitleText != null)
-            sellBoxTitleText.text = "Sell Box";
+            sellBoxTitleText.text = titleText.SafeGetLocalizedString();
 
         UpdateAllSlots();
     }
@@ -845,7 +860,8 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         if (totalValueText != null && totalValueText.gameObject.activeInHierarchy)
         {
             int totalValue = CalculateTotalValue();
-            totalValueText.text = $"Total Value: {totalValue} coins";
+            totalValueLocalizedText.Arguments = new object[] { totalValue };
+            totalValueText.text = totalValueLocalizedText.SafeGetLocalizedString();
         }
     }
 
@@ -888,7 +904,8 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         if (totalValueText != null)
         {
             int totalValue = CalculateTotalValue();
-            totalValueText.text = $"Total Value: {totalValue} coins";
+            totalValueLocalizedText.Arguments = new object[] { totalValue };
+            totalValueText.text = totalValueLocalizedText.SafeGetLocalizedString();
         }
 
         // Update box sprite

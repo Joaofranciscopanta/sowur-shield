@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using UnityEngine.Localization;
+using SowurShield.Core;
 using SowurShield.Animals;
 
 namespace SowurShield.Combat
@@ -27,6 +29,13 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
     [SerializeField] private Image cardBackground;
     [SerializeField] private Image foodStatusIcon;
     [SerializeField] private Image happinessFillBar;
+
+    [Header("Localization")]
+    [SerializeField] private LocalizedString happinessText_Localized; // table "Combat", key "combat.selection.happiness"
+    [SerializeField] private LocalizedString fedText_Localized; // table "Combat", key "combat.selection.fed"
+    [SerializeField] private LocalizedString noFoodNeededText_Localized; // table "Combat", key "combat.selection.no_food_needed"
+    [SerializeField] private LocalizedString needsText_Localized; // table "Combat", key "combat.selection.needs"
+    [SerializeField] private LocalizedString foodLineText_Localized; // table "Combat", key "combat.selection.food_line"
 
     [Header("Colors")]
     [SerializeField] private Color normalColor = new Color(0.18f, 0.18f, 0.22f, 0.95f);
@@ -65,6 +74,19 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
         {
             canvasGroup = gameObject.AddComponent<CanvasGroup>();
         }
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    private void OnDestroy()
+    {
+        SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
+    {
+        if (animal != null)
+            RefreshCard();
     }
 
     /// <summary>
@@ -107,7 +129,8 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
 
         if (happinessText != null)
         {
-            happinessText.text = $"Happiness: {happinessPercent:F0}%";
+            happinessText_Localized.Arguments = new object[] { happinessPercent };
+            happinessText.text = happinessText_Localized.SafeGetLocalizedString();
         }
 
         UpdateHappinessBar(happinessPercent);
@@ -149,7 +172,7 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
             bool fed = positioned != null && positioned.isFed;
 
             statusColor = fed ? fedColor : hungryColor;
-            statusText = fed ? "Fed" : GetFoodRequirementText();
+            statusText = fed ? fedText_Localized.SafeGetLocalizedString() : GetFoodRequirementText();
         }
         else
         {
@@ -176,13 +199,14 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
     {
         if (animal.AnimalData == null || animal.AnimalData.dailyFoodRequirements.Count == 0)
         {
-            return "No food needed";
+            return noFoodNeededText_Localized.SafeGetLocalizedString();
         }
 
-        string text = "Needs: ";
+        string text = needsText_Localized.SafeGetLocalizedString();
         foreach (FoodRequirement req in animal.AnimalData.dailyFoodRequirements)
         {
-            text += $"{req.quantityPerDay}x {req.itemName} ";
+            foodLineText_Localized.Arguments = new object[] { req.quantityPerDay, req.itemName };
+            text += foodLineText_Localized.SafeGetLocalizedString();
         }
 
         return text.Trim();

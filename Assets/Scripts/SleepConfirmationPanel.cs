@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using TMPro;
 using System;
 using SowurShield.Animals;
+using UnityEngine.Localization;
 
 namespace SowurShield.Core
 {
@@ -44,7 +45,20 @@ public class SleepConfirmationPanel : MonoBehaviour
     [SerializeField] private AudioClip confirmSound;
     [SerializeField] private AudioClip cancelSound;
     [SerializeField] private AudioSource audioSource;
-    
+
+    [Header("Localized Strings")]
+    [SerializeField] private LocalizedString titleLocalizedText; // table "Farming", key "farming.sleep.title"
+    [SerializeField] private LocalizedString confirmLocalizedText; // table "Farming", key "farming.sleep.confirm"
+    [SerializeField] private LocalizedString cancelLocalizedText; // table "Farming", key "farming.sleep.cancel"
+    [SerializeField] private LocalizedString currentTimeText; // table "Farming", key "farming.sleep.current_time"
+    [SerializeField] private LocalizedString wakeTomorrowText; // table "Farming", key "farming.sleep.wake_tomorrow"
+    [SerializeField] private LocalizedString sellboxSummaryText; // table "Farming", key "farming.sleep.sellbox_summary"
+    [SerializeField] private LocalizedString sellboxEmptyText; // table "Farming", key "farming.sleep.sellbox_empty"
+    [SerializeField] private LocalizedString troughSummaryText; // table "Farming", key "farming.sleep.trough_summary"
+    [SerializeField] private LocalizedString troughEmptyText; // table "Farming", key "farming.sleep.trough_empty"
+    [SerializeField] private LocalizedString autosaveOnText; // table "Farming", key "farming.sleep.autosave_on"
+    [SerializeField] private LocalizedString autosaveOffText; // table "Farming", key "farming.sleep.autosave_off"
+
     // Events
     public static Action OnSleepConfirmed;
     public static Action OnSleepCancelled;
@@ -74,8 +88,17 @@ public class SleepConfirmationPanel : MonoBehaviour
         
         if (canvasGroup != null)
             canvasGroup.alpha = 0f;
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
     }
-    
+
+    private void HandleLanguageChanged(Locale locale)
+    {
+        SetupDefaultTexts();
+        if (panelContainer != null && panelContainer.activeSelf)
+            UpdateInformationTexts();
+    }
+
     private void InitializeReferences()
     {
         // Get audio source if not assigned
@@ -136,13 +159,13 @@ public class SleepConfirmationPanel : MonoBehaviour
     private void SetupDefaultTexts()
     {
         if (titleText != null)
-            titleText.text = "Sleep Until Morning?";
-            
+            titleText.text = titleLocalizedText.SafeGetLocalizedString();
+
         if (confirmButtonText != null)
-            confirmButtonText.text = "Sleep";
-            
+            confirmButtonText.text = confirmLocalizedText.SafeGetLocalizedString();
+
         if (cancelButtonText != null)
-            cancelButtonText.text = "Cancel";
+            cancelButtonText.text = cancelLocalizedText.SafeGetLocalizedString();
     }
     
     /// <summary>
@@ -230,12 +253,13 @@ public class SleepConfirmationPanel : MonoBehaviour
                 // Format time (24h format)
                 string currentTime = $"{hour:D2}:{minute:D2}";
                 int currentDay = timeController.currentDay;
-                
-                timeInfoText.text = $"Current: Day {currentDay}, {currentTime}\nYou will wake up tomorrow at 6:00 AM";
+
+                currentTimeText.Arguments = new object[] { currentDay, currentTime };
+                timeInfoText.text = currentTimeText.SafeGetLocalizedString();
             }
             else
             {
-                timeInfoText.text = "You will wake up tomorrow morning";
+                timeInfoText.text = wakeTomorrowText.SafeGetLocalizedString();
             }
         }
     }
@@ -257,12 +281,13 @@ public class SleepConfirmationPanel : MonoBehaviour
             
             if (totalItems > 0)
             {
-                sellBoxInfoText.text = $"SellBox: {totalItems} items will be sold for {totalValue}g";
+                sellboxSummaryText.Arguments = new object[] { totalItems, totalValue };
+                sellBoxInfoText.text = sellboxSummaryText.SafeGetLocalizedString();
                 sellBoxInfoText.color = Color.green;
             }
             else
             {
-                sellBoxInfoText.text = "SellBox: No items to sell";
+                sellBoxInfoText.text = sellboxEmptyText.SafeGetLocalizedString();
                 sellBoxInfoText.color = new Color(0.176f, 0.165f, 0.149f, 1f);
             }
         }
@@ -284,12 +309,13 @@ public class SleepConfirmationPanel : MonoBehaviour
 
             if (totalTroughs > 0 && totalFeedable > 0)
             {
-                feedingTroughInfoText.text = $"Feeding Troughs: {totalFeedable} animal{(totalFeedable != 1 ? "s" : "")} will be fed";
+                troughSummaryText.Arguments = new object[] { totalFeedable, totalFeedable != 1 ? "s" : "" };
+                feedingTroughInfoText.text = troughSummaryText.SafeGetLocalizedString();
                 feedingTroughInfoText.color = Color.green;
             }
             else if (totalTroughs > 0)
             {
-                feedingTroughInfoText.text = "Feeding Troughs: No food available";
+                feedingTroughInfoText.text = troughEmptyText.SafeGetLocalizedString();
                 feedingTroughInfoText.color = Color.yellow;
             }
             else
@@ -306,12 +332,12 @@ public class SleepConfirmationPanel : MonoBehaviour
         {
             if (SaveManager.Instance != null)
             {
-                saveInfoText.text = "Game will be auto-saved";
+                saveInfoText.text = autosaveOnText.SafeGetLocalizedString();
                 saveInfoText.color = Color.cyan;
             }
             else
             {
-                saveInfoText.text = "Auto-save not available";
+                saveInfoText.text = autosaveOffText.SafeGetLocalizedString();
                 saveInfoText.color = Color.yellow;
             }
         }
@@ -549,6 +575,8 @@ public class SleepConfirmationPanel : MonoBehaviour
         // Clean up events
         OnSleepConfirmed = null;
         OnSleepCancelled = null;
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
     }
 }
 

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Localization;
 
 namespace SowurShield.Core
 {
@@ -23,6 +24,9 @@ public class PlayerStats : MonoBehaviour, ISaveable
     public UnityEngine.UI.Slider healthSlider;
     public UnityEngine.UI.Slider energySlider;
     public UnityEngine.UI.Text moneyText; // Optional: direct money text reference
+
+    [Header("Localization")]
+    [SerializeField] private LocalizedString moneyLabelLocalized; // table "UI_Common", key "ui_common.money_label"
 
     // Events
     public System.Action<int, int> OnHealthChanged; // current, max
@@ -56,6 +60,18 @@ public class PlayerStats : MonoBehaviour, ISaveable
             // Try again in Start if SaveManager isn't ready yet
             StartCoroutine(DelayedRegistration());
         }
+
+        LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    private void OnDestroy()
+    {
+        LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
+    {
+        UpdateMoneyUI();
     }
 
     private void Start()
@@ -282,7 +298,8 @@ public class PlayerStats : MonoBehaviour, ISaveable
     {
         if (moneyText != null)
         {
-            moneyText.text = $"Money: ${money}";
+            moneyLabelLocalized.Arguments = new object[] { money };
+            moneyText.text = moneyLabelLocalized.SafeGetLocalizedString();
         }
     }
 

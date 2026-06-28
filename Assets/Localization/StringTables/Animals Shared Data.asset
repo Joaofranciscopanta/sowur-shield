@@ -1,0 +1,196 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Animals Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: Animals
+  m_TableCollectionNameGuidString: 01a9d2485f97194418adb6fc4c188ae0
+  m_Entries:
+  - m_Id: 300670976
+    m_Key: animals.info.daily_food_header
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448192
+    m_Key: animals.info.food_line
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448193
+    m_Key: animals.info.no_special_food
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448194
+    m_Key: animals.info.status_header
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448195
+    m_Key: animals.info.status_ill
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448196
+    m_Key: animals.info.status_happy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448197
+    m_Key: animals.info.status_well_fed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448198
+    m_Key: animals.info.status_hungry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448199
+    m_Key: animals.info.fed_today
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448200
+    m_Key: animals.info.happiness
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448201
+    m_Key: animals.info.stat_multiplier
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448202
+    m_Key: animals.info.no_production
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448203
+    m_Key: animals.info.produces
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448204
+    m_Key: animals.market.buy_price
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448205
+    m_Key: animals.market.sell_price
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448206
+    m_Key: animals.market.unassigned
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448207
+    m_Key: animals.market.not_enough_gold
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448208
+    m_Key: animals.market.zones_full
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448209
+    m_Key: animals.market.welcome
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448210
+    m_Key: animals.market.sell_confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448211
+    m_Key: animals.market.sell_gold_gain
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448212
+    m_Key: animals.market.sale_failed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448213
+    m_Key: animals.market.sold
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448214
+    m_Key: animals.market.friendship_discount
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448215
+    m_Key: animals.market.gold_label
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448216
+    m_Key: animals.roster.group_header
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448217
+    m_Key: animals.roster.mood_happy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448218
+    m_Key: animals.roster.mood_neutral
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448219
+    m_Key: animals.roster.mood_sad
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448220
+    m_Key: animals.roster.hungry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448221
+    m_Key: animals.roster.fed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448222
+    m_Key: animals.roster.row_status
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448223
+    m_Key: animals.roster.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448224
+    m_Key: animals.roster.empty
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448225
+    m_Key: animals.roster.avg_happiness
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448226
+    m_Key: animals.skill.requires
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448227
+    m_Key: animals.skill.and
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448228
+    m_Key: animals.skill.full_info_header
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448229
+    m_Key: animals.skill.full_info_desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448230
+    m_Key: animals.skill.full_info_unlock
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448231
+    m_Key: animals.trough.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448232
+    m_Key: animals.trough.status
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 3391914699650498657
+  references:
+    version: 2
+    RefIds:
+    - rid: 3391914699650498657
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1782074677898

@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization;
 using SowurShield.Core;
 using SowurShield.Inventory;
 using SowurShield.UI;
@@ -20,13 +21,23 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
 {
     private RectTransform listPanel;
     private TextMeshProUGUI goldLabel;
+    private TextMeshProUGUI titleLabel;
+    private TextMeshProUGUI closeLabel;
     private bool isOpen = false;
     private UITheme theme;
+
+    [SerializeField] private LocalizedString seedShopTitleText; // table "Dialogue", key "dialogue.seedshop.title"
+    [SerializeField] private LocalizedString goldZeroText; // table "Dialogue", key "dialogue.seedshop.gold_zero"
+    [SerializeField] private LocalizedString closeButtonText; // table "Dialogue", key "dialogue.seedshop.close"
+    [SerializeField] private LocalizedString goldLabelText; // table "Dialogue", key "dialogue.seedshop.gold_label"
+    [SerializeField] private LocalizedString itemRowText; // table "Dialogue", key "dialogue.seedshop.item_row"
+    [SerializeField] private LocalizedString buyButtonText; // table "Dialogue", key "dialogue.seedshop.buy"
+    [SerializeField] private LocalizedString noSeedsAvailableText; // table "Dialogue", key "dialogue.seedshop.no_seeds_available"
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
     {
-        if (FindFirstObjectByType<SeedShopUI>() != null)
+        if (FindFirstObjectByType<SeedShopUI>(FindObjectsInactive.Include) != null)
             return;
 
         var go = new GameObject("SeedShopUI");
@@ -34,10 +45,51 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
         DontDestroyOnLoad(go);
     }
 
+    // This component is created at runtime (never saved to a scene/prefab), so the
+    // Tools > Sowur Shield > Auto-Wire Localized Fields editor pass can never reach it —
+    // wire its LocalizedString table/key references here instead.
+    private void WireLocalizedStrings()
+    {
+        seedShopTitleText = new LocalizedString("Dialogue", "dialogue.seedshop.title");
+        goldZeroText = new LocalizedString("Dialogue", "dialogue.seedshop.gold_zero");
+        closeButtonText = new LocalizedString("Dialogue", "dialogue.seedshop.close");
+        goldLabelText = new LocalizedString("Dialogue", "dialogue.seedshop.gold_label");
+        itemRowText = new LocalizedString("Dialogue", "dialogue.seedshop.item_row");
+        buyButtonText = new LocalizedString("Dialogue", "dialogue.seedshop.buy");
+        noSeedsAvailableText = new LocalizedString("Dialogue", "dialogue.seedshop.no_seeds_available");
+    }
+
+    private bool _buildSucceeded = false;
+
     private void Awake()
     {
+        TryBuildUI();
+        SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    private void OnDestroy()
+    {
+        SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void TryBuildUI()
+    {
         theme = Resources.Load<UITheme>("UI/CozyUITheme");
-        BuildUI();
+        WireLocalizedStrings();
+        try
+        {
+            BuildUI();
+            _buildSucceeded = true;
+        }
+        catch (System.Exception e)
+        {
+            // Localization tables may not be configured yet (see MOBILE_LOCALIZATION_SETUP.md) —
+            // fail safe rather than leaving a half-built panel visible over the menu, but keep
+            // retrying on next Open() instead of staying broken for the rest of the session.
+            Debug.LogError($"[SeedShopUI] BuildUI failed (Localization not configured?): {e}");
+            _buildSucceeded = false;
+            gameObject.SetActive(false);
+        }
     }
 
     // =========================================================================
@@ -68,6 +120,14 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
 
     public void Open()
     {
+        if (!_buildSucceeded)
+        {
+            gameObject.SetActive(true);
+            TryBuildUI();
+            if (!_buildSucceeded)
+                return;
+        }
+
         if (UIManager.Instance != null)
             UIManager.Instance.TryOpenWindow(this);
         else
@@ -116,7 +176,7 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
         GameObject titleObj = new GameObject("Title");
         titleObj.transform.SetParent(panelObj.transform, false);
         titleObj.AddComponent<RectTransform>().sizeDelta = new Vector2(0, 28);
-        var titleLabel = CreateLabel(titleObj.transform, "Seed Shop");
+        titleLabel = CreateLabel(titleObj.transform, seedShopTitleText.SafeGetLocalizedString());
         titleLabel.fontSize = 20;
         titleLabel.fontStyle = FontStyles.Bold;
         titleLabel.alignment = TextAlignmentOptions.Center;
@@ -125,7 +185,7 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
         GameObject goldObj = new GameObject("GoldRow");
         goldObj.transform.SetParent(panelObj.transform, false);
         goldObj.AddComponent<RectTransform>().sizeDelta = new Vector2(0, 22);
-        goldLabel = CreateLabel(goldObj.transform, "Gold: 0");
+        goldLabel = CreateLabel(goldObj.transform, goldZeroText.SafeGetLocalizedString());
         goldLabel.fontSize = 16;
         goldLabel.alignment = TextAlignmentOptions.Center;
         goldLabel.color = theme != null ? theme.highlightGold : new Color(1f, 0.85f, 0.2f);
@@ -137,10 +197,16 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
         closeButtonObj.AddComponent<Image>().color = theme != null ? theme.woodDark : new Color(0.3f, 0.25f, 0.25f, 0.9f);
         Button closeButton = closeButtonObj.AddComponent<Button>();
         closeButton.onClick.AddListener(OnCloseClicked);
-        var closeLabel = CreateLabel(closeButtonObj.transform, "Close");
+        closeLabel = CreateLabel(closeButtonObj.transform, closeButtonText.SafeGetLocalizedString());
         closeLabel.alignment = TextAlignmentOptions.Center;
 
         panelObj.SetActive(false);
+    }
+
+    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
+    {
+        if (titleLabel != null) titleLabel.text = seedShopTitleText.SafeGetLocalizedString();
+        if (closeLabel != null) closeLabel.text = closeButtonText.SafeGetLocalizedString();
     }
 
     private TextMeshProUGUI CreateLabel(Transform parent, string text)
@@ -180,7 +246,10 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
         PlayerStats stats = FindFirstObjectByType<PlayerStats>();
         int playerGold = stats != null ? stats.Money : 0;
         if (goldLabel != null)
-            goldLabel.text = $"Gold: {playerGold}";
+        {
+            goldLabelText.Arguments = new object[] { playerGold };
+            goldLabel.text = goldLabelText.SafeGetLocalizedString();
+        }
 
         List<Item> seeds = ItemDatabase.GetItemsByType(ItemType.Seed)
             .Where(s => s != null)
@@ -189,7 +258,7 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
 
         if (seeds.Count == 0)
         {
-            CreateRow("No seeds available.", null, 0, 2);
+            CreateRow(noSeedsAvailableText.SafeGetLocalizedString(), null, 0, 2);
             return;
         }
 
@@ -198,7 +267,8 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
         {
             int price = Mathf.Max(1, seed.baseValue * 3);
             bool canAfford = playerGold >= price;
-            CreateRow($"{seed.itemName}  — {price}g", seed, price, insertIndex++, canAfford);
+            itemRowText.Arguments = new object[] { seed.itemName, price };
+            CreateRow(itemRowText.SafeGetLocalizedString(), seed, price, insertIndex++, canAfford);
         }
     }
 
@@ -239,7 +309,7 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
             Item capturedSeed = seed;
             int capturedPrice = price;
             buyBtn.onClick.AddListener(() => BuySeed(capturedSeed, capturedPrice));
-            var buyLabel = CreateLabel(buyObj.transform, "Buy");
+            var buyLabel = CreateLabel(buyObj.transform, buyButtonText.SafeGetLocalizedString());
             buyLabel.fontSize = 14;
             buyLabel.alignment = TextAlignmentOptions.Center;
         }

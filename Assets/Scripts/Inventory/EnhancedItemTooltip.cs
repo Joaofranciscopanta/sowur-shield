@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization;
+using SowurShield.Core;
 using SowurShield.UI;
 
 namespace SowurShield.Inventory
@@ -39,6 +41,19 @@ namespace SowurShield.Inventory
 
         [Header("Theme")]
         public UITheme theme;
+
+        [Header("Localization")]
+        [SerializeField] private LocalizedString italicTextLocalized; // table "Inventory", key "inventory.tooltip.italic_text"
+        [SerializeField] private LocalizedString valueCoinsLocalized; // table "Inventory", key "inventory.tooltip.value_coins"
+        [SerializeField] private LocalizedString cannotBeSoldLocalized; // table "Inventory", key "inventory.tooltip.cannot_be_sold"
+        [SerializeField] private LocalizedString maxStackLocalized; // table "Inventory", key "inventory.tooltip.max_stack"
+        [SerializeField] private LocalizedString consumableLocalized; // table "Inventory", key "inventory.tooltip.consumable"
+        [SerializeField] private LocalizedString energyLocalized; // table "Inventory", key "inventory.tooltip.energy"
+        [SerializeField] private LocalizedString healthLocalized; // table "Inventory", key "inventory.tooltip.health"
+        [SerializeField] private LocalizedString toolLevelLocalized; // table "Inventory", key "inventory.tooltip.tool_level"
+        [SerializeField] private LocalizedString durabilityLocalized; // table "Inventory", key "inventory.tooltip.durability"
+        [SerializeField] private LocalizedString unbreakableLocalized; // table "Inventory", key "inventory.tooltip.unbreakable"
+        [SerializeField] private LocalizedString descriptionLocalized; // table "Inventory", key "inventory.tooltip.description"
 
         private Canvas canvas;
         private RectTransform canvasRect;
@@ -91,7 +106,8 @@ namespace SowurShield.Inventory
             // Set item type
             if (itemTypeText != null)
             {
-                itemTypeText.text = $"<i>{item.itemType}</i>";
+                italicTextLocalized.Arguments = new object[] { item.itemType };
+                itemTypeText.text = italicTextLocalized.SafeGetLocalizedString();
                 itemTypeText.color = new Color(0.7f, 0.7f, 0.7f);
             }
 
@@ -113,11 +129,12 @@ namespace SowurShield.Inventory
             {
                 if (item.canBeSold)
                 {
-                    itemValueText.text = $"<color=#FFD700>Value: {item.baseValue} coins</color>";
+                    valueCoinsLocalized.Arguments = new object[] { item.baseValue };
+                    itemValueText.text = valueCoinsLocalized.SafeGetLocalizedString();
                 }
                 else
                 {
-                    itemValueText.text = "<color=#888888>Cannot be sold</color>";
+                    itemValueText.text = cannotBeSoldLocalized.SafeGetLocalizedString();
                 }
             }
 
@@ -184,38 +201,52 @@ namespace SowurShield.Inventory
             // Stackable info
             if (item.isStackable)
             {
-                sb.AppendLine($"<color=#AAAAAA>Max Stack: {item.maxStackSize}</color>");
+                maxStackLocalized.Arguments = new object[] { item.maxStackSize };
+                sb.AppendLine(maxStackLocalized.SafeGetLocalizedString());
             }
 
             // Consumable info
             if (item.isConsumable)
             {
-                sb.AppendLine("<color=#90EE90>Consumable</color>");
+                sb.AppendLine(consumableLocalized.SafeGetLocalizedString());
 
                 if (item.energyRestore > 0)
-                    sb.AppendLine($"  <color=#FFD700>+{item.energyRestore} Energy</color>");
+                {
+                    energyLocalized.Arguments = new object[] { item.energyRestore };
+                    sb.AppendLine(energyLocalized.SafeGetLocalizedString());
+                }
 
                 if (item.healthRestore > 0)
-                    sb.AppendLine($"  <color=#FF6B6B>+{item.healthRestore} Health</color>");
+                {
+                    healthLocalized.Arguments = new object[] { item.healthRestore };
+                    sb.AppendLine(healthLocalized.SafeGetLocalizedString());
+                }
             }
 
             // Tool info
             if (item.itemTags.Contains("Tool") || item.itemTags.Contains("Weapon"))
             {
                 if (item.toolLevel > 0)
-                    sb.AppendLine($"<color=#87CEEB>Tool Level: {item.toolLevel}</color>");
+                {
+                    toolLevelLocalized.Arguments = new object[] { item.toolLevel };
+                    sb.AppendLine(toolLevelLocalized.SafeGetLocalizedString());
+                }
 
                 if (item.durability > 0)
-                    sb.AppendLine($"<color=#FFA500>Durability: {item.durability}</color>");
+                {
+                    durabilityLocalized.Arguments = new object[] { item.durability };
+                    sb.AppendLine(durabilityLocalized.SafeGetLocalizedString());
+                }
                 else if (item.durability == -1)
-                    sb.AppendLine("<color=#90EE90>Unbreakable</color>");
+                    sb.AppendLine(unbreakableLocalized.SafeGetLocalizedString());
             }
 
             // Tags
             if (item.itemTags.Count > 0)
             {
                 string tags = string.Join(", ", item.itemTags);
-                sb.AppendLine($"<size=11><color=#888888>{tags}</color></size>");
+                descriptionLocalized.Arguments = new object[] { tags };
+                sb.AppendLine(descriptionLocalized.SafeGetLocalizedString());
             }
 
             return sb.ToString().TrimEnd();

@@ -53,14 +53,25 @@ public class MainMenuManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        
+
         // Find UI reference if not assigned
         if (menuUI == null)
             menuUI = FindFirstObjectByType<MainMenuUI>();
-            
+
         // Find music source if not assigned
         if (menuMusicSource == null)
             menuMusicSource = GetComponent<AudioSource>();
+
+        EnsureLocalizationManagerExists();
+    }
+
+    private void EnsureLocalizationManagerExists()
+    {
+        if (LocalizationManager.Instance != null)
+            return;
+
+        var go = new GameObject("LocalizationManager");
+        go.AddComponent<LocalizationManager>();
     }
     
     private void Start()

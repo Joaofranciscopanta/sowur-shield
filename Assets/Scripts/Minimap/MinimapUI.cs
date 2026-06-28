@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using UnityEngine.Localization;
+using SowurShield.Core;
 
 namespace SowurShield.Minimap
 {
@@ -41,6 +43,11 @@ public class MinimapUI : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool enableDebugLogs = true;
 
+    [Header("Localization")]
+    [SerializeField] private LocalizedString zoomLabelLocalized; // table "Minimap", key "minimap.zoom_label"
+    [SerializeField] private LocalizedString coordsLabelLocalized; // table "Minimap", key "minimap.coords_label"
+    [SerializeField] private LocalizedString modeLabelLocalized; // table "Minimap", key "minimap.mode_label"
+
     // State
     private Vector2 currentTargetPosition;
     private Vector2 currentTargetSize;
@@ -68,6 +75,8 @@ public class MinimapUI : MonoBehaviour
         }
 
         SetupUI();
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
     }
 
     private void Start()
@@ -90,6 +99,7 @@ public class MinimapUI : MonoBehaviour
     {
         // Kill all active tweens
         KillAllTweens();
+        SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
     }
 
     private void Update()
@@ -322,9 +332,11 @@ public class MinimapUI : MonoBehaviour
     /// </summary>
     public void UpdateZoomIndicator(float zoomLevel)
     {
+        lastZoomLevel = zoomLevel;
         if (zoomText != null)
         {
-            zoomText.text = $"Zoom: {zoomLevel:F1}x";
+            zoomLabelLocalized.Arguments = new object[] { zoomLevel };
+            zoomText.text = zoomLabelLocalized.SafeGetLocalizedString();
         }
     }
 
@@ -335,19 +347,31 @@ public class MinimapUI : MonoBehaviour
     {
         if (coordinatesText != null)
         {
-            coordinatesText.text = $"X: {worldPosition.x:F1}, Y: {worldPosition.y:F1}";
+            coordsLabelLocalized.Arguments = new object[] { worldPosition.x, worldPosition.y };
+            coordinatesText.text = coordsLabelLocalized.SafeGetLocalizedString();
         }
     }
 
     /// <summary>
     /// Update state indicator
     /// </summary>
+    private string lastStateName = "Normal";
+    private float lastZoomLevel = 1f;
+
     private void UpdateStateText(string stateName)
     {
+        lastStateName = stateName;
         if (stateText != null)
         {
-            stateText.text = $"Mode: {stateName}";
+            modeLabelLocalized.Arguments = new object[] { stateName };
+            stateText.text = modeLabelLocalized.SafeGetLocalizedString();
         }
+    }
+
+    private void HandleLanguageChanged(Locale locale)
+    {
+        UpdateStateText(lastStateName);
+        UpdateZoomIndicator(lastZoomLevel);
     }
 
     // ============================================================================

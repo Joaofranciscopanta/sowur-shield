@@ -103,6 +103,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -270,9 +271,65 @@ MonoBehaviour:
   happinessText: {fileID: 1477932683992956988}
   foodStatusText: {fileID: 4438717270863084364}
   cardBackground: {fileID: 5133923041193095109}
+  foodStatusIcon: {fileID: 0}
+  happinessFillBar: {fileID: 0}
+  happinessText_Localized:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: combat.selection.happiness
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  fedText_Localized:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: combat.selection.fed
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  noFoodNeededText_Localized:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: combat.selection.no_food_needed
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  needsText_Localized:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: combat.selection.needs
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  foodLineText_Localized:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: combat.selection.food_line
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   normalColor: {r: 1, g: 1, b: 1, a: 1}
-  selectedColor: {r: 1, g: 1, b: 0.5, a: 1}
+  hoverColor: {r: 0.28, g: 0.28, b: 0.36, a: 0.95}
   inTeamColor: {r: 0.5, g: 1, b: 0.5, a: 1}
+  fedColor: {r: 0.35, g: 0.85, b: 0.4, a: 1}
+  hungryColor: {r: 0.95, g: 0.75, b: 0.2, a: 1}
+  notInTeamColor: {r: 0.6, g: 0.6, b: 0.6, a: 1}
+  happinessLowColor: {r: 0.85, g: 0.35, b: 0.3, a: 1}
+  happinessMidColor: {r: 0.95, g: 0.75, b: 0.2, a: 1}
+  happinessHighColor: {r: 0.35, g: 0.85, b: 0.4, a: 1}
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &2766379237149612956
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,6 +508,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -587,6 +645,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0

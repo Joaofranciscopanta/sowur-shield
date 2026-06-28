@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using SowurShield.Core;
+using UnityEngine.Localization;
 
 namespace SowurShield.UI
 {
@@ -31,6 +32,12 @@ public class SaveSlotButton : MonoBehaviour
     [Header("Indicators")]
     [SerializeField] private GameObject lockedIndicator;
 
+    [Header("Localized Strings")]
+    [SerializeField] private LocalizedString autoSaveText; // table "MainMenu", key "mainmenu.saveslotbutton.autosave"
+    [SerializeField] private LocalizedString slotPrefixText; // table "MainMenu", key "mainmenu.saveslotbutton.slot_prefix"
+    [SerializeField] private LocalizedString dayLabelText; // table "MainMenu", key "mainmenu.saveslotbutton.day_label"
+    [SerializeField] private LocalizedString moneyLabelText; // table "MainMenu", key "mainmenu.saveslotbutton.money_label"
+
     /// <summary>
     /// Initializes the slot button with save info and callbacks.
     /// </summary>
@@ -44,9 +51,9 @@ public class SaveSlotButton : MonoBehaviour
         if (slotNameText != null)
         {
             if (info.isAutoSave)
-                slotNameText.text = "Auto Save";
+                slotNameText.text = autoSaveText.SafeGetLocalizedString();
             else if (info.slotName.StartsWith("Slot") && info.slotName.Length > 4)
-                slotNameText.text = "Slot " + info.slotName.Substring(4);
+                slotNameText.text = slotPrefixText.SafeGetLocalizedString() + info.slotName.Substring(4);
             else
                 slotNameText.text = info.slotName;
         }
@@ -62,13 +69,19 @@ public class SaveSlotButton : MonoBehaviour
             SetGroupActive(emptyGroup, false);
 
             if (daySeasonText != null)
-                daySeasonText.text = $"Day {info.currentDay} — {info.season}, Year {info.year}";
+            {
+                dayLabelText.Arguments = new object[] { info.currentDay, info.season, info.year };
+                daySeasonText.text = dayLabelText.SafeGetLocalizedString();
+            }
 
             if (timestampText != null)
                 timestampText.text = info.saveTimestamp;
 
             if (moneyText != null)
-                moneyText.text = $"${info.money}";
+            {
+                moneyLabelText.Arguments = new object[] { info.money };
+                moneyText.text = moneyLabelText.SafeGetLocalizedString();
+            }
 
             if (playTimeText != null)
             {
