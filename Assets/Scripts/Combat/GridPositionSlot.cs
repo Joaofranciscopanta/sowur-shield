@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using UnityEngine.Localization;
+using SowurShield.Core;
 using SowurShield.Animals;
 
 namespace SowurShield.Combat
@@ -34,11 +36,31 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
     [SerializeField] private Color fedColor = new Color(0.35f, 0.85f, 0.4f);
     [SerializeField] private Color hungryColor = new Color(0.95f, 0.75f, 0.2f);
 
+    [Header("Localization")]
+    [SerializeField] private LocalizedString positionLabelText_Localized; // table "Combat", key "combat.grid.position_label"
+
     // Grid position
     public Vector2Int gridPosition { get; private set; }
 
     // Assigned animal
     private Animal assignedAnimal;
+
+    private void Awake()
+    {
+        LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    private void OnDestroy()
+    {
+        LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(Locale locale)
+    {
+        if (positionText == null) return;
+        positionLabelText_Localized.Arguments = new object[] { gridPosition.x, gridPosition.y };
+        positionText.text = positionLabelText_Localized.SafeGetLocalizedString();
+    }
 
     /// <summary>
     /// Initialize slot with grid position
@@ -64,7 +86,8 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
         // Display position text
         if (positionText != null)
         {
-            positionText.text = $"({position.x},{position.y})";
+            positionLabelText_Localized.Arguments = new object[] { position.x, position.y };
+            positionText.text = positionLabelText_Localized.SafeGetLocalizedString();
         }
 
         // Set default color

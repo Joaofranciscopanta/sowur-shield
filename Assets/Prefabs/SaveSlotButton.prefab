@@ -277,7 +277,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.55}
@@ -1035,7 +1035,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1164,6 +1164,45 @@ MonoBehaviour:
   mainButton: {fileID: 331726852950571197}
   deleteButton: {fileID: 3089754714461330736}
   lockedIndicator: {fileID: 775581002435405634}
+  autoSaveText:
+    m_TableReference:
+      m_TableCollectionName: MainMenu
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: mainmenu.saveslotbutton.autosave
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  slotPrefixText:
+    m_TableReference:
+      m_TableCollectionName: MainMenu
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: mainmenu.saveslotbutton.slot_prefix
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  dayLabelText:
+    m_TableReference:
+      m_TableCollectionName: MainMenu
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: mainmenu.saveslotbutton.day_label
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  moneyLabelText:
+    m_TableReference:
+      m_TableCollectionName: MainMenu
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: mainmenu.saveslotbutton.money_label
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!222 &7291529401543142672
 CanvasRenderer:
   m_ObjectHideFlags: 0

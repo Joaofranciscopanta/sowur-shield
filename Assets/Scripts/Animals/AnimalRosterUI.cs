@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Localization;
 using SowurShield.Core;
 using SowurShield.UI;
 
@@ -42,6 +43,19 @@ public class AnimalRosterUI : MonoBehaviour, IUIWindow
 
     [Header("Theme")]
     [SerializeField] private UITheme theme;
+
+    [Header("Localization")]
+    [SerializeField] private LocalizedString groupHeaderText; // table "Animals", key "animals.roster.group_header"
+    [SerializeField] private LocalizedString moodHappyText; // table "Animals", key "animals.roster.mood_happy"
+    [SerializeField] private LocalizedString moodNeutralText; // table "Animals", key "animals.roster.mood_neutral"
+    [SerializeField] private LocalizedString moodSadText; // table "Animals", key "animals.roster.mood_sad"
+    [SerializeField] private LocalizedString hungryText; // table "Animals", key "animals.roster.hungry"
+    [SerializeField] private LocalizedString fedText; // table "Animals", key "animals.roster.fed"
+    [SerializeField] private LocalizedString rowStatusText; // table "Animals", key "animals.roster.row_status"
+    [SerializeField] private LocalizedString rosterTitleText; // table "Animals", key "animals.roster.title"
+    [SerializeField] private LocalizedString rosterEmptyText; // table "Animals", key "animals.roster.empty"
+    [SerializeField] private LocalizedString avgHappinessText; // table "Animals", key "animals.roster.avg_happiness"
+    [SerializeField] private LocalizedString unassignedText; // table "Animals", key "animals.market.unassigned"
 
     private Color cardBackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.8f);
 
@@ -115,12 +129,22 @@ public class AnimalRosterUI : MonoBehaviour, IUIWindow
     {
         if (UIManager.Instance != null)
             UIManager.Instance.RegisterWindow(this);
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
+    {
+        if (isOpen)
+            RefreshRoster();
     }
 
     private void OnDestroy()
     {
         if (UIManager.Instance != null)
             UIManager.Instance.UnregisterWindow(this);
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
     }
 
     // =========================================================================
@@ -207,7 +231,7 @@ public class AnimalRosterUI : MonoBehaviour, IUIWindow
 
             string zoneName = animal.AssignedZone != null
                 ? animal.AssignedZone.gameObject.name
-                : "Unassigned";
+                : unassignedText.SafeGetLocalizedString();
 
             if (!groups.ContainsKey(zoneName))
                 groups[zoneName] = new List<Animal>();
@@ -232,7 +256,10 @@ public class AnimalRosterUI : MonoBehaviour, IUIWindow
             GameObject header = Instantiate(zoneHeaderPrefab, contentParent);
             TextMeshProUGUI text = header.GetComponentInChildren<TextMeshProUGUI>();
             if (text != null)
-                text.text = $"{zoneName} ({animalCount} animals)";
+            {
+                groupHeaderText.Arguments = new object[] { zoneName, animalCount };
+                text.text = groupHeaderText.SafeGetLocalizedString();
+            }
             spawnedUIElements.Add(header);
         }
         else
@@ -242,7 +269,8 @@ public class AnimalRosterUI : MonoBehaviour, IUIWindow
             header.transform.SetParent(contentParent, false);
 
             TextMeshProUGUI text = header.AddComponent<TextMeshProUGUI>();
-            text.text = $"{zoneName} ({animalCount} animals)";
+            groupHeaderText.Arguments = new object[] { zoneName, animalCount };
+            text.text = groupHeaderText.SafeGetLocalizedString();
             text.fontSize = 16;
             text.fontStyle = FontStyles.Bold;
             text.alignment = TextAlignmentOptions.Left;
@@ -304,7 +332,7 @@ public class AnimalRosterUI : MonoBehaviour, IUIWindow
         TextMeshProUGUI foodStatus = FindChildComponent<TextMeshProUGUI>(card, "FoodStatus");
         if (foodStatus != null)
         {
-            foodStatus.text = animal.NeedsFeeding ? "Hungry" : "Fed";
+            foodStatus.text = animal.NeedsFeeding ? hungryText.SafeGetLocalizedString() : fedText.SafeGetLocalizedString();
             foodStatus.color = animal.NeedsFeeding ? hungryTextColor : fedColor;
         }
 
@@ -374,11 +402,12 @@ public class AnimalRosterUI : MonoBehaviour, IUIWindow
         TextMeshProUGUI statusText = statusObj.AddComponent<TextMeshProUGUI>();
 
         float happiness = animal.GetHappiness();
-        string moodEmoji = happiness >= 70f ? "☺" : (happiness >= 40f ? "•" : "☹");
-        string fedStatus = animal.NeedsFeeding ? "Hungry" : "Fed";
+        string moodEmoji = happiness >= 70f ? moodHappyText.SafeGetLocalizedString() : (happiness >= 40f ? moodNeutralText.SafeGetLocalizedString() : moodSadText.SafeGetLocalizedString());
+        string fedStatus = animal.NeedsFeeding ? hungryText.SafeGetLocalizedString() : fedText.SafeGetLocalizedString();
         Color fedCol = animal.NeedsFeeding ? hungryTextColor : fedColor;
 
-        statusText.text = $"{moodEmoji} {happiness:F0}%  |  {fedStatus}";
+        rowStatusText.Arguments = new object[] { moodEmoji, happiness, fedStatus };
+        statusText.text = rowStatusText.SafeGetLocalizedString();
         statusText.fontSize = 11;
         statusText.color = happiness >= 70f ? happyColor : (happiness >= 40f ? neutralColor : sadColor);
         LayoutElement statusLayout = statusObj.AddComponent<LayoutElement>();
@@ -417,7 +446,10 @@ public class AnimalRosterUI : MonoBehaviour, IUIWindow
     private void UpdateHeader(int totalCount)
     {
         if (headerText != null)
-            headerText.text = $"Animal Roster — {totalCount} Animal{(totalCount != 1 ? "s" : "")}";
+        {
+            rosterTitleText.Arguments = new object[] { totalCount, totalCount != 1 ? "s" : "" };
+            headerText.text = rosterTitleText.SafeGetLocalizedString();
+        }
     }
 
     private void UpdateSummary(int total, float avgHappiness, int hungryCount)
@@ -426,11 +458,12 @@ public class AnimalRosterUI : MonoBehaviour, IUIWindow
 
         if (total == 0)
         {
-            summaryText.text = "No animals registered yet.";
+            summaryText.text = rosterEmptyText.SafeGetLocalizedString();
             return;
         }
 
-        summaryText.text = $"Avg Happiness: {avgHappiness:F0}  |  Hungry: {hungryCount}/{total}";
+        avgHappinessText.Arguments = new object[] { avgHappiness, hungryCount, total };
+        summaryText.text = avgHappinessText.SafeGetLocalizedString();
     }
 
     // =========================================================================

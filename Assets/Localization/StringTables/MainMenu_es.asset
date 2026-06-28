@@ -1,0 +1,168 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: MainMenu_es
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: es
+  m_SharedData: {fileID: 11400000, guid: 6f5ef45f291ad3e4abdae9d700e1005b, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 279699456
+    m_Localized: "\xBFSeguro que quieres salir del juego?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476672
+    m_Localized: Salir del juego
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476673
+    m_Localized: Cargar partida
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476674
+    m_Localized: "Nueva partida \u2014 Elige ranura"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476675
+    m_Localized: Cargando... {0:P0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476676
+    m_Localized: Cargando datos guardados...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476677
+    m_Localized: Inicializando nueva partida...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476678
+    m_Localized: Archivo de guardado encontrado
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476679
+    m_Localized: 'Archivo: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476680
+    m_Localized: "Tama\xF1o: {0}KB"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476681
+    m_Localized: "\xDAltimo guardado: {0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476682
+    m_Localized: "\xA1Panel de ajustes no configurado!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476683
+    m_Localized: "\xA1Panel de informaci\xF3n de guardado no configurado!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476684
+    m_Localized: "\U0001F4C4 Informaci\xF3n de guardado\\n\\n\U0001F4C1 Archivo:
+      {0}\\n\U0001F4C5 Creado: {1}\\n\U0001F552 \xDAltimo guardado: {2}\\n\U0001F4BE
+      Tama\xF1o: {3}\\n\\n\U0001F4A1 El juego se guarda autom\xE1ticamente cuando
+      duermes en la cama"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476685
+    m_Localized: "\u274C No se encontr\xF3 archivo de guardado\\n\\n\U0001F6CF\uFE0F
+      Duerme en una cama para guardar tu progreso autom\xE1ticamente.\\n\\nEl juego
+      crear\xE1 un archivo de guardado la primera vez que duermas."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476686
+    m_Localized: "Guardar partida \u2014 Elige ranura"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476687
+    m_Localized: "Cargar partida \u2014 Elige ranura"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476688
+    m_Localized: "\xBFSobrescribir guardado en {0}?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476689
+    m_Localized: "\xBFCargar esta partida? El progreso no guardado se perder\xE1."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476690
+    m_Localized: "\xA1Guardado en {0}!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476691
+    m_Localized: "\xBFSalir al escritorio?\\n\\nSe perder\xE1 cualquier progreso
+      no guardado.\\n\xA1Aseg\xFArate de dormir en una cama para guardar!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476692
+    m_Localized: "\xBFVolver al men\xFA principal?\\n\\nSe perder\xE1 cualquier progreso
+      no guardado.\\n\xA1Aseg\xFArate de dormir en una cama para guardar!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476693
+    m_Localized: "\xBFEliminar archivo de guardado?\\n\\nEsta acci\xF3n no se puede
+      deshacer.\\n\xA1Todo tu progreso se perder\xE1 permanentemente!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476694
+    m_Localized: "\xA1Archivo de guardado eliminado!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476695
+    m_Localized: "\xA1Mensaje de notificaci\xF3n de prueba!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476696
+    m_Localized: "\xA1Mensaje de error de prueba!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476697
+    m_Localized: "\xBFVolver al men\xFA principal?\\n\\nSe perder\xE1 cualquier progreso
+      no guardado.\\n\xA1Aseg\xFArate de guardar tu partida primero!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476698
+    m_Localized: "Informaci\xF3n del archivo de guardado:\\n\\nArchivo: {0}\\nCreado:
+      {1}\\n\xDAltima modificaci\xF3n: {2}\\nTama\xF1o: {3}\\n\\n\U0001F4A1 El juego
+      se guarda autom\xE1ticamente cuando duermes en la cama"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476699
+    m_Localized: "No se encontr\xF3 archivo de guardado.\\n\\n\U0001F6CF\uFE0F Duerme
+      en una cama para guardar tu progreso autom\xE1ticamente.\\n\\nEl juego crear\xE1
+      un archivo de guardado cuando duermas."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476700
+    m_Localized: "Guardado autom\xE1tico"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476701
+    m_Localized: Ranura
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476702
+    m_Localized: "D\xEDa {0} \u2014 {1}, A\xF1o {2}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476703
+    m_Localized: ${0}
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

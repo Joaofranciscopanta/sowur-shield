@@ -44,7 +44,10 @@
       "Bash(node:*)",
       "Bash(echo EXIT:$?:*)",
       "Bash(do:*)",
-      "Bash(gh run *)"
+      "Bash(gh run *)",
+      "Bash(claude mcp *)",
+      "mcp__unity-mcp__Unity_GetConsoleLogs",
+      "mcp__unity-mcp__Unity_RunCommand"
     ],
     "deny": [],
     "ask": []

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization;
 
 namespace SowurShield.Core
 {
@@ -35,6 +36,11 @@ public class BuildingRow : MonoBehaviour
     [SerializeField] public TextMeshProUGUI    statusText;     // built / can't afford
     [SerializeField] public Button             buyButton;
 
+    [Header("Localized Strings")]
+    [SerializeField] private LocalizedString costProgressText; // table "Farming", key "farming.building.cost_progress"
+    [SerializeField] private LocalizedString builtText; // table "Farming", key "farming.building.built"
+    [SerializeField] private LocalizedString cannotAffordText; // table "Farming", key "farming.building.cannot_afford"
+
     // Colour palette
     private static readonly Color COLOR_AFFORDABLE   = new Color(0.2f, 0.75f, 0.3f);
     private static readonly Color COLOR_UNAFFORDABLE = new Color(0.85f, 0.35f, 0.25f);
@@ -59,7 +65,8 @@ public class BuildingRow : MonoBehaviour
             if (!alreadyBuilt && !string.IsNullOrEmpty(data.materialItemName) && data.materialQuantity > 0)
             {
                 materialText.gameObject.SetActive(true);
-                materialText.text  = $"{data.materialItemName}: {playerMaterialCount} / {data.materialQuantity}";
+                costProgressText.Arguments = new object[] { data.materialItemName, playerMaterialCount, data.materialQuantity };
+                materialText.text  = costProgressText.SafeGetLocalizedString();
                 materialText.color = playerMaterialCount >= data.materialQuantity
                     ? COLOR_AFFORDABLE
                     : COLOR_UNAFFORDABLE;
@@ -76,13 +83,13 @@ public class BuildingRow : MonoBehaviour
             if (alreadyBuilt)
             {
                 statusText.gameObject.SetActive(true);
-                statusText.text  = "✓ Built";
+                statusText.text  = builtText.SafeGetLocalizedString();
                 statusText.color = COLOR_BUILT;
             }
             else if (!canAfford)
             {
                 statusText.gameObject.SetActive(true);
-                statusText.text  = "Cannot afford";
+                statusText.text  = cannotAffordText.SafeGetLocalizedString();
                 statusText.color = COLOR_UNAFFORDABLE;
             }
             else

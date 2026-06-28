@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Localization;
+using SowurShield.Core;
 
 namespace SowurShield.Animals
 {
@@ -51,6 +53,10 @@ public class SkillUnlockCondition
     [Tooltip("Multiple conditions that must all be met")]
     [SerializeReference]
     public List<SkillUnlockCondition> combinedConditions = new List<SkillUnlockCondition>();
+
+    [Header("Localization")]
+    [SerializeField] private LocalizedString requiresText; // table "Animals", key "animals.skill.requires"
+    [SerializeField] private LocalizedString andText; // table "Animals", key "animals.skill.and"
 
     /// <summary>
     /// Check if this condition is met
@@ -120,12 +126,12 @@ public class SkillUnlockCondition
                 return $"Active in {requiredSeason}";
 
             case SkillUnlockConditionType.Combined:
-                string desc = "Requires: ";
+                string desc = requiresText.SafeGetLocalizedString();
                 for (int i = 0; i < combinedConditions.Count; i++)
                 {
                     desc += combinedConditions[i].GetDescription();
                     if (i < combinedConditions.Count - 1)
-                        desc += " AND ";
+                        desc += andText.SafeGetLocalizedString();
                 }
                 return desc;
 
@@ -212,6 +218,11 @@ public class AnimalSkill : ScriptableObject
     [Tooltip("Duration of the status effect in turns")]
     public int statusEffectDuration = 0;
 
+    [Header("Localization")]
+    [SerializeField] private LocalizedString fullInfoHeaderText; // table "Animals", key "animals.skill.full_info_header"
+    [SerializeField] private LocalizedString fullInfoDescText; // table "Animals", key "animals.skill.full_info_desc"
+    [SerializeField] private LocalizedString fullInfoUnlockText; // table "Animals", key "animals.skill.full_info_unlock"
+
     /// <summary>
     /// Check if this skill can be unlocked for the given animal
     /// </summary>
@@ -225,9 +236,14 @@ public class AnimalSkill : ScriptableObject
     /// </summary>
     public string GetFullInfo()
     {
-        string info = $"<b>{skillName}</b> ({skillType})\n";
-        info += $"{description}\n\n";
-        info += $"Unlock: {unlockCondition.GetDescription()}";
+        fullInfoHeaderText.Arguments = new object[] { skillName, skillType };
+        string info = fullInfoHeaderText.SafeGetLocalizedString();
+
+        fullInfoDescText.Arguments = new object[] { description };
+        info += fullInfoDescText.SafeGetLocalizedString();
+
+        fullInfoUnlockText.Arguments = new object[] { unlockCondition.GetDescription() };
+        info += fullInfoUnlockText.SafeGetLocalizedString();
         return info;
     }
 }

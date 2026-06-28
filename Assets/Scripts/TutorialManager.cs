@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization;
 using System.Collections.Generic;
 
 namespace SowurShield.Core
@@ -39,28 +40,38 @@ public class TutorialManager : MonoBehaviour, ISaveable
     [Header("Settings")]
     [SerializeField] private bool showOnNewGame = true;
 
-    // Tutorial steps in order
-    private static readonly TutorialStep[] Steps = new TutorialStep[]
+    [Header("Tutorial Step Text")]
+    [SerializeField] private LocalizedString tillSoilTitle_Localized; // table "Tutorial", key "tutorial.till_soil.title"
+    [SerializeField] private LocalizedString tillSoilDescription_Localized; // table "Tutorial", key "tutorial.till_soil.description"
+    [SerializeField] private LocalizedString plantSeedTitle_Localized; // table "Tutorial", key "tutorial.plant_seed.title"
+    [SerializeField] private LocalizedString plantSeedDescription_Localized; // table "Tutorial", key "tutorial.plant_seed.description"
+    [SerializeField] private LocalizedString waterCropTitle_Localized; // table "Tutorial", key "tutorial.water_crop.title"
+    [SerializeField] private LocalizedString waterCropDescription_Localized; // table "Tutorial", key "tutorial.water_crop.description"
+    [SerializeField] private LocalizedString petAnimalTitle_Localized; // table "Tutorial", key "tutorial.pet_animal.title"
+    [SerializeField] private LocalizedString petAnimalDescription_Localized; // table "Tutorial", key "tutorial.pet_animal.description"
+    [SerializeField] private LocalizedString sleepTitle_Localized; // table "Tutorial", key "tutorial.sleep.title"
+    [SerializeField] private LocalizedString sleepDescription_Localized; // table "Tutorial", key "tutorial.sleep.description"
+    [SerializeField] private LocalizedString harvestTitle_Localized; // table "Tutorial", key "tutorial.harvest.title"
+    [SerializeField] private LocalizedString harvestDescription_Localized; // table "Tutorial", key "tutorial.harvest.description"
+    [SerializeField] private LocalizedString stepProgressText_Localized; // table "Tutorial", key "tutorial.step_progress"
+
+    // Tutorial steps in order. Built at runtime (not a static literal array) because
+    // LocalizedString fields are populated via the Inspector and aren't available
+    // as compile-time constants.
+    private TutorialStep[] Steps;
+
+    private void BuildSteps()
     {
-        new TutorialStep("till_soil",
-            "Welcome to your farm!\n\nEquip the <b>Hoe</b> from your hotbar, then <b>left-click</b> on a soil tile to till it.",
-            "Till the soil"),
-        new TutorialStep("plant_seed",
-            "Great! Now equip a <b>Seed</b> and <b>left-click</b> the tilled soil to plant it.",
-            "Plant a seed"),
-        new TutorialStep("water_crop",
-            "Crops need water to grow. Equip the <b>Watering Can</b> and <b>left-click</b> the planted soil.",
-            "Water the crop"),
-        new TutorialStep("pet_animal",
-            "Visit an animal and press <b>E</b> to pet it. Happy animals produce more!",
-            "Pet an animal"),
-        new TutorialStep("sleep",
-            "Time passes when you sleep. Walk to the <b>bed</b> and press <b>E</b> to sleep.",
-            "Sleep to advance the day"),
-        new TutorialStep("harvest",
-            "Your crops have grown! Walk to a <b>ready crop</b> and press <b>E</b> or left-click to harvest.",
-            "Harvest a crop"),
-    };
+        Steps = new TutorialStep[]
+        {
+            new TutorialStep("till_soil", tillSoilDescription_Localized, tillSoilTitle_Localized),
+            new TutorialStep("plant_seed", plantSeedDescription_Localized, plantSeedTitle_Localized),
+            new TutorialStep("water_crop", waterCropDescription_Localized, waterCropTitle_Localized),
+            new TutorialStep("pet_animal", petAnimalDescription_Localized, petAnimalTitle_Localized),
+            new TutorialStep("sleep", sleepDescription_Localized, sleepTitle_Localized),
+            new TutorialStep("harvest", harvestDescription_Localized, harvestTitle_Localized),
+        };
+    }
 
     private int _currentStepIndex = -1; // -1 = not started
     private bool _tutorialComplete = false;
@@ -95,9 +106,19 @@ public class TutorialManager : MonoBehaviour, ISaveable
             return;
         }
 
+        BuildSteps();
+
         if (tutorialPanel != null) tutorialPanel.SetActive(false);
         if (skipButton != null) skipButton.onClick.AddListener(CompleteTutorial);
         if (nextButton != null) nextButton.onClick.AddListener(ManualAdvance);
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
+    {
+        if (IsTutorialActive)
+            ShowCurrentStep();
     }
 
     private void Start()
@@ -110,6 +131,8 @@ public class TutorialManager : MonoBehaviour, ISaveable
     {
         if (SaveManager.Instance != null)
             SaveManager.Instance.UnregisterSaveable(this);
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
     }
 
     // =========================================================================
@@ -195,8 +218,12 @@ public class TutorialManager : MonoBehaviour, ISaveable
         TutorialStep step = Steps[_currentStepIndex];
 
         if (tutorialPanel != null) tutorialPanel.SetActive(true);
-        if (stepText != null)      stepText.text = step.description;
-        if (stepCountText != null) stepCountText.text = $"Step {_currentStepIndex + 1}/{Steps.Length}: {step.title}";
+        if (stepText != null)      stepText.text = step.description.SafeGetLocalizedString();
+        if (stepCountText != null)
+        {
+            stepProgressText_Localized.Arguments = new object[] { _currentStepIndex + 1, Steps.Length, step.title.SafeGetLocalizedString() };
+            stepCountText.text = stepProgressText_Localized.SafeGetLocalizedString();
+        }
     }
 
     private void HidePanel()
@@ -247,10 +274,10 @@ public class TutorialManager : MonoBehaviour, ISaveable
 public class TutorialStep
 {
     public string stepId;
-    public string description;
-    public string title;
+    public LocalizedString description;
+    public LocalizedString title;
 
-    public TutorialStep(string stepId, string description, string title)
+    public TutorialStep(string stepId, LocalizedString description, LocalizedString title)
     {
         this.stepId      = stepId;
         this.description = description;

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.Localization;
 using SowurShield.Animals;
 using SowurShield.Core;
 
@@ -40,6 +41,20 @@ public class BattleResultsUI : MonoBehaviour
     [SerializeField] private Button defeatReturnButton;
     [SerializeField] private Button defeatRetryButton;
 
+    [Header("Localization")]
+    [SerializeField] private LocalizedString victoryTitle_Localized; // table "Combat", key "combat.results.victory"
+    [SerializeField] private LocalizedString defeatTitle_Localized; // table "Combat", key "combat.results.defeat"
+    [SerializeField] private LocalizedString drawTitle_Localized; // table "Combat", key "combat.results.draw"
+    [SerializeField] private LocalizedString turnLimitText_Localized; // table "Combat", key "combat.results.turn_limit"
+    [SerializeField] private LocalizedString partialRewardsText_Localized; // table "Combat", key "combat.results.partial_rewards"
+    [SerializeField] private LocalizedString statsText_Localized; // table "Combat", key "combat.results.stats"
+    [SerializeField] private LocalizedString noRewardsText_Localized; // table "Combat", key "combat.results.no_rewards"
+    [SerializeField] private LocalizedString rewardsHeaderText_Localized; // table "Combat", key "combat.results.rewards_header"
+    [SerializeField] private LocalizedString goldText_Localized; // table "Combat", key "combat.results.gold"
+    [SerializeField] private LocalizedString xpText_Localized; // table "Combat", key "combat.results.xp"
+    [SerializeField] private LocalizedString itemRewardText_Localized; // table "Combat", key "combat.results.item_reward"
+    [SerializeField] private LocalizedString animalHappinessText_Localized; // table "Combat", key "combat.results.animal_happiness"
+
     [Header("Scene Management")]
     [SerializeField] private string farmSceneName = "SampleScene";
 
@@ -53,6 +68,11 @@ public class BattleResultsUI : MonoBehaviour
     // Reward tracking
     private CombatRewardData pendingRewards;
     private bool rewardsAwarded;
+
+    // Cached args from the last ShowResults() call, so the screen can be re-rendered on language change
+    private TurnManager.BattleResult? lastResult;
+    private int lastSurvivingPlayers;
+    private int lastSurvivingEnemies;
 
     // Singleton instance
     public static BattleResultsUI Instance { get; private set; }
@@ -72,6 +92,32 @@ public class BattleResultsUI : MonoBehaviour
 
         // Setup button callbacks
         SetupButtons();
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    private void OnDestroy()
+    {
+        SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
+    {
+        // Re-render text only — do not call ShowResults() again, it would reset rewardsAwarded
+        // and risk double-granting rewards if the player changes language while this screen is up.
+        if (!lastResult.HasValue) return;
+        switch (lastResult.Value)
+        {
+            case TurnManager.BattleResult.Victory:
+                ShowVictory(lastSurvivingPlayers, lastSurvivingEnemies);
+                break;
+            case TurnManager.BattleResult.Defeat:
+                ShowDefeat(lastSurvivingPlayers, lastSurvivingEnemies);
+                break;
+            case TurnManager.BattleResult.Draw:
+                ShowDraw(lastSurvivingPlayers, lastSurvivingEnemies);
+                break;
+        }
     }
 
     /// <summary>
@@ -100,6 +146,9 @@ public class BattleResultsUI : MonoBehaviour
         pendingRewards = rewards;
         rewardsAwarded = false;
         totalTurns = turns;
+        lastResult = result;
+        lastSurvivingPlayers = playerUnitsAlive;
+        lastSurvivingEnemies = enemyUnitsAlive;
 
         switch (result)
         {
@@ -132,7 +181,7 @@ public class BattleResultsUI : MonoBehaviour
         // Set title
         if (victoryTitleText != null)
         {
-            victoryTitleText.text = "*** VICTORY! ***";
+            victoryTitleText.text = victoryTitle_Localized.SafeGetLocalizedString();
         }
 
         // Display battle stats
@@ -164,7 +213,7 @@ public class BattleResultsUI : MonoBehaviour
         // Set title
         if (defeatTitleText != null)
         {
-            defeatTitleText.text = "-- DEFEAT --";
+            defeatTitleText.text = defeatTitle_Localized.SafeGetLocalizedString();
         }
 
         // Display battle stats
@@ -190,22 +239,20 @@ public class BattleResultsUI : MonoBehaviour
         // Set title
         if (victoryTitleText != null)
         {
-            victoryTitleText.text = "⏱️ DRAW ⏱️";
+            victoryTitleText.text = drawTitle_Localized.SafeGetLocalizedString();
         }
 
         // Display battle stats
         if (victoryStatsText != null)
         {
             victoryStatsText.text = GetBattleStatsText(survivingPlayers, survivingEnemies) +
-                                   "\n\nTurn limit reached!";
+                                   turnLimitText_Localized.SafeGetLocalizedString();
         }
 
         // Display reduced rewards
         if (victoryRewardsText != null)
         {
-            victoryRewardsText.text = "Partial Rewards:\n" +
-                                     "Gold: 50\n" +
-                                     "XP: 25 (all units)";
+            victoryRewardsText.text = partialRewardsText_Localized.SafeGetLocalizedString();
         }
 
     }
@@ -215,10 +262,8 @@ public class BattleResultsUI : MonoBehaviour
     /// </summary>
     private string GetBattleStatsText(int survivingPlayers, int survivingEnemies)
     {
-        return $"<b>Battle Statistics</b>\n\n" +
-               $"Turns: {totalTurns}\n" +
-               $"Your Survivors: {survivingPlayers}\n" +
-               $"Enemy Survivors: {survivingEnemies}\n";
+        statsText_Localized.Arguments = new object[] { totalTurns, survivingPlayers, survivingEnemies };
+        return statsText_Localized.SafeGetLocalizedString();
     }
 
     /// <summary>
@@ -227,16 +272,26 @@ public class BattleResultsUI : MonoBehaviour
     private string GetRewardsText()
     {
         if (pendingRewards == null || !pendingRewards.isVictory)
-            return "No rewards.";
+            return noRewardsText_Localized.SafeGetLocalizedString();
 
-        var sb = new System.Text.StringBuilder("<b>Rewards</b>\n\n");
-        sb.AppendLine($"Gold: {pendingRewards.goldReward}");
+        var sb = new System.Text.StringBuilder(rewardsHeaderText_Localized.SafeGetLocalizedString());
+        goldText_Localized.Arguments = new object[] { pendingRewards.goldReward };
+        sb.AppendLine(goldText_Localized.SafeGetLocalizedString());
         if (pendingRewards.xpReward > 0)
-            sb.AppendLine($"XP: +{pendingRewards.xpReward} (surviving units)");
+        {
+            xpText_Localized.Arguments = new object[] { pendingRewards.xpReward };
+            sb.AppendLine(xpText_Localized.SafeGetLocalizedString());
+        }
         foreach (var (item, qty) in pendingRewards.lootDrops)
-            sb.AppendLine($"{item.itemName} x{qty}");
+        {
+            itemRewardText_Localized.Arguments = new object[] { item.itemName, qty };
+            sb.AppendLine(itemRewardText_Localized.SafeGetLocalizedString());
+        }
         if (pendingRewards.animalHappinessBonus > 0)
-            sb.AppendLine($"Animal Happiness: +{pendingRewards.animalHappinessBonus}");
+        {
+            animalHappinessText_Localized.Arguments = new object[] { pendingRewards.animalHappinessBonus };
+            sb.AppendLine(animalHappinessText_Localized.SafeGetLocalizedString());
+        }
         return sb.ToString();
     }
 

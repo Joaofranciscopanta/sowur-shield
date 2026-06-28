@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.Localization;
+using SowurShield.Core;
 using SowurShield.UI;
 
 namespace SowurShield.Inventory
@@ -64,6 +66,11 @@ namespace SowurShield.Inventory
         [Header("Theme")]
         [SerializeField] private UITheme theme;
 
+        [Header("Localization")]
+        [SerializeField] private LocalizedString titleLocalized; // table "Inventory", key "inventory.title"
+        [SerializeField] private LocalizedString sortLabelLocalized; // table "Inventory", key "inventory.sort_label"
+        [SerializeField] private LocalizedString countFractionLocalized; // table "Inventory", key "inventory.count_fraction"
+
         // Internal state
         private ItemType currentFilterType = (ItemType)(-1); // -1 means show all
         private InventorySorting.SortMode currentSortMode = InventorySorting.SortMode.Type;
@@ -100,13 +107,34 @@ namespace SowurShield.Inventory
         {
             SetupUI();
             SetupEventListeners();
+
+            SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+        }
+
+        private void OnDestroy()
+        {
+            SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+        }
+
+        private void HandleLanguageChanged(Locale locale)
+        {
+            if (titleText != null)
+                titleText.text = titleLocalized.SafeGetLocalizedString();
+
+            if (sortModeText != null)
+            {
+                sortLabelLocalized.Arguments = new object[] { currentSortMode };
+                sortModeText.text = sortLabelLocalized.SafeGetLocalizedString();
+            }
+
+            UpdateCapacityDisplay();
         }
 
         private void SetupUI()
         {
             // Set default values
             if (titleText != null)
-                titleText.text = "Inventory";
+                titleText.text = titleLocalized.SafeGetLocalizedString();
 
             UpdateCapacityDisplay();
 
@@ -258,7 +286,10 @@ namespace SowurShield.Inventory
 
             // Update sort mode display
             if (sortModeText != null)
-                sortModeText.text = $"Sort: {mode}";
+            {
+                sortLabelLocalized.Arguments = new object[] { mode };
+                sortModeText.text = sortLabelLocalized.SafeGetLocalizedString();
+            }
 
         }
 
@@ -273,7 +304,8 @@ namespace SowurShield.Inventory
             int used = inventory.GetUsedSlotCount();
             int total = inventory.GetInventoryCapacity();
 
-            capacityText.text = $"{used}/{total}";
+            countFractionLocalized.Arguments = new object[] { used, total };
+            capacityText.text = countFractionLocalized.SafeGetLocalizedString();
 
             // Color code based on fullness
             float fillPercentage = (float)used / total;

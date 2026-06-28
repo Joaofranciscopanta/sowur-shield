@@ -4,6 +4,7 @@ using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 using SowurShield.Inventory;
+using UnityEngine.Localization;
 
 namespace SowurShield.Core
 {
@@ -49,6 +50,16 @@ public class BuildingShopUI : MonoBehaviour, IUIWindow
     [Tooltip("Text label for success/failure messages. Leave null to skip.")]
     [SerializeField] private TextMeshProUGUI feedbackText;
     [SerializeField] private float feedbackDisplaySeconds = 2.5f;
+
+    [Header("Localized Strings")]
+    [SerializeField] private LocalizedString goldCostText; // table "Farming", key "farming.buildingshop.gold_cost"
+    [SerializeField] private LocalizedString extraCostText; // table "Farming", key "farming.buildingshop.extra_cost"
+    [SerializeField] private LocalizedString purchaseFailedText; // table "Farming", key "farming.buildingshop.purchase_failed"
+    [SerializeField] private LocalizedString constructionCompleteText; // table "Farming", key "farming.buildingshop.construction_complete"
+    [SerializeField] private LocalizedString cannotBuildText; // table "Farming", key "farming.buildingshop.cannot_build"
+    [SerializeField] private LocalizedString notEnoughGoldText; // table "Farming", key "farming.buildingshop.not_enough_gold"
+    [SerializeField] private LocalizedString missingMaterialsText; // table "Farming", key "farming.buildingshop.missing_materials"
+    [SerializeField] private LocalizedString goldLabelText; // table "Farming", key "farming.buildingshop.gold_label"
 
     // Runtime refs
     private PlayerStats _playerStats;
@@ -104,12 +115,22 @@ public class BuildingShopUI : MonoBehaviour, IUIWindow
 
         if (UIManager.Instance != null)
             UIManager.Instance.RegisterWindow(this);
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
     }
 
     private void OnDestroy()
     {
         if (UIManager.Instance != null)
             UIManager.Instance.UnregisterWindow(this);
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
+    {
+        if (IsWindowOpen)
+            BuildRows();
     }
 
     // =========================================================================
@@ -221,9 +242,13 @@ public class BuildingShopUI : MonoBehaviour, IUIWindow
 
         if (confirmCostText != null)
         {
-            string costLine = $"{data.goldCost} gold";
+            goldCostText.Arguments = new object[] { data.goldCost };
+            string costLine = goldCostText.SafeGetLocalizedString();
             if (!string.IsNullOrEmpty(data.materialItemName) && data.materialQuantity > 0)
-                costLine += $"\n+ {data.materialQuantity}x {data.materialItemName}";
+            {
+                extraCostText.Arguments = new object[] { data.materialQuantity, data.materialItemName };
+                costLine += extraCostText.SafeGetLocalizedString();
+            }
             confirmCostText.text = costLine;
         }
 
@@ -241,7 +266,7 @@ public class BuildingShopUI : MonoBehaviour, IUIWindow
         if (_pendingPurchase == null || FarmBuildingManager.Instance == null ||
             _playerStats == null || _inventory == null)
         {
-            ShowFeedback("Purchase failed — missing references.", true);
+            ShowFeedback(purchaseFailedText.SafeGetLocalizedString(), true);
             return;
         }
 
@@ -251,17 +276,20 @@ public class BuildingShopUI : MonoBehaviour, IUIWindow
 
         if (built)
         {
-            ShowFeedback($"Construction complete!", false);
+            ShowFeedback(constructionCompleteText.SafeGetLocalizedString(), false);
             RefreshRows();
         }
         else
         {
             // Determine why it failed for a useful message
-            string reason = "Cannot build.";
+            string reason = cannotBuildText.SafeGetLocalizedString();
             if (!_playerStats.HasMoney(purchase.goldCost))
-                reason = "Not enough gold.";
+                reason = notEnoughGoldText.SafeGetLocalizedString();
             else if (!string.IsNullOrEmpty(purchase.materialItemName) && purchase.materialQuantity > 0)
-                reason = $"Missing {purchase.materialQuantity}x {purchase.materialItemName}.";
+            {
+                missingMaterialsText.Arguments = new object[] { purchase.materialQuantity, purchase.materialItemName };
+                reason = missingMaterialsText.SafeGetLocalizedString();
+            }
             ShowFeedback(reason, true);
         }
     }
@@ -327,7 +355,10 @@ public class BuildingShopUI : MonoBehaviour, IUIWindow
     private void RefreshGoldText()
     {
         if (playerGoldText != null && _playerStats != null)
-            playerGoldText.text = $"Gold: {_playerStats.Money}g";
+        {
+            goldLabelText.Arguments = new object[] { _playerStats.Money };
+            playerGoldText.text = goldLabelText.SafeGetLocalizedString();
+        }
     }
 
     private void DisablePlayerMovement()

@@ -89,7 +89,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 609fa74d8c10db54c9346429b55e0829, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.GridPositionSlot
   slotBackground: {fileID: 7855893199038808630}
   animalIcon: {fileID: 8488787676874891025}
@@ -101,6 +101,18 @@ MonoBehaviour:
   hoverValidColor: {r: 0.35, g: 0.85, b: 0.4, a: 0.5}
   fedColor: {r: 0.35, g: 0.85, b: 0.4, a: 1}
   hungryColor: {r: 0.95, g: 0.75, b: 0.2, a: 1}
+  positionLabelText_Localized:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: combat.grid.position_label
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &4136849490717911915
 GameObject:
   m_ObjectHideFlags: 0
@@ -176,14 +188,14 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 2364076791
-  m_fontColor: {r: 0.969, g: 0.949, b: 0.910, a: 0.55}
+  m_fontColor: {r: 0.969, g: 0.949, b: 0.91, a: 0.55}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
-    topLeft: {r: 0.969, g: 0.949, b: 0.910, a: 0.55}
-    topRight: {r: 0.969, g: 0.949, b: 0.910, a: 0.55}
-    bottomLeft: {r: 0.969, g: 0.949, b: 0.910, a: 0.55}
-    bottomRight: {r: 0.969, g: 0.949, b: 0.910, a: 0.55}
+    topLeft: {r: 0.969, g: 0.949, b: 0.91, a: 0.55}
+    topRight: {r: 0.969, g: 0.949, b: 0.91, a: 0.55}
+    bottomLeft: {r: 0.969, g: 0.949, b: 0.91, a: 0.55}
+    bottomRight: {r: 0.969, g: 0.949, b: 0.91, a: 0.55}
   m_fontColorGradientPreset: {fileID: 0}
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
@@ -293,7 +305,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -368,7 +380,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

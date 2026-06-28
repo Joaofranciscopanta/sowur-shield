@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization;
+using SowurShield.Core;
 using SowurShield.Combat;
 
 namespace SowurShield.Worldmap
@@ -37,6 +39,9 @@ public class WorldMapBiomePanel : MonoBehaviour
 
     [Tooltip("Shown when no stage in this biome is currently unlocked.")]
     [SerializeField] private Image lockIcon;
+
+    [Header("Localization")]
+    [SerializeField] private LocalizedString biomeCompletedLocalized; // table "Worldmap", key "worldmap.biome_completed"
 
     // -------------------------------------------------------------------------
     // Public read-only accessors (useful for WorldMapUIController)
@@ -115,7 +120,10 @@ public class WorldMapBiomePanel : MonoBehaviour
         int completedCount = BiomeUnlockChecker.GetCompletedCount(stages, completedStageNames);
         int total = stages != null ? stages.Count : 0;
         if (completionText != null)
-            completionText.text = $"{completedCount}/{total} completed";
+        {
+            biomeCompletedLocalized.Arguments = new object[] { completedCount, total };
+            completionText.text = biomeCompletedLocalized.SafeGetLocalizedString();
+        }
 
         // --- Lock icon ---
         bool unlocked = BiomeUnlockChecker.IsBiomeUnlocked(stages, completedStageNames);

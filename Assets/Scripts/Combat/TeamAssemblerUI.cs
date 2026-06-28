@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using UnityEngine.Localization;
 using SowurShield.Animals;
 using SowurShield.Core;
 using SowurShield.Inventory;
@@ -52,6 +53,16 @@ public class TeamAssemblerUI : MonoBehaviour
 
     [Header("Scene Management")]
     [SerializeField] private string combatSceneName = "CombatScene";
+
+    [Header("Localization")]
+    [SerializeField] private LocalizedString zoneLabelText_Localized; // table "Combat", key "combat.teamassembler.zone_label"
+    [SerializeField] private LocalizedString teamCountText_Localized; // table "Combat", key "combat.teamassembler.team_count"
+    [SerializeField] private LocalizedString allFedText_Localized; // table "Combat", key "combat.teamassembler.all_fed"
+    [SerializeField] private LocalizedString requiredFoodHeaderText_Localized; // table "Combat", key "combat.teamassembler.required_food_header"
+    [SerializeField] private LocalizedString foodLineText_Localized; // table "Combat", key "combat.teamassembler.food_line"
+    [SerializeField] private LocalizedString synergiesHeaderText_Localized; // table "Combat", key "combat.teamassembler.synergies_header"
+    [SerializeField] private LocalizedString synergyLineText_Localized; // table "Combat", key "combat.teamassembler.synergy_line"
+    [SerializeField] private LocalizedString noSynergiesText_Localized; // table "Combat", key "combat.teamassembler.no_synergies"
 
     // Runtime data
     private List<AnimalSelectionCard> animalCards = new List<AnimalSelectionCard>();
@@ -117,7 +128,8 @@ public class TeamAssemblerUI : MonoBehaviour
 
         if (zoneNameText != null)
         {
-            zoneNameText.text = $"Zone: {TeamAssemblerData.Instance.zoneName}";
+            zoneLabelText_Localized.Arguments = new object[] { TeamAssemblerData.Instance.zoneName };
+            zoneNameText.text = zoneLabelText_Localized.SafeGetLocalizedString();
         }
 
         // Arrange the selection/grid/info panels before populating them
@@ -364,7 +376,8 @@ public class TeamAssemblerUI : MonoBehaviour
         if (teamSizeText != null)
         {
             int teamSize = TeamAssemblerData.Instance.GetTeamSize();
-            teamSizeText.text = $"Team: {teamSize}/15"; // Max 15 slots on player grid
+            teamCountText_Localized.Arguments = new object[] { teamSize }; // Max 15 slots on player grid
+            teamSizeText.text = teamCountText_Localized.SafeGetLocalizedString();
         }
 
         // Update food requirements
@@ -374,14 +387,15 @@ public class TeamAssemblerUI : MonoBehaviour
 
             if (requirements.Count == 0)
             {
-                foodRequirementsText.text = "All animals fed!";
+                foodRequirementsText.text = allFedText_Localized.SafeGetLocalizedString();
             }
             else
             {
-                string reqText = "Required Food:\n";
+                string reqText = requiredFoodHeaderText_Localized.SafeGetLocalizedString();
                 foreach (var req in requirements)
                 {
-                    reqText += $"• {req.Value}x {req.Key}\n";
+                    foodLineText_Localized.Arguments = new object[] { req.Value, req.Key };
+                    reqText += foodLineText_Localized.SafeGetLocalizedString();
                 }
                 foodRequirementsText.text = reqText;
             }
@@ -399,7 +413,7 @@ public class TeamAssemblerUI : MonoBehaviour
                 typeCounts[member.animalData] = count + 1;
             }
 
-            string synergyText = "Synergies:\n";
+            string synergyText = synergiesHeaderText_Localized.SafeGetLocalizedString();
             bool hasSynergy = false;
             foreach (var entry in typeCounts)
             {
@@ -409,12 +423,13 @@ public class TeamAssemblerUI : MonoBehaviour
                 if (data.canStack && count > 1)
                 {
                     int stackCount = Mathf.Min(count, data.maxStackSize);
-                    synergyText += $"• {stackCount}x {data.animalName} (Stack Bonus)\n";
+                    synergyLineText_Localized.Arguments = new object[] { stackCount, data.animalName };
+                    synergyText += synergyLineText_Localized.SafeGetLocalizedString();
                     hasSynergy = true;
                 }
             }
 
-            synergiesText.text = hasSynergy ? synergyText : "No active synergies";
+            synergiesText.text = hasSynergy ? synergyText : noSynergiesText_Localized.SafeGetLocalizedString();
         }
 
         // Update start battle button

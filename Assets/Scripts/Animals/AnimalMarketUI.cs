@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
+using UnityEngine.Localization;
 using SowurShield.Core;
 using SowurShield.Dialogue;
 using SowurShield.Inventory;
@@ -57,6 +58,17 @@ public class AnimalMarketUI : MonoBehaviour, IUIWindow, ISaveable
     [Header("Zone Assignment")]
     [Tooltip("Zones checked in order for the first non-full one when buying. Leave empty to auto-discover all AnimalZones in the scene.")]
     [SerializeField] private AnimalZone[] candidateZones;
+
+    [Header("Localization")]
+    [SerializeField] private LocalizedString notEnoughGoldText; // table "Animals", key "animals.market.not_enough_gold"
+    [SerializeField] private LocalizedString zonesFullText; // table "Animals", key "animals.market.zones_full"
+    [SerializeField] private LocalizedString welcomeText; // table "Animals", key "animals.market.welcome"
+    [SerializeField] private LocalizedString sellConfirmText; // table "Animals", key "animals.market.sell_confirm"
+    [SerializeField] private LocalizedString sellGoldGainText; // table "Animals", key "animals.market.sell_gold_gain"
+    [SerializeField] private LocalizedString saleFailedText; // table "Animals", key "animals.market.sale_failed"
+    [SerializeField] private LocalizedString soldText; // table "Animals", key "animals.market.sold"
+    [SerializeField] private LocalizedString friendshipDiscountText; // table "Animals", key "animals.market.friendship_discount"
+    [SerializeField] private LocalizedString goldLabelText; // table "Animals", key "animals.market.gold_label"
 
     private AnimalMarketData _currentMarket;
     private PlayerStats _playerStats;
@@ -120,6 +132,8 @@ public class AnimalMarketUI : MonoBehaviour, IUIWindow, ISaveable
 
         if (SaveManager.Instance != null)
             SaveManager.Instance.RegisterSaveable(this);
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
     }
 
     private void OnDestroy()
@@ -129,6 +143,17 @@ public class AnimalMarketUI : MonoBehaviour, IUIWindow, ISaveable
 
         if (SaveManager.Instance != null)
             SaveManager.Instance.UnregisterSaveable(this);
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
+    {
+        if (!IsWindowOpen || _currentMarket == null) return;
+        RefreshGoldDisplay();
+        RefreshDiscountDisplay();
+        BuildBuyRows();
+        BuildSellRows();
     }
 
     // =========================================================================
@@ -220,14 +245,14 @@ public class AnimalMarketUI : MonoBehaviour, IUIWindow, ISaveable
 
         if (!_playerStats.HasMoney(finalPrice))
         {
-            ShowFeedback("Not enough gold.", true);
+            ShowFeedback(notEnoughGoldText.SafeGetLocalizedString(), true);
             return;
         }
 
         AnimalZone targetZone = FindAvailableZone();
         if (targetZone == null)
         {
-            ShowFeedback("All zones are full! Build a Barn or free up space.", true);
+            ShowFeedback(zonesFullText.SafeGetLocalizedString(), true);
             return;
         }
 
@@ -239,7 +264,8 @@ public class AnimalMarketUI : MonoBehaviour, IUIWindow, ISaveable
 
         RefreshGoldDisplay();
         BuildBuyRows();
-        ShowFeedback($"Welcome, {entry.animalData.animalName}!", false);
+        welcomeText.Arguments = new object[] { entry.animalData.animalName };
+        ShowFeedback(welcomeText.SafeGetLocalizedString(), false);
     }
 
     private AnimalZone FindAvailableZone()
@@ -327,9 +353,15 @@ public class AnimalMarketUI : MonoBehaviour, IUIWindow, ISaveable
         }
 
         if (confirmNameText != null)
-            confirmNameText.text = $"Sell {animal.GetDisplayName()}?";
+        {
+            sellConfirmText.Arguments = new object[] { animal.GetDisplayName() };
+            confirmNameText.text = sellConfirmText.SafeGetLocalizedString();
+        }
         if (confirmPriceText != null)
-            confirmPriceText.text = $"+{sellPrice} gold";
+        {
+            sellGoldGainText.Arguments = new object[] { sellPrice };
+            confirmPriceText.text = sellGoldGainText.SafeGetLocalizedString();
+        }
 
         confirmationPanel.SetActive(true);
     }
@@ -344,7 +376,7 @@ public class AnimalMarketUI : MonoBehaviour, IUIWindow, ISaveable
     {
         if (_pendingSellAnimal == null || _playerStats == null)
         {
-            ShowFeedback("Sale failed — missing references.", true);
+            ShowFeedback(saleFailedText.SafeGetLocalizedString(), true);
             return;
         }
 
@@ -357,7 +389,8 @@ public class AnimalMarketUI : MonoBehaviour, IUIWindow, ISaveable
 
         RefreshGoldDisplay();
         BuildSellRows();
-        ShowFeedback($"Sold {name}.", false);
+        soldText.Arguments = new object[] { name };
+        ShowFeedback(soldText.SafeGetLocalizedString(), false);
     }
 
     private void HideConfirmation()
@@ -385,15 +418,24 @@ public class AnimalMarketUI : MonoBehaviour, IUIWindow, ISaveable
         if (relationshipDiscountText == null) return;
 
         float discount = GetDiscount();
-        relationshipDiscountText.text = discount > 0f
-            ? $"Friendship Discount: {Mathf.RoundToInt(discount * 100)}% off"
-            : "";
+        if (discount > 0f)
+        {
+            friendshipDiscountText.Arguments = new object[] { Mathf.RoundToInt(discount * 100) };
+            relationshipDiscountText.text = friendshipDiscountText.SafeGetLocalizedString();
+        }
+        else
+        {
+            relationshipDiscountText.text = "";
+        }
     }
 
     private void RefreshGoldDisplay()
     {
         if (playerGoldText != null && _playerStats != null)
-            playerGoldText.text = $"Gold: {_playerStats.Money}";
+        {
+            goldLabelText.Arguments = new object[] { _playerStats.Money };
+            playerGoldText.text = goldLabelText.SafeGetLocalizedString();
+        }
     }
 
     private void ShowFeedback(string message, bool isError)

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization;
 using SowurShield.Core;
 using SowurShield.UI;
 
@@ -48,6 +49,21 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
 
     [Header("Theme")]
     [SerializeField] private UITheme theme;
+
+    [Header("Localization")]
+    [SerializeField] private LocalizedString dailyFoodHeaderText; // table "Animals", key "animals.info.daily_food_header"
+    [SerializeField] private LocalizedString foodLineText; // table "Animals", key "animals.info.food_line"
+    [SerializeField] private LocalizedString noSpecialFoodText; // table "Animals", key "animals.info.no_special_food"
+    [SerializeField] private LocalizedString statusHeaderText; // table "Animals", key "animals.info.status_header"
+    [SerializeField] private LocalizedString statusIllText; // table "Animals", key "animals.info.status_ill"
+    [SerializeField] private LocalizedString statusHappyText; // table "Animals", key "animals.info.status_happy"
+    [SerializeField] private LocalizedString statusWellFedText; // table "Animals", key "animals.info.status_well_fed"
+    [SerializeField] private LocalizedString statusHungryText; // table "Animals", key "animals.info.status_hungry"
+    [SerializeField] private LocalizedString fedTodayText; // table "Animals", key "animals.info.fed_today"
+    [SerializeField] private LocalizedString happinessLabelText; // table "Animals", key "animals.info.happiness"
+    [SerializeField] private LocalizedString statMultiplierText; // table "Animals", key "animals.info.stat_multiplier"
+    [SerializeField] private LocalizedString noProductionText; // table "Animals", key "animals.info.no_production"
+    [SerializeField] private LocalizedString producesText; // table "Animals", key "animals.info.produces"
 
     private Animal currentAnimal;
 
@@ -113,12 +129,22 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
         // Register with UIManager
         if (UIManager.Instance != null)
             UIManager.Instance.RegisterWindow(this);
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
     }
 
     private void OnDestroy()
     {
         if (UIManager.Instance != null)
             UIManager.Instance.UnregisterWindow(this);
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
+    {
+        if (IsWindowOpen && currentAnimal != null)
+            PopulateUI(currentAnimal);
     }
 
     private void ApplyThemeColors()
@@ -206,15 +232,18 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
         // Food requirements
         if (foodRequirementsText != null)
         {
-            string requirements = "Daily Food Needs:\n";
+            string requirements = dailyFoodHeaderText.SafeGetLocalizedString();
             if (data.dailyFoodRequirements != null && data.dailyFoodRequirements.Count > 0)
             {
                 foreach (FoodRequirement req in data.dailyFoodRequirements)
-                    requirements += $"• {req.quantityPerDay}x {req.itemName}\n";
+                {
+                    foodLineText.Arguments = new object[] { req.quantityPerDay, req.itemName };
+                    requirements += foodLineText.SafeGetLocalizedString();
+                }
             }
             else
             {
-                requirements += "No special food needed";
+                requirements += noSpecialFoodText.SafeGetLocalizedString();
             }
             foodRequirementsText.text = requirements;
         }
@@ -228,18 +257,19 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
         // Buffs / Status
         if (buffsText != null)
         {
-            string buffs = "Status:\n";
+            string buffs = statusHeaderText.SafeGetLocalizedString();
             if (animal.IsIll)
             {
                 string cureItem = animal.AnimalData?.illnessCureItemName ?? "Medicine";
-                buffs += $"• ILL — use {cureItem} to cure\n";
+                statusIllText.Arguments = new object[] { cureItem };
+                buffs += statusIllText.SafeGetLocalizedString();
             }
             if (animal.HasBeenPetToday)
-                buffs += "• Happy (Petted today)\n";
+                buffs += statusHappyText.SafeGetLocalizedString();
             if (!animal.NeedsFeeding)
-                buffs += "• Well Fed\n";
+                buffs += statusWellFedText.SafeGetLocalizedString();
             else
-                buffs += "• Hungry\n";
+                buffs += statusHungryText.SafeGetLocalizedString();
             buffsText.text = buffs;
         }
 
@@ -262,7 +292,8 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
                     totalRequired += req.quantityPerDay;
             }
 
-            foodStatusText.text = $"Fed Today: {currentAnimal.FoodEatenToday}/{totalRequired}";
+            fedTodayText.Arguments = new object[] { currentAnimal.FoodEatenToday, totalRequired };
+            foodStatusText.text = fedTodayText.SafeGetLocalizedString();
 
             if (foodPercentage >= 1f)
                 foodStatusText.color = wellFedColor;
@@ -311,14 +342,16 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
         // Update text
         if (happinessText != null)
         {
-            happinessText.text = $"Happiness: {happinessValue:F0}/100";
+            happinessLabelText.Arguments = new object[] { happinessValue };
+            happinessText.text = happinessLabelText.SafeGetLocalizedString();
             happinessText.color = barColor;
         }
 
         // Update multiplier display
         if (happinessMultiplierText != null)
         {
-            happinessMultiplierText.text = $"Stat Multiplier: {multiplier:F2}x";
+            statMultiplierText.Arguments = new object[] { multiplier };
+            happinessMultiplierText.text = statMultiplierText.SafeGetLocalizedString();
         }
     }
 
@@ -331,11 +364,12 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
 
         if (!data.canProduce)
         {
-            productionText.text = "No production";
+            productionText.text = noProductionText.SafeGetLocalizedString();
             return;
         }
 
-        string production = $"Produces: {data.produceItemName}\n";
+        producesText.Arguments = new object[] { data.produceItemName };
+        string production = producesText.SafeGetLocalizedString();
         production += $"Every {data.productionIntervalDays} day(s) | {data.minProduceAmount}-{data.maxProduceAmount}";
 
         if (data.happinessProductionBonus > 0f)

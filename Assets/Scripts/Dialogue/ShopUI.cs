@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization;
 using System.Collections.Generic;
 using SowurShield.Core;
 using SowurShield.Inventory;
@@ -28,6 +29,10 @@ public class ShopUI : MonoBehaviour, IUIWindow, ISaveable
     [SerializeField] private Transform shopItemContainer;
     [SerializeField] private GameObject shopItemRowPrefab;
     [SerializeField] private Button closeButton;
+
+    [Header("Localization")]
+    [SerializeField] private LocalizedString friendshipDiscountText; // table "Dialogue", key "dialogue.shop.friendship_discount"
+    [SerializeField] private LocalizedString goldLabelText; // table "Dialogue", key "dialogue.shop.gold_label"
 
     private ShopData _currentShop;
     private PlayerStats _playerStats;
@@ -81,6 +86,8 @@ public class ShopUI : MonoBehaviour, IUIWindow, ISaveable
 
         if (SaveManager.Instance != null)
             SaveManager.Instance.RegisterSaveable(this);
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
     }
 
     private void OnDestroy()
@@ -90,6 +97,14 @@ public class ShopUI : MonoBehaviour, IUIWindow, ISaveable
 
         if (SaveManager.Instance != null)
             SaveManager.Instance.UnregisterSaveable(this);
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
+    {
+        if (_currentShop != null)
+            PopulateUI();
     }
 
     // =========================================================================
@@ -172,7 +187,10 @@ public class ShopUI : MonoBehaviour, IUIWindow, ISaveable
         if (relationshipDiscountText != null)
         {
             if (discount > 0f)
-                relationshipDiscountText.text = $"Friendship Discount: {Mathf.RoundToInt(discount * 100)}% off";
+            {
+                friendshipDiscountText.Arguments = new object[] { Mathf.RoundToInt(discount * 100) };
+                relationshipDiscountText.text = friendshipDiscountText.SafeGetLocalizedString();
+            }
             else
                 relationshipDiscountText.text = "";
         }
@@ -221,7 +239,10 @@ public class ShopUI : MonoBehaviour, IUIWindow, ISaveable
     private void RefreshGoldDisplay()
     {
         if (playerGoldText != null && _playerStats != null)
-            playerGoldText.text = $"Gold: {_playerStats.Money}";
+        {
+            goldLabelText.Arguments = new object[] { _playerStats.Money };
+            playerGoldText.text = goldLabelText.SafeGetLocalizedString();
+        }
     }
 
     // =========================================================================
@@ -313,6 +334,10 @@ public class ShopItemRow : MonoBehaviour
     [SerializeField] private TextMeshProUGUI stockText;
     [SerializeField] private Button buyButton;
 
+    [SerializeField] private LocalizedString priceLabelText; // table "Dialogue", key "dialogue.shop.price"
+    [SerializeField] private LocalizedString unlimitedStockText; // table "Dialogue", key "dialogue.shop.unlimited_stock"
+    [SerializeField] private LocalizedString stockCountText; // table "Dialogue", key "dialogue.shop.stock_count"
+
     private ShopItemEntry _entry;
 
     public void Initialize(Item item, ShopItemEntry entry, int finalPrice,
@@ -327,7 +352,10 @@ public class ShopItemRow : MonoBehaviour
             itemNameText.text = item.itemName;
 
         if (priceText != null)
-            priceText.text = $"{finalPrice}g";
+        {
+            priceLabelText.Arguments = new object[] { finalPrice };
+            priceText.text = priceLabelText.SafeGetLocalizedString();
+        }
 
         RefreshStock();
 
@@ -338,7 +366,15 @@ public class ShopItemRow : MonoBehaviour
     public void RefreshStock()
     {
         if (stockText == null || _entry == null) return;
-        stockText.text = _entry.IsUnlimited ? "∞" : $"x{_entry.currentStock}";
+        if (_entry.IsUnlimited)
+        {
+            stockText.text = unlimitedStockText.SafeGetLocalizedString();
+        }
+        else
+        {
+            stockCountText.Arguments = new object[] { _entry.currentStock };
+            stockText.text = stockCountText.SafeGetLocalizedString();
+        }
     }
 }
 

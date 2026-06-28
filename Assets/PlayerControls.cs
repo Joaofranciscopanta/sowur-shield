@@ -147,6 +147,15 @@ namespace GameControls
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AimCursor"",
+                    ""type"": ""Value"",
+                    ""id"": ""a1b2c3d4-e5f6-4708-89a0-b1c2d3e4f5a7"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -372,12 +381,34 @@ namespace GameControls
                 },
                 {
                     ""name"": """",
+                    ""id"": ""f1a2b3c4-d5e6-47f8-9a0b-1c2d3e4f5a6b"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""6b8a2ca9-9154-440b-a194-adc1c6adc464"",
                     ""path"": ""<Mouse>/position"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""MousePosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b2c3d4e5-f6a7-4819-9ab1-c2d3e4f5a6b8"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""AimCursor"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1417,6 +1448,7 @@ namespace GameControls
             m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
             m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
             m_Player_MousePosition = m_Player.FindAction("MousePosition", throwIfNotFound: true);
+            m_Player_AimCursor = m_Player.FindAction("AimCursor", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1545,6 +1577,7 @@ namespace GameControls
         private readonly InputAction m_Player_Interact;
         private readonly InputAction m_Player_Sprint;
         private readonly InputAction m_Player_MousePosition;
+        private readonly InputAction m_Player_AimCursor;
         /// <summary>
         /// Provides access to input actions defined in input action map "Player".
         /// </summary>
@@ -1580,6 +1613,10 @@ namespace GameControls
             /// Provides access to the underlying input action "Player/MousePosition".
             /// </summary>
             public InputAction @MousePosition => m_Wrapper.m_Player_MousePosition;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/AimCursor".
+            /// </summary>
+            public InputAction @AimCursor => m_Wrapper.m_Player_AimCursor;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -1624,6 +1661,9 @@ namespace GameControls
                 @MousePosition.started += instance.OnMousePosition;
                 @MousePosition.performed += instance.OnMousePosition;
                 @MousePosition.canceled += instance.OnMousePosition;
+                @AimCursor.started += instance.OnAimCursor;
+                @AimCursor.performed += instance.OnAimCursor;
+                @AimCursor.canceled += instance.OnAimCursor;
             }
 
             /// <summary>
@@ -1653,6 +1693,9 @@ namespace GameControls
                 @MousePosition.started -= instance.OnMousePosition;
                 @MousePosition.performed -= instance.OnMousePosition;
                 @MousePosition.canceled -= instance.OnMousePosition;
+                @AimCursor.started -= instance.OnAimCursor;
+                @AimCursor.performed -= instance.OnAimCursor;
+                @AimCursor.canceled -= instance.OnAimCursor;
             }
 
             /// <summary>
@@ -2470,6 +2513,13 @@ namespace GameControls
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnMousePosition(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "AimCursor" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnAimCursor(InputAction.CallbackContext context);
         }
         /// <summary>
         /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

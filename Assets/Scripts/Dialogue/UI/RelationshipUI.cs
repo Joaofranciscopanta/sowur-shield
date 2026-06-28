@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization;
 using SowurShield.Core;
 using SowurShield.UI;
 
@@ -31,13 +32,25 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
     // Lore section (built dynamically on open)
     private Transform loreContainer;
     private TextMeshProUGUI loreTitleHeader;
+    private TextMeshProUGUI closeLabelRef;
 
     private UITheme theme;
+
+    [SerializeField] private LocalizedString noInfoText; // table "Dialogue", key "dialogue.relationship.no_info"
+    [SerializeField] private LocalizedString scoreText; // table "Dialogue", key "dialogue.relationship.score"
+    [SerializeField] private LocalizedString belovedText; // table "Dialogue", key "dialogue.relationship.beloved"
+    [SerializeField] private LocalizedString closeFriendText; // table "Dialogue", key "dialogue.relationship.close_friend"
+    [SerializeField] private LocalizedString friendText; // table "Dialogue", key "dialogue.relationship.friend"
+    [SerializeField] private LocalizedString acquaintanceText; // table "Dialogue", key "dialogue.relationship.acquaintance"
+    [SerializeField] private LocalizedString tenseText; // table "Dialogue", key "dialogue.relationship.tense"
+    [SerializeField] private LocalizedString hostileText; // table "Dialogue", key "dialogue.relationship.hostile"
+    [SerializeField] private LocalizedString closeButtonText; // table "Dialogue", key "dialogue.gift.close" (shared "Close" label)
+    [SerializeField] private LocalizedString codexHeaderText; // table "Dialogue", key "dialogue.relationship.codex_header"
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
     {
-        if (FindFirstObjectByType<RelationshipUI>() != null)
+        if (FindFirstObjectByType<RelationshipUI>(FindObjectsInactive.Include) != null)
             return;
 
         var go = new GameObject("RelationshipUI");
@@ -45,10 +58,61 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         DontDestroyOnLoad(go);
     }
 
+    // This component is created at runtime (never saved to a scene/prefab), so the
+    // Tools > Sowur Shield > Auto-Wire Localized Fields editor pass can never reach it —
+    // wire its LocalizedString table/key references here instead.
+    private void WireLocalizedStrings()
+    {
+        noInfoText = new LocalizedString("Dialogue", "dialogue.relationship.no_info");
+        scoreText = new LocalizedString("Dialogue", "dialogue.relationship.score");
+        belovedText = new LocalizedString("Dialogue", "dialogue.relationship.beloved");
+        closeFriendText = new LocalizedString("Dialogue", "dialogue.relationship.close_friend");
+        friendText = new LocalizedString("Dialogue", "dialogue.relationship.friend");
+        acquaintanceText = new LocalizedString("Dialogue", "dialogue.relationship.acquaintance");
+        tenseText = new LocalizedString("Dialogue", "dialogue.relationship.tense");
+        hostileText = new LocalizedString("Dialogue", "dialogue.relationship.hostile");
+        closeButtonText = new LocalizedString("Dialogue", "dialogue.gift.close");
+        codexHeaderText = new LocalizedString("Dialogue", "dialogue.relationship.codex_header");
+    }
+
+    private bool _buildSucceeded = false;
+
     private void Awake()
     {
+        TryBuildUI();
+        LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    private void OnDestroy()
+    {
+        LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
+    {
+        if (loreTitleHeader != null) loreTitleHeader.text = codexHeaderText.SafeGetLocalizedString();
+        if (closeLabelRef != null) closeLabelRef.text = closeButtonText.SafeGetLocalizedString();
+        if (isOpen) RefreshPanel();
+    }
+
+    private void TryBuildUI()
+    {
         theme = Resources.Load<UITheme>("UI/CozyUITheme");
-        BuildUI();
+        WireLocalizedStrings();
+        try
+        {
+            BuildUI();
+            _buildSucceeded = true;
+        }
+        catch (System.Exception e)
+        {
+            // Localization tables may not be configured yet (see MOBILE_LOCALIZATION_SETUP.md) —
+            // fail safe rather than leaving a half-built panel visible over the menu, but keep
+            // retrying on next OpenForNpc() instead of staying broken for the rest of the session.
+            Debug.LogError($"[RelationshipUI] BuildUI failed (Localization not configured?): {e}");
+            _buildSucceeded = false;
+            gameObject.SetActive(false);
+        }
     }
 
     // =========================================================================
@@ -89,6 +153,14 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
     {
         if (npc == null)
             return;
+
+        if (!_buildSucceeded)
+        {
+            gameObject.SetActive(true);
+            TryBuildUI();
+            if (!_buildSucceeded)
+                return;
+        }
 
         targetNpc = npc;
 
@@ -188,13 +260,13 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         nameText.alignment = TextAlignmentOptions.TopLeft;
         SetPreferredHeight(nameText, 30);
 
-        bioText = CreateLabel(infoObj.transform, "No information available yet.");
+        bioText = CreateLabel(infoObj.transform, noInfoText.SafeGetLocalizedString());
         bioText.fontSize  = 13;
         bioText.alignment = TextAlignmentOptions.TopLeft;
         bioText.textWrappingMode = TMPro.TextWrappingModes.Normal;
         SetPreferredHeight(bioText, 90);
 
-        relationshipLabelText = CreateLabel(infoObj.transform, "Acquaintance");
+        relationshipLabelText = CreateLabel(infoObj.transform, acquaintanceText.SafeGetLocalizedString());
         relationshipLabelText.fontSize  = 14;
         relationshipLabelText.fontStyle = FontStyles.Bold;
         relationshipLabelText.alignment = TextAlignmentOptions.TopLeft;
@@ -218,7 +290,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         relationshipFillImage.fillMethod = Image.FillMethod.Horizontal;
         relationshipFillImage.fillAmount = 0.5f;
 
-        relationshipValueText = CreateLabel(infoObj.transform, "0 / 100");
+        relationshipValueText = CreateLabel(infoObj.transform, "0 / 100"); // placeholder, replaced by RefreshPanel via scoreText
         relationshipValueText.fontSize  = 13;
         relationshipValueText.alignment = TextAlignmentOptions.TopLeft;
         SetPreferredHeight(relationshipValueText, 18);
@@ -229,7 +301,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         divObj.AddComponent<Image>().color = theme != null ? theme.woodLight : new Color(0.3f, 0.3f, 0.35f, 1f);
         divObj.AddComponent<LayoutElement>().preferredHeight = 1;
 
-        loreTitleHeader = CreateLabel(panelObj.transform, "Codex");
+        loreTitleHeader = CreateLabel(panelObj.transform, codexHeaderText.SafeGetLocalizedString());
         loreTitleHeader.fontSize  = 13;
         loreTitleHeader.fontStyle = FontStyles.Bold;
         loreTitleHeader.color     = highlightGold;
@@ -258,9 +330,9 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         Button closeButton = closeButtonObj.AddComponent<Button>();
         closeButton.onClick.AddListener(OnCloseButtonClicked);
 
-        TextMeshProUGUI closeLabel = CreateLabel(closeButtonObj.transform, "Close");
-        closeLabel.alignment = TextAlignmentOptions.Center;
-        closeLabel.fontSize  = 15;
+        closeLabelRef = CreateLabel(closeButtonObj.transform, closeButtonText.SafeGetLocalizedString());
+        closeLabelRef.alignment = TextAlignmentOptions.Center;
+        closeLabelRef.fontSize  = 15;
 
         panelObj.SetActive(false);
     }
@@ -331,14 +403,15 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         nameText.text = targetNpc.GetNPCDisplayName();
 
         string bio = targetNpc.GetBio();
-        bioText.text = string.IsNullOrEmpty(bio) ? "No information available yet." : bio;
+        bioText.text = string.IsNullOrEmpty(bio) ? noInfoText.SafeGetLocalizedString() : bio;
 
         float level = targetNpc.GetRelationshipLevel();
         float normalized = (level + 100f) / 200f;
 
         relationshipFillImage.fillAmount = Mathf.Clamp01(normalized);
         relationshipLabelText.text = GetRelationshipLabel(level);
-        relationshipValueText.text = $"{level:F0} / 100";
+        scoreText.Arguments = new object[] { level };
+        relationshipValueText.text = scoreText.SafeGetLocalizedString();
 
         RefreshLore();
     }
@@ -395,12 +468,12 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
     /// </summary>
     private string GetRelationshipLabel(float level)
     {
-        if (level >= 75f) return "Beloved";
-        if (level >= 40f) return "Close Friend";
-        if (level >= 10f) return "Friend";
-        if (level >= -10f) return "Acquaintance";
-        if (level >= -40f) return "Tense";
-        return "Hostile";
+        if (level >= 75f) return belovedText.SafeGetLocalizedString();
+        if (level >= 40f) return closeFriendText.SafeGetLocalizedString();
+        if (level >= 10f) return friendText.SafeGetLocalizedString();
+        if (level >= -10f) return acquaintanceText.SafeGetLocalizedString();
+        if (level >= -40f) return tenseText.SafeGetLocalizedString();
+        return hostileText.SafeGetLocalizedString();
     }
 }
 

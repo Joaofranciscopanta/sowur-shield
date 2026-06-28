@@ -3,6 +3,7 @@ using System.Collections;
 using System.Linq;
 using SowurShield.Inventory;
 using SowurShield.Farming;
+using UnityEngine.Localization;
 
 namespace SowurShield.Core
 {
@@ -56,6 +57,13 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
     [Header("Debug")]
 
     [SerializeField] private GameBalance balance;
+
+    [Header("Localized Strings")]
+    [SerializeField] private LocalizedString wrongSeasonText; // table "Farming", key "farming.soil.wrong_season"
+    [SerializeField] private LocalizedString bonusText; // table "Farming", key "farming.soil.bonus"
+    [SerializeField] private LocalizedString readyText; // table "Farming", key "farming.soil.ready"
+    [SerializeField] private LocalizedString daysLeftText; // table "Farming", key "farming.soil.days_left"
+    [SerializeField] private LocalizedString emptyMarkerText; // table "Farming", key "farming.soil.empty_marker"
 
     // Componentes
     private SpriteRenderer soilRenderer;
@@ -447,7 +455,8 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
                 Season currentSeason = (Season)timeController.GetCurrentSeasonIndex();
                 if (!cropData.IsValidSeason(currentSeason))
                 {
-                    ShowWorldFeedback($"{cropData.cropName} can't grow in {currentSeason}!");
+                    wrongSeasonText.Arguments = new object[] { cropData.cropName, currentSeason };
+                    ShowWorldFeedback(wrongSeasonText.SafeGetLocalizedString());
                     return;
                 }
             }
@@ -548,7 +557,8 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             if (luckySeedUpgrade && cropToHarvest.seedItem != null && Random.value < luckySeedChance)
             {
                 SpawnGroundItem(cropToHarvest.seedItem, 0, 1);
-                ShowWorldFeedback($"Bonus {cropToHarvest.seedItem.itemName}!");
+                bonusText.Arguments = new object[] { cropToHarvest.seedItem.itemName };
+                ShowWorldFeedback(bonusText.SafeGetLocalizedString());
             }
 
             // Small pause for harvest animation
@@ -828,9 +838,17 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             return;
         }
 
-        string label = IsReadyForHarvest
-            ? $"{CurrentCrop.cropName} - Ready!"
-            : $"{CurrentCrop.cropName} - {GetDaysRemaining()}d";
+        string label;
+        if (IsReadyForHarvest)
+        {
+            readyText.Arguments = new object[] { CurrentCrop.cropName };
+            label = readyText.SafeGetLocalizedString();
+        }
+        else
+        {
+            daysLeftText.Arguments = new object[] { CurrentCrop.cropName, GetDaysRemaining() };
+            label = daysLeftText.SafeGetLocalizedString();
+        }
 
         if (statusTextObj == null)
         {
@@ -902,7 +920,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             rt.sizeDelta = new Vector2(60, 60);
 
             var tmp = emptyPlotIndicatorObj.AddComponent<TMPro.TextMeshProUGUI>();
-            tmp.text = "!";
+            tmp.text = emptyMarkerText.SafeGetLocalizedString();
             tmp.fontSize = 36;
             tmp.color = new Color(1f, 0.9f, 0.3f);
             tmp.alignment = TMPro.TextAlignmentOptions.Center;

@@ -1,0 +1,167 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: MainMenu_pt
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: pt
+  m_SharedData: {fileID: 11400000, guid: 6f5ef45f291ad3e4abdae9d700e1005b, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 279699456
+    m_Localized: Tem certeza de que deseja sair do jogo?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476672
+    m_Localized: Sair do Jogo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476673
+    m_Localized: Carregar Jogo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476674
+    m_Localized: "Novo Jogo \u2014 Escolha o Slot"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476675
+    m_Localized: Carregando... {0:P0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476676
+    m_Localized: Carregando dados salvos...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476677
+    m_Localized: Inicializando novo jogo...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476678
+    m_Localized: Arquivo de Save Encontrado
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476679
+    m_Localized: 'Arquivo: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476680
+    m_Localized: 'Tamanho: {0}KB'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476681
+    m_Localized: "\xDAltimo salvamento: {0}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476682
+    m_Localized: "Painel de configura\xE7\xF5es n\xE3o configurado!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476683
+    m_Localized: "Painel de informa\xE7\xF5es de save n\xE3o configurado!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476684
+    m_Localized: "\U0001F4C4 Informa\xE7\xF5es do Save\\n\\n\U0001F4C1 Arquivo: {0}\\n\U0001F4C5
+      Criado: {1}\\n\U0001F552 \xDAltimo salvamento: {2}\\n\U0001F4BE Tamanho: {3}\\n\\n\U0001F4A1
+      O jogo salva automaticamente quando voc\xEA dorme na cama"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476685
+    m_Localized: "\u274C Nenhum arquivo de save encontrado\\n\\n\U0001F6CF\uFE0F
+      Durma em uma cama para salvar seu progresso automaticamente.\\n\\nO jogo criar\xE1
+      um arquivo de save quando voc\xEA dormir pela primeira vez."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476686
+    m_Localized: "Salvar Jogo \u2014 Escolha o Slot"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476687
+    m_Localized: "Carregar Jogo \u2014 Escolha o Slot"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476688
+    m_Localized: Sobrescrever o save em {0}?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476689
+    m_Localized: "Carregar este save? O progresso n\xE3o salvo ser\xE1 perdido."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476690
+    m_Localized: Salvo em {0}!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476691
+    m_Localized: "Sair para a \xC1rea de Trabalho?\\n\\nQualquer progresso n\xE3o
+      salvo ser\xE1 perdido.\\nCertifique-se de dormir em uma cama para salvar!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476692
+    m_Localized: "Voltar ao Menu Principal?\\n\\nQualquer progresso n\xE3o salvo
+      ser\xE1 perdido.\\nCertifique-se de dormir em uma cama para salvar!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476693
+    m_Localized: "Excluir Arquivo de Save?\\n\\nEsta a\xE7\xE3o n\xE3o pode ser desfeita.\\nTodo
+      o seu progresso ser\xE1 perdido permanentemente!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476694
+    m_Localized: "Arquivo de save exclu\xEDdo!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476695
+    m_Localized: "Mensagem de notifica\xE7\xE3o de teste!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476696
+    m_Localized: Mensagem de erro de teste!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476697
+    m_Localized: "Voltar ao Menu Principal?\\n\\nQualquer progresso n\xE3o salvo
+      ser\xE1 perdido.\\nCertifique-se de salvar o jogo primeiro!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476698
+    m_Localized: "Informa\xE7\xF5es do Arquivo de Save:\\n\\nArquivo: {0}\\nCriado:
+      {1}\\n\xDAltima Modifica\xE7\xE3o: {2}\\nTamanho: {3}\\n\\n\U0001F4A1 O jogo
+      salva automaticamente quando voc\xEA dorme na cama"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476699
+    m_Localized: "Nenhum arquivo de save encontrado.\\n\\n\U0001F6CF\uFE0F Durma
+      em uma cama para salvar seu progresso automaticamente.\\n\\nO jogo criar\xE1
+      um arquivo de save quando voc\xEA dormir."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476700
+    m_Localized: "Save Autom\xE1tico"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476701
+    m_Localized: 'Slot '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476702
+    m_Localized: "Dia {0} \u2014 {1}, Ano {2}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476703
+    m_Localized: ${0}
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

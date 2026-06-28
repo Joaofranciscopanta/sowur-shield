@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.Localization;
 using SowurShield.Core;
 using SowurShield.Inventory;
 
@@ -40,6 +41,10 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
     [Header("Interaction")]
     [SerializeField] private float interactionRange = 2f;
     [SerializeField] private string interactionPrompt = "Open Feeding Trough";
+
+    [Header("Localization")]
+    [SerializeField] private LocalizedString troughTitleText; // table "Animals", key "animals.trough.title"
+    [SerializeField] private LocalizedString troughStatusText; // table "Animals", key "animals.trough.status"
 
     // Internal storage
     private InventoryContainer container;
@@ -124,6 +129,15 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
 
         SetupUI();
         UpdateTroughSprite();
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
+    {
+        if (titleText != null)
+            titleText.text = troughTitleText.SafeGetLocalizedString();
+        UpdateStatusText();
     }
 
     private void SetupUI()
@@ -155,7 +169,7 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         }
 
         if (titleText != null)
-            titleText.text = "Feeding Trough";
+            titleText.text = troughTitleText.SafeGetLocalizedString();
 
         UpdateStatusText();
     }
@@ -182,6 +196,8 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
 
         if (GameTimeController.instance != null)
             GameTimeController.instance.OnDayChanged -= OnDayChanged;
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
     }
 
     // =========================================================================
@@ -406,7 +422,8 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         int feedable = GetFeedableAnimalCount();
         int total = GetTotalAnimalCount();
 
-        statusText.text = $"Food stored: {totalItems} items\nCan feed: {feedable}/{total} animals tomorrow";
+        troughStatusText.Arguments = new object[] { totalItems, feedable, total };
+        statusText.text = troughStatusText.SafeGetLocalizedString();
     }
 
     // =========================================================================

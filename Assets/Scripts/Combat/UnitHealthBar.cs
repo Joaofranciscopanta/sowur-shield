@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization;
+using SowurShield.Core;
 
 namespace SowurShield.Combat
 {
@@ -49,6 +51,9 @@ public class UnitHealthBar : MonoBehaviour
     [Tooltip("Should this face the camera?")]
     [SerializeField] private bool faceCamera = true;
 
+    [Header("Localization")]
+    [SerializeField] private LocalizedString healthFractionText_Localized; // table "Combat", key "combat.healthbar.fraction"
+
     // Target unit
     private CombatUnit targetUnit;
 
@@ -71,6 +76,19 @@ public class UnitHealthBar : MonoBehaviour
 
         // Get main camera
         mainCamera = Camera.main;
+
+        SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    private void OnDestroy()
+    {
+        SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(Locale locale)
+    {
+        if (targetUnit != null)
+            UpdateHealthBar(targetUnit.currentHealth, targetUnit.GetMaxHealth());
     }
 
     /// <summary>
@@ -126,7 +144,8 @@ public class UnitHealthBar : MonoBehaviour
         // Update text
         if (healthText != null)
         {
-            healthText.text = $"{Mathf.CeilToInt(currentHealth)}/{Mathf.CeilToInt(maxHealth)}";
+            healthFractionText_Localized.Arguments = new object[] { Mathf.CeilToInt(currentHealth), Mathf.CeilToInt(maxHealth) };
+            healthText.text = healthFractionText_Localized.SafeGetLocalizedString();
         }
     }
 

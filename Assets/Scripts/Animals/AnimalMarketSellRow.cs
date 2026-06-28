@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization;
+using SowurShield.Core;
 
 namespace SowurShield.Animals
 {
@@ -18,6 +20,10 @@ public class AnimalMarketSellRow : MonoBehaviour
     [SerializeField] public TextMeshProUGUI zoneText;
     [SerializeField] public Button sellButton;
 
+    [Header("Localization")]
+    [SerializeField] private LocalizedString sellPriceText; // table "Animals", key "animals.market.sell_price"
+    [SerializeField] private LocalizedString unassignedText; // table "Animals", key "animals.market.unassigned"
+
     public void Initialize(Animal animal, int sellPrice, System.Action<Animal, int> onSell)
     {
         if (iconImage != null && animal.AnimalData != null && animal.AnimalData.idleSprite != null)
@@ -27,8 +33,12 @@ public class AnimalMarketSellRow : MonoBehaviour
         }
 
         if (nameText != null) nameText.text = animal.GetDisplayName();
-        if (priceText != null) priceText.text = $"+{sellPrice}g";
-        if (zoneText != null) zoneText.text = animal.AssignedZone != null ? animal.AssignedZone.gameObject.name : "Unassigned";
+        if (priceText != null)
+        {
+            sellPriceText.Arguments = new object[] { sellPrice };
+            priceText.text = sellPriceText.SafeGetLocalizedString();
+        }
+        if (zoneText != null) zoneText.text = animal.AssignedZone != null ? animal.AssignedZone.gameObject.name : unassignedText.SafeGetLocalizedString();
 
         if (sellButton != null)
         {

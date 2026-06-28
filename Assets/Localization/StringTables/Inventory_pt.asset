@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Inventory_pt
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: pt
+  m_SharedData: {fileID: 11400000, guid: c7818de13af7bf241b2d39f8152a219d, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 279699456
+    m_Localized: "Invent\xE1rio"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088064
+    m_Localized: 'Ordenar: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088065
+    m_Localized: '{0}/{1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088066
+    m_Localized: <i>{0}</i>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088067
+    m_Localized: '<color=#FFD700>Valor: {0} moedas</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088068
+    m_Localized: "<color=#888888>N\xE3o pode ser vendido</color>"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088069
+    m_Localized: "<color=#AAAAAA>Pilha M\xE1xima: {0}</color>"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088070
+    m_Localized: "<color=#90EE90>Consum\xEDvel</color>"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088071
+    m_Localized: '  <color=#FFD700>+{0} Energia</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088072
+    m_Localized: '  <color=#FF6B6B>+{0} Vida</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088073
+    m_Localized: "<color=#87CEEB>N\xEDvel da Ferramenta: {0}</color>"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088074
+    m_Localized: '<color=#FFA500>Durabilidade: {0}</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088075
+    m_Localized: "<color=#90EE90>Inquebr\xE1vel</color>"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088076
+    m_Localized: <size=11><color=#888888>{0}</color></size>
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

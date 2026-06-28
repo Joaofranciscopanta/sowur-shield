@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization;
 using System.Collections;
 
 namespace SowurShield.Core
@@ -27,15 +28,13 @@ public class SceneTransitionManager : MonoBehaviour
     [SerializeField] private float minimumLoadingTime = 2f; // Minimum time to show loading screen
     
     [Header("Loading Tips")]
-    [SerializeField] private string[] loadingTips = {
-        "Tip: Water your crops regularly to prevent them from dying!",
-        "Tip: Use the SellBox to automatically sell items when you sleep.",
-        "Tip: Different crops grow in different seasons.",
-        "Tip: Talk to NPCs to learn more about farming techniques.",
-        "Tip: Upgrade your tools to work more efficiently.",
-        "Tip: Save your game regularly to avoid losing progress.",
-        "Tip: Explore the world to find new seeds and resources."
-    };
+    [SerializeField] private LocalizedString loadingTip01_Localized; // table "LoadingTips", key "loadingtips.tip01"
+    [SerializeField] private LocalizedString loadingTip02_Localized; // table "LoadingTips", key "loadingtips.tip02"
+    [SerializeField] private LocalizedString loadingTip03_Localized; // table "LoadingTips", key "loadingtips.tip03"
+    [SerializeField] private LocalizedString loadingTip04_Localized; // table "LoadingTips", key "loadingtips.tip04"
+    [SerializeField] private LocalizedString loadingTip05_Localized; // table "LoadingTips", key "loadingtips.tip05"
+    [SerializeField] private LocalizedString loadingTip06_Localized; // table "LoadingTips", key "loadingtips.tip06"
+    [SerializeField] private LocalizedString loadingTip07_Localized; // table "LoadingTips", key "loadingtips.tip07"
     
     [Header("Audio")]
     [SerializeField] private AudioClip transitionStartSound;
@@ -280,10 +279,21 @@ public class SceneTransitionManager : MonoBehaviour
     
     private void SetRandomLoadingTip()
     {
-        if (tipText != null && loadingTips != null && loadingTips.Length > 0)
+        LocalizedString[] loadingTips =
+        {
+            loadingTip01_Localized,
+            loadingTip02_Localized,
+            loadingTip03_Localized,
+            loadingTip04_Localized,
+            loadingTip05_Localized,
+            loadingTip06_Localized,
+            loadingTip07_Localized
+        };
+
+        if (tipText != null && loadingTips.Length > 0)
         {
             int randomIndex = Random.Range(0, loadingTips.Length);
-            tipText.text = loadingTips[randomIndex];
+            tipText.text = loadingTips[randomIndex].SafeGetLocalizedString();
         }
     }
     
