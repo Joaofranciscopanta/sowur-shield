@@ -36,11 +36,17 @@ namespace SowurShield.Core
         private void Start()
         {
             if (!IsFirstBoot)
-                ApplyStoredLanguage();
+                StartCoroutine(ApplyStoredLanguageWhenReady());
         }
 
-        private void ApplyStoredLanguage()
+        // AvailableLocales / SelectedLocale internally call WaitForCompletion() on the
+        // Addressables operation backing the Localization system. WaitForCompletion is
+        // unsupported on WebGL (no threads to block) and raises a native exception there,
+        // so wait for InitializationOperation to finish on its own before touching them.
+        private System.Collections.IEnumerator ApplyStoredLanguageWhenReady()
         {
+            yield return LocalizationSettings.InitializationOperation;
+
             string code = PlayerPrefs.GetString(PlayerPrefsKey, "en");
             SetLanguage(code, persist: false);
         }
@@ -53,6 +59,12 @@ namespace SowurShield.Core
 
         private void SetLanguage(string localeCode, bool persist)
         {
+            if (!LocalizationSettings.InitializationOperation.IsDone)
+            {
+                StartCoroutine(SetLanguageWhenReady(localeCode, persist));
+                return;
+            }
+
             Locale locale = LocalizationSettings.AvailableLocales.GetLocale(localeCode);
             if (locale == null)
             {
@@ -71,8 +83,17 @@ namespace SowurShield.Core
             OnLanguageChanged?.Invoke(locale);
         }
 
+        private System.Collections.IEnumerator SetLanguageWhenReady(string localeCode, bool persist)
+        {
+            yield return LocalizationSettings.InitializationOperation;
+            SetLanguage(localeCode, persist);
+        }
+
         public string GetCurrentLanguageCode()
         {
+            if (!LocalizationSettings.InitializationOperation.IsDone)
+                return PlayerPrefs.GetString(PlayerPrefsKey, "en");
+
             return LocalizationSettings.SelectedLocale != null
                 ? LocalizationSettings.SelectedLocale.Identifier.Code
                 : PlayerPrefs.GetString(PlayerPrefsKey, "en");
