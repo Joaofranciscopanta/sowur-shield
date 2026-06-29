@@ -323,7 +323,8 @@ public class GameMusicManager : MonoBehaviour
         foreach (AudioSource source in allAudioSources)
         {
             // Stop any AudioSource that's not this one and is playing
-            if (source != musicSource && source.isPlaying && source.clip != null)
+            if (source != musicSource && source.isPlaying && source.clip != null
+                && source.clip.loadState == AudioDataLoadState.Loaded)
             {
                 // Check if it's likely menu music (not sound effects)
                 if (source.loop && source.clip.length > 10f)

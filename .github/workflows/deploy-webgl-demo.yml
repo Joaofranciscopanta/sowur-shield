@@ -147,6 +147,32 @@ jobs:
           [ ! -d "docs_new/Build" ] && echo "❌ Build directory not found" && exit 1
           echo "✅ Build extracted successfully"
 
+      - name: Decompress Brotli Files
+        run: |
+          echo "Checking for Brotli-compressed build files..."
+          sudo apt-get update -qq
+          sudo apt-get install -y brotli
+
+          BR_FILES=$(find docs_new/Build -name "*.br" -type f)
+          if [ -n "$BR_FILES" ]; then
+            echo "Found Brotli files, decompressing for GitHub Pages compatibility..."
+            while IFS= read -r BR_FILE; do
+              DECOMPRESSED_FILE="${BR_FILE%.br}"
+              echo "  Decompressing: $(basename "$BR_FILE") -> $(basename "$DECOMPRESSED_FILE")"
+              brotli -d -f "$BR_FILE" -o "$DECOMPRESSED_FILE"
+              rm "$BR_FILE"
+            done < <(find docs_new/Build -name "*.br" -type f)
+            echo "✅ All Brotli files decompressed successfully"
+          else
+            echo "ℹ️  No Brotli files found, build is already uncompressed or uses gzip"
+          fi
+
+          # Unity's loader.js may still reference the .br extensions in its
+          # compression config even after we've decompressed the files on disk.
+          if [ -f "docs_new/Build/Default WebGL.loader.js" ]; then
+            sed -i 's/\.data\.br/.data/g; s/\.wasm\.br/.wasm/g; s/\.framework\.js\.br/.framework.js/g' "docs_new/Build/Default WebGL.loader.js"
+          fi
+
       - name: Backup Custom Files
         run: |
           echo "📦 Backing up custom files..."
