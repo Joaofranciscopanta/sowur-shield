@@ -355,23 +355,16 @@
       var script = document.createElement("script");
       script.src = loaderUrl;
       script.onload = () => {
-        var loadedOk = false;
         createUnityInstance(canvas, config, (progress) => {
           progressBarFull.style.width = 100 * progress + "%";
         }).then((unityInstance) => {
-          loadedOk = true;
           loadingBar.style.display = "none";
           document.querySelector("#unity-fullscreen-button").onclick = () => {
             unityInstance.SetFullscreen(1);
           };
         }).catch((message) => {
           loadingBar.style.display = "none";
-          // The progress bar reaching 100% means the engine already started —
-          // a rejection after that point is a runtime error, not a load failure,
-          // so don't scare the player with a "could not load" banner.
-          if (!loadedOk && parseFloat(progressBarFull.style.width) < 99) {
-            unityShowBanner('Could not load the game. Please check your connection and reload the page.', 'error');
-          }
+          unityShowBanner('Could not load the game. Please check your connection and reload the page.', 'error');
         });
       };
 
