@@ -104,14 +104,18 @@ public class MainMenuUI : MonoBehaviour
         StartCoroutine(DelayedSaveFileCheck());
 
         LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+        LocalizationManager.OnTablesReady += HandleLanguageChanged_NoArg;
     }
 
     private void OnDestroy()
     {
         LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+        LocalizationManager.OnTablesReady -= HandleLanguageChanged_NoArg;
     }
 
-    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
+    private void HandleLanguageChanged(UnityEngine.Localization.Locale locale) => HandleLanguageChanged_NoArg();
+
+    private void HandleLanguageChanged_NoArg()
     {
         // Re-run the dynamic text writers so already-visible labels reflect the new language
         // immediately, without needing a scene reload (static button labels in prefabs are

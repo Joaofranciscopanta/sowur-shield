@@ -1,5 +1,4 @@
 using UnityEngine.Localization;
-using UnityEngine.Localization.Settings;
 
 namespace SowurShield.Core
 {
@@ -12,13 +11,12 @@ namespace SowurShield.Core
     /// GetLocalizedString() internally calls WaitForCompletion() on the underlying Addressables
     /// operation, which is unsupported on WebGL (no threads to block) and raises a native
     /// exception that a managed try/catch cannot reliably intercept there. Bail out to an empty
-    /// string while LocalizationSettings hasn't finished initializing instead of calling into it.
+    /// string until LocalizationManager has preloaded every string table, instead of calling
+    /// into it and triggering a load (and a WaitForCompletion) for the table.
     /// </summary>
     public static class LocalizedStringExtensions
     {
-        private static bool IsLocalizationReady =>
-            LocalizationSettings.InitializationOperation.IsValid()
-            && LocalizationSettings.InitializationOperation.IsDone;
+        private static bool IsLocalizationReady => LocalizationManager.AreTablesReady;
 
         public static string SafeGetLocalizedString(this LocalizedString localizedString)
         {

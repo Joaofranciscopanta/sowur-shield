@@ -16,8 +16,15 @@ namespace SowurShield.Core
         public static LocalizationManager Instance { get; private set; }
 
         public static event System.Action<Locale> OnLanguageChanged;
+        public static event System.Action OnTablesReady;
 
         public bool IsFirstBoot => !PlayerPrefs.HasKey(PlayerPrefsKey);
+
+        // GetLocalizedString() lazily loads each StringTable on first use, separately from
+        // LocalizationSettings.InitializationOperation (which only sets up locales/selection).
+        // Without preloading, the very first read of any given table returns empty while its
+        // own load is in flight. Preload every table up front so reads are never empty.
+        public static bool AreTablesReady { get; private set; }
 
         private void Awake()
         {
@@ -35,20 +42,22 @@ namespace SowurShield.Core
 
         private void Start()
         {
-            if (!IsFirstBoot)
-                StartCoroutine(ApplyStoredLanguageWhenReady());
+            StartCoroutine(PreloadAndApplyLanguage());
         }
 
-        // AvailableLocales / SelectedLocale internally call WaitForCompletion() on the
-        // Addressables operation backing the Localization system. WaitForCompletion is
-        // unsupported on WebGL (no threads to block) and raises a native exception there,
-        // so wait for InitializationOperation to finish on its own before touching them.
-        private System.Collections.IEnumerator ApplyStoredLanguageWhenReady()
+        private System.Collections.IEnumerator PreloadAndApplyLanguage()
         {
             yield return LocalizationSettings.InitializationOperation;
+            yield return LocalizationSettings.StringDatabase.PreloadOperation;
 
-            string code = PlayerPrefs.GetString(PlayerPrefsKey, "en");
-            SetLanguage(code, persist: false);
+            AreTablesReady = true;
+            OnTablesReady?.Invoke();
+
+            if (!IsFirstBoot)
+            {
+                string code = PlayerPrefs.GetString(PlayerPrefsKey, "en");
+                SetLanguage(code, persist: false);
+            }
         }
 
         /// <summary>Sets the active locale by code ("en", "pt", "es") and persists the choice.</summary>
@@ -72,7 +81,19 @@ namespace SowurShield.Core
                 return;
             }
 
+            // PreloadBehavior defaults to PreloadSelectedLocale, so switching locales leaves the
+            // new locale's tables unloaded — block reads again until they're preloaded too,
+            // otherwise the first read after a language switch comes back empty.
+            AreTablesReady = false;
             LocalizationSettings.SelectedLocale = locale;
+            StartCoroutine(PreloadAfterLocaleSwitch(locale, persist, localeCode));
+        }
+
+        private System.Collections.IEnumerator PreloadAfterLocaleSwitch(Locale locale, bool persist, string localeCode)
+        {
+            yield return LocalizationSettings.StringDatabase.PreloadOperation;
+
+            AreTablesReady = true;
 
             if (persist)
             {
@@ -81,6 +102,7 @@ namespace SowurShield.Core
             }
 
             OnLanguageChanged?.Invoke(locale);
+            OnTablesReady?.Invoke();
         }
 
         private System.Collections.IEnumerator SetLanguageWhenReady(string localeCode, bool persist)

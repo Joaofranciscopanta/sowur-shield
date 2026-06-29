@@ -297,7 +297,12 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
     {
         // Hide choices initially
         HideChoices();
-        
+
+        // String tables load asynchronously — wait rather than show an empty box if the
+        // player opens dialogue in the brief window before LocalizationManager finishes preloading.
+        if (!LocalizationManager.AreTablesReady)
+            yield return new WaitUntil(() => LocalizationManager.AreTablesReady);
+
         // Show dialogue text with typewriter effect
         string resolvedDialogueText = node.dialogueText.SafeGetLocalizedString();
         if (!string.IsNullOrEmpty(resolvedDialogueText))
