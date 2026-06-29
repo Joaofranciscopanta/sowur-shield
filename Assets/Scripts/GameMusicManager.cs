@@ -150,6 +150,11 @@ public class GameMusicManager : MonoBehaviour
 
     private System.Collections.IEnumerator PlayMusicWhenLoaded(AudioClip clip, float fadeTime)
     {
+        if (clip != null && clip.loadState == AudioDataLoadState.Unloaded)
+        {
+            clip.LoadAudioData();
+        }
+
         while (clip != null && clip.loadState == AudioDataLoadState.Loading)
         {
             yield return null;
@@ -169,8 +174,10 @@ public class GameMusicManager : MonoBehaviour
         if (clip == null) return;
 
         // On WebGL, AudioClip decoding is async — calling Play() before the
-        // clip finishes loading throws an unhandled engine exception.
-        if (clip.loadState == AudioDataLoadState.Loading)
+        // clip finishes loading throws an unhandled engine exception. Clips
+        // also sit in Unloaded (not Loading) until LoadAudioData() is called,
+        // since "Preload Audio Data" is off on these assets.
+        if (clip.loadState == AudioDataLoadState.Unloaded || clip.loadState == AudioDataLoadState.Loading)
         {
             StartCoroutine(PlayMusicWhenLoaded(clip, fadeTime));
             return;
