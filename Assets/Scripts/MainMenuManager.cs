@@ -151,8 +151,15 @@ public class MainMenuManager : MonoBehaviour
     // On WebGL, AudioClip decoding is async — calling Play() before the
     // clip finishes loading throws an unhandled engine exception that can
     // reject the createUnityInstance Promise and show a false load-failure banner.
+    // The clip's "Preload Audio Data" importer setting is off, so it sits in
+    // Unloaded (not Loading) until LoadAudioData() is called explicitly.
     private System.Collections.IEnumerator PlayWhenLoaded(AudioSource source)
     {
+        if (source.clip != null && source.clip.loadState == AudioDataLoadState.Unloaded)
+        {
+            source.clip.LoadAudioData();
+        }
+
         while (source.clip != null && source.clip.loadState == AudioDataLoadState.Loading)
         {
             yield return null;
