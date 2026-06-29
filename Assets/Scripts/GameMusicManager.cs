@@ -148,6 +148,19 @@ public class GameMusicManager : MonoBehaviour
     // PUBLIC API
     // ============================================================================
 
+    private System.Collections.IEnumerator PlayMusicWhenLoaded(AudioClip clip, float fadeTime)
+    {
+        while (clip != null && clip.loadState == AudioDataLoadState.Loading)
+        {
+            yield return null;
+        }
+
+        if (clip != null && clip.loadState == AudioDataLoadState.Loaded)
+        {
+            PlayMusic(clip, fadeTime);
+        }
+    }
+
     /// <summary>
     /// Play a music clip with optional fade in
     /// </summary>
@@ -155,6 +168,13 @@ public class GameMusicManager : MonoBehaviour
     {
         if (clip == null) return;
 
+        // On WebGL, AudioClip decoding is async — calling Play() before the
+        // clip finishes loading throws an unhandled engine exception.
+        if (clip.loadState == AudioDataLoadState.Loading)
+        {
+            StartCoroutine(PlayMusicWhenLoaded(clip, fadeTime));
+            return;
+        }
 
         // Cancel any ongoing fade operation
         if (isFading)
