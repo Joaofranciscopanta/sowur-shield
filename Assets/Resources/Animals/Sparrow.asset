@@ -13,6 +13,15 @@ MonoBehaviour:
   m_Name: Sparrow
   m_EditorClassIdentifier: 
   animalName: Sparrow
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Animals
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: animal.Sparrow.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   animalType:
   animalFamily: Passeridae
   animalClass:

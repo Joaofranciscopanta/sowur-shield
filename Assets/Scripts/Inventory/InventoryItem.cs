@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Localization;
+using SowurShield.Core;
 
 namespace SowurShield.Inventory
 {
@@ -26,7 +28,8 @@ namespace SowurShield.Inventory
     public class Item : ScriptableObject
     {
         [Header("Basic Info")]
-        public string itemName = "New Item";
+        public string itemName = "New Item"; // stable internal ID — used for ItemDatabase lookups, save data, and recipe/effect keys. Never shown to the player.
+        public LocalizedString displayName; // table "Inventory", key "item.<itemName>.name" — player-facing name shown in tooltips/UI
         [TextArea(2, 4)]
         public string description = "A useful item";
         public Sprite icon;
@@ -54,6 +57,15 @@ namespace SowurShield.Inventory
         [Header("Gifting")]
         [Tooltip("Relationship points gained when this item is given as a gift to an NPC. 0 = not giftable.")]
         public float giftAffinityValue = 0f;
+
+        // Player-facing name. Falls back to the internal itemName if displayName hasn't been
+        // wired to a table entry yet, so older Item assets degrade gracefully instead of showing
+        // a blank label.
+        public string GetDisplayName()
+        {
+            string localized = displayName.SafeGetLocalizedString();
+            return string.IsNullOrEmpty(localized) ? itemName : localized;
+        }
 
         // Get the color associated with rarity
         public Color GetRarityColor()

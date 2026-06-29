@@ -122,7 +122,7 @@ public class BattleHudOverlay : MonoBehaviour
 
         if (mod.type != lastShownModifier)
         {
-            modifierText.text = mod.description;
+            modifierText.text = mod.GetDescription();
             modifierText.gameObject.SetActive(true);
             lastShownModifier = mod.type;
         }

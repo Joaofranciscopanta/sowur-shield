@@ -13,8 +13,25 @@ MonoBehaviour:
   m_Name: Stage_013_EchoChamber
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
   stageName: Echo Chamber
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.EchoChamber.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   stageNumber: 13
-  description: The Stone Golem barely moves, but it barely flinches either.
+  description:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.EchoChamber.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   theme: 4
   backgroundSprite: {fileID: 0}
   ambientColor: {r: 0.2, g: 0.2, b: 0.3, a: 1}

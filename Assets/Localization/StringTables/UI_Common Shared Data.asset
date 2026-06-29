@@ -75,6 +75,22 @@ MonoBehaviour:
     m_Key: ui_common.day_label
     m_Metadata:
       m_Items: []
+  - m_Id: 2640681116622848
+    m_Key: ui_common.season.spring
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2640681137594368
+    m_Key: ui_common.season.summer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2640681137594369
+    m_Key: ui_common.season.fall
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2640681137594370
+    m_Key: ui_common.season.winter
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -13,6 +13,15 @@ MonoBehaviour:
   m_Name: PumpkinSeed
   m_EditorClassIdentifier:
   itemName: PumpkinSeed
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Inventory
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: item.PumpkinSeed.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   description: Pumpkin seeds. Takes a while but yields a large harvest.
   icon: {fileID: -2598828430902479623, guid: a7597c935d86bf140b56baac0399ecd9, type: 3}
   itemType: 4

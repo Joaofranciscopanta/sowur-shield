@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "SowurShield.Runtime",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "Unity.Localization"
     ],
     "includePlatforms": [
         "Editor"

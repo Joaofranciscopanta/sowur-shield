@@ -13,10 +13,34 @@ MonoBehaviour:
   m_Name: Quest_EggCollector
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Dialogue.QuestData
   questId: egg_collector
-  questTitle: Egg Collector
-  questDescription: Your chickens are laying — collect a few eggs for the pantry.
+  questTitle:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: quest.egg_collector.title
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  questDescription:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: quest.egg_collector.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   objectives:
-  - description: Collect Eggs
+  - description:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: quest.egg_collector.objective0
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     type: 0
     targetId: Egg
     requiredCount: 5

@@ -3,6 +3,7 @@ using UnityEditor;
 using System.Collections.Generic;
 using System.Linq;
 using SowurShield.Dialogue;
+using SowurShield.Core;
 
 namespace SowurShield.Dialogue.Editor
 {
@@ -297,11 +298,12 @@ public class DialogueNodeEditorWindow : EditorWindow
         if (!string.IsNullOrEmpty(node.speakerName))
             EditorGUILayout.LabelField($"Speaker: {node.speakerName}");
         
-        if (!string.IsNullOrEmpty(node.dialogueText))
+        string dialoguePreviewText = node.dialogueText.SafeGetLocalizedString();
+        if (!string.IsNullOrEmpty(dialoguePreviewText))
         {
-            string preview = node.dialogueText.Length > 30 ? 
-                node.dialogueText.Substring(0, 30) + "..." : 
-                node.dialogueText;
+            string preview = dialoguePreviewText.Length > 30 ?
+                dialoguePreviewText.Substring(0, 30) + "..." :
+                dialoguePreviewText;
             EditorGUILayout.LabelField(preview, EditorStyles.wordWrappedLabel);
         }
         
@@ -392,9 +394,10 @@ public class DialogueNodeEditorWindow : EditorWindow
 
         EditorGUILayout.Space();
 
-        // Dialogue text
-        EditorGUILayout.LabelField("Dialogue Text", EditorStyles.boldLabel);
-        selectedNode.dialogueText = EditorGUILayout.TextArea(selectedNode.dialogueText, GUILayout.Height(80));
+        // Dialogue text — now a LocalizedString; edit the actual text via the Localization Tables
+        // window (Window > Asset Management > Localization Tables), this window only shows a preview.
+        EditorGUILayout.LabelField("Dialogue Text (edit in Localization Tables window)", EditorStyles.boldLabel);
+        EditorGUILayout.SelectableLabel(selectedNode.dialogueText.SafeGetLocalizedString(), EditorStyles.textArea, GUILayout.Height(80));
 
         EditorGUILayout.Space();
 

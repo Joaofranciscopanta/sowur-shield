@@ -290,7 +290,7 @@ public class WorldMapUIController : MonoBehaviour, IUIWindow
         // Update the button's label (TextMeshProUGUI child) to the stage name.
         TMPro.TextMeshProUGUI label = buttonGO.GetComponentInChildren<TMPro.TextMeshProUGUI>(true);
         if (label != null)
-            label.text = stage.stageName;
+            label.text = stage.GetDisplayName();
     }
 
     /// <summary>

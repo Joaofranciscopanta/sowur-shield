@@ -98,7 +98,7 @@ public class TeamAssemblerData : MonoBehaviour
             {
                 return customName;
             }
-            return animalData != null ? animalData.animalName : "Unknown";
+            return animalData != null ? animalData.GetDisplayName() : "Unknown";
         }
     }
 

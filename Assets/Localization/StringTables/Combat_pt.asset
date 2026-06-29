@@ -163,6 +163,375 @@ MonoBehaviour:
     m_Localized: '{0}/{1}'
     m_Metadata:
       m_Items: []
+  - m_Id: 2630370326208512
+    m_Localized: Morcego da Caverna
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180032
+    m_Localized: Troll da Caverna
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180033
+    m_Localized: Besouro de Cristal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180034
+    m_Localized: Aranha Sombria
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180035
+    m_Localized: Esporo de Cogumelo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180036
+    m_Localized: Perseguidor das Sombras
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180037
+    m_Localized: Golem de Pedra
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180038
+    m_Localized: Lobo Ancestral
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180039
+    m_Localized: Javali da Floresta
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180040
+    m_Localized: Grande Coruja
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180041
+    m_Localized: Lobo Uivante
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180042
+    m_Localized: Sapo Venenoso
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180043
+    m_Localized: Treant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180044
+    m_Localized: "Esp\xEDrito de Trepadeira"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180045
+    m_Localized: Corvo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180046
+    m_Localized: Rato do Campo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180047
+    m_Localized: Gosma Gigante
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180048
+    m_Localized: Abelha
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180049
+    m_Localized: Lobo da Pradaria
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180050
+    m_Localized: Gosma
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180051
+    m_Localized: Urso Blindado
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180052
+    m_Localized: "Drag\xE3o de Gelo"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180053
+    m_Localized: Harpia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180054
+    m_Localized: Golem de Ferro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180055
+    m_Localized: Rei da Montanha
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180056
+    m_Localized: "C\xE3o de Pedra"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180057
+    m_Localized: "\xC1guia do Trov\xE3o"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180058
+    m_Localized: Diabrete de Fogo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180059
+    m_Localized: "C\xE3o do Inferno"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180060
+    m_Localized: "Drag\xE3o do Inferno"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180061
+    m_Localized: Salamandra de Lava
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180062
+    m_Localized: Gosma de Magma
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180063
+    m_Localized: Golem de Obsidiana
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180064
+    m_Localized: "Drag\xE3o Vulc\xE2nico"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180065
+    m_Localized: Uma batalha normal.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180066
+    m_Localized: "Os medidores de turno enchem duas vezes mais r\xE1pido!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180067
+    m_Localized: "Precis\xE3o reduzida para todos os combatentes."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180068
+    m_Localized: Todas as unidades curam um pouco a cada rodada.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180069
+    m_Localized: "O dano causado e recebido \xE9 dobrado!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180070
+    m_Localized: Campos Ensolarados
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180071
+    m_Localized: "Uma brisa suave passa pela grama dourada. Um lugar perfeito para
+      come\xE7ar sua jornada."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180072
+    m_Localized: Jardim de Flores
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180073
+    m_Localized: Flores coloridas escondem pragas pequenas mas persistentes.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180074
+    m_Localized: Colinas Ondulantes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180075
+    m_Localized: "Velocidade \xE9 tudo em terreno aberto."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180076
+    m_Localized: Pradaria dos Ventos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180077
+    m_Localized: "A Gosma Gigante patrulha estas plan\xEDcies. Ela bate mais forte
+      do que parece."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180078
+    m_Localized: "Pasto Tranquilo \u2014 Chefe"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180079
+    m_Localized: "[CHEFE] O Lobo da Pradaria guarda o caminho para a floresta. Derrote-o
+      para avan\xE7ar."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180080
+    m_Localized: Bosque Sussurrante
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180081
+    m_Localized: "As \xE1rvores se fecham ao redor. Sons estranhos ecoam da copa."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180082
+    m_Localized: Bosque Sombrio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180083
+    m_Localized: "Sapos Venenosos se escondem sob a vegeta\xE7\xE3o rasteira."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180084
+    m_Localized: Floresta Ancestral
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180085
+    m_Localized: "O uivo se intensifica. Lobos ca\xE7am em bandos aqui."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180086
+    m_Localized: "Clareira do Crep\xFAsculo"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180087
+    m_Localized: Uma Grande Coruja observa do alto. O Treant se agita.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180088
+    m_Localized: "Vale Musgoso \u2014 Chefe"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180089
+    m_Localized: '[CHEFE] O Lobo Ancestral domina esta floresta. Sua matilha o defende
+      ferozmente.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180090
+    m_Localized: Caverna de Cristal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180091
+    m_Localized: Os cristais brilham fracamente. Morcegos mergulham do teto.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180092
+    m_Localized: Profundezas Sombrias
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180093
+    m_Localized: Aranhas Sombrias tecem teias em todas as passagens.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180094
+    m_Localized: "C\xE2mara do Eco"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180095
+    m_Localized: ' but it barely flinches either.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180096
+    m_Localized: "Lago Subterr\xE2neo"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180097
+    m_Localized: "Algo r\xE1pido se move nas sombras. N\xE3o deixe que alcance sua
+      linha de tr\xE1s."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180098
+    m_Localized: "Sal\xE3o das Estalactites \u2014 Chefe"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180099
+    m_Localized: "[CHEFE] O Troll da Caverna enche toda a c\xE2mara. Resistente E
+      agressivo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180100
+    m_Localized: Pico Rochoso
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180101
+    m_Localized: "C\xE3es de Pedra patrulham os caminhos inferiores. Mais fortes
+      que os lobos da floresta."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180102
+    m_Localized: "Ninho da \xC1guia"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180103
+    m_Localized: "Harpias e \xC1guias do Trov\xE3o mergulham dos picos."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180104
+    m_Localized: Passagem do Gigante de Pedra
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180105
+    m_Localized: Ursos Blindados e Golens de Ferro bloqueiam a passagem da montanha.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180106
+    m_Localized: Crista das Nuvens
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180107
+    m_Localized: "Um Drag\xE3o de Gelo circula no alto. As \xC1guias do Trov\xE3o
+      de elite o escoltam."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180108
+    m_Localized: "Cume Congelado \u2014 Chefe"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180109
+    m_Localized: '[CHEFE] O Rei da Montanha comanda tanto o pico quanto a tempestade.
+      Nada sobrevive aqui.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180110
+    m_Localized: Campos de Lava
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180111
+    m_Localized: "O solo queima. As Salamandras de Lava s\xE3o a menor das suas preocupa\xE7\xF5es."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180112
+    m_Localized: Caldeira Cinzenta
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180113
+    m_Localized: "Diabretes de Fogo se movem mais r\xE1pido do que tudo que voc\xEA
+      j\xE1 enfrentou. Eles atacam duas vezes antes que voc\xEA pisque."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180114
+    m_Localized: Pico de Obsidiana
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180115
+    m_Localized: "Golens de Obsidiana e C\xE3es do Inferno. Um n\xE3o morre; o outro
+      te mata primeiro."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180116
+    m_Localized: Bacia de Fogo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180117
+    m_Localized: "O Drag\xE3o Vulc\xE2nico e sua guarda de elite. O \xFAltimo teste
+      antes do Drag\xE3o."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180118
+    m_Localized: "N\xFAcleo de Magma \u2014 Chefe Final"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370347180119
+    m_Localized: "[CHEFE FINAL] O Drag\xE3o do Inferno. Amea\xE7a m\xE1xima absoluta.
+      Traga seus melhores animais \u2014 bem alimentados e acariciados."
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

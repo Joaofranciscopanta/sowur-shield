@@ -13,8 +13,25 @@ MonoBehaviour:
   m_Name: Stage_009_TwilightGlade
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
   stageName: Twilight Glade
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.TwilightGlade.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   stageNumber: 9
-  description: A Great Owl watches from above. The Treant stirs.
+  description:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.TwilightGlade.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   theme: 0
   backgroundSprite: {fileID: 0}
   ambientColor: {r: 0.2, g: 0.5, b: 0.2, a: 1}

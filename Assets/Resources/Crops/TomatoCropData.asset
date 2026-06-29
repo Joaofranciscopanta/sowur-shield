@@ -13,6 +13,15 @@ MonoBehaviour:
   m_Name: TomatoCropData
   m_EditorClassIdentifier:
   cropName: Tomato
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Farming
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: crop.Tomato.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   description: A juicy summer tomato that regrows after each harvest.
   seedItem: {fileID: 11400000, guid: 6d991de2f6ea42af9533f8b2328dfb8b, type: 2}
   harvestItem: {fileID: 11400000, guid: 4a3d22c8e63bff247b2f92a3295a1139, type: 2}

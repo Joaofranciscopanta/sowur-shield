@@ -13,9 +13,25 @@ MonoBehaviour:
   m_Name: Stage_005_MeadowWolf_Boss
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
   stageName: "Peaceful Pasture \u2014 Boss"
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.PeacefulPastureBoss.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   stageNumber: 5
-  description: '[BOSS] The Meadow Wolf guards the path to the forest. Defeat it to
-    move on.'
+  description:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.PeacefulPastureBoss.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   theme: 9
   backgroundSprite: {fileID: 4897111349896146750, guid: 6ae93ca427850b04eaefa3c8f099a959, type: 3}
   ambientColor: {r: 0.6, g: 0.85, b: 0.4, a: 1}

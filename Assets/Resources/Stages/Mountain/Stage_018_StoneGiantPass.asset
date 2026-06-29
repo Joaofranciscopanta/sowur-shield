@@ -13,8 +13,25 @@ MonoBehaviour:
   m_Name: Stage_018_StoneGiantPass
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
   stageName: Stone Giant Pass
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.StoneGiantPass.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   stageNumber: 18
-  description: Armored Bears and Iron Golems block the mountain pass.
+  description:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.StoneGiantPass.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   theme: 2
   backgroundSprite: {fileID: 0}
   ambientColor: {r: 0.6, g: 0.6, b: 0.7, a: 1}

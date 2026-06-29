@@ -13,8 +13,25 @@ MonoBehaviour:
   m_Name: Stage_021_LavaFields
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
   stageName: Lava Fields
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.LavaFields.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   stageNumber: 21
-  description: The ground burns. Lava Salamanders are the least of your worries.
+  description:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.LavaFields.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   theme: 7
   backgroundSprite: {fileID: 0}
   ambientColor: {r: 0.8, g: 0.3, b: 0.1, a: 1}

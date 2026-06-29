@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.Localization;
+using SowurShield.Core;
 
 namespace SowurShield.Dialogue
 {
@@ -15,8 +17,7 @@ namespace SowurShield.Dialogue
         public SpeakerPosition speakerPosition = SpeakerPosition.Left;
 
         [Header("Dialogue Content")]
-        [TextArea(3, 6)]
-        public string dialogueText;
+        public LocalizedString dialogueText; // table "Dialogue", key "dialogue.maren.<tree>.<nodeId>"
 
         [Header("Node Behavior")]
         public NodeType nodeType = NodeType.Dialogue;
@@ -105,7 +106,7 @@ namespace SowurShield.Dialogue
                 isValid = false;
             }
 
-            if (string.IsNullOrEmpty(dialogueText) && nodeType == NodeType.Dialogue)
+            if ((dialogueText == null || dialogueText.IsEmpty) && nodeType == NodeType.Dialogue)
             {
             }
 

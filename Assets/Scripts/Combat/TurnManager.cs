@@ -70,7 +70,7 @@ public class TurnManager : MonoBehaviour
     private const int PlayerFrontColumn = 6; // Player column closest to the enemy side.
 
     // ── Battle modifiers ───────────────────────────────────────────────────────
-    private BattleModifier activeModifier = new BattleModifier(BattleModifierType.None, "A normal battle.");
+    private BattleModifier activeModifier = new BattleModifier(BattleModifierType.None);
 
     /// <summary>The randomized modifier active for this battle (BattleModifierType.None if no roll has occurred yet).</summary>
     public BattleModifier GetActiveModifier() => activeModifier;
@@ -78,7 +78,7 @@ public class TurnManager : MonoBehaviour
     /// <summary>Override the active battle modifier (for deterministic testing).</summary>
     public void SetBattleModifierForTesting(BattleModifier mod)
     {
-        activeModifier = mod ?? new BattleModifier(BattleModifierType.None, "A normal battle.");
+        activeModifier = mod ?? new BattleModifier(BattleModifierType.None);
     }
 
     /// <summary>
@@ -88,11 +88,11 @@ public class TurnManager : MonoBehaviour
     private static BattleModifier RollBattleModifier()
     {
         float roll = UnityEngine.Random.value;
-        if (roll < 0.6f) return new BattleModifier(BattleModifierType.None, "A normal battle.");
-        if (roll < 0.7f) return new BattleModifier(BattleModifierType.DoubleSpeed, "Turn gauges fill twice as fast!");
-        if (roll < 0.8f) return new BattleModifier(BattleModifierType.LowVisibility, "Reduced accuracy for all combatants.");
-        if (roll < 0.9f) return new BattleModifier(BattleModifierType.HealingRain, "All units heal a little each round.");
-        return new BattleModifier(BattleModifierType.GlassCannon, "Damage dealt and received is doubled!");
+        if (roll < 0.6f) return new BattleModifier(BattleModifierType.None);
+        if (roll < 0.7f) return new BattleModifier(BattleModifierType.DoubleSpeed);
+        if (roll < 0.8f) return new BattleModifier(BattleModifierType.LowVisibility);
+        if (roll < 0.9f) return new BattleModifier(BattleModifierType.HealingRain);
+        return new BattleModifier(BattleModifierType.GlassCannon);
     }
 
     // Battle result

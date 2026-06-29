@@ -13,9 +13,25 @@ MonoBehaviour:
   m_Name: Stage_023_ObsidianPeak
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
   stageName: Obsidian Peak
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.ObsidianPeak.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   stageNumber: 23
-  description: Obsidian Golems and Hellhounds. One won't die; the other will kill
-    you first.
+  description:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.ObsidianPeak.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   theme: 7
   backgroundSprite: {fileID: 0}
   ambientColor: {r: 0.8, g: 0.3, b: 0.1, a: 1}

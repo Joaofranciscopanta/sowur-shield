@@ -13,8 +13,25 @@ MonoBehaviour:
   m_Name: Stage_006_WhisperingWoods
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
   stageName: Whispering Woods
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.WhisperingWoods.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   stageNumber: 6
-  description: The trees close in. Strange sounds echo from the canopy.
+  description:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.WhisperingWoods.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   theme: 0
   backgroundSprite: {fileID: 0}
   ambientColor: {r: 0.2, g: 0.5, b: 0.2, a: 1}

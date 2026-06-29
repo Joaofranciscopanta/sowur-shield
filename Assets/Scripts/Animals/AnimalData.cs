@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Localization;
 using SowurShield.Combat;
+using SowurShield.Core;
 
 namespace SowurShield.Animals
 {
@@ -16,7 +18,8 @@ public class FoodRequirement
 public class AnimalData : ScriptableObject
 {
     [Header("Basic Info")]
-    public string animalName;
+    public string animalName; // stable internal ID — used for save data (PlayerPrefs keys) and GameObject naming. Never shown to the player.
+    public LocalizedString displayName; // table "Animals", key "animal.<animalName>.name" — player-facing name shown in UI
     public string animalType; // "Chicken", "Cow", "Monkey", etc.
 
     [Header("Classification (Future Use)")]
@@ -125,6 +128,14 @@ public class AnimalData : ScriptableObject
     [Header("Future: Work System")]
     public bool canDoChores = false;
     public string choreType; // "Watering", "Harvesting", etc. - for future implementation
+
+    // Player-facing name. Falls back to the internal animalName if displayName hasn't been wired
+    // to a table entry yet, so older AnimalData assets degrade gracefully instead of a blank label.
+    public string GetDisplayName()
+    {
+        string localized = displayName.SafeGetLocalizedString();
+        return string.IsNullOrEmpty(localized) ? animalName : localized;
+    }
 }
 
 } // namespace SowurShield.Animals

@@ -214,14 +214,17 @@ public class UIManagerPlayer : MonoBehaviour
         int daysPerSeason = 28;
         int seasonIndex = ((day - 1) / daysPerSeason) % 4;
 
-        switch (seasonIndex)
+        string key = seasonIndex switch
         {
-            case 0: return "Spring";
-            case 1: return "Summer";
-            case 2: return "Fall";
-            case 3: return "Winter";
-            default: return "";
-        }
+            0 => "ui_common.season.spring",
+            1 => "ui_common.season.summer",
+            2 => "ui_common.season.fall",
+            3 => "ui_common.season.winter",
+            _ => null
+        };
+        if (key == null) return "";
+
+        return new LocalizedString("UI_Common", key).SafeGetLocalizedString();
     }
 
     private int GetDayOfSeason(int totalDay)

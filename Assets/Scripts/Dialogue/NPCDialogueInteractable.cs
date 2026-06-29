@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using UnityEngine.Localization;
 using SowurShield.Core;
 
 namespace SowurShield.Dialogue
@@ -391,7 +392,9 @@ namespace SowurShield.Dialogue
                 bool canGift = CanGiftToday();
                 choices.Add(new DialogueChoice
                 {
-                    choiceText = canGift ? "Give a gift" : "Give a gift (already gifted today)",
+                    choiceText = canGift
+                        ? new LocalizedString("Dialogue", "dialogue.choice.give_gift")
+                        : new LocalizedString("Dialogue", "dialogue.choice.give_gift_already_today"),
                     isExitChoice = true,
                     choiceColor = canGift ? Color.white : new Color(0.6f, 0.6f, 0.6f, 1f),
                     onSelectedRuntime = canGift ? () =>
@@ -405,7 +408,7 @@ namespace SowurShield.Dialogue
 
             choices.Add(new DialogueChoice
             {
-                choiceText = "View relationship",
+                choiceText = new LocalizedString("Dialogue", "dialogue.choice.view_relationship"),
                 isExitChoice = true,
                 onSelectedRuntime = () =>
                 {
@@ -419,7 +422,7 @@ namespace SowurShield.Dialogue
             {
                 choices.Add(new DialogueChoice
                 {
-                    choiceText = "Browse seeds",
+                    choiceText = new LocalizedString("Dialogue", "dialogue.choice.browse_seeds"),
                     isExitChoice = true,
                     onSelectedRuntime = () =>
                     {

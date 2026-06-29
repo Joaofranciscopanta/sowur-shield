@@ -1,3 +1,6 @@
+using UnityEngine.Localization;
+using SowurShield.Core;
+
 namespace SowurShield.Combat
 {
 
@@ -29,12 +32,16 @@ public enum BattleModifierType
 public class BattleModifier
 {
     public BattleModifierType type;
-    public string description;
 
-    public BattleModifier(BattleModifierType type, string description)
+    public BattleModifier(BattleModifierType type)
     {
         this.type = type;
-        this.description = description;
+    }
+
+    /// <summary>Player-facing description, resolved from the Combat table by modifier type.</summary>
+    public string GetDescription()
+    {
+        return new LocalizedString("Combat", $"combat.modifier.{type}.description").SafeGetLocalizedString();
     }
 
     /// <summary>Flat accuracy reduction applied by LowVisibility.</summary>

@@ -74,6 +74,86 @@ MonoBehaviour:
     m_Localized: <size=11><color=#888888>{0}</color></size>
     m_Metadata:
       m_Items: []
+  - m_Id: 2617878871007232
+    m_Localized: Cabbage Seeds
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878896173056
+    m_Localized: Carrot Seeds
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878896173057
+    m_Localized: Mystery Seed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878896173058
+    m_Localized: Pumpkin Seeds
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367360
+    m_Localized: Radish Seeds
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367361
+    m_Localized: Tomato Seeds
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367362
+    m_Localized: Apple
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367363
+    m_Localized: Cabbage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367364
+    m_Localized: Carrot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367365
+    m_Localized: Pumpkin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367366
+    m_Localized: Radish
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367367
+    m_Localized: Tomato
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367368
+    m_Localized: Banana
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367369
+    m_Localized: Bread
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367370
+    m_Localized: Duck Egg
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367371
+    m_Localized: Egg
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367372
+    m_Localized: Feather
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367373
+    m_Localized: Hoe
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367374
+    m_Localized: Shovel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367375
+    m_Localized: Watering Can
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

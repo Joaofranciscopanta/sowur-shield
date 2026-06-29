@@ -17,6 +17,15 @@ MonoBehaviour:
   toolLevel: 0
   itemType: 1
   itemName: Shovel
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Inventory
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: item.Shovel.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   itemDesc: Removes plants and water somehow
   icon: {fileID: 6360211573912825503, guid: 4ffb15b23c66820449ab4e1c321986e4, type: 3}
   isStackable: 0

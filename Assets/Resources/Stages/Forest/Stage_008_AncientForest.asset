@@ -13,8 +13,25 @@ MonoBehaviour:
   m_Name: Stage_008_AncientForest
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
   stageName: Ancient Forest
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.AncientForest.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   stageNumber: 8
-  description: The howling grows louder. Wolves hunt in packs here.
+  description:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.AncientForest.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   theme: 0
   backgroundSprite: {fileID: 0}
   ambientColor: {r: 0.2, g: 0.5, b: 0.2, a: 1}

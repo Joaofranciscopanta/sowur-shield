@@ -187,6 +187,18 @@ MonoBehaviour:
       amanh\xE3"
     m_Metadata:
       m_Items: []
+  - m_Id: 2630370665947136
+    m_Localized: Galinha
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370686918656
+    m_Localized: Pato
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370686918657
+    m_Localized: Pardal
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

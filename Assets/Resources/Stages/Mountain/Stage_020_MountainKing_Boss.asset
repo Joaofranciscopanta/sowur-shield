@@ -13,9 +13,25 @@ MonoBehaviour:
   m_Name: Stage_020_MountainKing_Boss
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
   stageName: "Frozen Summit \u2014 Boss"
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.FrozenSummitBoss.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   stageNumber: 20
-  description: '[BOSS] The Mountain King commands peak and storm alike. Nothing survives
-    up here.'
+  description:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.FrozenSummitBoss.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   theme: 2
   backgroundSprite: {fileID: 0}
   ambientColor: {r: 0.6, g: 0.6, b: 0.7, a: 1}

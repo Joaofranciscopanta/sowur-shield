@@ -101,7 +101,7 @@ public class CombatPhase3BattleModifierTests
     {
         var tm = CreateTurnManager(new List<CombatUnit>(), new List<CombatUnit>());
 
-        var mod = new BattleModifier(BattleModifierType.GlassCannon, "test");
+        var mod = new BattleModifier(BattleModifierType.GlassCannon);
         tm.SetBattleModifierForTesting(mod);
 
         Assert.AreEqual(BattleModifierType.GlassCannon, tm.GetActiveModifier().type);
@@ -112,7 +112,7 @@ public class CombatPhase3BattleModifierTests
     {
         var tm = CreateTurnManager(new List<CombatUnit>(), new List<CombatUnit>());
 
-        tm.SetBattleModifierForTesting(new BattleModifier(BattleModifierType.GlassCannon, "test"));
+        tm.SetBattleModifierForTesting(new BattleModifier(BattleModifierType.GlassCannon));
         tm.SetBattleModifierForTesting(null);
 
         Assert.AreEqual(BattleModifierType.None, tm.GetActiveModifier().type);
@@ -174,7 +174,7 @@ public class CombatPhase3BattleModifierTests
 
         // Force 100% accuracy and no crit by disabling randomness influence:
         // accuracy defaults to 1.0, crit chance is 5% — average over many trials to avoid flakiness.
-        tm.SetBattleModifierForTesting(new BattleModifier(BattleModifierType.GlassCannon, "test"));
+        tm.SetBattleModifierForTesting(new BattleModifier(BattleModifierType.GlassCannon));
 
         const int trials = 300;
         float totalDamageGlassCannon = 0f;
@@ -219,7 +219,7 @@ public class CombatPhase3BattleModifierTests
 
         float baseAccuracy = (float)InvokePrivate(tm, "GetEffectiveAccuracy", new object[] { attacker });
 
-        tm.SetBattleModifierForTesting(new BattleModifier(BattleModifierType.LowVisibility, "test"));
+        tm.SetBattleModifierForTesting(new BattleModifier(BattleModifierType.LowVisibility));
         float reducedAccuracy = (float)InvokePrivate(tm, "GetEffectiveAccuracy", new object[] { attacker });
 
         Assert.AreEqual(baseAccuracy - BattleModifier.LowVisibilityAccuracyPenalty, reducedAccuracy, 0.001f);
@@ -232,7 +232,7 @@ public class CombatPhase3BattleModifierTests
         SetField(attacker, "accuracy", 0.1f);
         var tm = CreateTurnManager(new List<CombatUnit> { attacker }, new List<CombatUnit>());
 
-        tm.SetBattleModifierForTesting(new BattleModifier(BattleModifierType.LowVisibility, "test"));
+        tm.SetBattleModifierForTesting(new BattleModifier(BattleModifierType.LowVisibility));
         float accuracy = (float)InvokePrivate(tm, "GetEffectiveAccuracy", new object[] { attacker });
 
         Assert.AreEqual(0f, accuracy, 0.001f);
@@ -269,7 +269,7 @@ public class CombatPhase3BattleModifierTests
         // Reset gauge and re-run with DoubleSpeed active.
         SetField(unitA, "turnGauge", 0f);
         SetField(unitB, "turnGauge", 0f);
-        tm.SetBattleModifierForTesting(new BattleModifier(BattleModifierType.DoubleSpeed, "test"));
+        tm.SetBattleModifierForTesting(new BattleModifier(BattleModifierType.DoubleSpeed));
 
         InvokePrivate(tm, "FillTurnGauges", new object[] { 0.1f });
         float doubledGauge = (float)GetField(unitA, "turnGauge");
@@ -294,7 +294,7 @@ public class CombatPhase3BattleModifierTests
         SetField(unitA, "accuracy", 0f);
 
         var tm = CreateTurnManager(new List<CombatUnit> { unitA }, new List<CombatUnit> { unitB });
-        tm.SetBattleModifierForTesting(new BattleModifier(BattleModifierType.HealingRain, "test"));
+        tm.SetBattleModifierForTesting(new BattleModifier(BattleModifierType.HealingRain));
 
         // allUnits.Count == 2, so currentTurn % 2 == 1 on the first action (currentTurn becomes 1).
         SetField(tm, "currentTurn", 0);
@@ -318,7 +318,7 @@ public class CombatPhase3BattleModifierTests
         SetField(unitA, "accuracy", 0f);
 
         var tm = CreateTurnManager(new List<CombatUnit> { unitA }, new List<CombatUnit> { unitB });
-        tm.SetBattleModifierForTesting(new BattleModifier(BattleModifierType.HealingRain, "test"));
+        tm.SetBattleModifierForTesting(new BattleModifier(BattleModifierType.HealingRain));
 
         // allUnits.Count == 2, so currentTurn % 2 == 0 (no heal) when currentTurn becomes 2.
         SetField(tm, "currentTurn", 1);

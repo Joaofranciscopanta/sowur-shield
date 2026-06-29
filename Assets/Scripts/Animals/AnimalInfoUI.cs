@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine.Localization;
 using SowurShield.Core;
 using SowurShield.UI;
+using SowurShield.Inventory;
 
 namespace SowurShield.Animals
 {
@@ -237,7 +238,8 @@ public class AnimalInfoUI : MonoBehaviour, IUIWindow
             {
                 foreach (FoodRequirement req in data.dailyFoodRequirements)
                 {
-                    foodLineText.Arguments = new object[] { req.quantityPerDay, req.itemName };
+                    Item foodItem = ItemDatabase.GetItem(req.itemName);
+                    foodLineText.Arguments = new object[] { req.quantityPerDay, foodItem != null ? foodItem.GetDisplayName() : req.itemName };
                     requirements += foodLineText.SafeGetLocalizedString();
                 }
             }

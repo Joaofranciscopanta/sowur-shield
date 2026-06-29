@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Localization;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -71,6 +72,7 @@ public static class StageFactory
         StageData stage = ScriptableObject.CreateInstance<StageData>();
 
         stage.stageName = name;
+        stage.displayName = new LocalizedString("Combat", $"stage.{name}.name");
         stage.stageNumber = stageNumber;
         stage.theme = theme;
         stage.difficulty = Mathf.Clamp(difficulty, 1, 10);
@@ -89,8 +91,11 @@ public static class StageFactory
         stage.weatherEffect = GetThemeAppropriateWeather(theme);
         stage.timeOfDay = TimesOfDay[Random.Range(0, TimesOfDay.Length)];
 
-        // Generate description
-        stage.description = GenerateDescription(name, theme, difficulty);
+        // Generate description — wires the table reference only; LocalizedString can't carry a
+        // literal string directly, so the generated EN text below still needs to be added to the
+        // String Table by hand (e.g. via the CSV importer) under this same key.
+        stage.description = new LocalizedString("Combat", $"stage.{name}.description");
+        Debug.Log($"[StageFactory] Add this to the Combat table: stage.{name}.description = \"{GenerateDescription(name, theme, difficulty)}\"");
 
         // Assign enemies and loot if provided
         if (enemies != null)
@@ -189,7 +194,7 @@ public static class StageFactory
                 // Mark last stage of each theme as having a boss
                 if (stageInTheme == stagesPerTheme - 1)
                 {
-                    stage.description = $"[BOSS] {stage.description}";
+                    Debug.Log($"[StageFactory] Boss stage '{stage.stageName}' — prefix its Combat table description entry with \"[BOSS] \" by hand.");
                 }
 
                 allStages.Add(stage);

@@ -13,6 +13,15 @@ MonoBehaviour:
   m_Name: Bread
   m_EditorClassIdentifier: 
   itemName: Bread
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Inventory
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: item.Bread.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   itemDesc: Tasty
   icon: {fileID: 3464325649027248082, guid: 2762fc741c9e9e844a550c3d7afc9a70, type: 3}
   isStackable: 1

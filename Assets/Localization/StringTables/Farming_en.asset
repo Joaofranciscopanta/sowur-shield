@@ -134,6 +134,55 @@ MonoBehaviour:
     m_Localized: Auto-save not available
     m_Metadata:
       m_Items: []
+  - m_Id: 2630369608982528
+    m_Localized: Silo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759744
+    m_Localized: A grain silo that lets you work the whole farm at once.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759745
+    m_Localized: Harvesting one ready crop now harvests every other ready crop on
+      the farm too.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759746
+    m_Localized: Workshop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759747
+    m_Localized: A tinkerer's workshop for getting more out of every harvest.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759748
+    m_Localized: Chance to refund the planted seed whenever you harvest a crop.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759749
+    m_Localized: Cabbage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759750
+    m_Localized: Carrot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759751
+    m_Localized: Mystery Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759752
+    m_Localized: Pumpkin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759753
+    m_Localized: Radish
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759754
+    m_Localized: Tomato
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

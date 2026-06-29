@@ -401,13 +401,13 @@ namespace SowurShield.Core
                 return "No crop planted";
 
             if (isDead)
-                return $"{currentCrop.cropName} (DEAD)";
+                return $"{currentCrop.GetDisplayName()} (DEAD)";
 
             if (isReadyForHarvest)
-                return $"{currentCrop.cropName} (Ready for harvest!)";
+                return $"{currentCrop.GetDisplayName()} (Ready for harvest!)";
 
             float progressPercent = (GrowthProgress * 100f);
-            return $"{currentCrop.cropName} - Stage {currentGrowthStage + 1}/{currentCrop.TotalStages} ({progressPercent:F0}%)";
+            return $"{currentCrop.GetDisplayName()} - Stage {currentGrowthStage + 1}/{currentCrop.TotalStages} ({progressPercent:F0}%)";
         }
 
         // ============================================================================

@@ -22,28 +22,68 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Good morning! The garden beds are calling. What can I do for you?"
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.default.start
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices:
-    - choiceText: "Tell me about yourself."
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.default.start.choice0
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
       nextNodeId: topic_about
       requirements: []
       effects: []
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
-    - choiceText: "What do you think of this valley?"
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.default.start.choice1
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
       nextNodeId: topic_valley
       requirements: []
       effects: []
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
-    - choiceText: "Give me a planting tip."
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.default.start.choice2
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
       nextNodeId: topic_tip
       requirements: []
       effects: []
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
-    - choiceText: "What are you keeping so close to your heart?"
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.default.start.choice3
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
       nextNodeId: topic_secret
       requirements:
       - conditionType: 3
@@ -68,10 +108,26 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 0
     speakerPosition: 0
-    dialogueText: "I'm a farmer's daughter from the eastern valley. I learned to plant before I learned to write. But the drought spares no one — I ended up here after losing everything."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.default.topic_about
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices:
-    - choiceText: "That must have been hard to start over."
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.default.topic_about.choice0
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
       nextNodeId: about_restart
       requirements: []
       effects:
@@ -82,7 +138,15 @@ MonoBehaviour:
         description: "+2 for empathy"
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
-    - choiceText: "You've adapted well."
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.default.topic_about.choice1
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
       nextNodeId: about_adapted
       requirements: []
       effects: []
@@ -96,7 +160,15 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 2
     speakerPosition: 0
-    dialogueText: "It was. But the soil here has something special about it. It welcomed me in a way the eastern valley never did. Maybe this is what I call home now."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.default.about_restart
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices: []
     nextNodeId: ""
@@ -107,7 +179,15 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "It took a while. Every soil is different — it has its own ways. But I learned to listen to what the land asks of me."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.default.about_adapted
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices: []
     nextNodeId: ""
@@ -118,10 +198,26 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 0
     speakerPosition: 0
-    dialogueText: "This valley has history. People come, plant, harvest and leave. Few stay. Something here keeps you — the land, the rhythm of the seasons, I don't know."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.default.topic_valley
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices:
-    - choiceText: "Is there something mystical about this land?"
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.default.topic_valley.choice0
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
       nextNodeId: valley_mystic
       requirements:
       - conditionType: 3
@@ -133,7 +229,15 @@ MonoBehaviour:
       effects: []
       isExitChoice: 0
       choiceColor: {r: 0.85, g: 0.95, b: 1, a: 1}
-    - choiceText: "I understand that feeling."
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.default.topic_valley.choice1
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
       nextNodeId: valley_feel
       requirements: []
       effects:
@@ -152,7 +256,15 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 5
     speakerPosition: 0
-    dialogueText: "They say a druid blessed the deepest layers of soil here. I don't know if I believe it, but the plants grow too fast to just be the climate. Take good care of your beds' fertility — it's more valuable than it looks."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.default.valley_mystic
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices: []
     nextNodeId: ""
@@ -168,7 +280,15 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Good. That means you came to stay. The best harvests come from those who plant with intention."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.default.valley_feel
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices: []
     nextNodeId: ""
@@ -179,16 +299,40 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Tip of the day: soil gets tired. Every harvest takes a little fertility away. The less fertile it is, the less you yield. Let the soil rest or use fertilizer — though I don't sell that yet."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.default.topic_tip
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices:
-    - choiceText: "What about seasonal restrictions?"
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.default.topic_tip.choice0
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
       nextNodeId: tip_season
       requirements: []
       effects: []
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
-    - choiceText: "Thanks for the tip!"
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.default.topic_tip.choice1
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
       nextNodeId: ""
       requirements: []
       effects:
@@ -207,7 +351,15 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 0
     speakerPosition: 0
-    dialogueText: "Every plant has its preferred season. Carrot and cabbage in Spring, tomato in Summer, pumpkin in Fall, radish in Spring or Fall. Try planting out of season and the land will refuse."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.default.tip_season
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices: []
     nextNodeId: ""
@@ -218,10 +370,26 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 7
     speakerPosition: 0
-    dialogueText: "You asked... so I'll tell you. I have a seed in my pocket I've never planted. It was my father's. I don't know what plant it is — and I don't have the courage to find out, because if it dies, I'll lose the last thing I have left of him."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.default.topic_secret
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices:
-    - choiceText: "You should plant it. It's what he would have wanted."
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.default.topic_secret.choice0
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
       nextNodeId: secret_plant
       requirements: []
       effects:
@@ -232,7 +400,15 @@ MonoBehaviour:
         description: "+5 for sincere encouragement"
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
-    - choiceText: "Keep it as a memory. It belongs to her too."
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.default.topic_secret.choice1
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
       nextNodeId: secret_keep
       requirements: []
       effects: []
@@ -246,7 +422,15 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Maybe you're right. When I have the courage, you'll be the first to know. I promise. Thank you... truly."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.default.secret_plant
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices: []
     nextNodeId: ""
@@ -262,7 +446,15 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 0
     speakerPosition: 0
-    dialogueText: "You're... right too. Some things are better kept. But it's good to be able to talk about it with someone who understands."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.default.secret_keep
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices: []
     nextNodeId: ""

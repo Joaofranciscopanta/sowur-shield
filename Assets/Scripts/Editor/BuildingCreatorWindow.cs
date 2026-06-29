@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 using System.Collections.Generic;
+using UnityEngine.Localization;
 using SowurShield.Core;
 
 namespace SowurShield.Editor
@@ -234,7 +235,7 @@ public class BuildingCreatorWindow : EditorWindow
                         }
 
                         EditorGUILayout.BeginVertical();
-                        EditorGUILayout.LabelField(building.buildingName, EditorStyles.boldLabel);
+                        EditorGUILayout.LabelField(building.buildingName.SafeGetLocalizedString(), EditorStyles.boldLabel);
                         EditorGUILayout.LabelField(
                             $"{building.buildingType} | {building.goldCost}g" +
                             (string.IsNullOrEmpty(building.materialItemName)
@@ -245,8 +246,9 @@ public class BuildingCreatorWindow : EditorWindow
                     }
                     EditorGUILayout.EndHorizontal();
 
-                    if (!string.IsNullOrEmpty(building.effectDescription))
-                        EditorGUILayout.LabelField(building.effectDescription, EditorStyles.wordWrappedMiniLabel);
+                    string effectDescText = building.effectDescription.SafeGetLocalizedString();
+                    if (!string.IsNullOrEmpty(effectDescText))
+                        EditorGUILayout.LabelField(effectDescText, EditorStyles.wordWrappedMiniLabel);
 
                     EditorGUILayout.BeginHorizontal();
                     {
@@ -300,6 +302,10 @@ public class BuildingCreatorWindow : EditorWindow
     // Actions
     // =========================================================================
 
+    // Wires buildingName/description/effectDescription to table entries keyed by buildingType, but
+    // does not write the form's typed text into the String Table — that text only exists as form
+    // state here. After creating the asset, add the actual EN/PT/ES strings for these keys via
+    // Tools > Sowur Shield > Import Localization CSV (or the Localization Tables window directly).
     private void CreateBuildingAsset()
     {
         EnsureResourceFolder();
@@ -308,9 +314,9 @@ public class BuildingCreatorWindow : EditorWindow
 
         FarmBuildingData asset = ScriptableObject.CreateInstance<FarmBuildingData>();
         asset.buildingType      = _buildingType;
-        asset.buildingName      = _buildingName.Trim();
-        asset.description       = _description.Trim();
-        asset.effectDescription = _effectDescription.Trim();
+        asset.buildingName      = new LocalizedString("Farming", $"building.{_buildingType}.name");
+        asset.description       = new LocalizedString("Farming", $"building.{_buildingType}.description");
+        asset.effectDescription = new LocalizedString("Farming", $"building.{_buildingType}.effect");
         asset.goldCost          = _goldCost;
         asset.materialItemName  = _materialItemName.Trim();
         asset.materialQuantity  = _materialQuantity;
@@ -343,7 +349,7 @@ public class BuildingCreatorWindow : EditorWindow
 
         if (!EditorUtility.DisplayDialog(
             "Delete Building",
-            $"Delete '{building.buildingName}'?\n\n{path}",
+            $"Delete '{building.buildingName.SafeGetLocalizedString()}'?\n\n{path}",
             "Delete", "Cancel"))
         {
             return;
@@ -351,7 +357,7 @@ public class BuildingCreatorWindow : EditorWindow
 
         AssetDatabase.DeleteAsset(path);
         AssetDatabase.Refresh();
-        SetStatus($"Deleted: {building.buildingName}", false);
+        SetStatus($"Deleted: {building.buildingName.SafeGetLocalizedString()}", false);
         if (_selectedPreview == building) _selectedPreview = null;
         RefreshExistingBuildings();
     }
@@ -359,15 +365,15 @@ public class BuildingCreatorWindow : EditorWindow
     private void LoadIntoForm(FarmBuildingData data)
     {
         _buildingType      = data.buildingType;
-        _buildingName      = data.buildingName;
-        _description       = data.description;
-        _effectDescription = data.effectDescription;
+        _buildingName      = data.buildingName.SafeGetLocalizedString();
+        _description       = data.description.SafeGetLocalizedString();
+        _effectDescription = data.effectDescription.SafeGetLocalizedString();
         _goldCost          = data.goldCost;
         _materialItemName  = data.materialItemName;
         _materialQuantity  = data.materialQuantity;
         _icon              = data.icon;
         _selectedPreview   = data;
-        SetStatus($"Loaded '{data.buildingName}' into form.", false);
+        SetStatus($"Loaded '{_buildingName}' into form.", false);
     }
 
     private void ResetForm()

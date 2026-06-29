@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using SowurShield.UI;
+using SowurShield.Core;
 
 namespace SowurShield.Dialogue
 {
@@ -29,8 +30,8 @@ public class QuestActiveRow : MonoBehaviour
 
     public void Populate(QuestData data, UITheme theme)
     {
-        if (titleText != null) titleText.text = data.questTitle;
-        if (descriptionText != null) descriptionText.text = data.questDescription;
+        if (titleText != null) titleText.text = data.questTitle.SafeGetLocalizedString();
+        if (descriptionText != null) descriptionText.text = data.questDescription.SafeGetLocalizedString();
 
         float progress = QuestManager.Instance.GetQuestProgress(data.questId);
         if (progressBar != null)
@@ -61,9 +62,10 @@ public class QuestActiveRow : MonoBehaviour
 
             bool done = objProgress >= obj.requiredCount;
             string prefix = done ? "✓ " : "• ";
+            string objDescText = obj.description.SafeGetLocalizedString();
             lineText.text = obj.requiredCount > 1
-                ? $"{prefix}{obj.description} ({objProgress}/{obj.requiredCount})"
-                : $"{prefix}{obj.description}";
+                ? $"{prefix}{objDescText} ({objProgress}/{obj.requiredCount})"
+                : $"{prefix}{objDescText}";
             lineText.color = done
                 ? (theme != null ? theme.positive : new Color(0.5f, 0.78f, 0.52f))
                 : (theme != null ? theme.textDark : Color.white);

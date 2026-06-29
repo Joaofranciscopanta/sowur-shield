@@ -139,7 +139,7 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
         var labelObj = new GameObject("Text");
         labelObj.transform.SetParent(hoverLabel.transform, false);
         var tmp = labelObj.AddComponent<TextMeshProUGUI>();
-        tmp.text = item.itemName;
+        tmp.text = item.GetDisplayName();
         tmp.fontSize = 14;
         tmp.color = Color.white;
         tmp.alignment = TextAlignmentOptions.Center;
@@ -214,7 +214,7 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
         }
     }
 
-    public string GetInteractionPrompt() => item != null ? $"Pick up {item.itemName}" : "Pick up";
+    public string GetInteractionPrompt() => item != null ? $"Pick up {item.GetDisplayName()}" : "Pick up";
     public bool CanInteract() => !itemPicked && playerInRange;
     public float GetInteractionRange() => collectionRadius;
 

@@ -17,6 +17,15 @@ MonoBehaviour:
   toolLevel: 0
   itemType: 1
   itemName: Hoe
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Inventory
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: item.Hoe.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   itemDesc: Use to plow
   icon: {fileID: 4221176393231436293, guid: df8935bec23596c4686ba1b3625f3c58, type: 3}
   isStackable: 0

@@ -13,6 +13,15 @@ MonoBehaviour:
   m_Name: CarrotSeed
   m_EditorClassIdentifier: 
   itemName: CarrotSeed
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Inventory
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: item.CarrotSeed.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   description: A useful item
   icon: {fileID: 3614151479051087722, guid: a7597c935d86bf140b56baac0399ecd9, type: 3}
   itemType: 4

@@ -13,6 +13,15 @@ MonoBehaviour:
   m_Name: MeadowWolf
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.EnemyData
   enemyName: Meadow Wolf
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: enemy.MeadowWolf.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   enemyType: 3
   description: 
   sprite: {fileID: -5107452676420340490, guid: 9517c9165ce1ef44eb54a11d17d6b6ff, type: 3}

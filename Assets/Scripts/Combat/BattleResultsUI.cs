@@ -284,7 +284,7 @@ public class BattleResultsUI : MonoBehaviour
         }
         foreach (var (item, qty) in pendingRewards.lootDrops)
         {
-            itemRewardText_Localized.Arguments = new object[] { item.itemName, qty };
+            itemRewardText_Localized.Arguments = new object[] { item.GetDisplayName(), qty };
             sb.AppendLine(itemRewardText_Localized.SafeGetLocalizedString());
         }
         if (pendingRewards.animalHappinessBonus > 0)

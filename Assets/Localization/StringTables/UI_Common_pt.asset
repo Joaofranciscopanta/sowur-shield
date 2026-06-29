@@ -78,6 +78,22 @@ MonoBehaviour:
     m_Localized: Dia {0}
     m_Metadata:
       m_Items: []
+  - m_Id: 2640681116622848
+    m_Localized: Primavera
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2640681137594368
+    m_Localized: "Ver\xE3o"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2640681137594369
+    m_Localized: Outono
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2640681137594370
+    m_Localized: Inverno
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

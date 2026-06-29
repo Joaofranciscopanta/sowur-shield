@@ -264,7 +264,7 @@ public class AnimalMarketUI : MonoBehaviour, IUIWindow, ISaveable
 
         RefreshGoldDisplay();
         BuildBuyRows();
-        welcomeText.Arguments = new object[] { entry.animalData.animalName };
+        welcomeText.Arguments = new object[] { entry.animalData.GetDisplayName() };
         ShowFeedback(welcomeText.SafeGetLocalizedString(), false);
     }
 

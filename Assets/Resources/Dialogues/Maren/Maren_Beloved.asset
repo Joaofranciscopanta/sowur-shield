@@ -22,7 +22,15 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 7
     speakerPosition: 0
-    dialogueText: "I trust you more than anyone in this valley. There's something I want to show you."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.beloved.start
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices: []
     nextNodeId: secret_seed
@@ -39,10 +47,26 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 7
     speakerPosition: 0
-    dialogueText: "This seed... I found it in my father's coat pocket the day he died. I never knew what plant it was. I never had the courage to plant it — what if I lost the last thing I have left of him?"
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.beloved.secret_seed
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices:
-    - choiceText: "You should plant it. It's what he would have wanted."
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.beloved.secret_seed.choice0
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
       nextNodeId: encourage_plant
       requirements: []
       effects:
@@ -53,7 +77,15 @@ MonoBehaviour:
         description: "+5 relationship for sincere encouragement"
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
-    - choiceText: "You don't have to plant it. Keep it as a memory."
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.beloved.secret_seed.choice1
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
       nextNodeId: keep_memory
       requirements: []
       effects: []
@@ -67,7 +99,15 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Maybe you're right. He loved watching things grow. When I have the courage, you'll be the first to know. Thank you... truly."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.beloved.encourage_plant
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices: []
     nextNodeId: gift_reward
@@ -83,7 +123,15 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 0
     speakerPosition: 0
-    dialogueText: "You're... right too. Some things are better kept in the heart. But it's good to be able to talk about it with someone."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.beloved.keep_memory
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices: []
     nextNodeId: gift_reward
@@ -94,7 +142,15 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Accept this as a gift. I always keep a special batch of seeds for the day I find someone I can trust. That day has come."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.beloved.gift_reward
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices: []
     nextNodeId: ""

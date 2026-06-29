@@ -13,6 +13,15 @@ MonoBehaviour:
   m_Name: CarrotCropData
   m_EditorClassIdentifier: 
   cropName: Carrot
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Farming
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: crop.Carrot.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   description: Orange but not the fruit.
   seedItem: {fileID: 11400000, guid: 1d1dc028cd86ee34dae41fd60504525b, type: 2}
   harvestItem: {fileID: 11400000, guid: 566455dc0cf7a584989abffa663605db, type: 2}

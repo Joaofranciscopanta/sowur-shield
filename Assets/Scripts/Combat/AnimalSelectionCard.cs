@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.Localization;
 using SowurShield.Core;
 using SowurShield.Animals;
+using SowurShield.Inventory;
 
 namespace SowurShield.Combat
 {
@@ -205,7 +206,8 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
         string text = needsText_Localized.SafeGetLocalizedString();
         foreach (FoodRequirement req in animal.AnimalData.dailyFoodRequirements)
         {
-            foodLineText_Localized.Arguments = new object[] { req.quantityPerDay, req.itemName };
+            Item foodItem = ItemDatabase.GetItem(req.itemName);
+            foodLineText_Localized.Arguments = new object[] { req.quantityPerDay, foodItem != null ? foodItem.GetDisplayName() : req.itemName };
             text += foodLineText_Localized.SafeGetLocalizedString();
         }
 

@@ -13,12 +13,36 @@ MonoBehaviour:
   m_Name: Workshop
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.FarmBuildingData
   buildingType: 3
-  buildingName: Workshop
-  description: A tinkerer's workshop for getting more out of every harvest.
+  buildingName:
+    m_TableReference:
+      m_TableCollectionName: Farming
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: building.Workshop.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  description:
+    m_TableReference:
+      m_TableCollectionName: Farming
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: building.Workshop.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   icon: {fileID: 7876219675878430416, guid: 75463d63bccd73b4181830c3a56fe5cb, type: 3}
   goldCost: 600
-  materialItemName: 
+  materialItemName:
   materialQuantity: 0
-  effectDescription: Chance to refund the planted seed whenever you harvest a crop.
+  effectDescription:
+    m_TableReference:
+      m_TableCollectionName: Farming
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: building.Workshop.effect
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   worldPrefab: {fileID: 9178039506123589827, guid: e88951e5930bb0a45bfd9e22b98ba79e, type: 3}
   worldPosition: {x: -2000, y: 0}

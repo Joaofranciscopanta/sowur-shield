@@ -134,6 +134,57 @@ MonoBehaviour:
     m_Localized: "Save autom\xE1tico n\xE3o dispon\xEDvel"
     m_Metadata:
       m_Items: []
+  - m_Id: 2630369608982528
+    m_Localized: Silo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759744
+    m_Localized: "Um silo de gr\xE3os que permite trabalhar toda a fazenda de uma
+      vez."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759745
+    m_Localized: "Colher uma planta\xE7\xE3o pronta agora colhe todas as outras planta\xE7\xF5es
+      prontas da fazenda tamb\xE9m."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759746
+    m_Localized: Oficina
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759747
+    m_Localized: Uma oficina de inventor para aproveitar melhor cada colheita.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759748
+    m_Localized: "Chance de reembolsar a semente plantada sempre que voc\xEA colher
+      uma planta\xE7\xE3o."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759749
+    m_Localized: Repolho
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759750
+    m_Localized: Cenoura
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759751
+    m_Localized: Planta Misteriosa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759752
+    m_Localized: "Ab\xF3bora"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759753
+    m_Localized: Rabanete
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759754
+    m_Localized: Tomate
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

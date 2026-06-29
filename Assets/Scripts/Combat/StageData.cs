@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Localization;
 using SowurShield.Inventory;
+using SowurShield.Core;
 
 namespace SowurShield.Combat
 {
@@ -71,15 +73,17 @@ public class EnemySpawn
 public class StageData : ScriptableObject
 {
     [Header("Basic Info")]
-    [Tooltip("Display name for this stage")]
+    [Tooltip("Stable internal ID — used for save data (completed stages), quest/achievement matching, and lookups. Never shown to the player directly.")]
     public string stageName = "New Stage";
+
+    [Tooltip("Player-facing name shown in the World Map / combat HUD")]
+    public LocalizedString displayName; // table "Combat", key "stage.<stageName>.name"
 
     [Tooltip("Stage number in progression (1-based)")]
     public int stageNumber = 1;
 
     [Tooltip("Brief description shown to player")]
-    [TextArea(2, 4)]
-    public string description = "";
+    public LocalizedString description; // table "Combat", key "stage.<stageName>.description"
 
     [Header("Theme & Visuals")]
     [Tooltip("Visual theme of this stage")]
@@ -203,6 +207,16 @@ public class StageData : ScriptableObject
             _ => "Unknown"
         };
     }
+
+    // Player-facing name. Falls back to the internal stageName if displayName hasn't been wired
+    // to a table entry yet, so older StageData assets degrade gracefully instead of a blank label.
+    public string GetDisplayName()
+    {
+        string localized = displayName.SafeGetLocalizedString();
+        return string.IsNullOrEmpty(localized) ? stageName : localized;
+    }
+
+    public string GetDisplayDescription() => description.SafeGetLocalizedString();
 }
 
 } // namespace SowurShield.Combat

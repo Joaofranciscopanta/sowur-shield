@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Localization;
 
 namespace SowurShield.Dialogue
 {
@@ -16,9 +17,8 @@ public class QuestData : ScriptableObject
     [Header("Identity")]
     [Tooltip("Unique ID used as save key — never change after shipping.")]
     public string questId;
-    public string questTitle = "New Quest";
-    [TextArea(2, 4)]
-    public string questDescription;
+    public LocalizedString questTitle; // table "Dialogue", key "quest.<questId>.title"
+    public LocalizedString questDescription; // table "Dialogue", key "quest.<questId>.description"
 
     [Header("Objectives")]
     public List<QuestObjective> objectives = new List<QuestObjective>();
@@ -36,7 +36,7 @@ public class QuestData : ScriptableObject
 [System.Serializable]
 public class QuestObjective
 {
-    public string description;
+    public LocalizedString description; // table "Dialogue", key "quest.<questId>.objective<N>"
     public QuestObjectiveType type;
     [Tooltip("Match key. CollectItem→item name; TalkToNPC→conversation id (DialogueTree.conversationId); " +
              "HarvestCrop→crop name (CropData.cropName); CompleteBattle→stage name. " +

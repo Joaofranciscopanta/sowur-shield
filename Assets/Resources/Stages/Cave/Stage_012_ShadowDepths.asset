@@ -13,8 +13,25 @@ MonoBehaviour:
   m_Name: Stage_012_ShadowDepths
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
   stageName: Shadow Depths
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.ShadowDepths.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   stageNumber: 12
-  description: Dark Spiders spin webs across every passage.
+  description:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.ShadowDepths.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   theme: 4
   backgroundSprite: {fileID: 0}
   ambientColor: {r: 0.2, g: 0.2, b: 0.3, a: 1}

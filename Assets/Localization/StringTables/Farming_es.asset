@@ -134,6 +134,56 @@ MonoBehaviour:
     m_Localized: "Guardado autom\xE1tico no disponible"
     m_Metadata:
       m_Items: []
+  - m_Id: 2630369608982528
+    m_Localized: Silo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759744
+    m_Localized: Un silo de grano que te permite trabajar toda la granja a la vez.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759745
+    m_Localized: "Cosechar un cultivo listo ahora cosecha tambi\xE9n todos los dem\xE1s
+      cultivos listos de la granja."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759746
+    m_Localized: Taller
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759747
+    m_Localized: "Un taller de inventor para sacar m\xE1s provecho de cada cosecha."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759748
+    m_Localized: Posibilidad de reembolsar la semilla plantada cada vez que cosechas
+      un cultivo.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759749
+    m_Localized: Repollo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759750
+    m_Localized: Zanahoria
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759751
+    m_Localized: Planta Misteriosa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759752
+    m_Localized: Calabaza
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759753
+    m_Localized: "R\xE1bano"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759754
+    m_Localized: Tomate
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
