@@ -216,7 +216,7 @@ public class ConsumableBattleUI : MonoBehaviour
 
         foreach (ItemStack stack in consumables)
         {
-            itemRowText_Localized.Arguments = new object[] { stack.item.itemName, stack.quantity, stack.item.healthRestore };
+            itemRowText_Localized.Arguments = new object[] { stack.item.GetDisplayName(), stack.quantity, stack.item.healthRestore };
             CreateRow(itemRowText_Localized.SafeGetLocalizedString(), stack.item, stack.quantity);
         }
     }

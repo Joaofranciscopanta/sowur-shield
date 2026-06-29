@@ -13,8 +13,25 @@ MonoBehaviour:
   m_Name: Stage_010_AncientWolf_Boss
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
   stageName: "Mossy Hollow \u2014 Boss"
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.MossyHollowBoss.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   stageNumber: 10
-  description: '[BOSS] The Ancient Wolf rules this forest. Its pack defends it fiercely.'
+  description:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.MossyHollowBoss.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   theme: 0
   backgroundSprite: {fileID: 0}
   ambientColor: {r: 0.2, g: 0.5, b: 0.2, a: 1}

@@ -22,16 +22,40 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 6
     speakerPosition: 0
-    dialogueText: "Spring! This is the best time to start. Carrots and radishes come up quickly — if you haven't planted yet, hurry before the soil cools down again."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.seasonal_spring.start
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices:
-    - choiceText: "Which seeds do you recommend right now?"
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.seasonal_spring.start.choice0
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
       nextNodeId: spring_tip
       requirements: []
       effects: []
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
-    - choiceText: "Thanks for the tip."
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.seasonal_spring.start.choice1
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
       nextNodeId: ""
       requirements: []
       effects: []
@@ -51,7 +75,15 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Carrot and cabbage are my bet. They grow fast, sell well, and refresh the soil for summer. Avoid pumpkin for now — it's finicky and only blooms in fall."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.seasonal_spring.spring_tip
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices: []
     nextNodeId: ""

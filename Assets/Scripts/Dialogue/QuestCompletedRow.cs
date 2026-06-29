@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using SowurShield.Core;
 
 namespace SowurShield.Dialogue
 {
@@ -16,8 +17,8 @@ public class QuestCompletedRow : MonoBehaviour
 
     public void Populate(QuestData data)
     {
-        if (titleText != null) titleText.text = data.questTitle;
-        if (descriptionText != null) descriptionText.text = data.questDescription;
+        if (titleText != null) titleText.text = data.questTitle.SafeGetLocalizedString();
+        if (descriptionText != null) descriptionText.text = data.questDescription.SafeGetLocalizedString();
     }
 }
 

@@ -279,7 +279,7 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
 
         foreach (ItemStack stack in giftableItems)
         {
-            itemRowText.Arguments = new object[] { stack.item.itemName, stack.quantity, stack.item.giftAffinityValue };
+            itemRowText.Arguments = new object[] { stack.item.GetDisplayName(), stack.quantity, stack.item.giftAffinityValue };
             CreateRow(itemRowText.SafeGetLocalizedString(), stack.item, 1);
         }
     }

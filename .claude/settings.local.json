@@ -47,7 +47,11 @@
       "Bash(gh run *)",
       "Bash(claude mcp *)",
       "mcp__unity-mcp__Unity_GetConsoleLogs",
-      "mcp__unity-mcp__Unity_RunCommand"
+      "mcp__unity-mcp__Unity_RunCommand",
+      "Bash(python \"C:\\\\Users\\\\Lucas\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-Lucas-Sowur-Shield\\\\f63c4a6a-8e21-4761-9371-9ca93009fa7f\\\\scratchpad\\\\fix_enemies.py\")",
+      "Bash(python \"C:\\\\Users\\\\Lucas\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-Lucas-Sowur-Shield\\\\f63c4a6a-8e21-4761-9371-9ca93009fa7f\\\\scratchpad\\\\fix_stages.py\")",
+      "Bash(python \"C:\\\\Users\\\\Lucas\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-Lucas-Sowur-Shield\\\\f63c4a6a-8e21-4761-9371-9ca93009fa7f\\\\scratchpad\\\\fix_quests.py\")",
+      "Bash(xxd)"
     ],
     "deny": [],
     "ask": []

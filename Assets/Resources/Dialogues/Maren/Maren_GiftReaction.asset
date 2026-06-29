@@ -22,7 +22,15 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 5
     speakerPosition: 0
-    dialogueText: "Oh! This is... you didn't have to. But I'm so glad you did. Rarely does anyone think of me like that."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.gift_reaction.start
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices: []
     nextNodeId: gift_accept
@@ -44,7 +52,15 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "I'll keep it safe. And may you harvest twice what you sow this season — that's what I can give back right now."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.gift_reaction.gift_accept
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices: []
     nextNodeId: ""

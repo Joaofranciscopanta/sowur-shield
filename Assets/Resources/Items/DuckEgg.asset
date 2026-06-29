@@ -13,6 +13,15 @@ MonoBehaviour:
   m_Name: DuckEgg
   m_EditorClassIdentifier: SowurShield.Runtime::Item
   itemName: Duck Egg
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Inventory
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: item.DuckEgg.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   description: A fresh duck egg, slightly larger than a chicken egg
   icon: {fileID: 0}
   itemType: 0

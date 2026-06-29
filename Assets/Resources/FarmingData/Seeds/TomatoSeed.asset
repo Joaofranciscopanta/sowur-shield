@@ -13,6 +13,15 @@ MonoBehaviour:
   m_Name: TomatoSeed
   m_EditorClassIdentifier:
   itemName: TomatoSeed
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Inventory
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: item.TomatoSeed.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   description: Tomato seeds. Plant in warm weather and keep watered.
   icon: {fileID: 3041457214386405346, guid: a7597c935d86bf140b56baac0399ecd9, type: 3}
   itemType: 4

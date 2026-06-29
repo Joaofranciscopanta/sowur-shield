@@ -13,13 +13,36 @@ MonoBehaviour:
   m_Name: Silo
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.FarmBuildingData
   buildingType: 2
-  buildingName: Silo
-  description: A grain silo that lets you work the whole farm at once.
+  buildingName:
+    m_TableReference:
+      m_TableCollectionName: Farming
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: building.Silo.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  description:
+    m_TableReference:
+      m_TableCollectionName: Farming
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: building.Silo.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   icon: {fileID: -7044273301420770227, guid: d21594cf0db02ed459722a82b685cc0a, type: 3}
   goldCost: 800
-  materialItemName: 
+  materialItemName:
   materialQuantity: 0
-  effectDescription: Harvesting one ready crop now harvests every other ready crop
-    on the farm too.
+  effectDescription:
+    m_TableReference:
+      m_TableCollectionName: Farming
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: building.Silo.effect
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   worldPrefab: {fileID: 6424809178870496382, guid: 93c00cd95fb75df4d880bd4625403d02, type: 3}
   worldPosition: {x: -2500, y: 0}

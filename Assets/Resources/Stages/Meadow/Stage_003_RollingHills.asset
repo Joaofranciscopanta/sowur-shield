@@ -13,8 +13,25 @@ MonoBehaviour:
   m_Name: Stage_003_RollingHills
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
   stageName: Rolling Hills
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.RollingHills.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   stageNumber: 3
-  description: Speed is everything on open ground.
+  description:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.RollingHills.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   theme: 9
   backgroundSprite: {fileID: 2753799015016350906, guid: 60776fc7100b4a344ab961af7154fd0d, type: 3}
   ambientColor: {r: 0.6, g: 0.85, b: 0.4, a: 1}

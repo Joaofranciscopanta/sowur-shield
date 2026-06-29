@@ -13,6 +13,15 @@ MonoBehaviour:
   m_Name: RockHound
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.EnemyData
   enemyName: Rock Hound
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: enemy.RockHound.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   enemyType: 0
   description: 
   sprite: {fileID: 0}

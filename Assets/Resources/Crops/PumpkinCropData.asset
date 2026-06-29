@@ -13,6 +13,15 @@ MonoBehaviour:
   m_Name: PumpkinCropData
   m_EditorClassIdentifier:
   cropName: Pumpkin
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Farming
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: crop.Pumpkin.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   description: A slow-growing autumn crop with a rewarding large harvest.
   seedItem: {fileID: 11400000, guid: edaa2bd4097e4efb8d7206ad5efc859e, type: 2}
   harvestItem: {fileID: 11400000, guid: a2072e8497154fd88a6b8590bd17951f, type: 2}

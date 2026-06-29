@@ -126,6 +126,313 @@ MonoBehaviour:
     m_Localized: Buy
     m_Metadata:
       m_Items: []
+  - m_Id: 2613151131230208
+    m_Localized: Good morning! The garden beds are calling. What can I do for you?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590336
+    m_Localized: Tell me about yourself.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590337
+    m_Localized: What do you think of this valley?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590338
+    m_Localized: Give me a planting tip.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590339
+    m_Localized: What are you keeping so close to your heart?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590340
+    m_Localized: "I'm a farmer's daughter from the eastern valley. I learned to plant
+      before I learned to write. But the drought spares no one \u2014 I ended up
+      here after losing everything."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590341
+    m_Localized: That must have been hard to start over.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590342
+    m_Localized: You've adapted well.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590343
+    m_Localized: It was. But the soil here has something special about it. It welcomed
+      me in a way the eastern valley never did. Maybe this is what I call home now.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590344
+    m_Localized: "It took a while. Every soil is different \u2014 it has its own
+      ways. But I learned to listen to what the land asks of me."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590345
+    m_Localized: "This valley has history. People come, plant, harvest and leave.
+      Few stay. Something here keeps you \u2014 the land, the rhythm of the seasons,
+      I don't know."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590346
+    m_Localized: Is there something mystical about this land?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590347
+    m_Localized: I understand that feeling.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590348
+    m_Localized: "They say a druid blessed the deepest layers of soil here. I don't
+      know if I believe it, but the plants grow too fast to just be the climate.
+      Take good care of your beds' fertility \u2014 it's more valuable than it looks."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590349
+    m_Localized: Good. That means you came to stay. The best harvests come from those
+      who plant with intention.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590350
+    m_Localized: "Tip of the day: soil gets tired. Every harvest takes a little fertility
+      away. The less fertile it is, the less you yield. Let the soil rest or use
+      fertilizer \u2014 though I don't sell that yet."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590351
+    m_Localized: What about seasonal restrictions?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590352
+    m_Localized: Thanks for the tip!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590353
+    m_Localized: Every plant has its preferred season. Carrot and cabbage in Spring,
+      tomato in Summer, pumpkin in Fall, radish in Spring or Fall. Try planting out
+      of season and the land will refuse.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590354
+    m_Localized: "You asked... so I'll tell you. I have a seed in my pocket I've
+      never planted. It was my father's. I don't know what plant it is \u2014 and
+      I don't have the courage to find out, because if it dies, I'll lose the last
+      thing I have left of him."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590355
+    m_Localized: You should plant it. It's what he would have wanted.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590356
+    m_Localized: Keep it as a memory. It belongs to her too.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590357
+    m_Localized: Maybe you're right. When I have the courage, you'll be the first
+      to know. I promise. Thank you... truly.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590358
+    m_Localized: You're... right too. Some things are better kept. But it's good
+      to be able to talk about it with someone who understands.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590359
+    m_Localized: I trust you more than anyone in this valley. There's something I
+      want to show you.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590360
+    m_Localized: "This seed... I found it in my father's coat pocket the day he died.
+      I never knew what plant it was. I never had the courage to plant it \u2014
+      what if I lost the last thing I have left of him?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590361
+    m_Localized: You should plant it. It's what he would have wanted.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590362
+    m_Localized: You don't have to plant it. Keep it as a memory.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590363
+    m_Localized: Maybe you're right. He loved watching things grow. When I have the
+      courage, you'll be the first to know. Thank you... truly.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590364
+    m_Localized: You're... right too. Some things are better kept in the heart. But
+      it's good to be able to talk about it with someone.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590365
+    m_Localized: Accept this as a gift. I always keep a special batch of seeds for
+      the day I find someone I can trust. That day has come.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590366
+    m_Localized: Ah, you again! You know, few people bother to stop and talk. I'm
+      glad you're different.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590367
+    m_Localized: I ended up here after a drought that destroyed everything I planted
+      in the eastern valley. I lost three harvests in a row. But the soil here...
+      it received me differently.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590368
+    m_Localized: What's so special about this soil?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590369
+    m_Localized: Didn't you feel like giving up?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590370
+    m_Localized: There's something in the roots here, in the deepest layers. They
+      say an ancient druid blessed the entire valley. I don't know if I believe in
+      stories, but the plants grow too fast to just be luck.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590371
+    m_Localized: 'Many times. But my mother always said: the seed that survives winter
+      blooms stronger. I ended up believing it.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590372
+    m_Localized: "If you treat the land well, it gives back. Take care of your beds'
+      fertility \u2014 tired soil gives less. Natural fertilizers help, but what
+      works best is not rushing the process."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590373
+    m_Localized: Oh! This is... you didn't have to. But I'm so glad you did. Rarely
+      does anyone think of me like that.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590374
+    m_Localized: "I'll keep it safe. And may you harvest twice what you sow this
+      season \u2014 that's what I can give back right now."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590375
+    m_Localized: "Spring! This is the best time to start. Carrots and radishes come
+      up quickly \u2014 if you haven't planted yet, hurry before the soil cools down
+      again."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590376
+    m_Localized: Which seeds do you recommend right now?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590377
+    m_Localized: Thanks for the tip.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590378
+    m_Localized: "Carrot and cabbage are my bet. They grow fast, sell well, and refresh
+      the soil for summer. Avoid pumpkin for now \u2014 it's finicky and only blooms
+      in fall."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590379
+    m_Localized: Give a gift
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590380
+    m_Localized: Give a gift (already gifted today)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590381
+    m_Localized: View relationship
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590382
+    m_Localized: Browse seeds
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369969692672
+    m_Localized: Trouble in Sunny Fields
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664192
+    m_Localized: Something's been spooking the animals near Sunny Fields. Take your
+      team out there and clear it up.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664193
+    m_Localized: Clear Sunny Fields
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664194
+    m_Localized: Egg Collector
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664195
+    m_Localized: "Your chickens are laying \u2014 collect a few eggs for the pantry."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664196
+    m_Localized: Collect Eggs
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664197
+    m_Localized: First Harvest
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664198
+    m_Localized: Till some soil
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664199
+    m_Localized: Harvest a Carrot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664200
+    m_Localized: Getting to Know Maren
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664201
+    m_Localized: Maren's new in town too. Stop by and say hello.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664202
+    m_Localized: Talk to Maren
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664203
+    m_Localized: Welcome Harvest
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664204
+    m_Localized: Harvest 3 carrots to get your farm started.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664205
+    m_Localized: Harvest 3 carrots
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664206
+    m_Localized: First Victory
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664207
+    m_Localized: Win your first battle in the Meadow.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664208
+    m_Localized: Win a Meadow battle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664209
+    m_Localized: General Store
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

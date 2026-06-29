@@ -13,11 +13,34 @@ MonoBehaviour:
   m_Name: Quest_ClearSunnyFields
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Dialogue.QuestData
   questId: clear_sunny_fields
-  questTitle: Trouble in Sunny Fields
-  questDescription: Something's been spooking the animals near Sunny Fields. Take
-    your team out there and clear it up.
+  questTitle:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: quest.clear_sunny_fields.title
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  questDescription:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: quest.clear_sunny_fields.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   objectives:
-  - description: Clear Sunny Fields
+  - description:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: quest.clear_sunny_fields.objective0
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     type: 3
     targetId: Sunny Fields
     requiredCount: 1

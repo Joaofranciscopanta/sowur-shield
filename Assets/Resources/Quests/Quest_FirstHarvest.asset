@@ -13,11 +13,34 @@ MonoBehaviour:
   m_Name: Quest_FirstHarvest
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Dialogue.QuestData
   questId: first_harvest
-  questTitle: First Harvest
-  questDescription: Till some soil, plant a Carrot seed, and bring in your first
-    harvest.
+  questTitle:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: quest.first_harvest.title
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  questDescription:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: quest.first_harvest.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   objectives:
-  - description: Harvest a Carrot
+  - description:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: quest.first_harvest.objective0
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     type: 2
     targetId: Carrot
     requiredCount: 1

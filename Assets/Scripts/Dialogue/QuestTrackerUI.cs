@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using SowurShield.Core;
 
 namespace SowurShield.Dialogue
 {
@@ -94,7 +95,7 @@ public class QuestTrackerUI : MonoBehaviour
         if (!hasQuest) return;
 
         if (questTitleText != null)
-            questTitleText.text = _trackedQuest.questTitle;
+            questTitleText.text = _trackedQuest.questTitle.SafeGetLocalizedString();
 
         // Find first incomplete objective
         string objLine = "";
@@ -106,10 +107,11 @@ public class QuestTrackerUI : MonoBehaviour
                 int progress = QuestManager.Instance.GetObjectiveProgress(_trackedQuest.questId, i);
                 if (progress < obj.requiredCount)
                 {
+                    string objDescText = obj.description.SafeGetLocalizedString();
                     if (obj.requiredCount > 1)
-                        objLine = $"{obj.description} ({progress}/{obj.requiredCount})";
+                        objLine = $"{objDescText} ({progress}/{obj.requiredCount})";
                     else
-                        objLine = obj.description;
+                        objLine = objDescText;
                     break;
                 }
             }

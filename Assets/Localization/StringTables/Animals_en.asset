@@ -186,6 +186,18 @@ MonoBehaviour:
     m_Localized: 'Food stored: {0} items\nCan feed: {1}/{2} animals tomorrow'
     m_Metadata:
       m_Items: []
+  - m_Id: 2630370665947136
+    m_Localized: Chicken
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370686918656
+    m_Localized: Duck
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370686918657
+    m_Localized: Sparrow
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

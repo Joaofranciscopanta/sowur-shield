@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Localization;
 using SowurShield.Inventory;
 
 namespace SowurShield.Core
@@ -7,7 +8,8 @@ namespace SowurShield.Core
     public class CropData : ScriptableObject
     {
         [Header("Basic Information")]
-        public string cropName = "New Crop";
+        public string cropName = "New Crop"; // stable internal ID — used for CropUnlockTracker save flags and CropGrowthManager lookups. Never shown to the player.
+        public LocalizedString displayName; // table "Farming", key "crop.<cropName>.name" — player-facing name shown in UI
         [TextArea(2, 4)]
         public string description = "A crop description";
 
@@ -174,6 +176,15 @@ namespace SowurShield.Core
             }
 
             return eligible[eligible.Count - 1];
+        }
+
+        // Player-facing name. Falls back to the internal cropName if displayName hasn't been
+        // wired to a table entry yet, so older CropData assets degrade gracefully instead of a
+        // blank label.
+        public string GetDisplayName()
+        {
+            string localized = displayName.SafeGetLocalizedString();
+            return string.IsNullOrEmpty(localized) ? cropName : localized;
         }
     }
 

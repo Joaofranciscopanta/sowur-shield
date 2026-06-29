@@ -13,8 +13,25 @@ MonoBehaviour:
   m_Name: Stage_011_CrystalCavern
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
   stageName: Crystal Cavern
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.CrystalCavern.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   stageNumber: 11
-  description: The crystals glow faintly. Bats dive from the ceiling.
+  description:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.CrystalCavern.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   theme: 4
   backgroundSprite: {fileID: 0}
   ambientColor: {r: 0.2, g: 0.2, b: 0.3, a: 1}

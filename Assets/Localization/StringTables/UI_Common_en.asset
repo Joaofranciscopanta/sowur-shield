@@ -78,6 +78,22 @@ MonoBehaviour:
     m_Localized: Day {0}
     m_Metadata:
       m_Items: []
+  - m_Id: 2640681116622848
+    m_Localized: Spring
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2640681137594368
+    m_Localized: Summer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2640681137594369
+    m_Localized: Fall
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2640681137594370
+    m_Localized: Winter
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

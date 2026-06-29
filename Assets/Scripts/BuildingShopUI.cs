@@ -238,7 +238,7 @@ public class BuildingShopUI : MonoBehaviour, IUIWindow
 
         // Show confirmation
         if (confirmNameText != null)
-            confirmNameText.text = data.buildingName;
+            confirmNameText.text = data.buildingName.SafeGetLocalizedString();
 
         if (confirmCostText != null)
         {

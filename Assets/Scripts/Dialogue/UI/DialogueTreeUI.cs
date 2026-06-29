@@ -299,13 +299,14 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
         HideChoices();
         
         // Show dialogue text with typewriter effect
-        if (!string.IsNullOrEmpty(node.dialogueText))
+        string resolvedDialogueText = node.dialogueText.SafeGetLocalizedString();
+        if (!string.IsNullOrEmpty(resolvedDialogueText))
         {
             isTyping = true;
             canContinue = false;
-            
-            yield return typewriter.Run(node.dialogueText, dialogueText);
-            
+
+            yield return typewriter.Run(resolvedDialogueText, dialogueText);
+
             isTyping = false;
         }
         
@@ -461,7 +462,7 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
             conversationMemory.RecordChoice(
                 currentDialogueTree.conversationId,
                 currentNode.nodeId,
-                choice.choiceText,
+                choice.GetDisplayText(),
                 choice.nextNodeId
             );
         }

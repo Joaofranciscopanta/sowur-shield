@@ -13,6 +13,15 @@ MonoBehaviour:
   m_Name: CabbageSeed
   m_EditorClassIdentifier:
   itemName: CabbageSeed
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Inventory
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: item.CabbageSeed.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   description: A handful of cabbage seeds. Plant on tilled soil.
   icon: {fileID: 8604050995794912786, guid: a7597c935d86bf140b56baac0399ecd9, type: 3}
   itemType: 4

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.Localization;
 using SowurShield.Dialogue;
 
 namespace SowurShield.Editor
@@ -49,7 +50,7 @@ public static class QuestShopCreatorTool
             description: "Harvest 3 carrots to get your farm started.",
             objectives: new List<QuestObjective>
             {
-                MakeObjective("Harvest 3 carrots", QuestObjectiveType.HarvestCrop, "Carrot", 3),
+                MakeObjective("quest.welcome_harvest.objective0", "Harvest 3 carrots", QuestObjectiveType.HarvestCrop, "Carrot", 3),
             },
             prereqs: null,
             gold: 100,
@@ -62,7 +63,7 @@ public static class QuestShopCreatorTool
             description: "Gather 5 eggs from your chickens.",
             objectives: new List<QuestObjective>
             {
-                MakeObjective("Collect 5 eggs", QuestObjectiveType.CollectItem, "Egg", 5),
+                MakeObjective("quest.egg_collector.objective0", "Collect 5 eggs", QuestObjectiveType.CollectItem, "Egg", 5),
             },
             prereqs: new List<string> { "welcome_harvest" },
             gold: 150,
@@ -79,7 +80,7 @@ public static class QuestShopCreatorTool
             objectives: new List<QuestObjective>
             {
                 // targetId must match a StageData.stageName — edit to your first stage.
-                MakeObjective("Win a Meadow battle", QuestObjectiveType.CompleteBattle, "Meadow 1", 1),
+                MakeObjective("quest.first_victory.objective0", "Win a Meadow battle", QuestObjectiveType.CompleteBattle, "Meadow 1", 1),
             },
             prereqs: null,
             gold: 200,
@@ -104,8 +105,9 @@ public static class QuestShopCreatorTool
         }
 
         ShopData shop = ScriptableObject.CreateInstance<ShopData>();
-        shop.shopTitle       = "General Store";
+        shop.shopTitle       = new LocalizedString("Dialogue", "shop.general_store.title");
         shop.shopkeeperNpcId = "merchant"; // edit to a real ConversationMemory npc id for the friendship discount
+        Debug.Log("[QuestShopCreatorTool] Add to Dialogue table: shop.general_store.title = \"General Store\"");
         shop.items = new List<ShopItemEntry>
         {
             // itemName must match ItemDatabase keys exactly. -1 maxStock = unlimited.
@@ -124,6 +126,10 @@ public static class QuestShopCreatorTool
     // Helpers
     // =========================================================================
 
+    // Wires questTitle/questDescription to table entries keyed by quest id, but the typed-in
+    // title/description text is not written into the String Table here. After creating quests
+    // this way, add the actual EN/PT/ES strings for quest.<id>.title/.description via
+    // Tools > Sowur Shield > Import Localization CSV (or the Localization Tables window directly).
     private static void CreateQuest(
         string id, string title, string description,
         List<QuestObjective> objectives, List<string> prereqs,
@@ -139,8 +145,9 @@ public static class QuestShopCreatorTool
 
         QuestData quest = ScriptableObject.CreateInstance<QuestData>();
         quest.questId             = id;
-        quest.questTitle          = title;
-        quest.questDescription    = description;
+        quest.questTitle          = new LocalizedString("Dialogue", $"quest.{id}.title");
+        quest.questDescription    = new LocalizedString("Dialogue", $"quest.{id}.description");
+        Debug.Log($"[QuestShopCreatorTool] Add to Dialogue table: quest.{id}.title = \"{title}\", quest.{id}.description = \"{description}\"");
         quest.objectives          = objectives ?? new List<QuestObjective>();
         quest.prerequisiteQuestIds = prereqs ?? new List<string>();
         quest.rewardGold          = gold;
@@ -151,11 +158,12 @@ public static class QuestShopCreatorTool
         Debug.Log($"[QuestShopCreatorTool] Created {path}");
     }
 
-    private static QuestObjective MakeObjective(string description, QuestObjectiveType type, string targetId, int count)
+    private static QuestObjective MakeObjective(string objectiveKey, string description, QuestObjectiveType type, string targetId, int count)
     {
+        Debug.Log($"[QuestShopCreatorTool] Add to Dialogue table: {objectiveKey} = \"{description}\"");
         return new QuestObjective
         {
-            description   = description,
+            description   = new LocalizedString("Dialogue", objectiveKey),
             type          = type,
             targetId      = targetId,
             requiredCount = count,

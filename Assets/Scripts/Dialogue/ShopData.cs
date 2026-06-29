@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Localization;
 
 namespace SowurShield.Dialogue
 {
@@ -14,7 +15,7 @@ namespace SowurShield.Dialogue
 public class ShopData : ScriptableObject
 {
     [Header("Identity")]
-    public string shopTitle = "Shop";
+    public LocalizedString shopTitle; // table "Dialogue", key "shop.<name>.title"
     [Tooltip("NPC id used to look up relationship discount in ConversationMemory.")]
     public string shopkeeperNpcId;
 

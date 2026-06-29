@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.Localization;
+using SowurShield.Core;
 
 namespace SowurShield.Dialogue
 {
@@ -6,8 +8,7 @@ namespace SowurShield.Dialogue
     public class DialogueChoice
     {
         [Header("Choice Text")]
-        [TextArea(2, 4)]
-        public string choiceText;
+        public LocalizedString choiceText; // table "Dialogue", key "dialogue.maren.<tree>.<nodeId>.choice<N>"
 
         [Header("Navigation")]
         public string nextNodeId;
@@ -74,7 +75,7 @@ namespace SowurShield.Dialogue
         {
             // Future enhancement: Could modify text based on conditions
             // e.g., "[Requires 100 coins] Buy the sword" if player doesn't have enough
-            return choiceText;
+            return choiceText.SafeGetLocalizedString();
         }
 
         /// <summary>
@@ -82,7 +83,7 @@ namespace SowurShield.Dialogue
         /// </summary>
         public bool IsValid()
         {
-            if (string.IsNullOrEmpty(choiceText))
+            if (choiceText == null || choiceText.IsEmpty)
             {
                 return false;
             }

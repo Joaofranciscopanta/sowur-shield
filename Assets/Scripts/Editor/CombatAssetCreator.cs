@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine.Localization;
 using SowurShield.Combat;
 
 namespace SowurShield.Editor
@@ -588,6 +589,11 @@ public class CombatAssetCreator : EditorWindow
     // STAGE HELPER
     // ============================================================================
 
+    // Wires displayName/description to table entries keyed by stageName, but the `description`
+    // parameter's text is not written into the String Table here — only the typed-in `description`
+    // argument exists as a literal at the call site below. After creating new stages this way, add
+    // the actual EN/PT/ES strings for stage.<stageName>.name/.description via
+    // Tools > Sowur Shield > Import Localization CSV (or the Localization Tables window directly).
     private void CreateStage(
         string region,
         string fileName,
@@ -616,10 +622,11 @@ public class CombatAssetCreator : EditorWindow
 
         StageData stage = CreateInstance<StageData>();
         stage.stageName           = stageName;
+        stage.displayName         = new LocalizedString("Combat", $"stage.{stageName}.name");
         stage.stageNumber         = number;
         stage.theme               = theme;
         stage.difficulty          = Mathf.Clamp(difficulty, 1, 10);
-        stage.description         = description;
+        stage.description         = new LocalizedString("Combat", $"stage.{stageName}.description");
         stage.minTotalEnemies     = minEnemies;
         stage.maxTotalEnemies     = maxEnemies;
         stage.baseGoldReward      = goldReward;

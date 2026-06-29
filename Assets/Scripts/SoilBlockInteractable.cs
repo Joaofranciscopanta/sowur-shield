@@ -455,7 +455,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
                 Season currentSeason = (Season)timeController.GetCurrentSeasonIndex();
                 if (!cropData.IsValidSeason(currentSeason))
                 {
-                    wrongSeasonText.Arguments = new object[] { cropData.cropName, currentSeason };
+                    wrongSeasonText.Arguments = new object[] { cropData.GetDisplayName(), currentSeason };
                     ShowWorldFeedback(wrongSeasonText.SafeGetLocalizedString());
                     return;
                 }
@@ -841,12 +841,12 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         string label;
         if (IsReadyForHarvest)
         {
-            readyText.Arguments = new object[] { CurrentCrop.cropName };
+            readyText.Arguments = new object[] { CurrentCrop.GetDisplayName() };
             label = readyText.SafeGetLocalizedString();
         }
         else
         {
-            daysLeftText.Arguments = new object[] { CurrentCrop.cropName, GetDaysRemaining() };
+            daysLeftText.Arguments = new object[] { CurrentCrop.GetDisplayName(), GetDaysRemaining() };
             label = daysLeftText.SafeGetLocalizedString();
         }
 

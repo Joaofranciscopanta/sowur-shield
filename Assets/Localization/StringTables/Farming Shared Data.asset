@@ -131,6 +131,54 @@ MonoBehaviour:
     m_Key: farming.sleep.autosave_off
     m_Metadata:
       m_Items: []
+  - m_Id: 2630369608982528
+    m_Key: building.Silo.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759744
+    m_Key: building.Silo.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759745
+    m_Key: building.Silo.effect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759746
+    m_Key: building.Workshop.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759747
+    m_Key: building.Workshop.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759748
+    m_Key: building.Workshop.effect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759749
+    m_Key: crop.Cabbage.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759750
+    m_Key: crop.Carrot.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759751
+    m_Key: crop.MysteryPlant.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759752
+    m_Key: crop.Pumpkin.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759753
+    m_Key: crop.Radish.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369625759754
+    m_Key: crop.Tomato.name
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

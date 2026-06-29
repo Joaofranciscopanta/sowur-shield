@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Localization;
 using SowurShield.Animals;
+using SowurShield.Core;
 
 namespace SowurShield.Combat
 {
@@ -24,8 +26,10 @@ public enum EnemyType
 public class EnemyData : ScriptableObject
 {
     [Header("Basic Info")]
-    [Tooltip("Display name for this enemy")]
+    [Tooltip("Internal name — used for GameObject naming/logs only. Wire displayName for the player-facing name.")]
     public string enemyName = "New Enemy";
+    [Tooltip("Player-facing name shown in the combat HUD")]
+    public LocalizedString displayName; // table "Combat", key "enemy.<enemyName>.name"
 
     [Tooltip("Enemy type classification")]
     public EnemyType enemyType = EnemyType.Normal;
@@ -189,6 +193,14 @@ public class EnemyData : ScriptableObject
         }
 
         return (scaledExp, scaledGold);
+    }
+
+    // Player-facing name. Falls back to the internal enemyName if displayName hasn't been wired
+    // to a table entry yet, so older EnemyData assets degrade gracefully instead of a blank label.
+    public string GetDisplayName()
+    {
+        string localized = displayName.SafeGetLocalizedString();
+        return string.IsNullOrEmpty(localized) ? enemyName : localized;
     }
 }
 

@@ -13,8 +13,25 @@ MonoBehaviour:
   m_Name: Stage_015_CaveTroll_Boss
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
   stageName: "Stalactite Hall \u2014 Boss"
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.StalactiteHallBoss.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   stageNumber: 15
-  description: '[BOSS] The Cave Troll fills the entire chamber. Tanky AND aggressive.'
+  description:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.StalactiteHallBoss.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   theme: 4
   backgroundSprite: {fileID: 0}
   ambientColor: {r: 0.2, g: 0.2, b: 0.3, a: 1}

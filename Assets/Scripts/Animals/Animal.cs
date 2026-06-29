@@ -790,7 +790,7 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     {
         if (!string.IsNullOrEmpty(customName))
             return customName;
-        return animalData != null ? animalData.animalName : gameObject.name;
+        return animalData != null ? animalData.GetDisplayName() : gameObject.name;
     }
 
     /// <summary>Set a custom name for this animal (max 20 chars).</summary>

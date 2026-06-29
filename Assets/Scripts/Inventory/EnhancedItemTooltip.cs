@@ -99,7 +99,7 @@ namespace SowurShield.Inventory
             // Set item name with rarity color
             if (itemNameText != null)
             {
-                itemNameText.text = item.itemName;
+                itemNameText.text = item.GetDisplayName();
                 itemNameText.color = GetRarityColor(item.rarity);
             }
 

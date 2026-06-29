@@ -13,6 +13,15 @@ MonoBehaviour:
   m_Name: RadishCropData
   m_EditorClassIdentifier:
   cropName: Radish
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Farming
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: crop.Radish.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   description: A fast-growing root vegetable. Perfect for the impatient farmer.
   seedItem: {fileID: 11400000, guid: b08a7959708b40fc9f1c479060ffa24c, type: 2}
   harvestItem: {fileID: 11400000, guid: e429b91939144d1e962013ae08ce13ed, type: 2}

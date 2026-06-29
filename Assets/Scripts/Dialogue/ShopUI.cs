@@ -179,7 +179,7 @@ public class ShopUI : MonoBehaviour, IUIWindow, ISaveable
         if (_currentShop == null) return;
 
         if (shopTitleText != null)
-            shopTitleText.text = _currentShop.shopTitle;
+            shopTitleText.text = _currentShop.shopTitle.SafeGetLocalizedString();
 
         RefreshGoldDisplay();
 
@@ -349,7 +349,7 @@ public class ShopItemRow : MonoBehaviour
             itemIcon.sprite = item.icon;
 
         if (itemNameText != null)
-            itemNameText.text = item.itemName;
+            itemNameText.text = item.GetDisplayName();
 
         if (priceText != null)
         {

@@ -75,14 +75,14 @@ public class FarmBuildingManager : MonoBehaviour, ISaveable
 
         if (_builtBuildings.Contains(data.buildingType))
         {
-            Debug.LogWarning($"[FarmBuildingManager] '{data.buildingName}' is already built.");
+            Debug.LogWarning($"[FarmBuildingManager] '{data.buildingType}' is already built.");
             return false;
         }
 
         // Check gold
         if (!playerStats.HasMoney(data.goldCost))
         {
-            Debug.LogWarning($"[FarmBuildingManager] Not enough gold for '{data.buildingName}'.");
+            Debug.LogWarning($"[FarmBuildingManager] Not enough gold for '{data.buildingType}'.");
             return false;
         }
 
@@ -92,7 +92,7 @@ public class FarmBuildingManager : MonoBehaviour, ISaveable
             Item mat = ItemDatabase.GetItem(data.materialItemName);
             if (mat == null || !inventory.HasItem(mat, data.materialQuantity))
             {
-                Debug.LogWarning($"[FarmBuildingManager] Missing materials for '{data.buildingName}'.");
+                Debug.LogWarning($"[FarmBuildingManager] Missing materials for '{data.buildingType}'.");
                 return false;
             }
             inventory.RemoveItem(mat, data.materialQuantity);

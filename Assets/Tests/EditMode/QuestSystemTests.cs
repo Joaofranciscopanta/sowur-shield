@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Localization;
 using System.Collections.Generic;
 using System.Reflection;
 using SowurShield.Core;
@@ -22,7 +23,7 @@ public class QuestSystemTests
     {
         var data = ScriptableObject.CreateInstance<QuestData>();
         data.questId    = id;
-        data.questTitle = title;
+        data.questTitle = new LocalizedString("Dialogue", $"test.{id}.title");
         data.objectives = objectives ?? new List<QuestObjective>();
         data.prerequisiteQuestIds = prereqs ?? new List<string>();
         data.rewardGold = rewardGold;
@@ -33,7 +34,7 @@ public class QuestSystemTests
     {
         return new QuestObjective
         {
-            description   = $"Collect {required}x {targetId}",
+            description   = new LocalizedString("Dialogue", $"test.objective.{targetId}"),
             type          = type,
             targetId      = targetId,
             requiredCount = required

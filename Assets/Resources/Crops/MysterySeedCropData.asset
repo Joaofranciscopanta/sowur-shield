@@ -13,6 +13,15 @@ MonoBehaviour:
   m_Name: MysterySeedCropData
   m_EditorClassIdentifier:
   cropName: Mystery Plant
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Farming
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: crop.MysteryPlant.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   description: Could be anything you've grown before.
   seedItem: {fileID: 11400000, guid: 4053bca5463f497ca728f3f54f957c8f, type: 2}
   harvestItem: {fileID: 0}

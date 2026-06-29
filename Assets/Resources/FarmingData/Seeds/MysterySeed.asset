@@ -13,6 +13,15 @@ MonoBehaviour:
   m_Name: MysterySeed
   m_EditorClassIdentifier:
   itemName: MysterySeed
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Inventory
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: item.MysterySeed.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   description: A mysterious seed. Plant it to find out what grows — only crops you've already harvested before can sprout.
   icon: {fileID: 0}
   itemType: 4

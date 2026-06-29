@@ -71,6 +71,86 @@ MonoBehaviour:
     m_Key: inventory.tooltip.description
     m_Metadata:
       m_Items: []
+  - m_Id: 2617878871007232
+    m_Key: item.CabbageSeed.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878896173056
+    m_Key: item.CarrotSeed.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878896173057
+    m_Key: item.MysterySeed.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878896173058
+    m_Key: item.PumpkinSeed.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367360
+    m_Key: item.RadishSeed.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367361
+    m_Key: item.TomatoSeed.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367362
+    m_Key: item.Apple.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367363
+    m_Key: item.Cabbage.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367364
+    m_Key: item.Carrot.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367365
+    m_Key: item.Pumpkin.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367366
+    m_Key: item.Radish.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367367
+    m_Key: item.Tomato.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367368
+    m_Key: item.Banana.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367369
+    m_Key: item.Bread.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367370
+    m_Key: item.DuckEgg.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367371
+    m_Key: item.Egg.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367372
+    m_Key: item.Feather.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367373
+    m_Key: item.Hoe.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367374
+    m_Key: item.Shovel.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367375
+    m_Key: item.WateringCan.name
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

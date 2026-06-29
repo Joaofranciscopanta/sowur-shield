@@ -22,7 +22,15 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "Ah, you again! You know, few people bother to stop and talk. I'm glad you're different."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.friend.start
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices: []
     nextNodeId: lore_reveal
@@ -39,16 +47,40 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 0
     speakerPosition: 0
-    dialogueText: "I ended up here after a drought that destroyed everything I planted in the eastern valley. I lost three harvests in a row. But the soil here... it received me differently."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.friend.lore_reveal
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices:
-    - choiceText: "What's so special about this soil?"
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.friend.lore_reveal.choice0
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
       nextNodeId: lore_soil
       requirements: []
       effects: []
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
-    - choiceText: "Didn't you feel like giving up?"
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.friend.lore_reveal.choice1
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
       nextNodeId: lore_persevere
       requirements: []
       effects: []
@@ -62,7 +94,15 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 1
     speakerPosition: 0
-    dialogueText: "There's something in the roots here, in the deepest layers. They say an ancient druid blessed the entire valley. I don't know if I believe in stories, but the plants grow too fast to just be luck."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.friend.lore_soil
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices: []
     nextNodeId: lore_gift_hint
@@ -73,7 +113,15 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 2
     speakerPosition: 0
-    dialogueText: "Many times. But my mother always said: the seed that survives winter blooms stronger. I ended up believing it."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.friend.lore_persevere
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices: []
     nextNodeId: lore_gift_hint
@@ -84,7 +132,15 @@ MonoBehaviour:
     speakerName: Maren
     speakerEmotion: 0
     speakerPosition: 0
-    dialogueText: "If you treat the land well, it gives back. Take care of your beds' fertility — tired soil gives less. Natural fertilizers help, but what works best is not rushing the process."
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.friend.lore_gift_hint
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     nodeType: 0
     choices: []
     nextNodeId: ""

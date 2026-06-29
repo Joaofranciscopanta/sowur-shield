@@ -423,7 +423,7 @@ public class TeamAssemblerUI : MonoBehaviour
                 if (data.canStack && count > 1)
                 {
                     int stackCount = Mathf.Min(count, data.maxStackSize);
-                    synergyLineText_Localized.Arguments = new object[] { stackCount, data.animalName };
+                    synergyLineText_Localized.Arguments = new object[] { stackCount, data.GetDisplayName() };
                     synergyText += synergyLineText_Localized.SafeGetLocalizedString();
                     hasSynergy = true;
                 }

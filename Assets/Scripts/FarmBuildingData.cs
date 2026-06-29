@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Localization;
 
 namespace SowurShield.Core
 {
@@ -14,10 +15,9 @@ namespace SowurShield.Core
 public class FarmBuildingData : ScriptableObject
 {
     [Header("Identity")]
-    public BuildingType buildingType;
-    public string buildingName = "New Building";
-    [TextArea(2, 4)]
-    public string description;
+    public BuildingType buildingType; // stable internal ID — used by FarmBuildingManager for save/effect lookups
+    public LocalizedString buildingName; // table "Farming", key "building.<buildingType>.name" — player-facing name
+    public LocalizedString description; // table "Farming", key "building.<buildingType>.description"
     public Sprite icon;
 
     [Header("Cost")]
@@ -29,8 +29,7 @@ public class FarmBuildingData : ScriptableObject
     public int materialQuantity = 0;
 
     [Header("Effects (shown in UI — actual logic lives in game systems)")]
-    [TextArea(1, 3)]
-    public string effectDescription;
+    public LocalizedString effectDescription; // table "Farming", key "building.<buildingType>.effect"
 
     [Header("World Presence (optional)")]
     [Tooltip("Spawned in SampleScene once this building is constructed (and again on load if already built). Leave null to keep this building purely logical, with no object in the world.")]

@@ -183,6 +183,18 @@ MonoBehaviour:
     m_Key: animals.trough.status
     m_Metadata:
       m_Items: []
+  - m_Id: 2630370665947136
+    m_Key: animal.Chicken.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370686918656
+    m_Key: animal.Duck.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370686918657
+    m_Key: animal.Sparrow.name
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

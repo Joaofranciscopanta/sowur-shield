@@ -250,7 +250,7 @@ public class EnemySpawner : MonoBehaviour
         combatUnit.isPlayerUnit = false;
 
         var (hp, atk, def, spd) = enemyData.GetScaledStats(difficulty);
-        combatUnit.InitializeAsEnemy(enemyData.enemyName, hp, atk, def, spd, enemyData.GetScaledAccuracy(difficulty));
+        combatUnit.InitializeAsEnemy(enemyData.GetDisplayName(), hp, atk, def, spd, enemyData.GetScaledAccuracy(difficulty));
 
         // Normalize sprite size
         if (enemyData.sprite != null)

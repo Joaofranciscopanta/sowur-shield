@@ -48,8 +48,8 @@ public class BuildingRow : MonoBehaviour
 
     public void Populate(FarmBuildingData data, bool alreadyBuilt, bool canAfford, int playerMaterialCount)
     {
-        if (nameText   != null) nameText.text   = data.buildingName;
-        if (effectText != null) effectText.text = data.effectDescription;
+        if (nameText   != null) nameText.text   = data.buildingName.SafeGetLocalizedString();
+        if (effectText != null) effectText.text = data.effectDescription.SafeGetLocalizedString();
 
         // Cost line
         if (costText != null)

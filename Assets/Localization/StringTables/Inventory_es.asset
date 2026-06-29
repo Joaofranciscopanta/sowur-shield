@@ -74,6 +74,86 @@ MonoBehaviour:
     m_Localized: <size=11><color=#888888>{0}</color></size>
     m_Metadata:
       m_Items: []
+  - m_Id: 2617878871007232
+    m_Localized: Semillas de Repollo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878896173056
+    m_Localized: Semillas de Zanahoria
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878896173057
+    m_Localized: Semilla Misteriosa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878896173058
+    m_Localized: Semillas de Calabaza
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367360
+    m_Localized: "Semillas de R\xE1bano"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367361
+    m_Localized: Semillas de Tomate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367362
+    m_Localized: Manzana
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367363
+    m_Localized: Repollo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367364
+    m_Localized: Zanahoria
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367365
+    m_Localized: Calabaza
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367366
+    m_Localized: "R\xE1bano"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367367
+    m_Localized: Tomate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367368
+    m_Localized: "Pl\xE1tano"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367369
+    m_Localized: Pan
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367370
+    m_Localized: Huevo de Pata
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367371
+    m_Localized: Huevo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367372
+    m_Localized: Pluma
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367373
+    m_Localized: Azada
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367374
+    m_Localized: Pala
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367375
+    m_Localized: Regadera
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

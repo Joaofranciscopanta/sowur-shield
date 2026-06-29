@@ -32,7 +32,7 @@ public class AnimalMarketBuyRow : MonoBehaviour
             iconImage.enabled = true;
         }
 
-        if (nameText != null) nameText.text = entry.animalData.animalName;
+        if (nameText != null) nameText.text = entry.animalData.GetDisplayName();
         if (priceText != null)
         {
             buyPriceText.Arguments = new object[] { finalPrice };

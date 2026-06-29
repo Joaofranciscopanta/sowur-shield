@@ -267,7 +267,7 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
         {
             int price = Mathf.Max(1, seed.baseValue * 3);
             bool canAfford = playerGold >= price;
-            itemRowText.Arguments = new object[] { seed.itemName, price };
+            itemRowText.Arguments = new object[] { seed.GetDisplayName(), price };
             CreateRow(itemRowText.SafeGetLocalizedString(), seed, price, insertIndex++, canAfford);
         }
     }

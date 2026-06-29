@@ -13,10 +13,34 @@ MonoBehaviour:
   m_Name: Quest_GetToKnowMaren
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Dialogue.QuestData
   questId: get_to_know_maren
-  questTitle: Getting to Know Maren
-  questDescription: Maren's new in town too. Stop by and say hello.
+  questTitle:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: quest.get_to_know_maren.title
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  questDescription:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: quest.get_to_know_maren.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   objectives:
-  - description: Talk to Maren
+  - description:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: quest.get_to_know_maren.objective0
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     type: 1
     targetId: maren_default
     requiredCount: 1

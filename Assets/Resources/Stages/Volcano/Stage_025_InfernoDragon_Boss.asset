@@ -13,9 +13,25 @@ MonoBehaviour:
   m_Name: Stage_025_InfernoDragon_Boss
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.StageData
   stageName: "Magma Core \u2014 Final Boss"
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.MagmaCoreFinalBoss.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   stageNumber: 25
-  description: "[FINAL BOSS] The Inferno Dragon. Absolute peak threat. Bring your
-    best animals \u2014 fully fed and petted."
+  description:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: stage.MagmaCoreFinalBoss.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   theme: 7
   backgroundSprite: {fileID: 0}
   ambientColor: {r: 0.8, g: 0.3, b: 0.1, a: 1}

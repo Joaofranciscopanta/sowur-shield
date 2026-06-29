@@ -201,7 +201,7 @@ namespace SowurShield.Dialogue
             {
                 var node = new DialogueNode();
                 node.nodeId = i == 0 ? "start" : $"node_{i}";
-                node.dialogueText = dialogueTexts[i];
+                node.dialogueText = new UnityEngine.Localization.LocalizedString(); // legacy helper: text needs to be wired to a table entry manually after conversion
                 node.speakerName = ""; // Will need to be set manually
                 node.nodeType = NodeType.Dialogue;
 
