@@ -1,6 +1,6 @@
 # Sowur Shield — Project Status
 
-> Last updated: 2026-06-14
+> Last updated: 2026-07-01
 > Branch: `main`
 > This document supersedes and replaces: ROADMAP.md, GAME_DEVELOPMENT_PLAN.md,
 > COMBAT_PIPELINE_STATUS.md, DEVELOPMENT_LOG.md, COMBAT_SETUP_GUIDE.md.
@@ -340,6 +340,41 @@ currently no-ops in practice (see "Assign `AnimatorController`..." item above).
 - Assign `seasonalFarmTracks[4]`, `combatMusic`, `menuMusic` on `GameMusicManager`
 - SFX clips for `CombatHit`, `CombatDeath`, `PetAnimal`
 - `GameMusicManager.Instance.OnEnterCombat()` wired from `SceneTransitionManager`
+
+---
+
+## Since 2026-06-14 (not yet folded into the sections above)
+
+The rest of this document predates ~100 commits merged from `feature/cozy-ui-pass-3` and other
+work. Headlines, not yet reconciled line-by-line with "What's Complete" above:
+
+- **Localization (EN/PT/ES)**: full Unity Localization infra — locales, string tables, and
+  ~226 translated entries covering NPC dialogue, items, animals, buildings, crops, enemies,
+  stages, and quests. Demo site has a language switcher. WebGL boot-crash fixes were needed
+  (`WaitForCompletion` deadlock, string-table preload, `AudioClip.length` race) — see git log
+  around "Fix real root cause" commits if localization-related WebGL issues resurface.
+- **Mobile/gamepad input**: virtual joystick + action button (touch, Safe-Area aware) and full
+  Xbox/PS5 gamepad support (movement, interact, virtual cursor for tools) via
+  `MobileControlsManager` / `GamepadVirtualCursor`. Manual Editor setup steps that used to live
+  in `MOBILE_LOCALIZATION_SETUP.md` are done — the doc was removed since the tools it described
+  (`Tools > Sowur Shield > Rebuild Mobile Controls UI`, `Setup Localization (Full)`,
+  `Auto-Wire Localized Fields`) exist and the generated Localization assets are already committed.
+- **CozyUITheme pass**: applied across inventory tooltips/drag preview, BattleStatusUI,
+  ConsumableBattleUI, Animal Roster/Info/Relationship/Gift UI, SeedShopUI, `ChoiceButton`,
+  `PortraitManager`, and the Team Assembler animal card prefab. `ChoiceButton.cs` was rewritten
+  in the process — see `KNOWN_BUGS.md` for the one open bug this affects.
+- **Achievement system**: `AchievementData`/`AchievementManager` + Steam-style toast, 8 initial
+  achievements across milestones and the 4 shipped quests, driven by new global static events
+  (stage completion, crop harvest, item sales).
+- **Critical save-data fix**: `Dictionary<,>` fields were never actually persisted via
+  `JsonUtility` — fixed in `SaveManager`/`GameData` (worth double-checking any save-dependent
+  system if odd data-loss reports come in from before this fix).
+- **WebGL demo**: through Build #15, several boot-failure root-causes fixed (see localization
+  bullet above); Discord build notifications customized per `.github/DISCORD_CUSTOMIZATION.md`.
+- **Doc cleanup**: removed 14 stale Minimap dev-session docs (fix logs/checklists for an already-
+  complete system), the Team Assembler session summary from 2025-10-24 (superseded by the
+  "Combat Pipeline — Resolved" section above), `MOBILE_LOCALIZATION_SETUP.md`, and
+  `SleepConfirmationPanelManualSetup.md` (panel already built — prefab + script exist).
 
 ---
 

@@ -24,13 +24,23 @@ never re-appears and `InteractionManager` may skip this interactable.
 
 ---
 
-## [OPEN] Dialogue UI — Choice button text clips out of button bounds
+## [NEEDS RE-VERIFICATION] Dialogue UI — Choice button text clips out of button bounds
 
-**Symptom:** Choice button labels overflow their button background at certain screen sizes
-or with longer text. Text appears above/outside the wooden button frame.
+**Symptom (as originally reported):** Choice button labels overflow their button background
+at certain screen sizes or with longer text. Text appears above/outside the wooden button
+frame.
 
-**Where to look:** `DialogueTreeUI.cs` — `CreateChoiceButton()` method. The button
-RectTransform `sizeDelta` and `ChoiceButton` label's RectTransform margins may need
-adjustment, or the ChoicePanel needs a minimum height per button.
+**Status:** The code this bug pointed to no longer exists. `DialogueTreeUI.CreateChoiceButton()`
+was removed during the CozyUITheme pass — choice buttons are now instantiated from
+`choiceButtonPrefab` (`DialogueTreeUI.cs:435`) and driven by `ChoiceButton.cs`
+(`Assets/Scripts/Dialogue/UI/ChoiceButton.cs`), which only sets `choiceText.text` and applies
+theme colors; it has no dynamic resize logic. Whether the clipping still reproduces now depends
+entirely on the prefab's `RectTransform`/`ContentSizeFitter`/TMP auto-size settings, which can't
+be checked from source — needs a manual Editor/Play-mode check with a long choice string.
 
-**Workaround:** None — cosmetic only, choices are still clickable.
+**Where to look (if still reproducing):** the `choiceButtonPrefab` asset itself (likely under
+`Assets/Prefabs/` or `Resources/`) — check the label's `ContentSizeFitter`/auto-size and whether
+the button `RectTransform` grows with a `LayoutElement`/`VerticalLayoutGroup` on the choice
+container.
+
+**Workaround:** None confirmed — cosmetic only if it still reproduces, choices remain clickable.
