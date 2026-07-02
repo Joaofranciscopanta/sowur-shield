@@ -62,12 +62,23 @@ public class BattleHudOverlay : MonoBehaviour
         modifierText = CreateText("ModifierBanner", new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0, -40), 28, FontStyles.Bold);
         modifierText.alignment = TextAlignmentOptions.Center;
         modifierText.color = new Color(1f, 0.95f, 0.6f);
+        AddTextOutline(modifierText);
         modifierText.gameObject.SetActive(false);
 
         comboText = CreateText("ComboCounter", new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(-40, 60), 32, FontStyles.Bold);
         comboText.alignment = TextAlignmentOptions.Right;
         comboText.color = new Color(1f, 0.6f, 0.2f);
+        AddTextOutline(comboText);
         comboText.gameObject.SetActive(false);
+    }
+
+    // Floating HUD text sits directly over the stage art with no backing panel, so it needs
+    // a dark outline to stay readable against bright backgrounds.
+    private static void AddTextOutline(TextMeshProUGUI tmp)
+    {
+        tmp.fontMaterial.EnableKeyword("OUTLINE_ON");
+        tmp.outlineColor = new Color32(30, 20, 10, 255);
+        tmp.outlineWidth = 0.25f;
     }
 
     private TextMeshProUGUI CreateText(string name, Vector2 anchor, Vector2 pivot, Vector2 anchoredPos, float fontSize, FontStyles style)

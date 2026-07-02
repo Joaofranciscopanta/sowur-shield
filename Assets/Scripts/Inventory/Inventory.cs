@@ -20,6 +20,7 @@ public class Inventory : MonoBehaviour, ISaveable
     public ItemTooltip tooltip;
     public Transform hotbarParent; // Parent for hotbar slots (first 9 slots)
     public Transform storageParent; // Parent for storage slots (remaining 27 slots)
+    public GameObject storagePanelBackground; // Wood window panel shown behind the storage grid while open
 
     [Header("Input Actions")]
     public InputActionReference inventoryToggleAction;
@@ -103,6 +104,13 @@ public class Inventory : MonoBehaviour, ISaveable
         SetupUI();
         SelectSlot(0); // Select first hotbar slot
         EnableInputActions();
+
+        // Cache the background panel while it's still active in the scene (GameObject.Find
+        // can't locate inactive objects), then hide it — the inventory starts closed.
+        if (storagePanelBackground == null)
+            storagePanelBackground = GameObject.Find("InventoryPanelBG");
+        if (storagePanelBackground != null)
+            storagePanelBackground.SetActive(false);
     }
 
     private void OnDestroy()
@@ -651,6 +659,10 @@ public class Inventory : MonoBehaviour, ISaveable
     public void ToggleInventory()
     {
         isInventoryOpen = !isInventoryOpen;
+
+        // Background window panel follows the storage grid's visibility (cached in Start).
+        if (storagePanelBackground != null)
+            storagePanelBackground.SetActive(isInventoryOpen);
 
         // Show/hide inventory panels (hotbar always visible)
         for (int i = hotbarSize; i < slotUIs.Count; i++)

@@ -123,13 +123,29 @@ public class ConsumableBattleUI : MonoBehaviour
 
         Color woodDark = theme != null ? theme.woodDark : new Color(0.2f, 0.2f, 0.25f);
         Image btnImage = toggleButtonObj.AddComponent<Image>();
-        btnImage.color = new Color(woodDark.r, woodDark.g, woodDark.b, 0.85f);
+        Sprite btnSprite = Resources.Load<Sprite>("Sprites/UI/Buttons/button_small_action");
+        if (btnSprite != null)
+        {
+            btnImage.sprite = btnSprite;
+            btnImage.type = Image.Type.Sliced;
+            btnImage.color = Color.white;
+        }
+        else
+        {
+            // Sprite missing from Resources — keep the flat tint so the button stays usable.
+            btnImage.color = new Color(woodDark.r, woodDark.g, woodDark.b, 0.85f);
+        }
 
         Button toggleButton = toggleButtonObj.AddComponent<Button>();
         toggleButton.onClick.AddListener(ToggleList);
 
         toggleButtonLabel = CreateLabel(toggleButtonObj.transform, titleText_Localized.SafeGetLocalizedString());
         toggleButtonLabel.alignment = TextAlignmentOptions.Center;
+        if (btnSprite != null)
+        {
+            // The gold button sprite needs dark text; cream is only readable on the flat wood tint.
+            toggleButtonLabel.color = theme != null ? theme.textDark : Color.black;
+        }
 
         // List panel (above the toggle button, hidden by default)
         GameObject panelObj = new GameObject("ConsumableList");
@@ -144,7 +160,17 @@ public class ConsumableBattleUI : MonoBehaviour
 
         Color panelTint = theme != null ? theme.woodDark : new Color(0.1f, 0.1f, 0.15f);
         Image panelBg = panelObj.AddComponent<Image>();
-        panelBg.color = new Color(panelTint.r, panelTint.g, panelTint.b, 0.9f);
+        Sprite panelSprite = Resources.Load<Sprite>("Sprites/UI/Panels/panel_wood_generic");
+        if (panelSprite != null)
+        {
+            panelBg.sprite = panelSprite;
+            panelBg.type = Image.Type.Sliced;
+            panelBg.color = Color.white;
+        }
+        else
+        {
+            panelBg.color = new Color(panelTint.r, panelTint.g, panelTint.b, 0.9f);
+        }
 
         VerticalLayoutGroup vlg = panelObj.AddComponent<VerticalLayoutGroup>();
         vlg.padding = new RectOffset(8, 8, 8, 8);
@@ -237,6 +263,11 @@ public class ConsumableBattleUI : MonoBehaviour
         rowLabel.fontSize = 16;
         rowLabel.alignment = TextAlignmentOptions.MidlineLeft;
         rowLabel.margin = new Vector4(8, 0, 8, 0);
+
+        // Empty-state rows have no tinted background — they sit directly on the light
+        // parchment panel, where the default cream label would be unreadable.
+        if (item == null)
+            rowLabel.color = theme != null ? theme.textDark : Color.black;
 
         if (item != null)
         {
