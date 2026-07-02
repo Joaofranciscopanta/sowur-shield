@@ -17,7 +17,7 @@ namespace SowurShield.Combat
 public class EnemySpawner : MonoBehaviour
 {
     [Header("Debug")]
-    [SerializeField] private bool showDebugLogs = true;
+    [SerializeField] private bool showDebugLogs = false;
 
     // Pre-defined enemy spawn positions (columns 0-5, left side)
     private static readonly Vector2Int[] EnemyPositions = new Vector2Int[]
@@ -34,11 +34,12 @@ public class EnemySpawner : MonoBehaviour
 
     private void Start()
     {
-        Debug.LogWarning($"[EnemySpawner] Start() — scheduling SpawnEnemies in 0.6s. " +
-            $"Time.timeScale={Time.timeScale}, Time.time={Time.time}, Time.unscaledTime={Time.unscaledTime}");
+        // A prior bug had Time.timeScale left at 0 when entering CombatScene, which silently
+        // prevents Invoke() from ever firing. Self-heals but stays loud since it points at a
+        // real bug elsewhere (something left the game paused) if it ever fires again.
         if (Time.timeScale == 0f)
         {
-            Debug.LogError("[EnemySpawner] Time.timeScale is 0 at Start() — Invoke(0.6s) will NEVER fire! Forcing Time.timeScale = 1f.");
+            Debug.LogWarning("[EnemySpawner] Time.timeScale is 0 at Start() — forcing 1f so spawning can proceed.");
             Time.timeScale = 1f;
         }
         // 0.6f: after player team (0.5f), before TurnManager (1.0f)
@@ -47,8 +48,6 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnEnemies()
     {
-        Debug.LogWarning($"[EnemySpawner] SpawnEnemies() called at Time.time={Time.time}");
-
         if (GridManager.Instance == null)
         {
             Debug.LogError("[EnemySpawner] GridManager.Instance is null!");
@@ -56,15 +55,12 @@ public class EnemySpawner : MonoBehaviour
         }
 
         StageData stage = StageManager.GetSelectedStage();
-        Debug.LogWarning($"[EnemySpawner] StageManager.GetSelectedStage() = {(stage != null ? stage.stageName : "null")}");
 
         // In builds, static fields may be cleared on scene load — restore from TeamAssemblerData
         if (stage == null)
         {
             StageManager.LoadAllStages();
             string savedName = TeamAssemblerData.Instance?.selectedStageName;
-            Debug.LogWarning($"[EnemySpawner] Stage was null. TeamAssemblerData.selectedStageName='{savedName}', " +
-                $"StageManager total cached stages={StageManager.GetTotalStages()}");
             if (!string.IsNullOrEmpty(savedName))
             {
                 StageData restored = StageManager.GetStageByName(savedName);
@@ -141,7 +137,8 @@ public class EnemySpawner : MonoBehaviour
 
         // Build weighted spawn pool
         List<EnemyData> pool = BuildSpawnPool(stage.enemySpawns, totalEnemies);
-        Debug.LogWarning($"[EnemySpawner] SpawnFromStage('{stage.stageName}') — totalEnemies={totalEnemies}, pool.Count={pool.Count}");
+        if (showDebugLogs)
+            Debug.Log($"[EnemySpawner] SpawnFromStage('{stage.stageName}') — totalEnemies={totalEnemies}, pool.Count={pool.Count}");
 
         int posIndex = 0;
         int spawned = 0;
@@ -167,8 +164,8 @@ public class EnemySpawner : MonoBehaviour
 
             if (ok) spawned++;
         }
-        Debug.LogWarning($"[EnemySpawner] SpawnFromStage done — spawned {spawned} enemies.");
-
+        if (showDebugLogs)
+            Debug.Log($"[EnemySpawner] SpawnFromStage done — spawned {spawned} enemies.");
     }
 
     /// <summary>
@@ -252,15 +249,8 @@ public class EnemySpawner : MonoBehaviour
         var (hp, atk, def, spd) = enemyData.GetScaledStats(difficulty);
         combatUnit.InitializeAsEnemy(enemyData.GetDisplayName(), hp, atk, def, spd, enemyData.GetScaledAccuracy(difficulty));
 
-        // Normalize sprite size
-        if (enemyData.sprite != null)
-        {
-            float targetHeight = 0.8f;
-            float worldHeight  = enemyData.sprite.rect.height / enemyData.sprite.pixelsPerUnit;
-            float scale        = worldHeight > 0 ? targetHeight / worldHeight : 1f;
-            unitObj.transform.localScale = Vector3.one * scale;
-        }
-
+        // Sprite size is normalized by CombatUnit itself (NormalizeSpriteSize, called from
+        // SetupVisuals during Awake) once it picks up the SpriteRenderer set above.
         combatUnit.visualObject = unitObj;
 
         // ── Skills ────────────────────────────────────────────────────────────

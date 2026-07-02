@@ -7,7 +7,14 @@
 ---
 
 ## TASK-001 — Confirm CombatScene pipeline fix with a smoke-test play-through
-- [ ] status
+- [x] status — confirmed working 2026-07-01 via MCP-driven Play Mode test (see PROGRESS.md).
+  Full flow verified: TeamAssembler → Start Battle → CombatScene load → player unit spawned on
+  player side (6,2) → enemy spawned from stage pool → TurnManager found 2 units and initialized
+  → battle resolved → BattleResultsUI.ReturnToFarm() → back to SampleScene. Zero exceptions in
+  Editor.log for the entire sequence. Follow-up finding: CombatTeamSpawner/EnemySpawner still
+  have verbose Debug.LogWarning/LogError diagnostic instrumentation from the original bug
+  investigation (including OnDestroy() logging via LogError for normal scene-teardown) — not
+  fixed as part of this task per its own scope (verification only), flagged for a new task.
 - priority: Critical
 - system: combat
 - files: `Assets/Scenes/CombatScene.unity`, `Assets/Scenes/SampleScene.unity`
@@ -647,7 +654,10 @@
 ---
 
 ## TASK-014 — Consolidate stale root-level docs into one current status doc
-- [ ] status
+- [x] status — done (verified 2026-07-01: all 6 source docs, plus FULL_GAME_PROJECT_AUDIT.md,
+  are gone from the repo; SOWUR_SHIELD_STATUS.md exists and its header already declares itself
+  the successor to ROADMAP.md/GAME_DEVELOPMENT_PLAN.md/COMBAT_PIPELINE_STATUS.md/
+  DEVELOPMENT_LOG.md/COMBAT_SETUP_GUIDE.md)
 - priority: Important
 - system: documentation
 - files: `ROADMAP.md`, `GAME_DEVELOPMENT_PLAN.md`, `COMBAT_PIPELINE_STATUS.md`,
@@ -704,14 +714,15 @@ follow-up needed), TASK-007 (DialogueCondition tests), TASK-008 (DialogueEffect 
 TASK-009 (dead SellBox branch removed), TASK-010 (CLAUDE.md folder table fixed),
 TASK-013 (test asmdefs verified).
 
-**Remaining — Critical (1 task)**:
-1. **TASK-001** — Smoke-test the combat pipeline. This is pure verification (no code change) and
-   either closes out the project's longest-standing open bug investigation, or surfaces a real
-   remaining issue early — either way, everything else benefits from knowing this answer.
-   Requires the Unity Editor (not done in this pass).
+**Remaining — Critical**: none. TASK-001 confirmed 2026-07-01.
 
-**Remaining — Important (3 tasks)**: TASK-011, TASK-012, TASK-014
-(TASK-014 also depends on TASK-001).
+**Remaining — Important (2 tasks)**: TASK-011, TASK-012.
+
+**New follow-up task needed** (from TASK-001 verification): remove/downgrade the verbose
+Debug.LogWarning/LogError diagnostic instrumentation in `CombatTeamSpawner.cs` and
+`EnemySpawner.cs` left over from the original spawn-pipeline bug investigation — in particular
+`CombatTeamSpawner.OnDestroy()` logs via `Debug.LogError` for ordinary scene-transition teardown,
+which is misleading and would trip any test/CI check that asserts a clean console.
 
 **Remaining — Polish**: none.
 

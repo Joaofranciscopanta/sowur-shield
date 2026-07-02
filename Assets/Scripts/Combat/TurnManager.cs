@@ -119,11 +119,12 @@ public class TurnManager : MonoBehaviour
 
     private void Start()
     {
-        Debug.LogWarning($"[TurnManager] Start() — scheduling InitializeCombat in 1s. " +
-            $"Time.timeScale={Time.timeScale}, Time.time={Time.time}, Time.unscaledTime={Time.unscaledTime}");
+        // A prior bug had Time.timeScale left at 0 when entering CombatScene, which silently
+        // prevents Invoke() from ever firing. Self-heals but stays loud since it points at a
+        // real bug elsewhere (something left the game paused) if it ever fires again.
         if (Time.timeScale == 0f)
         {
-            Debug.LogError("[TurnManager] Time.timeScale is 0 at Start() — Invoke(1s) will NEVER fire! Forcing Time.timeScale = 1f.");
+            Debug.LogWarning("[TurnManager] Time.timeScale is 0 at Start() — forcing 1f so combat can initialize.");
             Time.timeScale = 1f;
         }
         // Wait for grid and units to spawn, then start combat
@@ -135,8 +136,6 @@ public class TurnManager : MonoBehaviour
     /// </summary>
     public void InitializeCombat()
     {
-        Debug.LogWarning($"[TurnManager] InitializeCombat() called at Time.time={Time.time}, retry={initRetryCount}");
-
         if (GridManager.Instance == null)
         {
             Debug.LogError("[TurnManager] GridManager.Instance is null in InitializeCombat — cannot start combat.");
@@ -145,8 +144,6 @@ public class TurnManager : MonoBehaviour
 
         // Get all units from grid
         allUnits = GridManager.Instance.GetAllUnits();
-
-        Debug.LogWarning($"[TurnManager] InitializeCombat — found {allUnits.Count} units on grid.");
 
         if (allUnits.Count == 0)
         {

@@ -293,6 +293,13 @@ public class AnimalMarketUI : MonoBehaviour, IUIWindow, ISaveable
         sr.sprite = data.idleSprite;
         sr.sortingOrder = 5;
 
+        // Source sprites are raw asset-pack sheets with wildly different native pixel sizes;
+        // manually-placed animals compensate with a hand-tuned transform scale (e.g. the
+        // in-scene chicken sits at 4x). Normalize to the same on-screen size here so animals
+        // spawned from a purchase don't appear tiny relative to hand-placed ones.
+        float scale = SpriteScaleUtility.GetScaleForTargetMaxDimension(sr.sprite, 0.56f);
+        go.transform.localScale = new Vector3(scale, scale, 1f);
+
         var animal = go.AddComponent<Animal>();
         animal.InitializeFromMarket(data, zone); // before Start() runs, which first reads animalData
 

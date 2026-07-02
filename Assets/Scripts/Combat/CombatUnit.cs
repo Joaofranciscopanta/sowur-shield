@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using SowurShield.Animals;
+using SowurShield.Core;
 
 namespace SowurShield.Combat
 {
@@ -271,19 +272,7 @@ public class CombatUnit : MonoBehaviour
         if (sr == null || sr.sprite == null) return;
 
         // Target size: sprite should be about 0.8 units tall (fits in 1x1 grid cell with padding)
-        float targetHeight = 0.8f;
-
-        // Get sprite's pixel height and pixels-per-unit
-        float spriteHeight = sr.sprite.rect.height;
-        float pixelsPerUnit = sr.sprite.pixelsPerUnit;
-
-        // Calculate world height of sprite at scale 1
-        float worldHeight = spriteHeight / pixelsPerUnit;
-
-        // Calculate scale needed to reach target height
-        float scale = targetHeight / worldHeight;
-
-        // Apply uniform scale
+        float scale = SpriteScaleUtility.GetScaleForTargetHeight(sr.sprite, 0.8f);
         transform.localScale = Vector3.one * scale;
     }
 

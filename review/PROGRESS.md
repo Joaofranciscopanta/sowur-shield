@@ -442,3 +442,21 @@
   - Files changed: `Assets/Scripts/Worldmap/WorldMapUiController.cs`,
     `Assets/Scenes/SampleScene.unity`, `Assets/Prefabs/AnimalCard.prefab`. No
     commits made.
+- 2026-07-01: TASK-001 done. Ran a real Play Mode smoke test via Unity MCP (execute_code,
+  reflecting into TeamAssemblerData/StageManager/TeamAssemblerUI to assemble a 1-animal team,
+  select "Sunny Fields", and trigger Start Battle) instead of manual clicking. Editor.log shows
+  the full sequence with zero exceptions: CombatScene loaded, CombatTeamSpawner spawned the
+  player unit at grid (6,2), EnemySpawner spawned 1 enemy from the stage pool, TurnManager
+  found 2 units and initialized combat, the battle resolved, BattleResultsUI.ReturnToFarm() ran
+  (correctly fell back to SceneManager.LoadScene since SceneTransitionManager.Instance was null —
+  expected, since Play Mode was entered directly in SampleScene, skipping MainMenu), and the
+  scene returned to SampleScene cleanly. Combat pipeline confirmed working end-to-end.
+  Follow-up: `CombatTeamSpawner.cs`/`EnemySpawner.cs` still carry leftover diagnostic
+  Debug.LogWarning/LogError calls from the original investigation (notably OnDestroy() logging
+  via LogError for normal teardown) — worth a cleanup pass, not done here since out of scope.
+- 2026-07-01: TASK-014 marked done retroactively. Verified `ROADMAP.md`,
+  `GAME_DEVELOPMENT_PLAN.md`, `COMBAT_PIPELINE_STATUS.md`, `DEVELOPMENT_LOG.md`,
+  `COMBAT_SETUP_GUIDE.md`, and `FULL_GAME_PROJECT_AUDIT.md` no longer exist in the
+  repo, and `SOWUR_SHIELD_STATUS.md` already declares itself their successor in its
+  header. The consolidation this task asked for had already happened in an earlier
+  session without the worklist checkbox being updated.

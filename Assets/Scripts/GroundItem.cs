@@ -352,6 +352,11 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
         float originalRotationSpeed = rotationSpeed;
         rotationSpeed = originalRotationSpeed * 2;
 
+        // Base scale varies per item now (normalized in UpdateVisual), so shrink relative to
+        // whatever scale this item actually spawned at rather than assuming 1.
+        Vector3 startScale = transform.localScale;
+        Vector3 endScale = startScale * 0.5f;
+
         while (elapsed < duration)
         {
             float t = elapsed / duration;
@@ -361,7 +366,7 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
             transform.position = Vector3.Lerp(startPosition, endPosition, curvedT);
 
             // Gradually shrink as it approaches the player
-            transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one * 0.5f, curvedT);
+            transform.localScale = Vector3.Lerp(startScale, endScale, curvedT);
 
             elapsed += Time.deltaTime;
             yield return null;
@@ -460,11 +465,22 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
         }
     }
 
+    // Item icons are imported at whatever native pixel size their source art uses (inventory
+    // UI hides this via Image scaling), so a raw SpriteRenderer at scale 1 makes dropped items
+    // vary wildly in size. Normalize every ground item to the same on-screen footprint.
+    private const float TargetWorldSize = 0.3f;
+
     private void UpdateVisual()
     {
         if (item != null && spriteRenderer != null)
         {
             spriteRenderer.sprite = item.icon;
+
+            if (item.icon != null)
+            {
+                float scale = SpriteScaleUtility.GetScaleForTargetMaxDimension(item.icon, TargetWorldSize);
+                transform.localScale = new Vector3(scale, scale, 1f);
+            }
         }
     }
 

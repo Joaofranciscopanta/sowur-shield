@@ -22,7 +22,7 @@ public class CombatTeamSpawner : MonoBehaviour
     [SerializeField] private bool spawnPlayerTeam = true;
 
     [Header("Debug")]
-    [SerializeField] private bool showDebugLogs = true;
+    [SerializeField] private bool showDebugLogs = false;
 
     // Default player spawn positions (columns 6-8, right side)
     private static readonly Vector2Int[] DefaultPlayerPositions = new Vector2Int[]
@@ -35,25 +35,14 @@ public class CombatTeamSpawner : MonoBehaviour
         new Vector2Int(8, 0),
     };
 
-    private void Awake()
-    {
-        Debug.LogWarning($"[CombatTeamSpawner] Awake() on '{gameObject.name}', enabled={enabled}, active={gameObject.activeInHierarchy}, " +
-            $"Time.timeScale={Time.timeScale}, Time.time={Time.time}, Time.unscaledTime={Time.unscaledTime}");
-    }
-
-    private void OnDestroy()
-    {
-        Debug.LogError($"[CombatTeamSpawner] OnDestroy() called on '{gameObject.name}' — Invoke will be cancelled! " +
-            $"Time.timeScale={Time.timeScale}, Time.time={Time.time}");
-    }
-
     private void Start()
     {
-        Debug.LogWarning($"[CombatTeamSpawner] Start() — scheduling SpawnTeams in 0.5s. " +
-            $"Time.timeScale={Time.timeScale}, Time.time={Time.time}, Time.unscaledTime={Time.unscaledTime}");
+        // A prior bug had Time.timeScale left at 0 when entering CombatScene, which silently
+        // prevents Invoke() from ever firing. Self-heals but stays loud since it points at a
+        // real bug elsewhere (something left the game paused) if it ever fires again.
         if (Time.timeScale == 0f)
         {
-            Debug.LogError("[CombatTeamSpawner] Time.timeScale is 0 at Start() — Invoke(0.5s) will NEVER fire! Forcing Time.timeScale = 1f.");
+            Debug.LogWarning("[CombatTeamSpawner] Time.timeScale is 0 at Start() — forcing 1f so spawning can proceed.");
             Time.timeScale = 1f;
         }
         // Wait for GridManager.GenerateGrid() (runs in its own Start) and
@@ -64,8 +53,6 @@ public class CombatTeamSpawner : MonoBehaviour
 
     private void SpawnTeams()
     {
-        Debug.LogWarning($"[CombatTeamSpawner] SpawnTeams() called at Time.time={Time.time}. spawnPlayerTeam={spawnPlayerTeam}");
-
         if (GridManager.Instance == null)
         {
             Debug.LogError("[CombatTeamSpawner] GridManager.Instance is null!");
@@ -80,18 +67,9 @@ public class CombatTeamSpawner : MonoBehaviour
 
     private void SpawnPlayerTeam()
     {
-        Debug.LogWarning($"[CombatTeamSpawner] SpawnPlayerTeam() — TeamAssemblerData.Instance id={TeamAssemblerData.Instance?.GetInstanceID()}, " +
-            $"initial team.Count={TeamAssemblerData.Instance?.team?.Count ?? -1}, " +
-            $"selectedStageName='{TeamAssemblerData.Instance?.selectedStageName}', " +
-            $"PlayerPrefs has '{"Combat_TeamCount"}'={PlayerPrefs.HasKey("Combat_TeamCount")}" +
-            (PlayerPrefs.HasKey("Combat_TeamCount") ? $" (value={PlayerPrefs.GetInt("Combat_TeamCount")})" : ""));
-
         // Restore from PlayerPrefs if team is empty (domain reload in builds clears static fields)
         if (TeamAssemblerData.Instance.team == null || TeamAssemblerData.Instance.team.Count == 0)
             TeamAssemblerData.Instance.LoadFromPrefs();
-
-        int teamCount = TeamAssemblerData.Instance?.team?.Count ?? -1;
-        Debug.LogWarning($"[CombatTeamSpawner] SpawnPlayerTeam() — after LoadFromPrefs, team size: {teamCount}");
 
         List<TeamAssemblerData.PositionedAnimal> team = null;
 
@@ -145,7 +123,8 @@ public class CombatTeamSpawner : MonoBehaviour
             posIndex++;
         }
 
-        Debug.LogWarning($"[CombatTeamSpawner] Spawned {spawned}/{team.Count} units.");
+        if (showDebugLogs)
+            Debug.Log($"[CombatTeamSpawner] Spawned {spawned}/{team.Count} units.");
     }
 
     /// <summary>
@@ -237,8 +216,9 @@ public class CombatTeamSpawner : MonoBehaviour
         }
 
         // ── Create GameObject ─────────────────────────────────────────────────
+        // Scale starts at the Transform default (1,1,1); CombatUnit.NormalizeSpriteSize
+        // (via SetupVisuals during Awake) overwrites it once it picks up animalData.idleSprite.
         GameObject unitObj = new GameObject(customName);
-        unitObj.transform.localScale = Vector3.one;
 
         // ── SpriteRenderer — assign idle sprite directly (must exist before Animal.Awake) ──
         SpriteRenderer sr = unitObj.AddComponent<SpriteRenderer>();
@@ -299,7 +279,8 @@ public class CombatTeamSpawner : MonoBehaviour
             return false;
         }
 
-        Debug.LogWarning($"[CombatTeamSpawner] Spawned '{customName}' at {gridPos}, world pos={unitObj.transform.position}.");
+        if (showDebugLogs)
+            Debug.Log($"[CombatTeamSpawner] Spawned '{customName}' at {gridPos}, world pos={unitObj.transform.position}.");
         return true;
     }
 
