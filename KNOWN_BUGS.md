@@ -1,5 +1,9 @@
 # Known Bugs
 
+> Companion to [SOWUR_SHIELD_STATUS.md](SOWUR_SHIELD_STATUS.md). Sections: **Bugs** (broken
+> behavior) and **Quirks** (surprising-but-intended or environment-specific behavior worth
+> knowing before debugging "ghosts").
+
 ## [OPEN] Maren Beloved — Can't re-interact after first conversation
 
 **Symptom:** After talking to Maren (rel >= 75) and closing the dialogue (ESC or finishing),
@@ -44,3 +48,49 @@ the button `RectTransform` grows with a `LayoutElement`/`VerticalLayoutGroup` on
 container.
 
 **Workaround:** None confirmed — cosmetic only if it still reproduces, choices remain clickable.
+
+---
+
+## [OPEN] ItemDatabase lookup came back empty after an in-editor domain reload
+
+**Symptom (observed 2026-07-01, Editor via MCP):** after a script recompile mid-session,
+`ItemDatabase.GetItem("...")` returned null for every item and the static `itemLookup`
+dictionary had count 0, even after touching `ItemDatabase.Instance` (which should trigger
+`Initialize()`). Earlier in the same session the same lookups worked (count 20).
+
+**Notes:** `Resources.Load<ItemDatabase>("ItemDatabase")` returned null at the time — there is
+no `ItemDatabase.asset` at `Resources/` root, so `Instance` falls back to
+`CreateInstance` + auto-load from `Resources/Items` (only 6 items live there; the other ~14
+load from other Resources folders via the initialized path). Suspicion: the static
+`isInitialized` flag and the static `itemLookup` can get out of sync across domain reloads
+(`Initialize()` early-returns on `isInitialized` without checking the dictionary is populated).
+
+**Where to look:** `Assets/Scripts/Inventory/ItemDatabase.cs` — `Initialize()` guard (consider
+`if (isInitialized && itemLookup.Count > 0) return;`) and/or `[RuntimeInitializeOnLoadMethod]`
+reset. Also consider actually creating the `ItemDatabase.asset` in `Resources/`.
+
+**Impact if it fires in a build:** items silently fail to resolve (quests rewards, feeding,
+shops). Not yet reproduced in Play Mode from a cold start — may be editor-domain-reload only.
+
+---
+
+# Quirks (not bugs)
+
+## HUD money/time/day text is empty when playing directly in SampleScene
+
+`SafeGetLocalizedString()` intentionally returns `""` until the Localization tables finish
+preloading, which happens during the MainMenu scene (guards against a WebGL
+`WaitForCompletion` deadlock). Entering Play Mode directly in SampleScene skips that preload,
+so labels stay blank. Normal flow (MainMenu → game) is unaffected.
+
+## Unity Play Mode freezes while the Editor window is unfocused
+
+The Editor throttles background playback: `Time.time` barely advances and `Invoke()` timers
+never fire while another window has focus. Any automated/scripted play-mode test (combat
+spawns, timers) requires the Unity window to stay focused. This is Editor behavior, not a
+game bug.
+
+## Duck and Sparrow use chicken-baby placeholder sprites
+
+`duck.asset` / `Sparrow.asset` point at `Chicken_Baby*.png` — art gap, tracked in
+SOWUR_SHIELD_STATUS.md "Art gaps", listed here so nobody debugs it as a sprite-assignment bug.

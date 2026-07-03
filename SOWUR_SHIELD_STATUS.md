@@ -1,385 +1,241 @@
 # Sowur Shield — Project Status
 
-> Last updated: 2026-07-01
+> Last updated: 2026-07-02
 > Branch: `main`
-> This document supersedes and replaces: ROADMAP.md, GAME_DEVELOPMENT_PLAN.md,
-> COMBAT_PIPELINE_STATUS.md, DEVELOPMENT_LOG.md, COMBAT_SETUP_GUIDE.md.
-> For a deep code-quality review (architecture map, findings, atomic task worklist), see `/review/`.
-> For product/design ideas and a full design-oriented audit, see `FULL_GAME_PROJECT_AUDIT.md`
-> (kept separate — design/feature brainstorming, not technical status).
+> This is the **single source of truth for project state**. It supersedes ROADMAP.md,
+> GAME_DEVELOPMENT_PLAN.md, COMBAT_PIPELINE_STATUS.md, DEVELOPMENT_LOG.md, COMBAT_SETUP_GUIDE.md
+> (all deleted; content folded in here).
+
+## Documentation Map
+
+| Document | What it's for |
+|---|---|
+| **SOWUR_SHIELD_STATUS.md** (this file) | What's done, how it works, what's in progress, what's next |
+| [KNOWN_BUGS.md](KNOWN_BUGS.md) | Open bugs and known quirks, with repro notes and where to look |
+| [CLAUDE.md](CLAUDE.md) | Dev conventions, Unity setup requirements, bug-fix history, namespace rules |
+| [review/01_ARCHITECTURE.md](review/01_ARCHITECTURE.md) | Deep architecture map (code-review ground truth, 2026-06-12) |
+| [review/02_FINDINGS.md](review/02_FINDINGS.md) | Code-quality findings with file:line citations |
+| [review/03_WORKLIST.md](review/03_WORKLIST.md) | Atomic task backlog (2 tasks remaining + follow-ups) |
+| [review/PROGRESS.md](review/PROGRESS.md) | Log of completed review tasks |
+| [UI_ART_PLACEHOLDERS.md](UI_ART_PLACEHOLDERS.md) | UI elements still needing custom art + generation prompts |
+| [AI_Sprite_Prompts.md](AI_Sprite_Prompts.md) | Sprite-generation prompts matching the project art style |
 
 ---
 
-## Current State Overview
+## TL;DR Dashboard
 
-Sowur Shield is a 2D farming sim + auto-battler hybrid. The farming/economy/animal/dialogue/quest
-side is production-ready and well-tested. The combat loop is mechanically complete and its
-end-to-end pipeline (farm → team select → battle → rewards → back to farm) is structurally
-sound based on a fresh source read.
+| System | Status | Confidence |
+|---|---|---|
+| Farming (crops, soil, weather) | ✅ Complete | Well-tested |
+| Economy (inventory, shops, selling) | ✅ Complete | Well-tested |
+| Animal husbandry | ✅ Complete | 106 tests |
+| Dialogue / Quests / Relationships | ✅ Complete | 45+ tests |
+| Combat loop | ✅ Complete | **Pipeline confirmed end-to-end in-editor 2026-07-01** |
+| Save/Load (multi-slot) | ✅ Complete | Dictionary-persistence fix landed Jun/26 |
+| Localization EN/PT/ES | ✅ Complete | ~226 strings, WebGL-safe |
+| Mobile touch + gamepad input | ✅ Complete | Manual device test recommended |
+| Achievements | ✅ Complete | 8 achievements |
+| Audio / Tutorial | ✅ Complete | Needs Editor asset wiring |
+| WebGL demo | ✅ Live (Build #15) | https://joaofranciscopanta.github.io/sowur-shield/ |
+| **UI polish pass** | 🔨 In progress | HUD/inventory done; combat consumable UI needs visual check |
+| World/village map expansion | 💤 Deferred | Design decided (see Deferred section) |
 
-- **4 scenes**: MainMenu, SampleScene (farm), CombatScene, MapEditorScene
-- **154 scripts** under `Assets/Scripts/`, **100% namespace-compliant** (`SowurShield.<System>`)
-- **413 test methods** across **16 test files** (EditMode + PlayMode)
-- **3 assembly definitions**: `SowurShield.Runtime`, `SowurShield.Editor`,
-  `SowurShield.Dialogue.Editor`
+**Project size**: 4 scenes, ~155 scripts (100% namespace-compliant `SowurShield.<System>`),
+413+ test methods in 16+ test files, 3 asmdefs + tests.
 
 ---
 
-## What's Complete
+## What's Complete (and how it works)
 
 ### Core Gameplay
 - Player movement (WASD, dash, animations), new Input System (`PlayerControls.inputactions`)
-- Interaction system: E-key proximity (`InteractionManager`) + left-click sprite collision
-  (`CursorController`), priority-based (objects > tools)
-- Time & season cycle: 28-day year (4×7-day seasons), `OnDayChanged`/`OnSeasonChanged` events
-- Save/Load: multi-slot (AutoSave + Slot1-3), `ISaveable` registry (14 implementers), legacy
-  flat-save migration to AutoSave on first boot
+- Interaction: E-key proximity (`InteractionManager`) + left-click sprite raycast
+  (`CursorController`), priority: objects > tools. Cursor colors: green=object, yellow=tool
+- Time & seasons: 28-day year (4×7-day seasons), `OnDayChanged`/`OnSeasonChanged` events
+- Save/Load: multi-slot (AutoSave + Slot1-3) → `Saves/<Slot>/GameSave.json`, `ISaveable`
+  registry, legacy flat-save migration, version-dispatch scaffolding in `MigrateSave()`.
+  **Critical fix (Jun/26)**: `Dictionary<,>` fields were never persisted by `JsonUtility` —
+  fixed in `SaveManager`/`GameData`
 
 ### Farming
-- Soil state machine: Regular → Tilled → Watered → WithCrop, event-driven, no issues found
-- Crop growth: multi-stage, per-crop config via `CropData` ScriptableObject, water requirement
-  with drought-death, regrowth, seasonal restrictions (Greenhouse bypasses restriction)
+- Soil state machine: Regular → Tilled → Watered → WithCrop (`SoilBlockInteractable`)
+- Crop growth: multi-stage, per-crop `CropData` SO, water requirement with drought-death,
+  regrowth, seasonal restrictions (Greenhouse bypasses)
 - Crops: Carrot, Cabbage, Tomato (Summer), Winter Wheat (Winter)
+- `WeatherController`: Rain auto-waters, Drought accelerates wilting, rolls on `OnDayChanged`
 - DualGridTilemap: 16-tile rule-based rendering
 
 ### Economy
-- Inventory: 36 slots (9 hotbar + 27 storage), drag/drop, stacking, tooltips
-- SellBox: auto-sell on sleep (80% via `GameBalance.sellMultiplier`), drag/drop, movement lock
-  while open, auto-close on walk-away
-- Shop system: `ShopData`/`ShopNPC`/`ShopUI`, relationship-based discount (0.2%/point, max 20%),
-  limited stock persisted via `ISaveable`
-- 30+ items: produce, seeds, tools, food
+- Inventory: 36 slots (9 hotbar + 27 storage), drag/drop, stacking, tooltips.
+  Storage grid opens over a themed wood window panel (`storagePanelBackground`, Jul/2)
+- SellBox: auto-sell on sleep (80% via `GameBalance.sellMultiplier`), movement lock while open
+- Shops: `ShopData`/`ShopNPC`/`ShopUI` with relationship discount (0.2%/pt, max 20%), limited
+  stock persisted; `AnimalMarketUI` buy/sell animals; `BuildingShopUI` for farm buildings
+- 30+ items via `ItemDatabase` (name-keyed lookup — names must match exactly)
 
 ### Animal Husbandry
 - 4 animals: Chicken (Spring), Duck (Summer), Sparrow (Fall), Rabbit (Winter)
-- Care: petting (+5 happiness, heart particle, 5s cooldown), feeding (+3 happiness, via hand or
-  FeedingTrough), daily decay if neglected (-0.5/no pet, -1.0/no feed, floor 20)
-- Happiness → combat multiplier: `0.5x` at 0 happiness → `1.5x` at 100 (formula in
-  `Animal.cs:675-680`, bounds configurable via `GameBalance`)
-- Illness: 3-day neglect threshold → ill, blocks production, -50% combat stats, cured by
-  "Medicine" item
-- Production: daily, +50% bonus if petted AND fed same day
-- XP/leveling: level × 100 XP per level, max level 10, +5% growth-stat boost per level (cap 3x)
-- Seasonal stat bonuses in preferred season
-- `AnimalRosterUI`/`AnimalInfoUI`: inspection + rename (max 20 chars)
-- `FeedingTrough`: stores food in `InventoryContainer`, auto-feeds registered animals on
-  `OnDayChanged`
+- Care loop: petting (+5 happiness, heart particle), feeding (+3, hand or `FeedingTrough`),
+  daily decay if neglected (floor 20); illness after 3 neglect days (blocks production,
+  -50% combat stats, cured by Medicine item)
+- Production: daily, +50% bonus if petted AND fed; XP/leveling (level×100 XP, max 10,
+  +5% growth stats/level); seasonal stat bonuses in preferred season
+- Happiness → combat multiplier 0.5x–1.5x (`Animal.cs`, bounds via `GameBalance`)
+- Market-purchased animals normalize sprite scale via `SpriteScaleUtility` (Jul/1) so they
+  match hand-placed ones
 
 ### Dialogue, Quests, Relationships
 - `DialogueTree`/`DialogueNode`/`DialogueChoice`: branching, conditions, effects, typewriter,
-  portraits
-- `ConversationMemory` (singleton, `ISaveable`, 444 lines): relationship levels (-100..100),
-  quest statuses, custom variables, conversation completion — auto-saves every 30s
-- `DialogueCondition.ConditionType` includes `RelationshipLevel`, `QuestStatus`, `InventoryItem`,
-  `VariableCheck` — all wired to real game state
-- `DialogueEffect.EffectType` includes `ModifyRelationship`, `GiveItem`/`TakeItem` (real
-  `Inventory` via `ItemDatabase`), `SetQuestStatus`
-- `QuestManager` (singleton, `ISaveable`, 369 lines): objectives (CollectItem/TalkToNPC/
-  HarvestCrop/CompleteBattle/Custom), rewards (gold/items/relationship), `NotifyObjective()`
-  auto-advances from dialogue/farming/combat hooks
-- `QuestTrackerUI`: corner HUD showing active quest + current objective
+  portraits; all 6 ConditionType/EffectType variants wired to real game systems
+- `ConversationMemory` (singleton, `ISaveable`): relationships (-100..100), quest statuses,
+  custom variables — auto-saves every 30s
+- `QuestManager` (singleton, `ISaveable`): objectives (CollectItem/TalkToNPC/HarvestCrop/
+  CompleteBattle/Custom), rewards, `NotifyObjective()` auto-advance hooks live in
+  Inventory/Conversation/Crop/Stage code. Quest assets in `Resources/Quests/`
+- `QuestTrackerUI` corner HUD; `QuestsCanvas` full journal
 
-### Farm Buildings & Weather
-- `FarmBuildingManager` (`ISaveable` singleton): Barn doubles `AnimalZone` capacity (5→10),
-  Greenhouse bypasses seasonal planting restriction
-- `BuildingShopUI`: loads `Resources/Buildings/` assets
-- `WeatherController`: Rain (auto-waters tilled/watered soil), Drought (accelerates wilting),
-  once per day on `OnDayChanged`
+### Combat (auto-battler)
+- 9×5 grid: **columns 0-5 = enemy side, 6-8 = player side** (`GridManager`)
+- Speed-based ATB turn gauge (`TurnManager`), skills with cooldowns/accuracy, status effects
+  (Stun/Shield/Burn/Poison/Weakness — well-tested), immunities, crits (5%/×1.5), combo counter,
+  melee/ranged positional targeting, in-battle consumables, battle modifiers (DoubleSpeed/
+  LowVisibility/HealingRain/GlassCannon), behavior-aware enemy AI (Aggressive/Defensive/Support)
+- Class synergy: 3+ units sharing `combatClass` get +10% buffs; passive skill unlocks via
+  `AnimalSkill.CanUnlock` (Season-type conditions still N/A — no season singleton)
+- Self-spawning VFX/UI: `HitStopController`, `CombatUnitVFX` (status icons + damage numbers),
+  `TelegraphHighlighter`, `BattleHudOverlay` (modifier banner + combo, outlined text Jul/2),
+  `ConsumableBattleUI` (restyled Jul/2 — gold button + wood panel)
+- Rewards: gold, loot, happiness, XP; stage completion → `worldFlags`
+- **Pipeline confirmed 2026-07-01** via full in-editor play-through: TeamAssembler → battle →
+  spawns on correct sides → turn loop → results → return to farm, zero exceptions.
+  Diagnostic log spam from the old investigation was removed the same day
+- Unit sprite sizing centralized in `SpriteScaleUtility` (`SowurShield.Core`)
 
-### World Map
-- `WorldMapBiomePanel`: expandable per-biome panel with stage buttons + lock icon
-- `BiomeUnlockChecker`: boss-completion → biome unlock
-- `WorldMapUiController`: syncs save → `StageManager`, refreshes panels on open
-- `StageButton`: lock/unlock from `worldFlags`, routes to `TeamAssemblerUI`
-- `WorldMapTriggerZone`: E-key entry point from farm scene
-- 25 stage ScriptableObjects across 5 biomes, 39 enemy ScriptableObjects
+### World Map & Stages
+- 5 biomes, 25 stages, 39 enemy SOs; `WorldMapBiomePanel` + `BiomeUnlockChecker`
+  (boss-completion unlocks), `StageButton` → `TeamAssemblerUI`, `WorldMapTriggerZone` (E-key)
+- `StageManager` (static) persists completion via save data; stage backgrounds render in combat
 
-### Combat
-- 9×5 grid: **columns 0-5 = enemy side, columns 6-8 = player side** (confirmed in
-  `GridManager.cs:73-126` — this is the ground truth; ignore any doc describing a row-based
-  enemy/player split, that was always aspirational/incorrect)
-- Speed-based ATB turn gauge, allocation-free `Update()` loop (`TurnManager.cs:133-148`),
-  `gaugeFilLRate=10f`, overflow-preserving gauge reset
-- Skill execution: cooldowns, accuracy, damage multiplier, self-heal, player skill from
-  `AnimalData.activeSkill`, enemy skills from `EnemyData.skills` + `skillUseChance`
-- Status effects: Stun (skip turn), Shield (0-90% damage reduction, capped), Burn (DoT) —
-  **well-tested**, 29 dedicated tests in `CombatPhase1Tests.cs` covering edge cases (refresh vs.
-  stack, shield cap, case-insensitive immunity matching)
-- Status immunities via `EnemyData.immunities` (string list)
-- Rewards: gold → `PlayerStats`, loot → `Inventory`, happiness → animals, XP/level-up to
-  survivors; stage completion marked in `worldFlags["stage_completed_{stageName}"]`
-- Combat animations: Attack/Hurt/Die triggers via `AnimalData.animatorController`
+### Localization (EN / PT / ES)
+- Full Unity Localization infra: 3 locales, 12 string-table collections, ~226 entries covering
+  dialogue, items, animals, buildings, crops, enemies, stages, quests, UI
+- Editor tooling: `Tools > Sowur Shield > Setup Localization (Full)` (idempotent),
+  `Import Localization CSV`, `Auto-Wire Localized Fields` (reads `field_map.json`)
+- WebGL-safe: `SafeGetLocalizedString()` returns empty until tables preload (avoids
+  `WaitForCompletion` deadlock — tables preload during MainMenu). Demo has language switcher
+
+### Mobile & Gamepad Input
+- Virtual joystick + action button (touch, Safe-Area aware) via `MobileControlsManager`
+  (DontDestroyOnLoad, lives in MainMenu scene)
+- Xbox/PS5 gamepad: movement, interact (A/Cross), `GamepadVirtualCursor` reticle for tools
+- Builder: `Tools > Sowur Shield > Rebuild Mobile Controls UI`
+
+### Achievements
+- `AchievementData`/`AchievementManager` + Steam-style toast; 8 achievements driven by global
+  static events (stage completion, crop harvest, item sales)
 
 ### Audio & Tutorial
-- `GameMusicManager`: seasonal farm tracks, combat/menu music, crossfade on season change
-- `SFXManager`: pooled AudioSources (5 slots, round-robin)
-- `TutorialManager` (`ISaveable` singleton): 6 steps (till → plant → water → pet → sleep →
-  harvest), persists progress, skip button
+- `GameMusicManager`: seasonal farm tracks, combat/menu music, crossfades
+- `SFXManager`: pooled AudioSources; wired to CombatHit/CombatDeath/PetAnimal
+- `TutorialManager` (`ISaveable`): 6 steps, auto-starts on new game, skippable
+
+### UI Theme
+- `UITheme` SO (`Resources/UI/CozyUITheme.asset`): wood/cream/gold palette + spacing/typography
+  tokens, consumed across combat and farm UI
+- Shared sprite kit in `Assets/Resources/Sprites/UI/` (panels, buttons, bars, slots, frames) —
+  runtime-loadable via `Resources.Load` for self-spawning UI
+- All four popup canvases (TeamAssembler, BuildingShop, Quests, AnimalMarket) standardized to
+  1920×1080 reference resolution matching the HUD (Jul/1)
 
 ---
 
-## Combat Pipeline — Resolved
+## In Progress — UI Polish Pass (Jul/1–2)
 
-`COMBAT_PIPELINE_STATUS.md` previously documented a bug where `SpawnTeams()` never fired via the
-TeamAssembler flow, caused by 24 MonoBehaviour components in `CombatScene.unity` with empty
-`m_EditorClassIdentifier` entries (Unity serialization issue, not a code bug).
+**Done & committed** (`ec9d046`, `e03d748`):
+- Main HUD: decorative frame on minimap, wood panels behind stamina bar and money/time/day,
+  wood-tinted stamina backing
+- Inventory: wood window panel behind storage grid, visibility tied to `ToggleInventory()`
+- Combat: `ConsumableBattleUI` Items button (gold sprite) + list panel (wood), outlined
+  floating HUD text
 
-**Status: fixed.** A static check of the current `CombatScene.unity`
-(`grep -c "m_EditorClassIdentifier: $"`) returns **0** — no empty ECI entries remain. This lines
-up with 4 commits that postdate the original bug report and specifically address related issues
-(timeScale=0 blocking Invoke, enemy sprite rendering, turn speed/health bar scale, and "save
-CombatScene/SampleScene with combat pipeline setup"). A fresh read of
-`CombatTeamSpawner`/`EnemySpawner`/`TurnManager`/`GridManager` shows a complete, coherent
-Invoke-chain (0.5s spawn players → 0.6s spawn enemies → 1.0s init combat) with no missing-script
-issues.
-
-**One remaining recommended action** (tracked as `/review/03_WORKLIST.md` TASK-001): a manual
-play-through smoke test (farm → trigger zone → team assembler → start battle → win/lose →
-return to farm) to get a second confirmation signal beyond static YAML inspection. This is the
-only piece of `COMBAT_SETUP_GUIDE.md`'s troubleshooting content still potentially relevant — if
-the smoke test passes, the rest of that guide's manual prefab/scene-setup steps describe work
-that is now baked into the saved scenes and can be considered historical.
+**Remaining**:
+- [ ] Visual verification of the combat Items button/panel in a live battle (code compiled
+  clean; not yet seen on screen — needs editor-focused play session)
+- [ ] Review shop windows, pause menu (`GameMenuUI`), Quests journal, victory/defeat screens
+  against the theme
+- [ ] Stamina bar has no icon (no energy icon exists in the sprite kit yet)
 
 ---
 
-## Combat Scope — Implemented (minimal synergy)
+## Backlog
 
-`PRD_Animals_Combat_System.md` (v2.0, 2025-10-21) describes an elaborate "3-Passive System"
-(Family passives, Class passives, Happiness passives, plus team-wide "Combo Synergies") as the
-core combat mechanic. The full system is still not implemented, but as of the Combat Phase 2
-initiative (see below), `AnimalData.combatClass` and `AnimalData.availablePassiveSkills[]` are no
-longer dead fields:
+**From the code review** ([review/03_WORKLIST.md](review/03_WORKLIST.md)):
+- TASK-011 — Extract `AnimalIllness` from `Animal.cs` (975 lines, 2nd-largest script)
+- TASK-012 — Extract save-slot picker from `MainMenuUI.cs` (1019 lines, largest)
+- Follow-up — Remove legacy `OpenPanel`/`ClosePanel` system from `UIManager` (needs one manual
+  Editor check first, documented in PROGRESS.md)
 
-- **Class synergy** (`TurnManager.ApplyClassSynergies`, called from `StartCombat`): player units
-  sharing a `combatClass` with 2+ teammates (3+ total) each get a permanent +10% attack/defense
-  buff via `CombatUnit.ApplyStatBuff`.
-- **Passive skill unlocks** (`CombatTeamSpawner.ApplyUnlockedPassiveSkills`, called per unit at
-  spawn): each `AnimalSkill` in `availablePassiveSkills` with `skillType == Passive` is checked
-  via `AnimalSkill.CanUnlock` (existing `SkillUnlockCondition` logic — CombatClass, AnimalFamily,
-  FamilyCount via `AnimalRoster.GetFamilyCount`, HappinessThreshold, Combined). If unlocked and
-  its `attackMultiplier`/`defenseMultiplier`/`speedMultiplier` differ from `1f`, a permanent
-  `ApplyStatBuff` is applied.
-- **Season-based unlock conditions are still N/A** — no season-singleton accessor exists yet, so
-  `currentSeason` is passed as `""` and `Season`-type `SkillUnlockCondition`s never trigger. Family
-  passives beyond `FamilyCount` and the PRD's "Combo Synergies" (distinct from the Phase 2 combo
-  counter below) remain descoped.
+**Art gaps**:
+- Duck and Sparrow use chicken-baby placeholder sprites (`Assets/Resources/Animals/duck.asset`,
+  `Sparrow.asset` point at `Chicken_Baby*.png`)
+- Stamina/energy icon; see [UI_ART_PLACEHOLDERS.md](UI_ART_PLACEHOLDERS.md) for the full list
+- AnimatorControllers with Crit/Poison/Weakness/Hurt/Attack/Die states don't exist yet for any
+  animal/enemy — combat animation triggers are currently no-ops
 
-This was previously tracked as `/review/03_WORKLIST.md` TASK-002/TASK-003 (Option A descope,
-Option B minimal implementation). **Option B has now shipped** — TASK-003 is resolved, not N/A.
+**Feature ideas discussed (not started)**:
+- Cooking/crafting; NPC romance/marriage; full 3-Passive combat system (PRD); farm land
+  expansion; 6th biome + boss content
 
----
-
-## Combat Phase 2 — Innovation Pass (AI, Strategy, Mechanics, Event Hooks)
-
-A 23-step CD initiative (small change → EditMode tests → commit, repeated) extended combat with
-new status effects, smarter enemy AI, new player-facing mechanics, and event hooks for future
-VFX/animation work. All logic is pure C# on `CombatUnit`/`TurnManager`/`AnimalSkill`/`EnemyData`/
-`CombatTeamSpawner`, covered by new EditMode test files under `Assets/Tests/EditMode/`
-(`CombatPhase2StatusTests.cs`, `CombatPhase2AccuracyTests.cs`, `CombatPhase3CritTests.cs`,
-`CombatPhase3ComboTests.cs`, `CombatPhase3ConsumableTests.cs`, `CombatPhase3BattleModifierTests.cs`,
-`CombatPhase4SynergyTests.cs`, `CombatPhase4PassiveSkillTests.cs`, `CombatPhase5TelegraphTests.cs`,
-`CombatPhase6BigHitTests.cs`, `CombatPhase6StatusEventTests.cs`, `CombatPhase6DamageHealEventTests.cs`,
-`CombatPhase7CritEventIntegrationTests.cs`).
-
-- **New status effects**: `Poison` (stacks independently, ticks alongside Burn) and `Weakness`
-  (refreshes like Burn/Shield/Stun, reduces `GetAttack()`/`GetDefense()` via
-  `GetWeaknessReduction()`, capped at 75%). Both wired into `TurnManager.ExecuteSkill` via
-  `AnimalSkillEffect.Poison`/`Weakness`, respecting `IsImmuneTo`.
-- **Temporary stat buffs**: `CombatUnit.ApplyStatBuff(atkMult, defMult, spdMult, duration)` —
-  buffs stack multiplicatively and expire independently via `TickStatusEffects()`. Activates the
-  previously-dormant `AnimalSkill.attackMultiplier`/`defenseMultiplier`/`speedMultiplier` fields.
-  `GetAttack()`/`GetDefense()`/`GetSpeed()` apply Weakness reduction × buff product; turn-gauge
-  fill now uses `GetSpeed()`.
-- **Smarter AI** (`EnemyData.aiBehavior`, previously unused — now wired at spawn via
-  `EnemySpawner`): `SelectTarget()` branches per-behavior for non-player attackers —
-  `"Defensive"` targets the highest-`GetAttack()` player unit, `"Support"` targets the
-  lowest-`GetDefense()` player unit, `"Aggressive"`/`"Random"` keep the existing lethal-first →
-  front-column logic (regression-safe). `SelectSkillTarget()` is similarly behavior-aware:
-  Aggressive prefers offensive (Burn/Poison/Weakness) skills on the highest-HP enemy; Support
-  prefers Shield/heal skills on the lowest-HP% ally.
-- **Difficulty-scaled accuracy/skill-use**: `EnemyData.GetScaledAccuracy(difficultyLevel)` and
-  `GetScaledSkillUseChance(difficultyLevel)` mirror the existing `GetScaledStats` `Mathf.Pow`
-  pattern (capped at 0.95 / 0.6). `CombatUnit.InitializeAsEnemy` gained an optional `acc`
-  parameter (default `1.0f`, all existing call sites unaffected).
-- **Critical hits**: `CombatUnit.GetCritChance()` (5% base), `CombatUnit.ApplyCrit(damage, isCrit)`
-  (×1.5 multiplier), rolled in both basic-attack and skill-damage resolution in `TurnManager`.
-- **Combo counter**: `TurnManager` tracks consecutive player hits on the same target
-  (`GetComboCount()`, cap 5), granting up to +20% damage (+4%/stack above 1). Any enemy action or
-  target switch resets the combo.
-- **Melee/Ranged positional targeting**: new `AttackRange` enum (`Melee`/`Ranged`, default
-  `Ranged` preserves prior behavior) on `AnimalData`/`EnemyData` → `CombatUnit.GetAttackRange()`.
-  Melee attackers in `SelectTarget()` restrict to the front column, falling back to the back
-  column only if the front column has no living targets.
-- **In-battle consumables**: `TurnManager.UseConsumableOnUnit(Item, CombatUnit)` — heals the
-  target via `item.healthRestore`, removes one unit from the player `Inventory`, free action (no
-  gauge cost). Rejects non-consumables, dead/null targets.
-- **Battle modifiers** (`BattleModifier.cs`): `BattleModifierType` enum (`None`/`DoubleSpeed`/
-  `LowVisibility`/`HealingRain`/`GlassCannon`), rolled once per battle in `StartCombat`
-  (60% `None`, 10% each other). `DoubleSpeed` doubles turn-gauge fill; `LowVisibility` subtracts a
-  flat accuracy penalty via `GetEffectiveAccuracy()`; `HealingRain` heals all living units at the
-  start of each round (`currentTurn % allUnits.Count == 1`); `GlassCannon` doubles both dealt and
-  received damage. `SetBattleModifierForTesting()`/`GetActiveModifier()` for deterministic tests.
-- **Event hooks for future VFX/animation** (no behavior change, pure data plumbing):
-  - `TurnManager.OnTelegraph` (instance event, `TelegraphInfo { actor, target, skill }`) fires
-    immediately before an attack/skill resolves (`skill = null` for basic attacks).
-  - `TurnManager.OnBigHit` (static event, `Action<float>`) fires with a hit-stop duration —
-    `0.08f` on crit, `0.05f` if damage ≥ 25% of target max HP, otherwise not fired.
-  - `CombatUnit.OnStatusApplied`/`OnStatusExpired` (`Action<StatusEffectType>`) fire on
-    application and expiry via `ApplyStatusEffect`/`TickStatusEffects`.
-  - `CombatUnit.OnDamageTaken` (`Action<float, bool>`, amount + isCrit) and `OnHealed`
-    (`Action<float>`) fire from `TakeDamage`/`TakeDamageWithShield`/`Heal`. The crit flag is
-    threaded end-to-end: `TurnManager`'s crit roll → `TakeDamageWithShield(damage, isCrit)` →
-    `OnDamageTaken(amount, true)` + correlated `OnBigHit(0.08f)`.
-  - All of the above are now consumed by self-spawning VFX/UI controllers — see "Combat Phase 2
-    Wiring — Completed" below.
-
----
-
-## Known Tech Debt
-
-See `/review/02_FINDINGS.md` for the full diagnostic with file:line citations, and
-`/review/03_WORKLIST.md` for atomic, ready-to-execute tasks. Headlines:
-
-- **God classes grew, didn't shrink**: `MainMenuUI.cs` 862→1019 lines, `SellBox.cs` 1109→1123,
-  `Inventory.cs` ~1150, `InventorySlot.cs` 907, `Animal.cs` 975 (new entrant — 2nd largest script
-  in the project). (TASK-011, TASK-012)
-- **UIManager has two coexisting window systems** — legacy `OpenPanel`/`ClosePanel` (still
-  called by `SellBox.cs:429,509`) alongside the documented `TryOpenWindow`/`TryCloseWindow` stack
-  used by 10 `IUIWindow` implementers. Investigated (TASK-006): ESC handling only uses the
-  window stack (safe), but `IsAnyPanelOpen()` (legacy) is read by `PlayerMove.cs:169` and
-  `UIInput.cs:90`. Removal needs a manual Editor check first — see `/review/PROGRESS.md`.
-
-**Recently resolved**: save migration dispatch scaffolding added to `SaveManager.MigrateSave()`
-(TASK-004); `QuestManager.GrantRewards()` now caches `PlayerStats`/`Inventory` and logs a warning
-on miss instead of failing silently (TASK-005); dead `SellBox` branch removed from
-`InteractionManager.cs` (TASK-009); CLAUDE.md folder table corrected for farming scripts
-(TASK-010); test asmdefs verified (TASK-013); `DialogueCondition`/`DialogueEffect` now have
-19 unit tests total (TASK-007, TASK-008).
-
-**What's confirmed working well**: namespace convention (100%), combat pipeline structure,
-status-effect tests, GameBalance centralization (~80%), farming/weather/save scaffolding,
-animal husbandry (106 tests).
+### Deferred: Village map + enterable houses (design decided 2026-07-01)
+- Exterior village: extend `SampleScene`'s existing `DualGridTilemap` with new tile types —
+  do NOT revive `Scripts/MapEditor/` (`RuntimeMapEditor`/`BrushTool`/`ExtendedDualGridTilemap`
+  is an unwired skeleton: every scene reference is null, `MapEditorUI` script isn't even
+  attached; finishing it ≈ building from scratch)
+- Interiors: separate scenes per house + a new lightweight `HouseEntrance` trigger component,
+  mirroring the proven CombatScene transition pattern (persist state, restore exit position)
 
 ---
 
 ## Unity Editor Wiring Checklist
 
-Carried forward from ROADMAP.md's "Known Gaps" — these are manual Editor-setup items independent
-of the code review above. Re-verify each against the current scenes before assuming still
-outstanding (the combat pipeline fixes may have completed some of these as a side effect of
-"save CombatScene/SampleScene with combat pipeline setup").
+Manual Editor-setup items still outstanding (verify against current scenes before working —
+some may have been completed as side effects):
 
-**Combat:**
-- Assign `AnimalSkill` ScriptableObjects to `AnimalData.activeSkill` / `EnemyData.skills`
-- Assign `AnimatorController` to `AnimalData.animatorController` per animal
-
-**Combat Phase 2 Wiring — Completed** (all 12 items from the deferred checklist):
-- New `AnimalSkill` assets under `Assets/Resources/AnimalSkills/`: `PeckOfWeakening` (Chicken,
-  Weakness), `ToxicQuack` (Duck, Poison), `FeatherShield` (Sparrow, Shield), `FlockInstinct`
-  (Chicken passive, FamilyCount unlock), `SupportersBlessing` (Sparrow passive, CombatClass
-  unlock), `VenomousBite` (enemy Poison, spiders/frogs), `DrainingHowl` (enemy Weakness, wolves)
-- `EnemyData.aiBehavior` set per enemy across all 33 enemy assets (Aggressive/Defensive/Support
-  mix by role — tanks Defensive, casters/support Support, attackers Aggressive)
-- `EnemyData.baseAccuracy` set per enemy (0.80–0.95 range, tougher/slower enemies less accurate)
-- `AnimalData.attackRange`/`EnemyData.attackRange` set per unit (Melee/Ranged) across animals and
-  all 33 enemy assets
-- `AnimalData.availablePassiveSkills[]` populated for Chicken/Sparrow; `animalFamily` set
-  (Chicken=Galliformes, Duck=Anatidae, Sparrow=Passeridae); Sparrow `combatClass` changed to
-  `Support` so `SupportersBlessing` (CombatClass-gated) and class synergies have real data
-- `HitStopController.cs` — self-spawning (`RuntimeInitializeOnLoadMethod`), subscribes to
-  `TurnManager.OnBigHit`, applies brief `Time.timeScale` dip + camera shake on `Camera.main`
-- `CombatUnitVFX.cs` — auto-attached to every `CombatUnit` (`SetupVFX()` in both
-  `InitializeFromAnimal`/`InitializeAsEnemy`); procedural `TextMeshPro` status icons
-  (PSN/WKN/BRN/SHD/STN) driven by `OnStatusApplied`/`OnStatusExpired`
-- `CombatUnitVFX.cs` — same component also spawns floating damage/heal numbers (red/gold-crit/
-  green-heal, rise + fade) driven by `OnDamageTaken`/`OnHealed`
-- `TelegraphHighlighter.cs` — self-spawning, subscribes to `TurnManager.OnTelegraph`, spawns a
-  temporary glow sprite behind the acting unit and target
-- `BattleHudOverlay.cs` — self-spawning screen-space overlay showing the active
-  `BattleModifier.description` banner and `Combo x{N}!` counter, polling `TurnManager.Instance`
-- `ConsumableBattleUI.cs` — self-spawning "Items" button + list of consumables from `Inventory`;
-  clicking one calls `TurnManager.UseConsumableOnUnit` on the most-injured living player unit.
-  The button is now hidden outside of an active battle (`TurnManager.Instance == null`) — it
-  previously persisted across all scenes via `DontDestroyOnLoad` with no visibility gating.
-  **Known limitation**: the player's `Inventory` MonoBehaviour only exists in `SampleScene`
-  (the main game scene), not in `CombatScene` — so even during battle, `RefreshList()` currently
-  shows "No inventory found" because `FindFirstObjectByType<Inventory>()` returns null.
-  Fixing this requires either persisting the `Inventory` GameObject into `CombatScene` or
-  having `ConsumableBattleUI`/`TurnManager.UseConsumableOnUnit` read consumables from
-  `SaveManager`/`GameData` instead of a live `Inventory` instance — deferred to a future session.
-- `CombatUnit` animator triggers: `Crit` (fires alongside `Hurt` when `TakeDamage(_, isCrit: true)`),
-  `Poison`/`Weakness` (fire via new `TriggerStatusAnimation(StatusEffectType)`, called from
-  `CombatUnitVFX.HandleStatusApplied`) — all guarded by `unitAnimator != null`, no-op if no
-  `AnimatorController` is assigned
-
-All new VFX/UI controllers are self-spawning (`RuntimeInitializeOnLoadMethod` +
-`DontDestroyOnLoad`) and built procedurally — no `CombatScene.unity`/prefab edits were required.
-Still outstanding: actual `AnimatorController` assets with `Crit`/`Poison`/`Weakness`/`Hurt`/
-`Attack`/`Die` states+transitions don't exist yet for any animal/enemy, so the new triggers are
-currently no-ops in practice (see "Assign `AnimatorController`..." item above).
-
-**World Map:**
-- Create WorldMap Canvas + `WorldMapUIController` in farm scene (if not already present)
-- Create one `WorldMapBiomePanel` per biome, wire to controller's `biomePanels` list
-- Assign `WorldMap` reference on `WorldMapTriggerZone`
-
-**Animals & Farm:**
-- Assign sprites to `Rabbit.asset` + `RabbitFur.asset` (via `Tools > Sowur Shield > Create Animal
-  Assets` if not yet run)
-- Create `RabbitFur_GroundItem`, `DuckEgg_GroundItem`, `Feather_GroundItem` prefabs in
-  `Resources/Prefabs/GroundItems/`
-- Wire `AnimalInfoUI` rename panel UI elements
-
-**Buildings / Shop / Tutorial:**
-- Create `Resources/Buildings/Barn.asset` + `Greenhouse.asset` (FarmBuildingData) if missing
-- Building row prefab wired to `BuildingShopUI`
-- `ShopItemRow` prefab wired to `ShopUI.shopItemRowPrefab`
-- `Resources/Quests/` folder populated with `QuestData` assets
-
-**Audio:**
-- Assign `seasonalFarmTracks[4]`, `combatMusic`, `menuMusic` on `GameMusicManager`
-- SFX clips for `CombatHit`, `CombatDeath`, `PetAnimal`
-- `GameMusicManager.Instance.OnEnterCombat()` wired from `SceneTransitionManager`
+**Combat**: assign `AnimalSkill` SOs to `AnimalData.activeSkill`/`EnemyData.skills`; create and
+assign AnimatorControllers per animal/enemy
+**World Map**: WorldMap Canvas + `WorldMapUIController` in farm scene; one `WorldMapBiomePanel`
+per biome wired to controller; `WorldMap` ref on `WorldMapTriggerZone`
+**Animals**: sprites for `Rabbit.asset`/`RabbitFur.asset`; GroundItem prefabs (RabbitFur,
+DuckEgg, Feather) in `Resources/Prefabs/GroundItems/`; `AnimalInfoUI` rename panel wiring
+**Buildings/Shop/Tutorial**: `Resources/Buildings/Barn.asset`+`Greenhouse.asset` if missing;
+row prefabs for `BuildingShopUI`/`ShopUI`; `Resources/Quests/` populated
+**Audio**: `seasonalFarmTracks[4]`/`combatMusic`/`menuMusic` on `GameMusicManager`; SFX clips;
+`OnEnterCombat()` wired from `SceneTransitionManager`
+**Combat consumables known limitation**: player `Inventory` only exists in SampleScene, so
+`ConsumableBattleUI.RefreshList()` shows "no inventory" during battle — fix requires persisting
+Inventory into CombatScene or reading from `SaveManager`/`GameData` (deferred)
 
 ---
 
-## Since 2026-06-14 (not yet folded into the sections above)
+## Known Tech Debt
 
-The rest of this document predates ~100 commits merged from `feature/cozy-ui-pass-3` and other
-work. Headlines, not yet reconciled line-by-line with "What's Complete" above:
+See [review/02_FINDINGS.md](review/02_FINDINGS.md) for the full diagnostic. Headlines:
+- God classes: `MainMenuUI` 1019, `SellBox` 1123, `Inventory` ~1150, `InventorySlot` 907,
+  `Animal` 975 lines (TASK-011/012 target the worst two)
+- `UIManager` still has two coexisting window systems (legacy `OpenPanel` + `IUIWindow` stack)
+- `SellBox` re-loads `GameBalance` via `Resources.Load` on every `sellMultiplier` access
 
-- **Localization (EN/PT/ES)**: full Unity Localization infra — locales, string tables, and
-  ~226 translated entries covering NPC dialogue, items, animals, buildings, crops, enemies,
-  stages, and quests. Demo site has a language switcher. WebGL boot-crash fixes were needed
-  (`WaitForCompletion` deadlock, string-table preload, `AudioClip.length` race) — see git log
-  around "Fix real root cause" commits if localization-related WebGL issues resurface.
-- **Mobile/gamepad input**: virtual joystick + action button (touch, Safe-Area aware) and full
-  Xbox/PS5 gamepad support (movement, interact, virtual cursor for tools) via
-  `MobileControlsManager` / `GamepadVirtualCursor`. Manual Editor setup steps that used to live
-  in `MOBILE_LOCALIZATION_SETUP.md` are done — the doc was removed since the tools it described
-  (`Tools > Sowur Shield > Rebuild Mobile Controls UI`, `Setup Localization (Full)`,
-  `Auto-Wire Localized Fields`) exist and the generated Localization assets are already committed.
-- **CozyUITheme pass**: applied across inventory tooltips/drag preview, BattleStatusUI,
-  ConsumableBattleUI, Animal Roster/Info/Relationship/Gift UI, SeedShopUI, `ChoiceButton`,
-  `PortraitManager`, and the Team Assembler animal card prefab. `ChoiceButton.cs` was rewritten
-  in the process — see `KNOWN_BUGS.md` for the one open bug this affects.
-- **Achievement system**: `AchievementData`/`AchievementManager` + Steam-style toast, 8 initial
-  achievements across milestones and the 4 shipped quests, driven by new global static events
-  (stage completion, crop harvest, item sales).
-- **Critical save-data fix**: `Dictionary<,>` fields were never actually persisted via
-  `JsonUtility` — fixed in `SaveManager`/`GameData` (worth double-checking any save-dependent
-  system if odd data-loss reports come in from before this fix).
-- **WebGL demo**: through Build #15, several boot-failure root-causes fixed (see localization
-  bullet above); Discord build notifications customized per `.github/DISCORD_CUSTOMIZATION.md`.
-- **Doc cleanup**: removed 14 stale Minimap dev-session docs (fix logs/checklists for an already-
-  complete system), the Team Assembler session summary from 2025-10-24 (superseded by the
-  "Combat Pipeline — Resolved" section above), `MOBILE_LOCALIZATION_SETUP.md`, and
-  `SleepConfirmationPanelManualSetup.md` (panel already built — prefab + script exist).
+**Working well**: namespace convention (100%), combat pipeline, status-effect tests,
+GameBalance centralization (~80%), save scaffolding, animal husbandry tests.
 
 ---
 
-## WebGL Demo Deployment
+## Dev-Environment Notes
 
-Unchanged — see CLAUDE.md "WebGL Demo Deployment (GitHub Pages)" section for the full
-GitHub Actions / Brotli-decompression / CSS-preservation workflow. Live demo:
-https://joaofranciscopanta.github.io/sowur-shield/
+- Unity **6000.3.3f1**; scenes: MainMenu (0), SampleScene (1), CombatScene (2), MapEditorScene
+  (not in build)
+- MCP editor automation via **CoplayDev unity-mcp** (`com.coplaydev.unity-mcp`, local HTTP
+  server managed from `Window > MCP for Unity`) — connection quirks and workarounds are
+  documented in the assistant's project memory, not here
+- WebGL demo deploys via GitHub Actions (weekly + manual); see CLAUDE.md "WebGL Demo
+  Deployment" for Brotli/CSS specifics. Live: https://joaofranciscopanta.github.io/sowur-shield/

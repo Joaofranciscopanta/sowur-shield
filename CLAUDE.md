@@ -11,6 +11,8 @@
 
 2D farming simulation game in Unity. Core systems: farming (multi-stage crops, soil states), inventory (36-slot drag/drop), dialogue (tree-based branching), minimap (3-state), animals (husbandry + feeding trough), combat, save/load, time/day cycle.
 
+**Project state lives in `SOWUR_SHIELD_STATUS.md`** (what's done / in progress / backlog — includes a full documentation map). Open bugs and known quirks: `KNOWN_BUGS.md`. This file (CLAUDE.md) is for conventions and Unity setup, not status.
+
 ## Project Structure
 
 ```
