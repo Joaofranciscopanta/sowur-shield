@@ -4,7 +4,7 @@
 > behavior) and **Quirks** (surprising-but-intended or environment-specific behavior worth
 > knowing before debugging "ghosts").
 
-## [OPEN] Maren Beloved — Can't re-interact after first conversation
+## [FIXED 2026-07-05] Maren Beloved — Can't re-interact after first conversation
 
 **Symptom:** After talking to Maren (rel >= 75) and closing the dialogue (ESC or finishing),
 the player can no longer interact with her. The "Press E to Talk" prompt disappears and E
@@ -26,9 +26,16 @@ never re-appears and `InteractionManager` may skip this interactable.
 
 **Workaround:** Walk away from the NPC and back into range.
 
+**Fix applied (2026-07-05, QA audit session):** re-interaction itself had already recovered
+(InteractionManager re-scans within seconds), but the "Press E" prompt stayed hidden because
+the manager only pushes `SetPromptVisibility` on interactable *transitions*. Fixed in
+`NPCDialogueInteractable.OnDialogueEndedCallback()` — it now calls `SetPromptVisibility(true)`
+when the player is still within `GetInteractionRange()`. Verified in Play Mode: prompt is
+active immediately after `EndDialogue` with the player in range.
+
 ---
 
-## [NEEDS RE-VERIFICATION] Dialogue UI — Choice button text clips out of button bounds
+## [FIXED 2026-07-05] Dialogue UI — Choice button text clips out of button bounds
 
 **Symptom (as originally reported):** Choice button labels overflow their button background
 at certain screen sizes or with longer text. Text appears above/outside the wooden button
@@ -49,9 +56,16 @@ container.
 
 **Workaround:** None confirmed — cosmetic only if it still reproduces, choices remain clickable.
 
+**Fix applied (2026-07-05, QA audit session):** re-verified and confirmed — the prefab
+(`Assets/Prefabs/UI/ChoiceButton.prefab`) is a fixed 160×30 rect with TMP `overflowMode=Overflow`,
+no auto-size and no ContentSizeFitter, so a 150-char choice measured 1422×252 and spilled over
+the world. Fixed in code: `ChoiceButton.Initialize()` now calls `FitHeightToText()`, which grows
+the button's rect (and publishes min/preferredHeight through a `LayoutElement`) to fit the label.
+Verified in Play Mode: same long string now yields a 218px-tall button with no overflow.
+
 ---
 
-## [OPEN] ItemDatabase lookup came back empty after an in-editor domain reload
+## [HARDENED 2026-07-05] ItemDatabase lookup came back empty after an in-editor domain reload
 
 **Symptom (observed 2026-07-01, Editor via MCP):** after a script recompile mid-session,
 `ItemDatabase.GetItem("...")` returned null for every item and the static `itemLookup`
@@ -71,6 +85,12 @@ reset. Also consider actually creating the `ItemDatabase.asset` in `Resources/`.
 
 **Impact if it fires in a build:** items silently fail to resolve (quests rewards, feeding,
 shops). Not yet reproduced in Play Mode from a cold start — may be editor-domain-reload only.
+
+**Hardening applied (2026-07-05, QA audit session):** `Initialize()` now re-runs when
+`itemLookup` is empty or holds destroyed assets even if `isInitialized` is true, and a
+`[RuntimeInitializeOnLoadMethod(SubsystemRegistration)]` reset clears all statics at every
+play session start. The originally suspected repro (mid-session editor domain reload) was not
+forced during the session, so this stays listed until someone re-observes it in the wild.
 
 ---
 

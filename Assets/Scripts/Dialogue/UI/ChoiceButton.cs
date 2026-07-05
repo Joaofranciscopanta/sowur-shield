@@ -114,8 +114,11 @@ public class ChoiceButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         
         // Set choice text
         if (choiceText != null)
+        {
             choiceText.text = choice.GetDisplayText();
-        
+            FitHeightToText();
+        }
+
         // Set interactable state
         SetInteractable(choice.IsAvailable());
         
@@ -126,6 +129,34 @@ public class ChoiceButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         ResetVisuals();
     }
     
+    /// <summary>
+    /// Grows the button vertically to fit long choice texts — the prefab has a fixed
+    /// 160×30 rect with a non-resizing label, so anything past ~20 characters used to
+    /// overflow the frame (KNOWN_BUGS: choice text clips out of button bounds).
+    /// </summary>
+    private void FitHeightToText()
+    {
+        if (choiceText == null) return;
+
+        var rect = (RectTransform)transform;
+        float width = choiceText.rectTransform.rect.width;
+        if (width <= 0f) width = rect.rect.width;
+        if (width <= 0f) width = 160f;
+
+        float preferredHeight = choiceText.GetPreferredValues(choiceText.text, width, 0f).y;
+        float target = Mathf.Max(30f, preferredHeight + 12f);
+
+        rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, target);
+
+        // Under a layout group the rect is driven by the parent — publish the height
+        // through a LayoutElement so it is honored there too.
+        var layout = GetComponent<LayoutElement>();
+        if (layout == null)
+            layout = gameObject.AddComponent<LayoutElement>();
+        layout.minHeight = target;
+        layout.preferredHeight = target;
+    }
+
     /// <summary>
     /// Sets whether this choice button is interactable
     /// </summary>

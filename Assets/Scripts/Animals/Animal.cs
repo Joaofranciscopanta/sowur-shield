@@ -139,6 +139,22 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         }
     }
 
+    private System.Collections.IEnumerator RegisterWithInteractionManagerWhenReady()
+    {
+        const float timeout = 5f;
+        float elapsed = 0f;
+        while (InteractionManager.Instance == null && elapsed < timeout)
+        {
+            yield return null;
+            elapsed += Time.unscaledDeltaTime;
+        }
+
+        if (InteractionManager.Instance != null)
+            InteractionManager.Instance.RegisterInteractable(this);
+        else
+            Debug.LogWarning($"InteractionManager not found after {timeout}s! Animal {animalData.animalName} won't be interactable.");
+    }
+
     private void OnValidate()
     {
         // Update collider sizes when values change in editor
@@ -159,14 +175,15 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         // Initialize persistent combat stats from base data
         InitializeCombatStats();
 
-        // Register with InteractionManager
+        // Register with InteractionManager (retry for a few seconds — scene-load order
+        // can run this Start before the InteractionManager singleton exists)
         if (InteractionManager.Instance != null)
         {
             InteractionManager.Instance.RegisterInteractable(this);
         }
         else
         {
-            Debug.LogWarning($"InteractionManager not found! Animal {animalData.animalName} won't be interactable.");
+            StartCoroutine(RegisterWithInteractionManagerWhenReady());
         }
 
         // Register with zone
