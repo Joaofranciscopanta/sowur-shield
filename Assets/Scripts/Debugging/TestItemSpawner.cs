@@ -19,6 +19,7 @@ public class TestItemSpawner : MonoBehaviour
     private Transform player;
     private int spawnCounter = 0;
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
     {
@@ -29,6 +30,7 @@ public class TestItemSpawner : MonoBehaviour
         go.AddComponent<TestItemSpawner>();
         DontDestroyOnLoad(go);
     }
+#endif
 
     private void Update()
     {

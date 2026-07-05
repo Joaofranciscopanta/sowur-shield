@@ -453,6 +453,17 @@ namespace SowurShield.Dialogue
             if (disableMovementDuringDialogue && playerMovement != null)
                 playerMovement.EnableMovement();
 
+            // Restore the "Press E" prompt if the player is still in range. The
+            // InteractionManager only pushes SetPromptVisibility on interactable
+            // *transitions*, and after a dialogue the current interactable is still
+            // this NPC — so without this the prompt stays hidden until the player
+            // walks out of range and back (KNOWN_BUGS: Maren re-interact).
+            if (player != null &&
+                Vector3.Distance(player.position, transform.position) <= GetInteractionRange())
+            {
+                SetPromptVisibility(true);
+            }
+
             OnDialogueEnded?.Invoke();
         }
 

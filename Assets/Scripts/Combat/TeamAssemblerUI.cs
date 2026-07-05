@@ -594,6 +594,13 @@ public class TeamAssemblerUI : MonoBehaviour
         }
 
         TeamAssemblerData.Instance.SaveToPrefs(); // Persist team across domain reload in builds
+
+        // Snapshot the player inventory — the farm scene reloads on return from combat
+        // and rebuilds the Inventory, which otherwise comes back empty when no disk
+        // save is available (demo builds).
+        SowurShield.Inventory.InventorySceneSnapshot.Capture(
+            FindFirstObjectByType<SowurShield.Inventory.Inventory>());
+
         Time.timeScale = 1f;
         Debug.LogWarning($"[TeamAssembler] OnStartBattleClicked — teamSize={teamSize}, " +
             $"selectedStage='{TeamAssemblerData.Instance.selectedStageName}', Time.timeScale set to {Time.timeScale}. " +

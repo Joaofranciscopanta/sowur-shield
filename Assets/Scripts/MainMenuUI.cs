@@ -121,6 +121,18 @@ public class MainMenuUI : MonoBehaviour
         // immediately, without needing a scene reload (static button labels in prefabs are
         // unaffected — those need a "Localize String Event" component, see MOBILE_LOCALIZATION_SETUP.md).
         UpdateSaveInfoDisplay();
+
+        // If the slot picker was opened before the string tables finished preloading,
+        // its title resolved to "" — re-resolve it (and the rows) now that tables are ready.
+        if (slotPickerPanel != null && slotPickerPanel.activeSelf)
+        {
+            if (slotPickerTitleText != null)
+                slotPickerTitleText.text = currentSlotPickerMode == SlotPickerMode.Load
+                    ? loadGameTitleText.SafeGetLocalizedString()
+                    : newGameTitleText.SafeGetLocalizedString();
+
+            PopulateSlotPicker(currentSlotPickerMode);
+        }
     }
 
     private IEnumerator DelayedSaveFileCheck()
