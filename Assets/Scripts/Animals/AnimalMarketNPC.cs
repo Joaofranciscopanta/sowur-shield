@@ -24,6 +24,18 @@ public class AnimalMarketNPC : MonoBehaviour, IInteractable
     [Header("Interaction")]
     [SerializeField] private float interactionRange = 2f;
 
+    private void Awake()
+    {
+        // Fallback for missing Inspector wiring — the shipped SampleScene NPC had a
+        // null marketData, leaving the market permanently unopenable.
+        if (marketData == null)
+        {
+            marketData = Resources.Load<AnimalMarketData>("AnimalMarkets/FarmAnimalMarket");
+            if (marketData != null)
+                Debug.LogWarning($"[AnimalMarketNPC] '{npcName}' had no marketData assigned — loaded FarmAnimalMarket from Resources as fallback.");
+        }
+    }
+
     public bool CanInteract()
     {
         return marketData != null && AnimalMarketUI.Instance != null;
