@@ -181,7 +181,7 @@ public class BattleResultsUI : MonoBehaviour
         // Set title
         if (victoryTitleText != null)
         {
-            victoryTitleText.text = victoryTitle_Localized.SafeGetLocalizedString();
+            victoryTitleText.text = Or(victoryTitle_Localized.SafeGetLocalizedString(), "Victory!");
         }
 
         // Display battle stats
@@ -213,7 +213,7 @@ public class BattleResultsUI : MonoBehaviour
         // Set title
         if (defeatTitleText != null)
         {
-            defeatTitleText.text = defeatTitle_Localized.SafeGetLocalizedString();
+            defeatTitleText.text = Or(defeatTitle_Localized.SafeGetLocalizedString(), "Defeated...");
         }
 
         // Display battle stats
@@ -239,20 +239,20 @@ public class BattleResultsUI : MonoBehaviour
         // Set title
         if (victoryTitleText != null)
         {
-            victoryTitleText.text = drawTitle_Localized.SafeGetLocalizedString();
+            victoryTitleText.text = Or(drawTitle_Localized.SafeGetLocalizedString(), "Draw");
         }
 
         // Display battle stats
         if (victoryStatsText != null)
         {
             victoryStatsText.text = GetBattleStatsText(survivingPlayers, survivingEnemies) +
-                                   turnLimitText_Localized.SafeGetLocalizedString();
+                                   Or(turnLimitText_Localized.SafeGetLocalizedString(), "\n(Turn limit reached)");
         }
 
         // Display reduced rewards
         if (victoryRewardsText != null)
         {
-            victoryRewardsText.text = partialRewardsText_Localized.SafeGetLocalizedString();
+            victoryRewardsText.text = Or(partialRewardsText_Localized.SafeGetLocalizedString(), "Partial rewards awarded.");
         }
 
     }
@@ -263,8 +263,16 @@ public class BattleResultsUI : MonoBehaviour
     private string GetBattleStatsText(int survivingPlayers, int survivingEnemies)
     {
         statsText_Localized.Arguments = new object[] { totalTurns, survivingPlayers, survivingEnemies };
-        return statsText_Localized.SafeGetLocalizedString();
+        return Or(statsText_Localized.SafeGetLocalizedString(),
+            $"Turns: {totalTurns}   Allies left: {survivingPlayers}   Enemies left: {survivingEnemies}");
     }
+
+    /// <summary>
+    /// Fallback so the results screen never renders blank when a LocalizedString is
+    /// unwired or the string tables haven't finished preloading.
+    /// </summary>
+    private static string Or(string localized, string fallback) =>
+        string.IsNullOrWhiteSpace(localized) ? fallback : localized;
 
     /// <summary>
     /// Get formatted rewards text from computed reward data.
@@ -272,25 +280,26 @@ public class BattleResultsUI : MonoBehaviour
     private string GetRewardsText()
     {
         if (pendingRewards == null || !pendingRewards.isVictory)
-            return noRewardsText_Localized.SafeGetLocalizedString();
+            return Or(noRewardsText_Localized.SafeGetLocalizedString(), "No rewards.");
 
-        var sb = new System.Text.StringBuilder(rewardsHeaderText_Localized.SafeGetLocalizedString());
+        var sb = new System.Text.StringBuilder(
+            Or(rewardsHeaderText_Localized.SafeGetLocalizedString(), "Rewards:\n"));
         goldText_Localized.Arguments = new object[] { pendingRewards.goldReward };
-        sb.AppendLine(goldText_Localized.SafeGetLocalizedString());
+        sb.AppendLine(Or(goldText_Localized.SafeGetLocalizedString(), $"Gold: +{pendingRewards.goldReward}"));
         if (pendingRewards.xpReward > 0)
         {
             xpText_Localized.Arguments = new object[] { pendingRewards.xpReward };
-            sb.AppendLine(xpText_Localized.SafeGetLocalizedString());
+            sb.AppendLine(Or(xpText_Localized.SafeGetLocalizedString(), $"XP: +{pendingRewards.xpReward}"));
         }
         foreach (var (item, qty) in pendingRewards.lootDrops)
         {
             itemRewardText_Localized.Arguments = new object[] { item.GetDisplayName(), qty };
-            sb.AppendLine(itemRewardText_Localized.SafeGetLocalizedString());
+            sb.AppendLine(Or(itemRewardText_Localized.SafeGetLocalizedString(), $"{item.GetDisplayName()} ×{qty}"));
         }
         if (pendingRewards.animalHappinessBonus > 0)
         {
             animalHappinessText_Localized.Arguments = new object[] { pendingRewards.animalHappinessBonus };
-            sb.AppendLine(animalHappinessText_Localized.SafeGetLocalizedString());
+            sb.AppendLine(Or(animalHappinessText_Localized.SafeGetLocalizedString(), $"Happiness: +{pendingRewards.animalHappinessBonus}"));
         }
         return sb.ToString();
     }

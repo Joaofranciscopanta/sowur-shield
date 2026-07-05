@@ -253,7 +253,9 @@ public class ConsumableBattleUI : MonoBehaviour
         rowObj.transform.SetParent(listPanel, false);
 
         RectTransform rowRect = rowObj.AddComponent<RectTransform>();
-        rowRect.sizeDelta = new Vector2(0, 32);
+        // Empty-state messages wrap onto 2-3 lines — give them room so the panel
+        // doesn't collapse into a sliver behind the text.
+        rowRect.sizeDelta = new Vector2(0, item != null ? 32 : 60);
 
         Color rowTint = theme != null ? theme.woodLight : new Color(0.25f, 0.25f, 0.3f);
         Image rowImage = rowObj.AddComponent<Image>();
@@ -295,7 +297,8 @@ public class ConsumableBattleUI : MonoBehaviour
 
     private void Update()
     {
-        bool inBattle = TurnManager.Instance != null;
+        // combatActive also hides the button/list over the victory/defeat results screen
+        bool inBattle = TurnManager.Instance != null && TurnManager.Instance.combatActive;
 
         if (toggleButtonObj.activeSelf != inBattle)
             toggleButtonObj.SetActive(inBattle);
