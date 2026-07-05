@@ -16,6 +16,16 @@ public class ItemDatabase : ScriptableObject
     private static Dictionary<string, Item> itemLookup = new Dictionary<string, Item>();
     private static bool isInitialized = false;
 
+    // Statics can survive an editor domain reload in a bad state (isInitialized true while
+    // the lookup holds destroyed assets) — reset them explicitly on every play session.
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics()
+    {
+        instance = null;
+        itemLookup.Clear();
+        isInitialized = false;
+    }
+
     [Header("Auto-Load Settings")]
     [Tooltip("Automatically load all items from Resources/Items folder")]
     public bool autoLoadFromResources = true;
@@ -51,7 +61,10 @@ public class ItemDatabase : ScriptableObject
     /// </summary>
     public void Initialize()
     {
-        if (isInitialized) return;
+        // Guard against the stale-static state where isInitialized survived a domain
+        // reload but the dictionary is empty or holds destroyed Item assets.
+        if (isInitialized && itemLookup.Count > 0 && itemLookup.Values.First() != null) return;
+        isInitialized = false;
 
         itemLookup.Clear();
         List<Item> allItems = new List<Item>();
@@ -86,9 +99,7 @@ public class ItemDatabase : ScriptableObject
         isInitialized = true;
 
         if (duplicateCount > 0)
-        {
-        }
-
+            Debug.LogWarning($"[ItemDatabase] Skipped {duplicateCount} item(s) with duplicate names during Initialize().");
     }
 
     /// <summary>

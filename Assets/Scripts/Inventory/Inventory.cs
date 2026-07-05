@@ -105,6 +105,14 @@ public class Inventory : MonoBehaviour, ISaveable
         SelectSlot(0); // Select first hotbar slot
         EnableInputActions();
 
+        // Carry items across the combat round-trip (scene reload rebuilds this
+        // inventory; disk saves may be unavailable — see InventorySceneSnapshot).
+        // In the normal flow SceneTransitionManager restores AFTER it re-applies
+        // save data (which would overwrite us) — only restore here when playing
+        // the scene directly without a transition manager.
+        if (SowurShield.Core.SceneTransitionManager.Instance == null)
+            InventorySceneSnapshot.TryRestore(this);
+
         // Cache the background panel while it's still active in the scene (GameObject.Find
         // can't locate inactive objects), then hide it — the inventory starts closed.
         if (storagePanelBackground == null)
@@ -761,6 +769,14 @@ public class Inventory : MonoBehaviour, ISaveable
     {
         return container.GetAllItems();
     }
+
+    /// <summary>Total slot count (hotbar + storage) — for per-slot snapshots.</summary>
+    public int SlotCount => inventorySize;
+
+    /// <summary>Per-index slot access, used by InventorySceneSnapshot to preserve layout.</summary>
+    public ItemStack GetSlotAt(int index) => container.GetSlot(index);
+
+    public void SetSlotAt(int index, ItemStack stack) => container.SetSlot(index, stack);
 
     public List<ItemStack> GetItemsByType(ItemType itemType)
     {

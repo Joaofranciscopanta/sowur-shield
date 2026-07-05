@@ -380,6 +380,12 @@ public class SceneTransitionManager : MonoBehaviour
         {
             SaveManager.Instance.ReapplyLoadedDataToRegisteredObjects();
         }
+
+        // The combat inventory snapshot is newer than the re-applied save data —
+        // restore it last so battle round-trips never wipe the player's items.
+        var inventory = FindFirstObjectByType<SowurShield.Inventory.Inventory>();
+        if (inventory != null)
+            SowurShield.Inventory.InventorySceneSnapshot.TryRestore(inventory);
     }
 
     private void OnCombatSceneLoaded()

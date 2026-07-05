@@ -76,6 +76,9 @@ public class MainMenuManager : MonoBehaviour
     
     private void Start()
     {
+        // A stale combat snapshot must never leak into a fresh game session.
+        SowurShield.Inventory.InventorySceneSnapshot.Clear();
+
         InitializeMainMenu();
     }
     

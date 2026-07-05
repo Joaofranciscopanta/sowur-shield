@@ -205,6 +205,13 @@ namespace SowurShield.Core
         /// <summary>Set active slot and load the game from it.</summary>
         public void LoadFromSlot(string slotName)
         {
+            if (!HasSaveFile(slotName))
+            {
+                LogError($"LoadFromSlot('{slotName}') aborted — slot has no save file. Active slot unchanged.");
+                OnLoadCompleted?.Invoke(false);
+                return;
+            }
+
             activeSlotName = slotName;
             LoadGame();
         }
@@ -267,7 +274,9 @@ namespace SowurShield.Core
 
         public void SaveGame()
         {
-#if DEMO_BUILD
+            // Demo builds ship without persistence, but the Editor must always be able to
+            // save — otherwise QA on the WebGL target silently no-ops (see QA_UI_AUDIT_2026-07-05).
+#if DEMO_BUILD && !UNITY_EDITOR
             OnSaveCompleted?.Invoke(false);
             return;
 #endif
@@ -352,7 +361,7 @@ namespace SowurShield.Core
 
         public void LoadGame()
         {
-#if DEMO_BUILD
+#if DEMO_BUILD && !UNITY_EDITOR
             OnLoadCompleted?.Invoke(false);
             return;
 #endif
@@ -443,7 +452,7 @@ namespace SowurShield.Core
 
         public bool HasSaveFile(string slotName)
         {
-#if DEMO_BUILD
+#if DEMO_BUILD && !UNITY_EDITOR
             return false;
 #endif
             return File.Exists(GetSlotSaveFilePath(slotName));
