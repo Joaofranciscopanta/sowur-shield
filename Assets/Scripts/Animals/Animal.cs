@@ -57,6 +57,11 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     // Custom name set by player
     private string customName = "";
 
+    // True for animals spawned at runtime by AnimalMarketUI (vs. hand-placed in the scene).
+    // Hand-placed animals already exist in every scene load; purchased ones must be recorded
+    // in GameData.purchasedAnimals so AnimalPurchaseLoader can re-instantiate them.
+    private bool isPurchased = false;
+
     // Illness tracking
     private bool isIll = false;
     private int neglectDays = 0;
@@ -265,6 +270,18 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         if (SaveManager.Instance != null)
         {
             SaveManager.Instance.UnregisterSaveable(this);
+        }
+
+        // A sold/despawned purchased animal must not be re-instantiated on the next
+        // load or scene reload — drop its entry from the current in-memory save data.
+        // Guard on gameObject.scene.isLoaded: OnDestroy() also fires for every object
+        // when the scene is torn down (e.g. loading CombatScene), and that must NOT be
+        // treated as a sale — it wiped every purchased animal's record on the very same
+        // frame TeamAssemblerUI had just captured it, before this fix.
+        if (isPurchased && gameObject.scene.isLoaded && SaveManager.Instance?.CurrentGameData?.worldData != null)
+        {
+            SaveManager.Instance.CurrentGameData.worldData.purchasedAnimals
+                .RemoveAll(p => p.gameObjectName == gameObject.name);
         }
 
         // Unregister from AnimalRoster
@@ -603,6 +620,22 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     {
         if (gameData?.worldData == null) return;
 
+        // Purchased animals don't exist in any scene file — record them so they can be
+        // re-instantiated on load/scene-reload, before the per-attribute data below is read.
+        if (isPurchased && animalData != null)
+        {
+            var existing = gameData.worldData.purchasedAnimals.Find(p => p.gameObjectName == gameObject.name);
+            if (existing == null)
+            {
+                gameData.worldData.purchasedAnimals.Add(new WorldGameData.PurchasedAnimalData
+                {
+                    gameObjectName = gameObject.name,
+                    animalDataName = animalData.animalName,
+                    zoneName = assignedZone != null ? assignedZone.gameObject.name : ""
+                });
+            }
+        }
+
         string prefix = $"animal_{gameObject.name}";
         gameData.worldData.worldFlags[$"{prefix}_petted"] = hasBeenPetToday;
         gameData.worldData.worldCounters[$"{prefix}_foodEaten"] = foodEatenToday;
@@ -782,6 +815,25 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     {
         animalData = data;
         assignedZone = zone;
+        isPurchased = true;
+    }
+
+    /// <summary>
+    /// Builds a GameObject name guaranteed unique among currently-loaded GameObjects,
+    /// starting from baseName. Used for purchased animals so buying two of the same
+    /// species doesn't collide on the "animal_{gameObject.name}" save-data prefix (which
+    /// also doubles as the ISaveable identity key).
+    /// </summary>
+    public static string GenerateUniquePurchasedName(string baseName)
+    {
+        string candidate = baseName;
+        int suffix = 1;
+        while (GameObject.Find(candidate) != null)
+        {
+            candidate = $"{baseName}_{suffix}";
+            suffix++;
+        }
+        return candidate;
     }
 
     /// <summary>

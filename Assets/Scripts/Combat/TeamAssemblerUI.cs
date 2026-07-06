@@ -44,6 +44,7 @@ public class TeamAssemblerUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI teamSizeText;
     [SerializeField] private TextMeshProUGUI foodRequirementsText;
     [SerializeField] private TextMeshProUGUI synergiesText;
+    [SerializeField] private TextMeshProUGUI availableAnimalsTitleText; // "Available Animals" panel header
 
     [Header("Buttons")]
     [SerializeField] private Button feedAllButton;
@@ -63,6 +64,7 @@ public class TeamAssemblerUI : MonoBehaviour
     [SerializeField] private LocalizedString synergiesHeaderText_Localized; // table "Combat", key "combat.teamassembler.synergies_header"
     [SerializeField] private LocalizedString synergyLineText_Localized; // table "Combat", key "combat.teamassembler.synergy_line"
     [SerializeField] private LocalizedString noSynergiesText_Localized; // table "Combat", key "combat.teamassembler.no_synergies"
+    [SerializeField] private LocalizedString availableAnimalsTitleText_Localized; // table "Combat", key "combat.teamassemblersetup.available_animals"
 
     // Runtime data
     private List<AnimalSelectionCard> animalCards = new List<AnimalSelectionCard>();
@@ -122,8 +124,21 @@ public class TeamAssemblerUI : MonoBehaviour
         StageData selectedStage = StageManager.GetSelectedStage();
         if (selectedStage != null)
         {
-            TeamAssemblerData.Instance.zoneName = selectedStage.stageName;
+            // GetDisplayName() resolves the localized name (with a fallback to the internal
+            // stageName) — using stageName directly left the zone label half-English even
+            // when the rest of the panel was localized (e.g. "Zona: Sunny Fields").
+            TeamAssemblerData.Instance.zoneName = selectedStage.GetDisplayName();
             TeamAssemblerData.Instance.zoneDifficulty = selectedStage.difficulty;
+        }
+
+        // "Available Animals" panel header — was hardcoded English text directly in the
+        // scene file with no LocalizeStringEvent, so it never picked up the PT/ES
+        // translations already present in the string tables.
+        if (availableAnimalsTitleText != null)
+        {
+            string localized = availableAnimalsTitleText_Localized.SafeGetLocalizedString();
+            if (!string.IsNullOrEmpty(localized))
+                availableAnimalsTitleText.text = localized;
         }
 
         if (zoneNameText != null)
@@ -600,6 +615,13 @@ public class TeamAssemblerUI : MonoBehaviour
         // save is available (demo builds).
         SowurShield.Inventory.InventorySceneSnapshot.Capture(
             FindFirstObjectByType<SowurShield.Inventory.Inventory>());
+
+        // Capture every ISaveable (including purchased animals) into memory before the
+        // scene unloads. Without this, an animal bought from AnimalMarketUI but never
+        // saved to disk has no record for AnimalPurchaseLoader to recreate it from when
+        // the farm scene reloads on return from battle.
+        if (SowurShield.Core.SaveManager.Instance != null)
+            SowurShield.Core.SaveManager.Instance.CaptureRegisteredObjectsIntoCurrentGameData();
 
         Time.timeScale = 1f;
         Debug.LogWarning($"[TeamAssembler] OnStartBattleClicked — teamSize={teamSize}, " +

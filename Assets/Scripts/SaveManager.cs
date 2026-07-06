@@ -183,6 +183,29 @@ namespace SowurShield.Core
             }
         }
 
+        /// <summary>
+        /// Calls SaveData() on every currently registered ISaveable into the in-memory
+        /// currentGameData, without writing to disk. Needed before a scene reload (e.g.
+        /// entering CombatScene) so runtime-only objects — like an animal bought from
+        /// AnimalMarketUI — get their existence and state recorded even if the player never
+        /// explicitly saved, otherwise AnimalPurchaseLoader has nothing to recreate them from
+        /// when the farm scene reloads on return.
+        /// </summary>
+        public void CaptureRegisteredObjectsIntoCurrentGameData()
+        {
+            if (currentGameData == null)
+                currentGameData = new GameData();
+
+            foreach (var saveable in saveableObjects.ToList())
+            {
+                if (saveable != null)
+                {
+                    try { saveable.SaveData(currentGameData); }
+                    catch (System.Exception e) { LogError($"Error capturing data from {saveable.GetType().Name}: {e.Message}"); }
+                }
+            }
+        }
+
         // ============================================================================
         // SLOT MANAGEMENT
         // ============================================================================

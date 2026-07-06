@@ -363,7 +363,7 @@ MonoBehaviour:
   inTeamColor: {r: 0.506, g: 0.788, b: 0.514, a: 0.5}
   fedColor: {r: 0.506, g: 0.788, b: 0.514, a: 1}
   hungryColor: {r: 1, g: 0.718, b: 0.302, a: 1}
-  notInTeamColor: {r: 0.969, g: 0.949, b: 0.91, a: 0.55}
+  notInTeamColor: {r: 0.176, g: 0.165, b: 0.149, a: 1}
   happinessLowColor: {r: 0.898, g: 0.451, b: 0.451, a: 1}
   happinessMidColor: {r: 1, g: 0.718, b: 0.302, a: 1}
   happinessHighColor: {r: 0.506, g: 0.788, b: 0.514, a: 1}

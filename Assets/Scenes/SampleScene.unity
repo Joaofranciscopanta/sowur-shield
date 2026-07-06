@@ -24638,6 +24638,7 @@ MonoBehaviour:
   teamSizeText: {fileID: 2007414275}
   foodRequirementsText: {fileID: 350407242}
   synergiesText: {fileID: 6048965}
+  availableAnimalsTitleText: {fileID: 755383782}
   feedAllButton: {fileID: 1276183649}
   clearGridButton: {fileID: 1198438576}
   startBattleButton: {fileID: 1028862748}
@@ -24712,6 +24713,15 @@ MonoBehaviour:
     m_TableEntryReference:
       m_KeyId: 0
       m_Key: combat.teamassembler.no_synergies
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  availableAnimalsTitleText_Localized:
+    m_TableReference:
+      m_TableCollectionName: Combat
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: combat.teamassemblersetup.available_animals
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []

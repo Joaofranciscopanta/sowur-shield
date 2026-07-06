@@ -1134,6 +1134,13 @@
     "file": "Assets/Scripts/Combat/TeamAssemblerUI.cs"
   },
   {
+    "class": "TeamAssemblerUI",
+    "field": "availableAnimalsTitleText_Localized",
+    "table": "Combat",
+    "key": "combat.teamassemblersetup.available_animals",
+    "file": "Assets/Scripts/Combat/TeamAssemblerUI.cs"
+  },
+  {
     "class": "TeamAssemblerUISetup",
     "field": "availableAnimalsText_Localized",
     "table": "Combat",

@@ -286,7 +286,9 @@ public class AnimalMarketUI : MonoBehaviour, IUIWindow, ISaveable
 
     private void SpawnPurchasedAnimal(AnimalData data, AnimalZone zone)
     {
-        GameObject go = new GameObject(data.animalName);
+        // Unique name required: it's both the GameObject identity and the "animal_{name}"
+        // save-data prefix — buying two of the same species would otherwise collide.
+        GameObject go = new GameObject(Animal.GenerateUniquePurchasedName(data.animalName));
         go.transform.position = zone.GetRandomPointInZone();
 
         var sr = go.AddComponent<SpriteRenderer>();

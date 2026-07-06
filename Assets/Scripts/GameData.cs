@@ -125,6 +125,20 @@ public class WorldGameData
     public string currentWeather = "Sunny";
     public int weatherDuration = 0;
 
+    [Header("Purchased Animals")]
+    // Animals bought at runtime (AnimalMarketUI) don't exist in any scene file, so they
+    // must be re-instantiated on load/scene-reload before Animal.LoadData can run. Hand-
+    // placed animals are NOT recorded here — they already exist in the scene every time.
+    public List<PurchasedAnimalData> purchasedAnimals = new List<PurchasedAnimalData>();
+
+    [System.Serializable]
+    public class PurchasedAnimalData
+    {
+        public string gameObjectName = ""; // matches Animal's "animal_{gameObjectName}" save prefix
+        public string animalDataName = "";  // AnimalData.animalName, used to look the asset back up
+        public string zoneName = "";        // gameObject.name of the AnimalZone it was assigned to
+    }
+
     public WorldGameData()
     {
         // Initialize with starting area

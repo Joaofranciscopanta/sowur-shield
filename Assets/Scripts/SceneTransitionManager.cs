@@ -372,6 +372,15 @@ public class SceneTransitionManager : MonoBehaviour
             GameMusicManager.Instance.OnStartGame();
         }
 
+        // Animals bought at runtime (AnimalMarketUI) are plain runtime GameObjects with no
+        // scene-file presence — they don't come back on their own when this scene reloads.
+        // Recreate them BEFORE the reapply below, so their Animal.LoadData calls happen
+        // via the recreation itself (see AnimalPurchaseLoader) rather than being missed.
+        if (SaveManager.Instance?.CurrentGameData != null && SowurShield.Animals.AnimalPurchaseLoader.Instance != null)
+        {
+            SowurShield.Animals.AnimalPurchaseLoader.Instance.RecreatePurchasedAnimals(SaveManager.Instance.CurrentGameData);
+        }
+
         // Newly instantiated scene objects (e.g. GroundItem) register themselves with
         // SaveManager on Awake but never get their persisted state otherwise — only an
         // explicit LoadGame() call does that. Re-apply it here so items already picked
