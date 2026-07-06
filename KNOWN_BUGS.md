@@ -4,6 +4,98 @@
 > behavior) and **Quirks** (surprising-but-intended or environment-specific behavior worth
 > knowing before debugging "ghosts").
 
+## [FIXED 2026-07-05] Purchased animals vanish on returning from combat
+
+**Symptom:** An animal bought from AnimalMarketUI disappears the moment the player returns
+from CombatScene to SampleScene (or after any disk load), even though hand-placed animals
+survive fine. No error in the console.
+
+**Root cause:** Purchased animals are plain runtime GameObjects (`new GameObject(...)` in
+`AnimalMarketUI.SpawnPurchasedAnimal`) with no scene-file entry. Only their per-attribute
+state (happiness, growth) was ever saved, keyed off `gameObject.name` — nothing recorded
+that the GameObject itself needed to exist. On any scene reload the object is gone and
+nothing recreates it.
+
+**Underlying discovery:** `SceneTransitionManager` — the class meant to own "farm scene
+(re)loaded" bookkeeping (re-apply save data, restore inventory snapshot, switch music) — is
+**never instantiated anywhere in the project**. No scene, prefab, or bootstrap creates it;
+every call site's `if (SceneTransitionManager.Instance != null)` falls through to a plain
+`SceneManager.LoadScene(...)`, in the real game too, not just in test sessions. Its
+`OnGameSceneLoaded()` callback therefore never ran.
+
+**Fix applied (2026-07-05):**
+- `GameData.worldData.purchasedAnimals` (new) records which animals were bought, from which
+  `AnimalData`, and into which `AnimalZone`.
+- `Animal.SaveData()`/`OnDestroy()` add/remove their own entry, guarded by
+  `gameObject.scene.isLoaded` so a scene teardown (which also fires `OnDestroy`) is never
+  mistaken for a sale.
+- `AnimalPurchaseLoader` (new) re-instantiates purchased animals from that list, listening to
+  `SceneManager.sceneLoaded` directly instead of the dead `SceneTransitionManager` path.
+- `SaveManager.CaptureRegisteredObjectsIntoCurrentGameData()` (new) snapshots every
+  `ISaveable` into memory right before combat starts, so a purchase survives the round-trip
+  even without an explicit disk save.
+- `GameSceneReloadHandler` (new) independently drives
+  `SaveManager.ReapplyLoadedDataToRegisteredObjects()` on scene load, since
+  `SceneTransitionManager` can't be relied on for that either.
+
+Verified in Play Mode via the real MainMenu → New Game → buy animal → set custom happiness →
+battle → return flow: the animal reappears with its exact saved happiness intact.
+
+---
+
+## [FIXED 2026-07-05] SellBox and FeedingTrough contents lost on returning from combat
+
+**Symptom:** Items placed in the SellBox (queued for the next sleep) or in a FeedingTrough
+silently disappear after any trip through CombatScene, even though the fix above already
+made `ReapplyLoadedDataToRegisteredObjects()` run on scene load.
+
+**Root cause:** Both `SellBox` and `FeedingTrough` register themselves with `SaveManager` in
+`Start()`, not `Awake()`. `SceneManager.sceneLoaded` fires after every object's `Awake()` in
+the new scene but **before** any of their `Start()` methods — so the very first version of
+`GameSceneReloadHandler` called `ReapplyLoadedDataToRegisteredObjects()` one frame too early,
+before SellBox/FeedingTrough had registered, and both were silently skipped.
+
+Separately, `SellBox` didn't implement `ISaveable` at all — its container was pure runtime
+state with no save path whatsoever, on top of the timing issue above.
+
+**Fix applied (2026-07-05):**
+- `SellBox` now implements `ISaveable` (mirrors `FeedingTrough`'s per-slot
+  item-name/quantity persistence pattern), registers/unregisters with `SaveManager` in
+  `Start()`/`OnDestroy()`.
+- `GameSceneReloadHandler.OnAnySceneLoaded()` now waits one frame (`yield return null`)
+  before calling `ReapplyLoadedDataToRegisteredObjects()`, so every `Start()` in the reloaded
+  scene has run first. `AnimalPurchaseLoader.OnAnySceneLoaded()` got the same one-frame delay
+  for consistency, though it wasn't strictly required there.
+
+Verified in Play Mode: 3 Carrots placed in the SellBox and 5 CarrotSeed in a FeedingTrough
+both survive a full battle round-trip (confirmed via `HasItemsToSell`/`GetFeedableAnimalCount`
+before and after).
+
+---
+
+## [FIXED 2026-07-05] Combat music never plays; farm music keeps playing through battles
+
+**Symptom:** Entering CombatScene, the farm's seasonal music keeps playing instead of
+switching to combat music; returning to the farm doesn't switch back either.
+
+**Root cause:** Same dead `SceneTransitionManager` as above — `GameMusicManager.OnStartGame()`
+/ `OnEnterCombat()` / `OnExitCombat()` all existed and were correctly implemented, but nothing
+ever called them in the real game; the class comment even said "we rely on
+SceneTransitionManager callbacks."
+
+**Fix applied (2026-07-05):** `GameMusicManager` now listens to `SceneManager.sceneLoaded`
+directly and calls `OnStartGame()`/`OnEnterCombat()` for SampleScene/CombatScene respectively
+(MainMenu is intentionally left alone — `MainMenuManager` already plays its own menu music and
+explicitly stops `GameMusicManager`'s track to avoid overlap).
+
+**Still needed (pre-existing content gap, not part of this fix):** `combatMusic` (and
+`menuMusic`) `AudioClip` fields on the `GameMusicManager` Inspector are unassigned, so even
+though `OnEnterCombat()` now fires at the right time, there's no clip to switch to yet
+(confirmed by assigning a throwaway test clip at runtime — the switch mechanism works). See
+SOWUR_SHIELD_STATUS.md's Audio wiring checklist.
+
+---
+
 ## [FIXED 2026-07-05] Maren Beloved — Can't re-interact after first conversation
 
 **Symptom:** After talking to Maren (rel >= 75) and closing the dialogue (ESC or finishing),

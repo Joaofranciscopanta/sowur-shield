@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -51,7 +52,21 @@ public class GameSceneReloadHandler : MonoBehaviour
     private void OnAnySceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name != "SampleScene") return;
-        if (SaveManager.Instance == null) return;
+        StartCoroutine(ReapplyNextFrame());
+    }
+
+    private IEnumerator ReapplyNextFrame()
+    {
+        // SceneManager.sceneLoaded fires after every object's Awake() but before their
+        // Start() — several ISaveable objects (e.g. SellBox) only call
+        // SaveManager.RegisterSaveable() in Start(). Reapplying here would silently skip
+        // them (confirmed: SellBox items placed before a battle vanished on return even
+        // though the save data survived, because ReapplyLoadedDataToRegisteredObjects ran
+        // one frame before SellBox had registered itself). Wait a frame so every Start()
+        // in the scene has run first.
+        yield return null;
+
+        if (SaveManager.Instance == null) yield break;
 
         // Newly instantiated scene objects (e.g. GroundItem) register themselves with
         // SaveManager on Awake but never get their persisted state otherwise — only an

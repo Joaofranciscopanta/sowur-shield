@@ -95,6 +95,16 @@ public class AnimalPurchaseLoader : MonoBehaviour
     private void OnAnySceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name != "SampleScene") return;
+        // sceneLoaded fires after Awake() but before Start() of the new scene's objects —
+        // wait a frame so hand-placed AnimalZones etc. have fully initialized before we
+        // search for one to assign (see GameSceneReloadHandler for the same guard, which
+        // was needed for a confirmed real bug on SellBox).
+        StartCoroutine(RecreateNextFrame());
+    }
+
+    private IEnumerator RecreateNextFrame()
+    {
+        yield return null;
         if (SaveManager.Instance?.CurrentGameData != null)
             RecreatePurchasedAnimals(SaveManager.Instance.CurrentGameData);
     }

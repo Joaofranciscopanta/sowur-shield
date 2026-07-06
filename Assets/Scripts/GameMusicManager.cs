@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace SowurShield.Core
 {
@@ -68,7 +69,6 @@ public class GameMusicManager : MonoBehaviour
     private void Start()
     {
         // This only runs once when GameMusicManager is first created
-        // For subsequent scene loads, we rely on SceneTransitionManager callbacks
 
         StopMenuMusic();
 
@@ -78,12 +78,39 @@ public class GameMusicManager : MonoBehaviour
         // Subscribe to season changes for live crossfading
         if (GameTimeController.instance != null)
             GameTimeController.instance.OnSeasonChanged += OnSeasonChanged;
+
+        // Switch tracks on every subsequent scene load. This used to be driven by
+        // SceneTransitionManager.OnSceneLoaded calling OnStartGame/OnEnterCombat, but
+        // SceneTransitionManager is never instantiated anywhere in the project — every
+        // call site falls back to a plain SceneManager.LoadScene — so those callbacks
+        // never fired and combat music never played (confirmed: farm music kept
+        // playing straight through a battle). Listening directly here matches the
+        // pattern already used by AnimalPurchaseLoader/GameSceneReloadHandler.
+        SceneManager.sceneLoaded += OnAnySceneLoaded;
     }
 
     private void OnDestroy()
     {
         if (GameTimeController.instance != null)
             GameTimeController.instance.OnSeasonChanged -= OnSeasonChanged;
+
+        SceneManager.sceneLoaded -= OnAnySceneLoaded;
+    }
+
+    private void OnAnySceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // MainMenu is intentionally not handled here — MainMenuManager already plays its
+        // own menu music via a separate AudioSource and explicitly calls
+        // GameMusicManager.StopMusic() to avoid overlap.
+        switch (scene.name)
+        {
+            case "SampleScene":
+                OnStartGame();
+                break;
+            case "CombatScene":
+                OnEnterCombat();
+                break;
+        }
     }
 
     private void OnSeasonChanged(string newSeason)

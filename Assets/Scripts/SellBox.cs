@@ -58,7 +58,7 @@ public class ItemBoxSprite
     }
 }
 
-public class SellBox : MonoBehaviour, IInteractable, IUIWindow
+public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
 {
     [Header("Sell Box Settings")]
     public int boxInventorySize = 12;
@@ -165,6 +165,12 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         // Register with UIManager
         RegisterWithUIManager();
 
+        // Register with SaveManager — the box's container is otherwise runtime-only
+        // state that never survives a scene reload (e.g. returning from CombatScene),
+        // silently dropping any items the player queued for sale before sleeping.
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.RegisterSaveable(this);
+
         // Debug information
         ValidateSetup();
     }
@@ -174,6 +180,9 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
         UnregisterFromInteractionManager();
         UnregisterFromUIManager();
         SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.UnregisterSaveable(this);
     }
 
     private void HandleLanguageChanged(Locale locale)
@@ -1141,6 +1150,54 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow
     public bool IsActive()
     {
         return gameObject.activeInHierarchy && enabled;
+    }
+
+    // =========================================================================
+    // ISaveable Implementation
+    // =========================================================================
+    // Mirrors FeedingTrough's per-slot item/quantity persistence pattern.
+
+    public void SaveData(GameData gameData)
+    {
+        if (gameData?.worldData == null) return;
+
+        string prefix = $"sellbox_{gameObject.name}";
+
+        for (int i = 0; i < boxInventorySize; i++)
+        {
+            ItemStack stack = container.GetSlot(i);
+            if (stack != null && !stack.IsEmpty)
+            {
+                gameData.worldData.worldStrings[$"{prefix}_slot{i}_item"] = stack.item.itemName;
+                gameData.worldData.worldCounters[$"{prefix}_slot{i}_qty"] = stack.quantity;
+            }
+            else
+            {
+                gameData.worldData.worldStrings.Remove($"{prefix}_slot{i}_item");
+                gameData.worldData.worldCounters.Remove($"{prefix}_slot{i}_qty");
+            }
+        }
+    }
+
+    public void LoadData(GameData gameData)
+    {
+        if (gameData?.worldData == null) return;
+
+        string prefix = $"sellbox_{gameObject.name}";
+
+        for (int i = 0; i < boxInventorySize; i++)
+        {
+            if (gameData.worldData.worldStrings.TryGetValue($"{prefix}_slot{i}_item", out string itemName) &&
+                gameData.worldData.worldCounters.TryGetValue($"{prefix}_slot{i}_qty", out int qty))
+            {
+                Item item = ItemDatabase.GetItem(itemName);
+                if (item != null && qty > 0)
+                    container.SetSlot(i, new ItemStack(item, qty));
+            }
+        }
+
+        UpdateTotalValueDisplay();
+        UpdateBoxSprite();
     }
 }
 
