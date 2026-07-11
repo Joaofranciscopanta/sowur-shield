@@ -1,6 +1,15 @@
 name: Deploy WebGL to GitHub Pages
 
 on:
+  # Any game-content push to main triggers a fresh Unity Cloud Build + deploy.
+  # docs/** is deliberately excluded so the workflow's own deploy commit
+  # (and landing-page-only edits) never trigger a Unity rebuild.
+  push:
+    branches: [main]
+    paths:
+      - 'Assets/**'
+      - 'Packages/**'
+      - 'ProjectSettings/**'
   schedule:
     - cron: '0 3 * * 0'
   workflow_dispatch:
@@ -18,6 +27,12 @@ on:
         description: 'Build number to diagnose (prints status+log, skips deploy)'
         required: false
         type: string
+
+# Serialize runs: a push that lands while a deploy is running waits its turn
+# (intermediate queued runs are superseded, only the newest queued run executes).
+concurrency:
+  group: deploy-webgl-demo
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -53,7 +68,7 @@ jobs:
 
       - name: Trigger New Unity Cloud Build
         id: trigger
-        if: ${{ github.event.inputs.trigger_new_build == 'true' }}
+        if: ${{ github.event_name == 'push' || github.event.inputs.trigger_new_build == 'true' }}
         env:
           UNITY_API_KEY: ${{ secrets.UNITY_API_KEY }}
           UNITY_ORG_ID: ${{ secrets.UNITY_ORG_ID }}
@@ -71,13 +86,14 @@ jobs:
           [ -z "$NEW_BUILD_NUMBER" ] && echo "❌ Could not start new build: $START_RESPONSE" && exit 1
           echo "✅ Started build #$NEW_BUILD_NUMBER — polling for completion..."
 
-          # Poll every 30s for up to 30 minutes
-          for i in $(seq 1 60); do
+          # Poll every 30s for up to 45 minutes (covers time queued behind
+          # another Cloud Build plus the WebGL build itself)
+          for i in $(seq 1 90); do
             sleep 30
             STATUS_INFO=$(curl -s -H "Authorization: Basic $ENCODED_KEY" \
               "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${UNITY_BUILD_TARGET_ID}/builds/${NEW_BUILD_NUMBER}")
             STATUS=$(echo "$STATUS_INFO" | grep -o '"buildStatus":"[^"]*"' | head -1 | cut -d':' -f2 | tr -d '"')
-            echo "  ⏳ [$i/60] Build #$NEW_BUILD_NUMBER status: $STATUS"
+            echo "  ⏳ [$i/90] Build #$NEW_BUILD_NUMBER status: $STATUS"
 
             if [ "$STATUS" = "success" ]; then
               echo "✅ Build #$NEW_BUILD_NUMBER succeeded!"
@@ -241,7 +257,20 @@ jobs:
             cp custom_backup/README.md docs/README.md
             echo "✅ README restored"
           fi
-          
+
+          # Write build metadata consumed by the landing page badge (index.html).
+          # If the build number hasn't changed, keep the previous file so the
+          # original deploy date is preserved and no spurious commit is created.
+          BUILD_NUM="${{ steps.download.outputs.build_number }}"
+          PREV_BUILD=$(git show HEAD:docs/build-info.json 2>/dev/null | grep -o '"build": *[0-9]*' | grep -o '[0-9]*' || true)
+          if [ -n "$BUILD_NUM" ] && [ "$PREV_BUILD" != "$BUILD_NUM" ]; then
+            printf '{"build": %s, "deployedAt": "%s"}\n' "$BUILD_NUM" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > docs/build-info.json
+            echo "✅ build-info.json written (build #$BUILD_NUM)"
+          elif [ -n "$PREV_BUILD" ]; then
+            git show HEAD:docs/build-info.json > docs/build-info.json
+            echo "ℹ️ Build number unchanged (#$PREV_BUILD) — keeping existing build-info.json"
+          fi
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
@@ -256,6 +285,9 @@ jobs:
           - Custom files preserved
           - Automated deployment via GitHub Actions"
 
+            # A commit may have landed on main while the Unity build ran —
+            # rebase our docs-only commit on top of it before pushing.
+            git pull --rebase origin main
             git push origin main
 
             echo "✅ Deployed!"

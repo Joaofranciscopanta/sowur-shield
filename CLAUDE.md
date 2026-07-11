@@ -239,8 +239,14 @@ Unity Cloud Build (WebGL) → GitHub Actions (.github/workflows/deploy-webgl-dem
 → CSS Preservation (.github/templates/style.css) → GitHub Pages (docs/ on main)
 ```
 
-**Workflow**: Weekly Sunday 3AM UTC; also manual trigger via Actions UI.
-- Downloads latest Unity Cloud Build, decompresses Brotli (.br) files, restores custom CSS, verifies build, deploys
+**Workflow triggers**:
+- **Push to `main` touching `Assets/**`, `Packages/**` or `ProjectSettings/**`** → triggers a fresh Unity Cloud Build via API, waits for it (poll 30s × 90), then deploys. `docs/**` changes do NOT trigger (prevents loop from the workflow's own deploy commit)
+- Weekly Sunday 3AM UTC (safety net — redeploys latest successful build, commits only if changed)
+- Manual via Actions UI (`workflow_dispatch`: optional build number, force-new-build flag, diagnose mode)
+
+**Pipeline**: download build → decompress Brotli (.br) → restore custom index.html/CSS/assets → write `docs/build-info.json` (build number + deploy date; the landing-page badge fetches it — never edit the badge text manually) → commit to `docs/`. Runs serialized via `concurrency: deploy-webgl-demo`.
+
+**⚠️ Unity Cloud Build's own "auto-build on commit" must stay OFF** — the workflow triggers builds via API; both enabled would double-build every push.
 
 **Required GitHub Secrets**: `UNITY_API_KEY`, `UNITY_ORG_ID`, `UNITY_PROJECT_ID`, `UNITY_BUILD_TARGET_ID`
 **Optional**: `DISCORD_WEBHOOK_URL` for deployment notifications
