@@ -26,7 +26,7 @@ MonoBehaviour:
   animalFamily: Galliformes
   animalClass:
   idleSprite: {fileID: -7787217817404136488, guid: a96363599a2dc62458a1bbc653ae6bbc, type: 3}
-  animatorController: {fileID: 0}
+  animatorController: {fileID: 9100000, guid: 974e497802ca749021c67d5cce2c65f5, type: 2}
   moveSpeed: 1.5
   wanderRadius: 5
   minIdleTime: 2

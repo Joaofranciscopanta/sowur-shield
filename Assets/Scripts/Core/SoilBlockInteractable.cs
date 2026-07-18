@@ -402,6 +402,15 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
     private void WaterSoil()
     {
+        // Anima o Bunny (virado para este bloco) e mostra o respingo
+        PlayerMove pm = GetPlayerMove();
+        if (pm != null)
+        {
+            pm.FaceDirection((Vector2)(transform.position - pm.transform.position));
+            pm.TriggerActionAnimation("Water");
+        }
+        SowurShield.Farming.WaterSplashEffect.Spawn(transform.position);
+
         if (currentState == SoilState.Tilled)
         {
             currentState = SoilState.Watered;
@@ -417,6 +426,17 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             PlayEffect(waterEffect);
             PlaySound(waterSound);
         }
+    }
+
+    private PlayerMove GetPlayerMove()
+    {
+        if (playerInventory != null)
+        {
+            PlayerMove pm = playerInventory.GetComponent<PlayerMove>();
+            if (pm != null) return pm;
+        }
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        return player != null ? player.GetComponent<PlayerMove>() : null;
     }
 
     private void PlantSeed(Item seedItem)

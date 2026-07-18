@@ -5,6 +5,7 @@ using UnityEngine.Localization;
 using System.Collections.Generic;
 using SowurShield.Core;
 using SowurShield.Inventory;
+using SowurShield.UI;
 
 namespace SowurShield.Dialogue
 {
@@ -75,6 +76,8 @@ public class ShopUI : MonoBehaviour, IUIWindow, ISaveable
 
     private void Awake()
     {
+        ApplyTheme();
+
         if (shopPanel != null)
             shopPanel.SetActive(false);
 
@@ -105,6 +108,25 @@ public class ShopUI : MonoBehaviour, IUIWindow, ISaveable
     {
         if (_currentShop != null)
             PopulateUI();
+    }
+
+    /// <summary>
+    /// Restyle the scene-wired shop window with the cozy sprite kit + palette
+    /// (wood panel, gold close button, cream heading text) — no Editor wiring needed.
+    /// </summary>
+    private void ApplyTheme()
+    {
+        UITheme theme = UIThemeStyler.LoadTheme();
+
+        UIThemeStyler.StylePanel(shopPanel, theme);
+        UIThemeStyler.StyleButton(closeButton, theme, UIThemeStyler.ButtonSmallPath);
+
+        if (theme != null)
+        {
+            UIThemeStyler.TintText(shopTitleText, theme.backgroundCream);
+            UIThemeStyler.TintText(playerGoldText, theme.highlightGold);
+            UIThemeStyler.TintText(relationshipDiscountText, theme.positive);
+        }
     }
 
     // =========================================================================

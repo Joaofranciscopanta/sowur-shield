@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8066757020280546321}
   - component: {fileID: 7681522844316128997}
   - component: {fileID: 7894502663512886420}
+  - component: {fileID: 1122334455667788990}
   m_Layer: 0
   m_Name: Clucky
   m_TagString: Untagged
@@ -223,3 +224,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0d0bd6046a833c4eb98680e3ed49488, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &1122334455667788990
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5522219693077281312}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 974e497802ca749021c67d5cce2c65f5, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

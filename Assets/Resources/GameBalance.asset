@@ -24,6 +24,6 @@ MonoBehaviour:
   happinessMultiplierMin: 0.5
   happinessMultiplierMax: 1.5
   luckySeedChance: 0.25
-  defaultInteractionRange: 2
-  sellBoxInteractionRange: 3
-  maxToolDistance: 2
+  defaultInteractionRange: 1.2
+  sellBoxInteractionRange: 1.4
+  maxToolDistance: 1.6

@@ -4,6 +4,7 @@ using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 using SowurShield.Inventory;
+using SowurShield.UI;
 using UnityEngine.Localization;
 
 namespace SowurShield.Core
@@ -105,6 +106,8 @@ public class BuildingShopUI : MonoBehaviour, IUIWindow
         if (Instance == null) Instance = this;
         else if (Instance != this) { Destroy(gameObject); return; }
 
+        ApplyTheme();
+
         if (buildingPanel  != null) buildingPanel.SetActive(false);
         if (confirmationPanel != null) confirmationPanel.SetActive(false);
         if (feedbackText   != null) feedbackText.gameObject.SetActive(false);
@@ -131,6 +134,28 @@ public class BuildingShopUI : MonoBehaviour, IUIWindow
     {
         if (IsWindowOpen)
             BuildRows();
+    }
+
+    /// <summary>
+    /// Restyle the scene-wired building shop with the cozy sprite kit + palette.
+    /// Confirmation stays on the generic wood panel; Yes = primary, No = small action.
+    /// </summary>
+    private void ApplyTheme()
+    {
+        UITheme theme = UIThemeStyler.LoadTheme();
+
+        UIThemeStyler.StylePanel(buildingPanel, theme);
+        UIThemeStyler.StylePanel(confirmationPanel, theme);
+        UIThemeStyler.StyleButton(closeButton, theme, UIThemeStyler.ButtonSmallPath);
+        UIThemeStyler.StyleButton(confirmYesButton, theme, UIThemeStyler.ButtonPrimaryPath);
+        UIThemeStyler.StyleButton(confirmNoButton, theme, UIThemeStyler.ButtonSmallPath);
+
+        if (theme != null)
+        {
+            UIThemeStyler.TintText(playerGoldText, theme.highlightGold);
+            UIThemeStyler.TintText(confirmNameText, theme.backgroundCream);
+            UIThemeStyler.TintText(confirmCostText, theme.highlightGold);
+        }
     }
 
     // =========================================================================

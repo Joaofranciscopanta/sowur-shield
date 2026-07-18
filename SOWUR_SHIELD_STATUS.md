@@ -1,6 +1,6 @@
 # Sowur Shield — Project Status
 
-> Last updated: 2026-07-02
+> Last updated: 2026-07-11
 > Branch: `main`
 > This is the **single source of truth for project state**. It supersedes ROADMAP.md,
 > GAME_DEVELOPMENT_PLAN.md, COMBAT_PIPELINE_STATUS.md, DEVELOPMENT_LOG.md, COMBAT_SETUP_GUIDE.md
@@ -158,11 +158,21 @@
 - Combat: `ConsumableBattleUI` Items button (gold sprite) + list panel (wood), outlined
   floating HUD text
 
+**Done (Jul/11, uncommitted — needs visual check in editor)**:
+- New `UIThemeStyler` static helper (`Scripts/UI Systems/`, `SowurShield.UI`): runtime restyle
+  of scene-wired UI with the sprite kit (sliced wood panels, primary/danger/small-action
+  buttons, dark labels on gold art) + flat-tint fallback — same pattern as ConsumableBattleUI
+- Themed via `ApplyTheme()` in Awake/Start: `ShopUI`, `BuildingShopUI`, `GameMenuUI` (all five
+  panels + notification colors mapped to theme tokens; re-applied in `TransferReferencesFrom`),
+  `QuestsUI` (panel + close button only — tabs stay on ShowTab's Button.colors tint),
+  `BattleResultsUI` (uses the previously-unused `panel_victory`/`panel_defeat` sprites)
+- `AnimalMarketUI` skipped intentionally — its builder already applies the theme at build time
+
 **Remaining**:
 - [ ] Visual verification of the combat Items button/panel in a live battle (code compiled
   clean; not yet seen on screen — needs editor-focused play session)
-- [ ] Review shop windows, pause menu (`GameMenuUI`), Quests journal, victory/defeat screens
-  against the theme
+- [ ] Visual verification of the Jul/11 runtime theming above (shops, pause menu, quests,
+  victory/defeat) in an editor play session
 - [ ] Stamina bar has no icon (no energy icon exists in the sprite kit yet)
 
 ---

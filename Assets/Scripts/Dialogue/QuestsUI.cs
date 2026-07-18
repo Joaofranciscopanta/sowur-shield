@@ -86,6 +86,11 @@ public class QuestsUI : MonoBehaviour, IUIWindow
         if (theme == null)
             theme = Resources.Load<UITheme>("UI/CozyUITheme");
 
+        // Upgrade the builder's flat-color window to the shared sprite kit.
+        // Tab buttons are left alone — ShowTab drives them via Button.colors tint.
+        SowurShield.UI.UIThemeStyler.StylePanel(questsPanel, theme);
+        SowurShield.UI.UIThemeStyler.StyleButton(closeButton, theme, SowurShield.UI.UIThemeStyler.ButtonSmallPath);
+
         if (questsPanel != null) questsPanel.SetActive(false);
 
         if (closeButton != null) closeButton.onClick.AddListener(CloseQuests);

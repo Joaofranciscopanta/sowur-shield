@@ -31,6 +31,7 @@ public partial class CursorController : MonoBehaviour {
     private Dictionary<Vector3Int, GameObject> soilBlocks = new Dictionary<Vector3Int, GameObject>();
     private GameObject currentInteractableObject;
     private SowurShield.Inventory.Inventory playerInventory;
+    private SowurShield.Core.PlayerMove playerMove;
     private DialogueTreeUI dialogueUI;
 
     void Start() {
@@ -53,6 +54,7 @@ public partial class CursorController : MonoBehaviour {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) {
             playerInventory = player.GetComponent<SowurShield.Inventory.Inventory>();
+            playerMove = player.GetComponent<SowurShield.Core.PlayerMove>();
         }
         
         // Encontrar o DialogueTreeUI
@@ -180,6 +182,7 @@ public partial class CursorController : MonoBehaviour {
         return item.itemTags.Contains("Hoe") ||
                item.itemTags.Contains("WateringCan") ||
                item.itemTags.Contains("Shovel") ||
+               item.itemTags.Contains("Axe") ||
                item.itemTags.Contains("Tool");
     }
     
@@ -187,6 +190,23 @@ public partial class CursorController : MonoBehaviour {
     /// Process tool usage based on the specific tool type
     /// </summary>
     private void ProcessToolUsage(Item tool, Vector3Int hexPos) {
+        // Dispara a animacao de acao correspondente a ferramenta em uso
+        if (playerMove != null) {
+            Vector3 target = hexPos + new Vector3(0.5f, 0.5f, 0f);
+            playerMove.FaceDirection((Vector2)(target - playerTransform.position));
+            if (tool.itemTags.Contains("Hoe") || tool.itemTags.Contains("Shovel"))
+                playerMove.TriggerActionAnimation("Hoe");
+            else if (tool.itemTags.Contains("WateringCan"))
+                playerMove.TriggerActionAnimation("Water");
+            else if (tool.itemTags.Contains("Axe"))
+                playerMove.TriggerActionAnimation("Axe");
+        }
+
+        // Efeito de respingo no tile regado (aparece na direcao correta)
+        if (tool.itemTags.Contains("WateringCan")) {
+            WaterSplashEffect.Spawn(hexPos + new Vector3(0.5f, 0.5f, 0f));
+        }
+
         if (tool.itemTags.Contains("Hoe")) {
             CreateSoilBlock(hexPos);
         }

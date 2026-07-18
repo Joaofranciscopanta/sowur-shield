@@ -70,6 +70,7 @@ public class PlayerMove : MonoBehaviour
 
 // Atualiza a animação com base no movimento
 animator.SetBool("isWalking", moveInput != Vector2.zero);
+animator.SetBool("isRunning", isSprinting && moveInput != Vector2.zero);
 
     }
 
@@ -241,6 +242,25 @@ animator.SetBool("isWalking", moveInput != Vector2.zero);
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
+    }
+
+    // Dispara uma animacao de acao (Hoe / Axe / Water) no Animator do Bunny.
+    // Chamado pelo CursorController quando uma ferramenta e usada.
+    public void TriggerActionAnimation(string trigger)
+    {
+        if (animator != null && !string.IsNullOrEmpty(trigger))
+            animator.SetTrigger(trigger);
+    }
+
+    // Faz o Bunny encarar a direcao do uso da ferramenta (eixo dominante).
+    public void FaceDirection(Vector2 dir)
+    {
+        if (animator == null || dir == Vector2.zero) return;
+        Vector2 f = Mathf.Abs(dir.x) >= Mathf.Abs(dir.y)
+            ? new Vector2(Mathf.Sign(dir.x), 0f)
+            : new Vector2(0f, Mathf.Sign(dir.y));
+        animator.SetFloat("MoveX", f.x);
+        animator.SetFloat("MoveY", f.y);
     }
 
     // Movement control methods for UI interactions

@@ -106,12 +106,55 @@ public class GameMenuUI : MonoBehaviour
 
     private void Start()
     {
+        ApplyTheme();
         SetupButtons();
         SetupSettings();
         InitializePanels();
         LoadSettings();
 
         LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    /// <summary>
+    /// Restyle the scene-wired pause menu with the cozy sprite kit + palette:
+    /// wood panels, primary buttons (danger art on destructive actions), and
+    /// notification colors mapped to theme tokens. Re-run after
+    /// TransferReferencesFrom since it targets a new scene's objects.
+    /// </summary>
+    private void ApplyTheme()
+    {
+        UITheme theme = UIThemeStyler.LoadTheme();
+
+        UIThemeStyler.StylePanel(mainMenuPanel, theme);
+        UIThemeStyler.StylePanel(settingsPanel, theme);
+        UIThemeStyler.StylePanel(saveInfoPanel, theme);
+        UIThemeStyler.StylePanel(saveSlotPanel, theme);
+        UIThemeStyler.StylePanel(confirmationPanel, theme);
+        UIThemeStyler.StylePanel(notificationPanel, theme);
+
+        UIThemeStyler.StyleButton(resumeButton, theme, UIThemeStyler.ButtonPrimaryPath);
+        UIThemeStyler.StyleButton(settingsButton, theme, UIThemeStyler.ButtonPrimaryPath);
+        UIThemeStyler.StyleButton(saveInfoButton, theme, UIThemeStyler.ButtonPrimaryPath);
+        UIThemeStyler.StyleButton(loadGameButton, theme, UIThemeStyler.ButtonPrimaryPath);
+        UIThemeStyler.StyleButton(quitToMenuButton, theme, UIThemeStyler.ButtonDangerPath);
+        UIThemeStyler.StyleButton(quitToDesktopButton, theme, UIThemeStyler.ButtonDangerPath);
+        UIThemeStyler.StyleButton(settingsBackButton, theme, UIThemeStyler.ButtonSmallPath);
+        UIThemeStyler.StyleButton(saveInfoBackButton, theme, UIThemeStyler.ButtonSmallPath);
+        UIThemeStyler.StyleButton(saveSlotBackButton, theme, UIThemeStyler.ButtonSmallPath);
+        UIThemeStyler.StyleButton(deleteSaveButton, theme, UIThemeStyler.ButtonDangerPath);
+        UIThemeStyler.StyleButton(confirmYesButton, theme, UIThemeStyler.ButtonPrimaryPath);
+        UIThemeStyler.StyleButton(confirmNoButton, theme, UIThemeStyler.ButtonSmallPath);
+
+        if (theme != null)
+        {
+            normalColor  = theme.backgroundCream;
+            errorColor   = theme.negative;
+            successColor = theme.positive;
+
+            UIThemeStyler.TintText(confirmationText, theme.backgroundCream);
+            UIThemeStyler.TintText(saveInfoText, theme.backgroundCream);
+            UIThemeStyler.TintText(saveSlotPanelTitle, theme.highlightGold);
+        }
     }
 
     private void OnDestroy()
@@ -183,6 +226,7 @@ public class GameMenuUI : MonoBehaviour
         }
 
         // Re-wire listeners and reset panel visibility against the new scene's objects.
+        ApplyTheme();
         SetupButtons();
         SetupSettings();
         InitializePanels();

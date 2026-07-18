@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Localization;
 using SowurShield.Animals;
 using SowurShield.Core;
+using SowurShield.UI;
 
 namespace SowurShield.Combat
 {
@@ -86,6 +87,8 @@ public class BattleResultsUI : MonoBehaviour
         }
         Instance = this;
 
+        ApplyTheme();
+
         // Hide all panels initially
         if (victoryPanel != null) victoryPanel.SetActive(false);
         if (defeatPanel != null) defeatPanel.SetActive(false);
@@ -117,6 +120,33 @@ public class BattleResultsUI : MonoBehaviour
             case TurnManager.BattleResult.Draw:
                 ShowDraw(lastSurvivingPlayers, lastSurvivingEnemies);
                 break;
+        }
+    }
+
+    /// <summary>
+    /// Restyle the results screens with the cozy sprite kit: the dedicated
+    /// panel_victory / panel_defeat art (previously unused), primary Return
+    /// buttons, and small-action Retry buttons.
+    /// </summary>
+    private void ApplyTheme()
+    {
+        UITheme theme = UIThemeStyler.LoadTheme();
+
+        UIThemeStyler.StylePanel(victoryPanel, theme, UIThemeStyler.PanelVictoryPath);
+        UIThemeStyler.StylePanel(defeatPanel, theme, UIThemeStyler.PanelDefeatPath);
+
+        UIThemeStyler.StyleButton(victoryReturnButton, theme, UIThemeStyler.ButtonPrimaryPath);
+        UIThemeStyler.StyleButton(victoryRetryButton, theme, UIThemeStyler.ButtonSmallPath);
+        UIThemeStyler.StyleButton(defeatReturnButton, theme, UIThemeStyler.ButtonPrimaryPath);
+        UIThemeStyler.StyleButton(defeatRetryButton, theme, UIThemeStyler.ButtonSmallPath);
+
+        if (theme != null)
+        {
+            UIThemeStyler.TintText(victoryTitleText, theme.highlightGold);
+            UIThemeStyler.TintText(victoryStatsText, theme.backgroundCream);
+            UIThemeStyler.TintText(victoryRewardsText, theme.backgroundCream);
+            UIThemeStyler.TintText(defeatTitleText, theme.negative);
+            UIThemeStyler.TintText(defeatStatsText, theme.backgroundCream);
         }
     }
 
