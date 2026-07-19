@@ -183,6 +183,7 @@ public partial class CursorController : MonoBehaviour {
                item.itemTags.Contains("WateringCan") ||
                item.itemTags.Contains("Shovel") ||
                item.itemTags.Contains("Axe") ||
+               item.itemTags.Contains("FishingRod") ||
                item.itemTags.Contains("Tool");
     }
     
@@ -200,6 +201,14 @@ public partial class CursorController : MonoBehaviour {
                 playerMove.TriggerActionAnimation("Water");
             else if (tool.itemTags.Contains("Axe"))
                 playerMove.TriggerActionAnimation("Axe");
+            else if (tool.itemTags.Contains("FishingRod"))
+                playerMove.TriggerActionAnimation("Fish");
+        }
+
+        // Pesca: detectar FishingSpot proximo e disparar rotina
+        if (tool.itemTags.Contains("FishingRod")) {
+            ProcessFishing(hexPos);
+            return; // Pesca toma conta do resto
         }
 
         // Efeito de respingo no tile regado (aparece na direcao correta)
@@ -396,6 +405,31 @@ public partial class CursorController : MonoBehaviour {
         return null;
     }
 
+
+    /// <summary>
+    /// Procura um FishingSpot proximo e inicia a pesca.
+    /// </summary>
+    private void ProcessFishing(Vector3Int hexPos) {
+        Vector3 worldPos = hexPos + new Vector3(0.5f, 0.5f, 0f);
+        float searchRadius = 1.5f;
+        Collider2D[] hits = Physics2D.OverlapCircleAll(worldPos, searchRadius);
+        foreach (var hit in hits) {
+            var spot = hit.GetComponent<SowurShield.Farming.FishingSpot>();
+            if (spot != null) {
+                spot.Interact();
+                return;
+            }
+        }
+        // Sem FishingSpot? Tenta na posicao do cursor mesmo
+        hits = Physics2D.OverlapCircleAll(Camera.main.ScreenToWorldPoint(Input.mousePosition), searchRadius);
+        foreach (var hit in hits) {
+            var spot = hit.GetComponent<SowurShield.Farming.FishingSpot>();
+            if (spot != null) {
+                spot.Interact();
+                return;
+            }
+        }
+    }
 
     private void CreateSoilBlock(Vector3Int tilePos) {
         // Verifica se já existe um SoilBlock nesta posição

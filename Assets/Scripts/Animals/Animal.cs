@@ -214,14 +214,14 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
             playerInventory = playerMove.GetComponent<SowurShield.Inventory.Inventory>();
         animalInfoUI = UnityEngine.Object.FindFirstObjectByType<AnimalInfoUI>();
 
-        // Set initial sprite
-        if (animalData.idleSprite != null)
+        // Set initial sprite — prefer prefab value; fall back to AnimalData only if blank
+        if (spriteRenderer.sprite == null && animalData.idleSprite != null)
         {
             spriteRenderer.sprite = animalData.idleSprite;
         }
 
-        // Set animator controller
-        if (animator != null && animalData.animatorController != null)
+        // Set animator controller — prefer prefab value; fall back to AnimalData only if blank
+        if (animator != null && animator.runtimeAnimatorController == null && animalData.animatorController != null)
         {
             animator.runtimeAnimatorController = animalData.animatorController;
         }
