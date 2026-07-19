@@ -1,0 +1,421 @@
+Table,Key,en,pt,es
+UI_Common,ui_common.yes,Yes,Sim,Sí
+UI_Common,ui_common.no,No,Não,No
+UI_Common,ui_common.ok,OK,OK,OK
+UI_Common,ui_common.cancel,Cancel,Cancelar,Cancelar
+UI_Common,ui_common.close,Close,Fechar,Cerrar
+UI_Common,ui_common.buy,Buy,Comprar,Comprar
+UI_Common,ui_common.give,Give,Dar,Dar
+UI_Common,ui_common.unassigned,Unassigned,Não atribuído,Sin asignar
+UI_Common,ui_common.gold_amount,{0}g,{0}g,{0}g
+UI_Common,ui_common.gold_label,Gold: {0},Ouro: {0},Oro: {0}
+UI_Common,ui_common.money_label,Money: ${0},Dinheiro: ${0},Dinero: ${0}
+MainMenu,mainmenu.quit_confirm,Are you sure you want to quit the game?,Tem certeza de que deseja sair do jogo?,¿Seguro que quieres salir del juego?
+MainMenu,mainmenu.quit_title,Quit Game,Sair do Jogo,Salir del juego
+MainMenu,mainmenu.load_game_title,Load Game,Carregar Jogo,Cargar partida
+MainMenu,mainmenu.new_game_title,New Game — Choose Slot,Novo Jogo — Escolha o Slot,Nueva partida — Elige ranura
+MainMenu,mainmenu.loading_progress,Loading... {0:P0},Carregando... {0:P0},Cargando... {0:P0}
+MainMenu,mainmenu.loading_save_data,Loading save data...,Carregando dados salvos...,Cargando datos guardados...
+MainMenu,mainmenu.initializing_new_game,Initializing new game...,Inicializando novo jogo...,Inicializando nueva partida...
+MainMenu,mainmenu.save_file_found_title,Save File Found,Arquivo de Save Encontrado,Archivo de guardado encontrado
+MainMenu,mainmenu.save_file_label,File: {0},Arquivo: {0},Archivo: {0}
+MainMenu,mainmenu.save_size_label,Size: {0}KB,Tamanho: {0}KB,Tamaño: {0}KB
+MainMenu,mainmenu.save_last_saved_label,Last Saved: {0},Último salvamento: {0},Último guardado: {0}
+MainMenu,mainmenu.gamemenu.settings_not_configured,Settings panel not configured!,Painel de configurações não configurado!,¡Panel de ajustes no configurado!
+MainMenu,mainmenu.gamemenu.saveinfo_not_configured,Save info panel not configured!,Painel de informações de save não configurado!,¡Panel de información de guardado no configurado!
+MainMenu,mainmenu.gamemenu.save_info_found,"📄 Save File Information\n\n📁 File: {0}\n📅 Created: {1}\n🕒 Last Saved: {2}\n💾 Size: {3}\n\n💡 Game saves automatically when you sleep in bed","📄 Informações do Save\n\n📁 Arquivo: {0}\n📅 Criado: {1}\n🕒 Último salvamento: {2}\n💾 Tamanho: {3}\n\n💡 O jogo salva automaticamente quando você dorme na cama","📄 Información de guardado\n\n📁 Archivo: {0}\n📅 Creado: {1}\n🕒 Último guardado: {2}\n💾 Tamaño: {3}\n\n💡 El juego se guarda automáticamente cuando duermes en la cama"
+MainMenu,mainmenu.gamemenu.save_info_not_found,"❌ No save file found\n\n🛏️ Sleep in a bed to save your progress automatically.\n\nThe game will create a save file when you go to sleep for the first time.","❌ Nenhum arquivo de save encontrado\n\n🛏️ Durma em uma cama para salvar seu progresso automaticamente.\n\nO jogo criará um arquivo de save quando você dormir pela primeira vez.","❌ No se encontró archivo de guardado\n\n🛏️ Duerme en una cama para guardar tu progreso automáticamente.\n\nEl juego creará un archivo de guardado la primera vez que duermas."
+MainMenu,mainmenu.gamemenu.save_slot_title,Save Game — Choose Slot,Salvar Jogo — Escolha o Slot,Guardar partida — Elige ranura
+MainMenu,mainmenu.gamemenu.load_slot_title,Load Game — Choose Slot,Carregar Jogo — Escolha o Slot,Cargar partida — Elige ranura
+MainMenu,mainmenu.gamemenu.overwrite_confirm,Overwrite save in {0}?,Sobrescrever o save em {0}?,¿Sobrescribir guardado en {0}?
+MainMenu,mainmenu.gamemenu.load_confirm,Load this save? Unsaved progress will be lost.,Carregar este save? O progresso não salvo será perdido.,¿Cargar esta partida? El progreso no guardado se perderá.
+MainMenu,mainmenu.gamemenu.saved_to_slot,Saved to {0}!,Salvo em {0}!,¡Guardado en {0}!
+MainMenu,mainmenu.gamemenu.confirm_quit_desktop,"Quit to Desktop?\n\nAny unsaved progress will be lost.\nMake sure to sleep in a bed to save!","Sair para a Área de Trabalho?\n\nQualquer progresso não salvo será perdido.\nCertifique-se de dormir em uma cama para salvar!","¿Salir al escritorio?\n\nSe perderá cualquier progreso no guardado.\n¡Asegúrate de dormir en una cama para guardar!"
+MainMenu,mainmenu.gamemenu.confirm_quit_mainmenu,"Return to Main Menu?\n\nAny unsaved progress will be lost.\nMake sure to sleep in a bed to save!","Voltar ao Menu Principal?\n\nQualquer progresso não salvo será perdido.\nCertifique-se de dormir em uma cama para salvar!","¿Volver al menú principal?\n\nSe perderá cualquier progreso no guardado.\n¡Asegúrate de dormir en una cama para guardar!"
+MainMenu,mainmenu.gamemenu.confirm_delete_save,"Delete Save File?\n\nThis action cannot be undone.\nAll your progress will be permanently lost!","Excluir Arquivo de Save?\n\nEsta ação não pode ser desfeita.\nTodo o seu progresso será perdido permanentemente!","¿Eliminar archivo de guardado?\n\nEsta acción no se puede deshacer.\n¡Todo tu progreso se perderá permanentemente!"
+MainMenu,mainmenu.gamemenu.save_deleted,Save file deleted!,Arquivo de save excluído!,¡Archivo de guardado eliminado!
+MainMenu,mainmenu.gamemenu.test_notification,Test notification message!,Mensagem de notificação de teste!,¡Mensaje de notificación de prueba!
+MainMenu,mainmenu.gamemenu.test_error,Test error message!,Mensagem de erro de teste!,¡Mensaje de error de prueba!
+MainMenu,mainmenu.quittomainmenu.confirm,"Return to Main Menu?\n\nAny unsaved progress will be lost.\nMake sure to save your game first!","Voltar ao Menu Principal?\n\nQualquer progresso não salvo será perdido.\nCertifique-se de salvar o jogo primeiro!","¿Volver al menú principal?\n\nSe perderá cualquier progreso no guardado.\n¡Asegúrate de guardar tu partida primero!"
+MainMenu,mainmenu.savegameui.save_info_found,"Save File Information:\n\nFile: {0}\nCreated: {1}\nLast Modified: {2}\nSize: {3}\n\n💡 Game saves automatically when you sleep in bed","Informações do Arquivo de Save:\n\nArquivo: {0}\nCriado: {1}\nÚltima Modificação: {2}\nTamanho: {3}\n\n💡 O jogo salva automaticamente quando você dorme na cama","Información del archivo de guardado:\n\nArchivo: {0}\nCreado: {1}\nÚltima modificación: {2}\nTamaño: {3}\n\n💡 El juego se guarda automáticamente cuando duermes en la cama"
+MainMenu,mainmenu.savegameui.save_info_not_found,"No save file found.\n\n🛏️ Sleep in a bed to save your progress automatically.\n\nThe game will create a save file when you go to sleep.","Nenhum arquivo de save encontrado.\n\n🛏️ Durma em uma cama para salvar seu progresso automaticamente.\n\nO jogo criará um arquivo de save quando você dormir.","No se encontró archivo de guardado.\n\n🛏️ Duerme en una cama para guardar tu progreso automáticamente.\n\nEl juego creará un archivo de guardado cuando duermas."
+MainMenu,mainmenu.saveslotbutton.autosave,Auto Save,Save Automático,Guardado automático
+MainMenu,mainmenu.saveslotbutton.slot_prefix,Slot ,Slot ,Ranura
+MainMenu,mainmenu.saveslotbutton.day_label,"Day {0} — {1}, Year {2}","Dia {0} — {1}, Ano {2}","Día {0} — {1}, Año {2}"
+MainMenu,mainmenu.saveslotbutton.money_label,${0},${0},${0}
+Inventory,inventory.title,Inventory,Inventário,Inventario
+Inventory,inventory.sort_label,Sort: {0},Ordenar: {0},Ordenar: {0}
+Inventory,inventory.count_fraction,{0}/{1},{0}/{1},{0}/{1}
+Inventory,inventory.tooltip.italic_text,<i>{0}</i>,<i>{0}</i>,<i>{0}</i>
+Inventory,inventory.tooltip.value_coins,<color=#FFD700>Value: {0} coins</color>,<color=#FFD700>Valor: {0} moedas</color>,<color=#FFD700>Valor: {0} monedas</color>
+Inventory,inventory.tooltip.cannot_be_sold,<color=#888888>Cannot be sold</color>,<color=#888888>Não pode ser vendido</color>,<color=#888888>No se puede vender</color>
+Inventory,inventory.tooltip.max_stack,<color=#AAAAAA>Max Stack: {0}</color>,<color=#AAAAAA>Pilha Máxima: {0}</color>,<color=#AAAAAA>Pila Máxima: {0}</color>
+Inventory,inventory.tooltip.consumable,<color=#90EE90>Consumable</color>,<color=#90EE90>Consumível</color>,<color=#90EE90>Consumible</color>
+Inventory,inventory.tooltip.energy,"  <color=#FFD700>+{0} Energy</color>","  <color=#FFD700>+{0} Energia</color>","  <color=#FFD700>+{0} Energía</color>"
+Inventory,inventory.tooltip.health,"  <color=#FF6B6B>+{0} Health</color>","  <color=#FF6B6B>+{0} Vida</color>","  <color=#FF6B6B>+{0} Vida</color>"
+Inventory,inventory.tooltip.tool_level,<color=#87CEEB>Tool Level: {0}</color>,<color=#87CEEB>Nível da Ferramenta: {0}</color>,<color=#87CEEB>Nivel de Herramienta: {0}</color>
+Inventory,inventory.tooltip.durability,<color=#FFA500>Durability: {0}</color>,<color=#FFA500>Durabilidade: {0}</color>,<color=#FFA500>Durabilidad: {0}</color>
+Inventory,inventory.tooltip.unbreakable,<color=#90EE90>Unbreakable</color>,<color=#90EE90>Inquebrável</color>,<color=#90EE90>Indestructible</color>
+Inventory,inventory.tooltip.description,<size=11><color=#888888>{0}</color></size>,<size=11><color=#888888>{0}</color></size>,<size=11><color=#888888>{0}</color></size>
+Inventory,item.CabbageSeed.name,Cabbage Seeds,Sementes de Repolho,Semillas de Repollo
+Inventory,item.CarrotSeed.name,Carrot Seeds,Sementes de Cenoura,Semillas de Zanahoria
+Inventory,item.MysterySeed.name,Mystery Seed,Semente Misteriosa,Semilla Misteriosa
+Inventory,item.PumpkinSeed.name,Pumpkin Seeds,Sementes de Abóbora,Semillas de Calabaza
+Inventory,item.RadishSeed.name,Radish Seeds,Sementes de Rabanete,Semillas de Rábano
+Inventory,item.TomatoSeed.name,Tomato Seeds,Sementes de Tomate,Semillas de Tomate
+Inventory,item.Apple.name,Apple,Maçã,Manzana
+Inventory,item.Cabbage.name,Cabbage,Repolho,Repollo
+Inventory,item.Carrot.name,Carrot,Cenoura,Zanahoria
+Inventory,item.Pumpkin.name,Pumpkin,Abóbora,Calabaza
+Inventory,item.Radish.name,Radish,Rabanete,Rábano
+Inventory,item.Tomato.name,Tomato,Tomate,Tomate
+Inventory,item.Banana.name,Banana,Banana,Plátano
+Inventory,item.Bread.name,Bread,Pão,Pan
+Inventory,item.DuckEgg.name,Duck Egg,Ovo de Pata,Huevo de Pata
+Inventory,item.Egg.name,Egg,Ovo,Huevo
+Inventory,item.Feather.name,Feather,Pena,Pluma
+Inventory,item.Hoe.name,Hoe,Enxada,Azada
+Inventory,item.Shovel.name,Shovel,Pá,Pala
+Inventory,item.WateringCan.name,Watering Can,Regador,Regadera
+Animals,animals.info.daily_food_header,Daily Food Needs:\n,Necessidades de Alimentação Diárias:\n,Necesidades de alimentación diarias:\n
+Animals,animals.info.food_line,"• {0}x {1}\n","• {0}x {1}\n","• {0}x {1}\n"
+Animals,animals.info.no_special_food,No special food needed,Nenhum alimento especial necessário,No necesita alimento especial
+Animals,animals.info.status_header,Status:\n,Status:\n,Estado:\n
+Animals,animals.info.status_ill,"• ILL — use {0} to cure\n","• DOENTE — use {0} para curar\n","• ENFERMO — usa {0} para curar\n"
+Animals,animals.info.status_happy,"• Happy (Petted today)\n","• Feliz (Acariciado hoje)\n","• Feliz (Acariciado hoy)\n"
+Animals,animals.info.status_well_fed,"• Well Fed\n","• Bem Alimentado\n","• Bien Alimentado\n"
+Animals,animals.info.status_hungry,"• Hungry\n","• Com Fome\n","• Hambriento\n"
+Animals,animals.info.fed_today,Fed Today: {0}/{1},Alimentado Hoje: {0}/{1},Alimentado Hoy: {0}/{1}
+Animals,animals.info.happiness,Happiness: {0:F0}/100,Felicidade: {0:F0}/100,Felicidad: {0:F0}/100
+Animals,animals.info.stat_multiplier,Stat Multiplier: {0:F2}x,Multiplicador de Status: {0:F2}x,Multiplicador de Estadística: {0:F2}x
+Animals,animals.info.no_production,No production,Sem produção,Sin producción
+Animals,animals.info.produces,"Produces: {0}\n","Produz: {0}\n","Produce: {0}\n"
+Animals,animals.market.buy_price,{0}g,{0}g,{0}g
+Animals,animals.market.sell_price,+{0}g,+{0}g,+{0}g
+Animals,animals.market.unassigned,Unassigned,Não atribuído,Sin asignar
+Animals,animals.market.not_enough_gold,Not enough gold.,Ouro insuficiente.,Oro insuficiente.
+Animals,animals.market.zones_full,All zones are full! Build a Barn or free up space.,Todas as zonas estão cheias! Construa um Celeiro ou libere espaço.,¡Todas las zonas están llenas! Construye un Granero o libera espacio.
+Animals,animals.market.welcome,"Welcome, {0}!","Bem-vindo(a), {0}!","¡Bienvenido(a), {0}!"
+Animals,animals.market.sell_confirm,Sell {0}?,Vender {0}?,¿Vender {0}?
+Animals,animals.market.sell_gold_gain,+{0} gold,+{0} ouro,+{0} oro
+Animals,animals.market.sale_failed,Sale failed — missing references.,Falha na venda — referências ausentes.,Venta fallida — referencias faltantes.
+Animals,animals.market.sold,Sold {0}.,{0} vendido.,{0} vendido.
+Animals,animals.market.friendship_discount,Friendship Discount: {0}% off,Desconto de Amizade: {0}% off,Descuento de Amistad: {0}% de descuento
+Animals,animals.market.gold_label,Gold: {0},Ouro: {0},Oro: {0}
+Animals,animals.roster.group_header,{0} ({1} animals),{0} ({1} animais),{0} ({1} animales)
+Animals,animals.roster.mood_happy,☺,☺,☺
+Animals,animals.roster.mood_neutral,•,•,•
+Animals,animals.roster.mood_sad,☹,☹,☹
+Animals,animals.roster.hungry,Hungry,Com Fome,Hambriento
+Animals,animals.roster.fed,Fed,Alimentado,Alimentado
+Animals,animals.roster.row_status,"{0} {1:F0}%  |  {2}","{0} {1:F0}%  |  {2}","{0} {1:F0}%  |  {2}"
+Animals,animals.roster.title,Animal Roster — {0} Animal{1},Lista de Animais — {0} Animal{1},Lista de Animales — {0} Animal{1}
+Animals,animals.roster.empty,No animals registered yet.,Nenhum animal registrado ainda.,Aún no hay animales registrados.
+Animals,animals.roster.avg_happiness,"Avg Happiness: {0:F0}  |  Hungry: {1}/{2}","Felicidade Média: {0:F0}  |  Com Fome: {1}/{2}","Felicidad Promedio: {0:F0}  |  Hambrientos: {1}/{2}"
+Animals,animals.skill.requires,Requires: ,Requer: ,Requiere:
+Animals,animals.skill.and,  AND  ,  E  ,  Y
+Animals,animals.skill.full_info_header,"<b>{0}</b> ({1})\n","<b>{0}</b> ({1})\n","<b>{0}</b> ({1})\n"
+Animals,animals.skill.full_info_desc,"{0}\n\n","{0}\n\n","{0}\n\n"
+Animals,animals.skill.full_info_unlock,Unlock: {0},Desbloqueio: {0},Desbloqueo: {0}
+Animals,animals.trough.title,Feeding Trough,Comedouro,Comedero
+Animals,animals.trough.status,"Food stored: {0} items\nCan feed: {1}/{2} animals tomorrow","Comida armazenada: {0} itens\nPode alimentar: {1}/{2} animais amanhã","Comida almacenada: {0} artículos\nPuede alimentar: {1}/{2} animales mañana"
+Animals,animal.Chicken.name,Chicken,Galinha,Gallina
+Animals,animal.Duck.name,Duck,Pato,Pato
+Animals,animal.Sparrow.name,Sparrow,Pardal,Gorrión
+Combat,combat.selection.happiness,Happiness: {0:F0}%,Felicidade: {0:F0}%,Felicidad: {0:F0}%
+Combat,combat.selection.fed,Fed,Alimentado,Alimentado
+Combat,combat.selection.no_food_needed,No food needed,Nenhum alimento necessário,No necesita alimento
+Combat,combat.selection.needs,Needs: ,Precisa: ,Necesita:
+Combat,combat.selection.food_line,"{0}x {1} ","{0}x {1} ","{0}x {1} "
+Combat,combat.hud.combo,Combo x{0}!,Combo x{0}!,¡Combo x{0}!
+Combat,combat.results.victory,*** VICTORY! ***,*** VITÓRIA! ***,*** ¡VICTORIA! ***
+Combat,combat.results.defeat,-- DEFEAT --,-- DERROTA --,-- DERROTA --
+Combat,combat.results.draw,⏱️ DRAW ⏱️,⏱️ EMPATE ⏱️,⏱️ EMPATE ⏱️
+Combat,combat.results.turn_limit,"\n\nTurn limit reached!","\n\nLimite de turnos atingido!","\n\n¡Límite de turnos alcanzado!"
+Combat,combat.results.partial_rewards,"Partial Rewards:\nGold: 50\nXP: 25 (all units)","Recompensas Parciais:\nOuro: 50\nXP: 25 (todas as unidades)","Recompensas Parciales:\nOro: 50\nXP: 25 (todas las unidades)"
+Combat,combat.results.stats,"<b>Battle Statistics</b>\n\nTurns: {0}\nYour Survivors: {1}\nEnemy Survivors: {2}\n","<b>Estatísticas da Batalha</b>\n\nTurnos: {0}\nSeus Sobreviventes: {1}\nSobreviventes Inimigos: {2}\n","<b>Estadísticas de la Batalla</b>\n\nTurnos: {0}\nTus Sobrevivientes: {1}\nSobrevivientes Enemigos: {2}\n"
+Combat,combat.results.no_rewards,No rewards.,Sem recompensas.,Sin recompensas.
+Combat,combat.results.rewards_header,"<b>Rewards</b>\n\n","<b>Recompensas</b>\n\n","<b>Recompensas</b>\n\n"
+Combat,combat.results.gold,Gold: {0},Ouro: {0},Oro: {0}
+Combat,combat.results.xp,XP: +{0} (surviving units),XP: +{0} (unidades sobreviventes),XP: +{0} (unidades sobrevivientes)
+Combat,combat.results.item_reward,{0} x{1},{0} x{1},{0} x{1}
+Combat,combat.results.animal_happiness,Animal Happiness: +{0},Felicidade Animal: +{0},Felicidad Animal: +{0}
+Combat,combat.status.turn_counter,Turn: {0}/{1},Turno: {0}/{1},Turno: {0}/{1}
+Combat,combat.status.your_team,Your Team: {0}/{1},Seu Time: {0}/{1},Tu Equipo: {0}/{1}
+Combat,combat.status.enemies,Enemies: {0}/{1},Inimigos: {0}/{1},Enemigos: {0}/{1}
+Combat,combat.consumables.title,Items,Itens,Objetos
+Combat,combat.consumables.no_inventory,No inventory found,Inventário não encontrado,Inventario no encontrado
+Combat,combat.consumables.none,No consumables,Nenhum consumível,Sin consumibles
+Combat,combat.consumables.item_row,{0} x{1} (+{2} HP),{0} x{1} (+{2} PV),{0} x{1} (+{2} PV)
+Combat,combat.grid.position_label,"({0},{1})","({0},{1})","({0},{1})"
+Combat,combat.teamassembler.zone_label,Zone: {0},Zona: {0},Zona: {0}
+Combat,combat.teamassembler.team_count,Team: {0}/15,Time: {0}/15,Equipo: {0}/15
+Combat,combat.teamassembler.all_fed,All animals fed!,Todos os animais alimentados!,¡Todos los animales alimentados!
+Combat,combat.teamassembler.required_food_header,"Required Food:\n","Comida Necessária:\n","Comida Necesaria:\n"
+Combat,combat.teamassembler.food_line,"• {0}x {1}\n","• {0}x {1}\n","• {0}x {1}\n"
+Combat,combat.teamassembler.synergies_header,"Synergies:\n","Sinergias:\n","Sinergias:\n"
+Combat,combat.teamassembler.synergy_line,"• {0}x {1} (Stack Bonus)\n","• {0}x {1} (Bônus de Pilha)\n","• {0}x {1} (Bono de Pila)\n"
+Combat,combat.teamassembler.no_synergies,No active synergies,Nenhuma sinergia ativa,Sin sinergias activas
+Combat,combat.teamassemblersetup.available_animals,Available Animals,Animais Disponíveis,Animales Disponibles
+Combat,combat.healthbar.fraction,{0}/{1},{0}/{1},{0}/{1}
+Combat,enemy.CaveBat.name,Cave Bat,Morcego da Caverna,Murciélago de Cueva
+Combat,enemy.CaveTroll.name,Cave Troll,Troll da Caverna,Trol de Cueva
+Combat,enemy.CrystalBeetle.name,Crystal Beetle,Besouro de Cristal,Escarabajo de Cristal
+Combat,enemy.DarkSpider.name,Dark Spider,Aranha Sombria,Araña Oscura
+Combat,enemy.MushroomSpore.name,Mushroom Spore,Esporo de Cogumelo,Espora de Hongo
+Combat,enemy.ShadowStalker.name,Shadow Stalker,Perseguidor das Sombras,Acechador de las Sombras
+Combat,enemy.StoneGolem.name,Stone Golem,Golem de Pedra,Gólem de Piedra
+Combat,enemy.AncientWolf.name,Ancient Wolf,Lobo Ancestral,Lobo Ancestral
+Combat,enemy.ForestBoar.name,Forest Boar,Javali da Floresta,Jabalí del Bosque
+Combat,enemy.GreatOwl.name,Great Owl,Grande Coruja,Gran Búho
+Combat,enemy.HowlingWolf.name,Howling Wolf,Lobo Uivante,Lobo Aullador
+Combat,enemy.PoisonFrog.name,Poison Frog,Sapo Venenoso,Rana Venenosa
+Combat,enemy.Treant.name,Treant,Treant,Treant
+Combat,enemy.VineSprite.name,Vine Sprite,Espírito de Trepadeira,Espíritu de Enredadera
+Combat,enemy.Crow.name,Crow,Corvo,Cuervo
+Combat,enemy.FieldRat.name,Field Rat,Rato do Campo,Rata de Campo
+Combat,enemy.GiantSlime.name,Giant Slime,Gosma Gigante,Limo Gigante
+Combat,enemy.HoneyBee.name,Honey Bee,Abelha,Abeja
+Combat,enemy.MeadowWolf.name,Meadow Wolf,Lobo da Pradaria,Lobo de la Pradera
+Combat,enemy.Slime.name,Slime,Gosma,Limo
+Combat,enemy.ArmoredBear.name,Armored Bear,Urso Blindado,Oso Acorazado
+Combat,enemy.FrostDrake.name,Frost Drake,Dragão de Gelo,Dragón de Escarcha
+Combat,enemy.Harpy.name,Harpy,Harpia,Arpía
+Combat,enemy.IronGolem.name,Iron Golem,Golem de Ferro,Gólem de Hierro
+Combat,enemy.MountainKing.name,Mountain King,Rei da Montanha,Rey de la Montaña
+Combat,enemy.RockHound.name,Rock Hound,Cão de Pedra,Sabueso de Roca
+Combat,enemy.ThunderEagle.name,Thunder Eagle,Águia do Trovão,Águila del Trueno
+Combat,enemy.FireImp.name,Fire Imp,Diabrete de Fogo,Diablillo de Fuego
+Combat,enemy.Hellhound.name,Hellhound,Cão do Inferno,Sabueso Infernal
+Combat,enemy.InfernoDragon.name,Inferno Dragon,Dragão do Inferno,Dragón del Infierno
+Combat,enemy.LavaSalamander.name,Lava Salamander,Salamandra de Lava,Salamandra de Lava
+Combat,enemy.MagmaSlime.name,Magma Slime,Gosma de Magma,Limo de Magma
+Combat,enemy.ObsidianGolem.name,Obsidian Golem,Golem de Obsidiana,Gólem de Obsidiana
+Combat,enemy.VolcanicDrake.name,Volcanic Drake,Dragão Vulcânico,Dragón Volcánico
+Combat,combat.modifier.None.description,A normal battle.,Uma batalha normal.,Una batalla normal.
+Combat,combat.modifier.DoubleSpeed.description,Turn gauges fill twice as fast!,Os medidores de turno enchem duas vezes mais rápido!,¡Los medidores de turno se llenan el doble de rápido!
+Combat,combat.modifier.LowVisibility.description,Reduced accuracy for all combatants.,Precisão reduzida para todos os combatentes.,Precisión reducida para todos los combatientes.
+Combat,combat.modifier.HealingRain.description,All units heal a little each round.,Todas as unidades curam um pouco a cada rodada.,Todas las unidades se curan un poco cada ronda.
+Combat,combat.modifier.GlassCannon.description,Damage dealt and received is doubled!,O dano causado e recebido é dobrado!,¡El daño causado y recibido se duplica!
+Combat,stage.SunnyFields.name,Sunny Fields,Campos Ensolarados,Campos Soleados
+Combat,stage.SunnyFields.description,A gentle breeze sweeps through the golden grass. A perfect place to begin your journey.,Uma brisa suave passa pela grama dourada. Um lugar perfeito para começar sua jornada.,Una suave brisa recorre la hierba dorada. Un lugar perfecto para comenzar tu viaje.
+Combat,stage.FlowerGarden.name,Flower Garden,Jardim de Flores,Jardín de Flores
+Combat,stage.FlowerGarden.description,Colourful flowers hide small but persistent pests.,Flores coloridas escondem pragas pequenas mas persistentes.,Las flores coloridas esconden plagas pequeñas pero persistentes.
+Combat,stage.RollingHills.name,Rolling Hills,Colinas Ondulantes,Colinas Onduladas
+Combat,stage.RollingHills.description,Speed is everything on open ground.,Velocidade é tudo em terreno aberto.,La velocidad lo es todo en terreno abierto.
+Combat,stage.WindPrairie.name,Wind Prairie,Pradaria dos Ventos,Pradera del Viento
+Combat,stage.WindPrairie.description,The Giant Slime patrols these plains. It hits harder than it looks.,A Gosma Gigante patrulha estas planícies. Ela bate mais forte do que parece.,El Limo Gigante patrulla estas llanuras. Golpea más fuerte de lo que parece.
+Combat,stage.PeacefulPastureBoss.name,Peaceful Pasture — Boss,Pasto Tranquilo — Chefe,Pastizal Tranquilo — Jefe
+Combat,stage.PeacefulPastureBoss.description,[BOSS] The Meadow Wolf guards the path to the forest. Defeat it to move on.,[CHEFE] O Lobo da Pradaria guarda o caminho para a floresta. Derrote-o para avançar.,[JEFE] El Lobo de la Pradera guarda el camino al bosque. Derrótalo para avanzar.
+Combat,stage.WhisperingWoods.name,Whispering Woods,Bosque Sussurrante,Bosque Susurrante
+Combat,stage.WhisperingWoods.description,The trees close in. Strange sounds echo from the canopy.,As árvores se fecham ao redor. Sons estranhos ecoam da copa.,Los árboles se cierran alrededor. Sonidos extraños resuenan desde el follaje.
+Combat,stage.DarkGrove.name,Dark Grove,Bosque Sombrio,Arboleda Oscura
+Combat,stage.DarkGrove.description,Poison Frogs lurk beneath the undergrowth.,Sapos Venenosos se escondem sob a vegetação rasteira.,Ranas Venenosas se esconden bajo la maleza.
+Combat,stage.AncientForest.name,Ancient Forest,Floresta Ancestral,Bosque Ancestral
+Combat,stage.AncientForest.description,The howling grows louder. Wolves hunt in packs here.,O uivo se intensifica. Lobos caçam em bandos aqui.,El aullido se intensifica. Los lobos cazan en manadas aquí.
+Combat,stage.TwilightGlade.name,Twilight Glade,Clareira do Crepúsculo,Claro del Crepúsculo
+Combat,stage.TwilightGlade.description,A Great Owl watches from above. The Treant stirs.,Uma Grande Coruja observa do alto. O Treant se agita.,Un Gran Búho observa desde arriba. El Treant se agita.
+Combat,stage.MossyHollowBoss.name,Mossy Hollow — Boss,Vale Musgoso — Chefe,Hueco Musgoso — Jefe
+Combat,stage.MossyHollowBoss.description,[BOSS] The Ancient Wolf rules this forest. Its pack defends it fiercely.,[CHEFE] O Lobo Ancestral domina esta floresta. Sua matilha o defende ferozmente.,[JEFE] El Lobo Ancestral domina este bosque. Su manada lo defiende ferozmente.
+Combat,stage.CrystalCavern.name,Crystal Cavern,Caverna de Cristal,Caverna de Cristal
+Combat,stage.CrystalCavern.description,The crystals glow faintly. Bats dive from the ceiling.,Os cristais brilham fracamente. Morcegos mergulham do teto.,Los cristales brillan tenuemente. Los murciélagos se lanzan desde el techo.
+Combat,stage.ShadowDepths.name,Shadow Depths,Profundezas Sombrias,Profundidades Sombrías
+Combat,stage.ShadowDepths.description,Dark Spiders spin webs across every passage.,Aranhas Sombrias tecem teias em todas as passagens.,Las Arañas Oscuras tejen telarañas en cada pasaje.
+Combat,stage.EchoChamber.name,Echo Chamber,Câmara do Eco,Cámara del Eco
+Combat,stage.EchoChamber.description,The Stone Golem barely moves, but it barely flinches either.,O Golem de Pedra quase não se move, mas também quase não vacila.,El Gólem de Piedra apenas se mueve, pero tampoco se inmuta.
+Combat,stage.UndergroundLake.name,Underground Lake,Lago Subterrâneo,Lago Subterráneo
+Combat,stage.UndergroundLake.description,Something fast moves in the shadows. Don't let it reach your back line.,Algo rápido se move nas sombras. Não deixe que alcance sua linha de trás.,Algo rápido se mueve en las sombras. No dejes que llegue a tu línea trasera.
+Combat,stage.StalactiteHallBoss.name,Stalactite Hall — Boss,Salão das Estalactites — Chefe,Salón de Estalactitas — Jefe
+Combat,stage.StalactiteHallBoss.description,[BOSS] The Cave Troll fills the entire chamber. Tanky AND aggressive.,[CHEFE] O Troll da Caverna enche toda a câmara. Resistente E agressivo.,[JEFE] El Trol de Cueva llena toda la cámara. Resistente Y agresivo.
+Combat,stage.RockyPeak.name,Rocky Peak,Pico Rochoso,Pico Rocoso
+Combat,stage.RockyPeak.description,Rock Hounds patrol the lower paths. Stronger than forest wolves.,Cães de Pedra patrulham os caminhos inferiores. Mais fortes que os lobos da floresta.,Los Sabuesos de Roca patrullan los senderos bajos. Más fuertes que los lobos del bosque.
+Combat,stage.EaglesNest.name,Eagle's Nest,Ninho da Águia,Nido del Águila
+Combat,stage.EaglesNest.description,Harpies and Thunder Eagles dive from the peaks.,Harpias e Águias do Trovão mergulham dos picos.,Las Arpías y Águilas del Trueno se lanzan desde los picos.
+Combat,stage.StoneGiantPass.name,Stone Giant Pass,Passagem do Gigante de Pedra,Paso del Gigante de Piedra
+Combat,stage.StoneGiantPass.description,Armored Bears and Iron Golems block the mountain pass.,Ursos Blindados e Golens de Ferro bloqueiam a passagem da montanha.,Osos Acorazados y Gólems de Hierro bloquean el paso de la montaña.
+Combat,stage.CloudRidge.name,Cloud Ridge,Crista das Nuvens,Cresta de las Nubes
+Combat,stage.CloudRidge.description,A Frost Drake circles overhead. The elite Thunder Eagles escort it.,Um Dragão de Gelo circula no alto. As Águias do Trovão de elite o escoltam.,Un Dragón de Escarcha sobrevuela en círculos. Las Águilas del Trueno de élite lo escoltan.
+Combat,stage.FrozenSummitBoss.name,Frozen Summit — Boss,Cume Congelado — Chefe,Cumbre Helada — Jefe
+Combat,stage.FrozenSummitBoss.description,[BOSS] The Mountain King commands peak and storm alike. Nothing survives up here.,[CHEFE] O Rei da Montanha comanda tanto o pico quanto a tempestade. Nada sobrevive aqui.,[JEFE] El Rey de la Montaña comanda tanto la cumbre como la tormenta. Nada sobrevive aquí.
+Combat,stage.LavaFields.name,Lava Fields,Campos de Lava,Campos de Lava
+Combat,stage.LavaFields.description,The ground burns. Lava Salamanders are the least of your worries.,O solo queima. As Salamandras de Lava são a menor das suas preocupações.,El suelo arde. Las Salamandras de Lava son la menor de tus preocupaciones.
+Combat,stage.AshenCaldera.name,Ashen Caldera,Caldeira Cinzenta,Caldera de Cenizas
+Combat,stage.AshenCaldera.description,Fire Imps move faster than anything you've faced. They hit twice before you blink.,Diabretes de Fogo se movem mais rápido do que tudo que você já enfrentou. Eles atacam duas vezes antes que você pisque.,Los Diablillos de Fuego se mueven más rápido que nada que hayas enfrentado. Golpean dos veces antes de que parpadees.
+Combat,stage.ObsidianPeak.name,Obsidian Peak,Pico de Obsidiana,Pico de Obsidiana
+Combat,stage.ObsidianPeak.description,Obsidian Golems and Hellhounds. One won't die; the other will kill you first.,Golens de Obsidiana e Cães do Inferno. Um não morre; o outro te mata primeiro.,Gólems de Obsidiana y Sabuesos Infernales. Uno no muere; el otro te mata primero.
+Combat,stage.FireBasin.name,Fire Basin,Bacia de Fogo,Cuenca de Fuego
+Combat,stage.FireBasin.description,The Volcanic Drake and its elite guard. The last test before the Dragon.,O Dragão Vulcânico e sua guarda de elite. O último teste antes do Dragão.,El Dragón Volcánico y su guardia de élite. La última prueba antes del Dragón.
+Combat,stage.MagmaCoreFinalBoss.name,Magma Core — Final Boss,Núcleo de Magma — Chefe Final,Núcleo de Magma — Jefe Final
+Combat,stage.MagmaCoreFinalBoss.description,[FINAL BOSS] The Inferno Dragon. Absolute peak threat. Bring your best animals — fully fed and petted.,[CHEFE FINAL] O Dragão do Inferno. Ameaça máxima absoluta. Traga seus melhores animais — bem alimentados e acariciados.,[JEFE FINAL] El Dragón del Infierno. Amenaza máxima absoluta. Trae tus mejores animales — bien alimentados y acariciados.
+Dialogue,quest.clear_sunny_fields.title,Trouble in Sunny Fields,Problemas nos Campos Ensolarados,Problemas en los Campos Soleados
+Dialogue,quest.clear_sunny_fields.description,Something's been spooking the animals near Sunny Fields. Take your team out there and clear it up.,Algo tem assustado os animais perto dos Campos Ensolarados. Leve sua equipe até lá e resolva isso.,Algo ha estado asustando a los animales cerca de los Campos Soleados. Lleva a tu equipo allí y resuélvelo.
+Dialogue,quest.clear_sunny_fields.objective0,Clear Sunny Fields,Limpar os Campos Ensolarados,Despejar los Campos Soleados
+Dialogue,quest.egg_collector.title,Egg Collector,Colecionador de Ovos,Coleccionista de Huevos
+Dialogue,quest.egg_collector.description,Your chickens are laying — collect a few eggs for the pantry.,Suas galinhas estão pondo ovos — colete alguns para a despensa.,Tus gallinas están poniendo huevos — recolecta algunos para la despensa.
+Dialogue,quest.egg_collector.objective0,Collect Eggs,Coletar Ovos,Recolectar Huevos
+Dialogue,quest.first_harvest.title,First Harvest,Primeira Colheita,Primera Cosecha
+Dialogue,quest.first_harvest.description,Till some soil, plant a Carrot seed, and bring in your first harvest.,Lavre a terra, plante uma semente de Cenoura e traga sua primeira colheita.,Cultiva la tierra, planta una semilla de Zanahoria y trae tu primera cosecha.
+Dialogue,quest.first_harvest.objective0,Harvest a Carrot,Colher uma Cenoura,Cosechar una Zanahoria
+Dialogue,quest.get_to_know_maren.title,Getting to Know Maren,Conhecendo a Maren,Conociendo a Maren
+Dialogue,quest.get_to_know_maren.description,Maren's new in town too. Stop by and say hello.,Maren também é nova na cidade. Passe por lá e diga olá.,Maren también es nueva en el pueblo. Pasa a saludarla.
+Dialogue,quest.get_to_know_maren.objective0,Talk to Maren,Falar com a Maren,Hablar con Maren
+Dialogue,quest.welcome_harvest.title,Welcome Harvest,Colheita de Boas-Vindas,Cosecha de Bienvenida
+Dialogue,quest.welcome_harvest.description,Harvest 3 carrots to get your farm started.,Colha 3 cenouras para começar sua fazenda.,Cosecha 3 zanahorias para comenzar tu granja.
+Dialogue,quest.welcome_harvest.objective0,Harvest 3 carrots,Colher 3 cenouras,Cosechar 3 zanahorias
+Dialogue,quest.first_victory.title,First Victory,Primeira Vitória,Primera Victoria
+Dialogue,quest.first_victory.description,Win your first battle in the Meadow.,Vença sua primeira batalha na Pradaria.,Gana tu primera batalla en la Pradera.
+Dialogue,quest.first_victory.objective0,Win a Meadow battle,Vencer uma batalha na Pradaria,Ganar una batalla en la Pradera
+Dialogue,shop.general_store.title,General Store,Loja Geral,Tienda General
+Dialogue,dialogue.shop.friendship_discount,Friendship Discount: {0}% off,Desconto de Amizade: {0}% off,Descuento de Amistad: {0}% de descuento
+Dialogue,dialogue.shop.gold_label,Gold: {0},Ouro: {0},Oro: {0}
+Dialogue,dialogue.shop.price,{0}g,{0}g,{0}g
+Dialogue,dialogue.shop.unlimited_stock,∞,∞,∞
+Dialogue,dialogue.shop.stock_count,x{0},x{0},x{0}
+Dialogue,dialogue.gift.choose_title,Choose a gift,Escolha um presente,Elige un regalo
+Dialogue,dialogue.gift.close,Close,Fechar,Cerrar
+Dialogue,dialogue.gift.no_giftable_items,No giftable items,Nenhum item para presentear,Sin artículos para regalar
+Dialogue,dialogue.gift.item_row,{0} x{1} (+{2} relationship),{0} x{1} (+{2} relacionamento),{0} x{1} (+{2} relación)
+Dialogue,dialogue.gift.give,Give,Dar,Dar
+Dialogue,dialogue.gift.no_inventory_found,No inventory found,Inventário não encontrado,Inventario no encontrado
+Dialogue,dialogue.seedshop.no_seeds_available,No seeds available.,Nenhuma semente disponível.,No hay semillas disponibles.
+Dialogue,dialogue.relationship.codex_header,Codex,Códex,Códice
+Dialogue,dialogue.relationship.no_info,No information available yet.,Nenhuma informação disponível ainda.,Aún no hay información disponible.
+Dialogue,dialogue.relationship.score,{0:F0} / 100,{0:F0} / 100,{0:F0} / 100
+Dialogue,dialogue.relationship.beloved,Beloved,Amado,Amado
+Dialogue,dialogue.relationship.close_friend,Close Friend,Amigo Próximo,Amigo Cercano
+Dialogue,dialogue.relationship.friend,Friend,Amigo,Amigo
+Dialogue,dialogue.relationship.acquaintance,Acquaintance,Conhecido,Conocido
+Dialogue,dialogue.relationship.tense,Tense,Tenso,Tenso
+Dialogue,dialogue.relationship.hostile,Hostile,Hostil,Hostil
+Dialogue,dialogue.seedshop.title,Seed Shop,Loja de Semente,Tienda de Semillas
+Dialogue,dialogue.seedshop.gold_zero,Gold: 0,Ouro: 0,Oro: 0
+Dialogue,dialogue.seedshop.close,Close,Fechar,Cerrar
+Dialogue,dialogue.seedshop.gold_label,Gold: {0},Ouro: {0},Oro: {0}
+Dialogue,dialogue.seedshop.item_row,{0}  — {1}g,{0}  — {1}g,{0}  — {1}g
+Dialogue,dialogue.seedshop.buy,Buy,Comprar,Comprar
+Farming,farming.building.cost_progress,{0}: {1} / {2},{0}: {1} / {2},{0}: {1} / {2}
+Farming,farming.building.built,✓ Built,✓ Construído,✓ Construido
+Farming,farming.building.cannot_afford,Cannot afford,Não pode pagar,No se puede pagar
+Farming,farming.buildingshop.gold_cost,{0} gold,{0} ouro,{0} oro
+Farming,farming.buildingshop.extra_cost,"\n+ {0}x {1}","\n+ {0}x {1}","\n+ {0}x {1}"
+Farming,farming.buildingshop.purchase_failed,Purchase failed — missing references.,Falha na compra — referências ausentes.,Compra fallida — referencias faltantes.
+Farming,farming.buildingshop.construction_complete,Construction complete!,Construção concluída!,¡Construcción completa!
+Farming,farming.buildingshop.cannot_build,Cannot build.,Não é possível construir.,No se puede construir.
+Farming,farming.buildingshop.not_enough_gold,Not enough gold.,Ouro insuficiente.,Oro insuficiente.
+Farming,farming.buildingshop.missing_materials,Missing {0}x {1}.,Faltam {0}x {1}.,Faltan {0}x {1}.
+Farming,farming.buildingshop.gold_label,Gold: {0}g,Ouro: {0}g,Oro: {0}g
+Farming,farming.soil.wrong_season,{0} can't grow in {1}!,{0} não pode crescer em {1}!,¡{0} no puede crecer en {1}!
+Farming,farming.soil.bonus,Bonus {0}!,Bônus {0}!,¡Bono {0}!
+Farming,farming.soil.ready,{0} - Ready!,{0} - Pronto!,¡{0} - Listo!
+Farming,farming.soil.days_left,{0} - {1}d,{0} - {1}d,{0} - {1}d
+Farming,farming.soil.empty_marker,!,!,¡
+Farming,farming.sellbox.title,Sell Box,Caixa de Venda,Caja de Venta
+Farming,farming.sellbox.total_value,Total Value: {0} coins,Valor Total: {0} moedas,Valor Total: {0} monedas
+Farming,farming.sleep.title,Sleep Until Morning?,Dormir Até de Manhã?,¿Dormir Hasta la Mañana?
+Farming,farming.sleep.confirm,Sleep,Dormir,Dormir
+Farming,farming.sleep.cancel,Cancel,Cancelar,Cancelar
+Farming,farming.sleep.current_time,"Current: Day {0}, {1}\nYou will wake up tomorrow at 6:00 AM","Atual: Dia {0}, {1}\nVocê vai acordar amanhã às 6:00","Actual: Día {0}, {1}\nDespertarás mañana a las 6:00"
+Farming,farming.sleep.wake_tomorrow,You will wake up tomorrow morning,Você vai acordar amanhã de manhã,Despertarás mañana por la mañana
+Farming,farming.sleep.sellbox_summary,SellBox: {0} items will be sold for {1}g,Caixa de Venda: {0} itens serão vendidos por {1}g,Caja de Venta: {0} artículos se venderán por {1}g
+Farming,farming.sleep.sellbox_empty,SellBox: No items to sell,Caixa de Venda: Nenhum item para vender,Caja de Venta: Sin artículos para vender
+Farming,farming.sleep.trough_summary,Feeding Troughs: {0} animal{1} will be fed,Comedouros: {0} animal{1} será(ão) alimentado(s),Comederos: {0} animal{1} será(n) alimentado(s)
+Farming,farming.sleep.trough_empty,Feeding Troughs: No food available,Comedouros: Nenhuma comida disponível,Comederos: Sin comida disponible
+Farming,farming.sleep.autosave_on,Game will be auto-saved,O jogo será salvo automaticamente,El juego se guardará automáticamente
+Farming,farming.sleep.autosave_off,Auto-save not available,Save automático não disponível,Guardado automático no disponible
+Farming,building.Silo.name,Silo,Silo,Silo
+Farming,building.Silo.description,A grain silo that lets you work the whole farm at once.,Um silo de grãos que permite trabalhar toda a fazenda de uma vez.,Un silo de grano que te permite trabajar toda la granja a la vez.
+Farming,building.Silo.effect,Harvesting one ready crop now harvests every other ready crop on the farm too.,Colher uma plantação pronta agora colhe todas as outras plantações prontas da fazenda também.,Cosechar un cultivo listo ahora cosecha también todos los demás cultivos listos de la granja.
+Farming,building.Workshop.name,Workshop,Oficina,Taller
+Farming,building.Workshop.description,A tinkerer's workshop for getting more out of every harvest.,Uma oficina de inventor para aproveitar melhor cada colheita.,Un taller de inventor para sacar más provecho de cada cosecha.
+Farming,building.Workshop.effect,Chance to refund the planted seed whenever you harvest a crop.,Chance de reembolsar a semente plantada sempre que você colher uma plantação.,Posibilidad de reembolsar la semilla plantada cada vez que cosechas un cultivo.
+Farming,crop.Cabbage.name,Cabbage,Repolho,Repollo
+Farming,crop.Carrot.name,Carrot,Cenoura,Zanahoria
+Farming,crop.MysteryPlant.name,Mystery Plant,Planta Misteriosa,Planta Misteriosa
+Farming,crop.Pumpkin.name,Pumpkin,Abóbora,Calabaza
+Farming,crop.Radish.name,Radish,Rabanete,Rábano
+Farming,crop.Tomato.name,Tomato,Tomate,Tomate
+UI_Common,ui_common.achievement_unlocked,ACHIEVEMENT UNLOCKED,CONQUISTA DESBLOQUEADA,LOGRO DESBLOQUEADO
+MapEditor,mapeditor.tile_label,Tile: {0},Tile: {0},Tile: {0}
+MapEditor,mapeditor.tool_label,Tool: {0},Ferramenta: {0},Herramienta: {0}
+MapEditor,mapeditor.pos_label,"Pos: {0}, {1}","Pos: {0}, {1}","Pos: {0}, {1}"
+MapEditor,mapeditor.map_label,Map: {0},Mapa: {0},Mapa: {0}
+MapEditor,mapeditor.tiles_label,Tiles: {0},Tiles: {0},Tiles: {0}
+Minimap,minimap.zoom_label,Zoom: {0:F1}x,Zoom: {0:F1}x,Zoom: {0:F1}x
+Minimap,minimap.coords_label,"X: {0:F1}, Y: {1:F1}","X: {0:F1}, Y: {1:F1}","X: {0:F1}, Y: {1:F1}"
+Minimap,minimap.mode_label,Mode: {0},Modo: {0},Modo: {0}
+UI_Common,ui_common.time_label,Time: {0},Hora: {0},Hora: {0}
+UI_Common,ui_common.season_day_label,{0} {1},{0} {1},{0} {1}
+UI_Common,ui_common.season.spring,Spring,Primavera,Primavera
+UI_Common,ui_common.season.summer,Summer,Verão,Verano
+UI_Common,ui_common.season.fall,Fall,Outono,Otoño
+UI_Common,ui_common.season.winter,Winter,Inverno,Invierno
+UI_Common,ui_common.day_label,Day {0},Dia {0},Día {0}
+Worldmap,worldmap.biome_completed,{0}/{1} completed,{0}/{1} completo,{0}/{1} completado
+LoadingTips,loadingtips.tip01,Tip: Water your crops regularly to prevent them from dying!,Dica: Regue suas plantações regularmente para evitar que morram!,Consejo: ¡Riega tus cultivos regularmente para evitar que se marchiten!
+LoadingTips,loadingtips.tip02,Tip: Use the SellBox to automatically sell items when you sleep.,Dica: Use a Caixa de Venda para vender itens automaticamente quando você dormir.,Consejo: Usa la Caja de Venta para vender artículos automáticamente cuando duermas.
+LoadingTips,loadingtips.tip03,Tip: Different crops grow in different seasons.,Dica: Plantações diferentes crescem em estações diferentes.,Consejo: Diferentes cultivos crecen en diferentes estaciones.
+LoadingTips,loadingtips.tip04,Tip: Talk to NPCs to learn more about farming techniques.,Dica: Converse com NPCs para aprender mais sobre técnicas de cultivo.,Consejo: Habla con los NPC para aprender más sobre técnicas de cultivo.
+LoadingTips,loadingtips.tip05,Tip: Upgrade your tools to work more efficiently.,Dica: Melhore suas ferramentas para trabalhar com mais eficiência.,Consejo: Mejora tus herramientas para trabajar de forma más eficiente.
+LoadingTips,loadingtips.tip06,Tip: Save your game regularly to avoid losing progress.,Dica: Salve seu jogo regularmente para evitar perder o progresso.,Consejo: Guarda tu partida regularmente para evitar perder el progreso.
+LoadingTips,loadingtips.tip07,Tip: Explore the world to find new seeds and resources.,Dica: Explore o mundo para encontrar novas semente e recursos.,Consejo: Explora el mundo para encontrar nuevas semillas y recursos.
+Tutorial,tutorial.till_soil.title,Till the soil,Are o solo,Ara la tierra
+Tutorial,tutorial.till_soil.description,"Welcome to your farm!\n\nEquip the <b>Hoe</b> from your hotbar, then <b>left-click</b> on a soil tile to till it.","Bem-vindo à sua fazenda!\n\nEquipe a <b>Enxada</b> da sua barra de itens e, em seguida, <b>clique com o botão esquerdo</b> em um bloco de terra para arar.","¡Bienvenido a tu granja!\n\nEquipa la <b>Azada</b> desde tu barra de acceso rápido, luego haz <b>clic izquierdo</b> en una parcela de tierra para ararla."
+Tutorial,tutorial.plant_seed.title,Plant a seed,Plante uma semente,Planta una semilla
+Tutorial,tutorial.plant_seed.description,"Great! Now equip a <b>Seed</b> and <b>left-click</b> the tilled soil to plant it.","Ótimo! Agora equipe uma <b>Semente</b> e <b>clique com o botão esquerdo</b> no solo arado para plantá-la.","¡Genial! Ahora equipa una <b>Semilla</b> y haz <b>clic izquierdo</b> en la tierra arada para plantarla."
+Tutorial,tutorial.water_crop.title,Water the crop,Regue a plantação,Riega el cultivo
+Tutorial,tutorial.water_crop.description,"Crops need water to grow. Equip the <b>Watering Can</b> and <b>left-click</b> the planted soil.","As plantações precisam de água para crescer. Equipe o <b>Regador</b> e <b>clique com o botão esquerdo</b> no solo plantado.","Los cultivos necesitan agua para crecer. Equipa la <b>Regadera</b> y haz <b>clic izquierdo</b> en la tierra plantada."
+Tutorial,tutorial.pet_animal.title,Pet an animal,Acaricie um animal,Acaricia a un animal
+Tutorial,tutorial.pet_animal.description,"Visit an animal and press <b>E</b> to pet it. Happy animals produce more!","Visite um animal e pressione <b>E</b> para acariciá-lo. Animais felizes produzem mais!","Visita a un animal y presiona <b>E</b> para acariciarlo. ¡Los animales felices producen más!"
+Tutorial,tutorial.sleep.title,Sleep to advance the day,Durma para avançar o dia,Duerme para avanzar el día
+Tutorial,tutorial.sleep.description,"Time passes when you sleep. Walk to the <b>bed</b> and press <b>E</b> to sleep.","O tempo passa quando você dorme. Caminhe até a <b>cama</b> e pressione <b>E</b> para dormir.","El tiempo pasa cuando duermes. Camina hasta la <b>cama</b> y presiona <b>E</b> para dormir."
+Tutorial,tutorial.harvest.title,Harvest a crop,Colha uma plantação,Cosecha un cultivo
+Tutorial,tutorial.harvest.description,"Your crops have grown! Walk to a <b>ready crop</b> and press <b>E</b> or left-click to harvest.","Suas plantações cresceram! Caminhe até uma <b>plantação pronta</b> e pressione <b>E</b> ou clique com o botão esquerdo para colher.","¡Tus cultivos han crecido! Camina hasta un <b>cultivo listo</b> y presiona <b>E</b> o haz clic izquierdo para cosechar."
+Tutorial,tutorial.step_progress,Step {0}/{1}: {2},Passo {0}/{1}: {2},Paso {0}/{1}: {2}
+Dialogue,dialogue.maren.default.start,"Good morning! The garden beds are calling. What can I do for you?","Bom dia! Os canteiros estão chamando. O que posso fazer por você?","¡Buenos días! Los huertos están llamando. ¿Qué puedo hacer por ti?"
+Dialogue,dialogue.maren.default.start.choice0,"Tell me about yourself.","Fale-me sobre você.","Háblame de ti."
+Dialogue,dialogue.maren.default.start.choice1,"What do you think of this valley?","O que você pensa deste vale?","¿Qué opinas de este valle?"
+Dialogue,dialogue.maren.default.start.choice2,"Give me a planting tip.","Me dê uma dica de plantio.","Dame un consejo de siembra."
+Dialogue,dialogue.maren.default.start.choice3,"What are you keeping so close to your heart?","O que você está guardando tão perto do coração?","¿Qué guardas tan cerca de tu corazón?"
+Dialogue,dialogue.maren.default.topic_about,"I'm a farmer's daughter from the eastern valley. I learned to plant before I learned to write. But the drought spares no one — I ended up here after losing everything.","Sou filha de agricultores do vale do leste. Aprendi a plantar antes de aprender a escrever. Mas a seca não poupa ninguém — acabei aqui depois de perder tudo.","Soy hija de agricultores del valle del este. Aprendí a plantar antes de aprender a escribir. Pero la sequía no perdona a nadie — terminé aquí después de perderlo todo."
+Dialogue,dialogue.maren.default.topic_about.choice0,"That must have been hard to start over.","Deve ter sido difícil recomeçar.","Debe haber sido difícil empezar de nuevo."
+Dialogue,dialogue.maren.default.topic_about.choice1,"You've adapted well.","Você se adaptou bem.","Te has adaptado bien."
+Dialogue,dialogue.maren.default.about_restart,"It was. But the soil here has something special about it. It welcomed me in a way the eastern valley never did. Maybe this is what I call home now.","Foi. Mas a terra aqui tem algo especial. Ela me acolheu de um jeito que o vale do leste nunca fez. Talvez isto seja o que eu chame de casa agora.","Lo fue. Pero la tierra aquí tiene algo especial. Me acogió de una manera que el valle del este nunca hizo. Tal vez esto es lo que ahora llamo hogar."
+Dialogue,dialogue.maren.default.about_adapted,"It took a while. Every soil is different — it has its own ways. But I learned to listen to what the land asks of me.","Levou um tempo. Cada solo é diferente — tem seus próprios jeitos. Mas aprendi a escutar o que a terra me pede.","Tomó un tiempo. Cada suelo es diferente — tiene sus propias maneras. Pero aprendí a escuchar lo que la tierra me pide."
+Dialogue,dialogue.maren.default.topic_valley,"This valley has history. People come, plant, harvest and leave. Few stay. Something here keeps you — the land, the rhythm of the seasons, I don't know.","Este vale tem história. As pessoas vêm, plantam, colhem e vão. Poucas ficam. Algo aqui te mantém — a terra, o ritmo das estações, não sei.","Este valle tiene historia. La gente viene, planta, cosecha y se va. Pocos se quedan. Algo aquí te retiene — la tierra, el ritmo de las estaciones, no lo sé."
+Dialogue,dialogue.maren.default.topic_valley.choice0,"Is there something mystical about this land?","Há algo místico nesta terra?","¿Hay algo místico en esta tierra?"
+Dialogue,dialogue.maren.default.topic_valley.choice1,"I understand that feeling.","Eu entendo esse sentimento.","Entiendo ese sentimiento."
+Dialogue,dialogue.maren.default.valley_mystic,"They say a druid blessed the deepest layers of soil here. I don't know if I believe it, but the plants grow too fast to just be the climate. Take good care of your beds' fertility — it's more valuable than it looks.","Dizem que um druida benzeu as camadas mais profundas da terra aqui. Não sei se acredito, mas as plantas crescem rápido demais para ser só o clima. Cuide bem da fertilidade dos seus canteiros — é mais valiosa do que parece.","Dicen que un druida bendijo las capas más profundas del suelo aquí. No sé si lo creo, pero las plantas crecen demasiado rápido para ser solo el clima. Cuida bien la fertilidad de tus huertos — es más valiosa de lo que parece."
+Dialogue,dialogue.maren.default.valley_feel,"Good. That means you came to stay. The best harvests come from those who plant with intention.","Bom. Isso significa que você veio para ficar. As melhores colheitas vêm de quem planta com intenção.","Bien. Eso significa que vienes para quedarte. Las mejores cosechas vienen de quienes plantan con intención."
+Dialogue,dialogue.maren.default.topic_tip,"Tip of the day: soil gets tired. Every harvest takes a little fertility away. The less fertile it is, the less you yield. Let the soil rest or use fertilizer — though I don't sell that yet.","Dica do dia: a terra cansa. Cada colheita tira um pouco da fertilidade. Quanto menos fértil, menor o rendimento. Deixe a terra descansar ou use fertilizante — embora eu ainda não venda isso.","Consejo del día: el suelo se cansa. Cada cosecha le quita un poco de fertilidad. Cuanto menos fértil, menor el rendimiento. Deja que el suelo descanse o usa fertilizante — aunque todavía no vendo eso."
+Dialogue,dialogue.maren.default.topic_tip.choice0,"What about seasonal restrictions?","E quanto às restrições sazonais?","¿Qué hay de las restricciones estacionales?"
+Dialogue,dialogue.maren.default.topic_tip.choice1,"Thanks for the tip!","Obrigado pela dica!","¡Gracias por el consejo!"
+Dialogue,dialogue.maren.default.tip_season,"Every plant has its preferred season. Carrot and cabbage in Spring, tomato in Summer, pumpkin in Fall, radish in Spring or Fall. Try planting out of season and the land will refuse.","Cada planta tem sua estação preferida. Cenoura e repolho na Primavera, tomate no Verão, abóbora no Outono, rabanete na Primavera ou no Outono. Tente plantar fora de época e a terra vai recusar.","Cada planta tiene su estación preferida. Zanahoria y repollo en Primavera, tomate en Verano, calabaza en Otoño, rábano en Primavera u Otoño. Intenta plantar fuera de temporada y la tierra se negará."
+Dialogue,dialogue.maren.default.topic_secret,"You asked... so I'll tell you. I have a seed in my pocket I've never planted. It was my father's. I don't know what plant it is — and I don't have the courage to find out, because if it dies, I'll lose the last thing I have left of him.","Você perguntou... então vou te contar. Tenho uma semente no bolso que nunca plantei. Era do meu pai. Não sei que planta é — e não tenho coragem de descobrir, porque se ela morrer, perco a última coisa que me resta dele.","Preguntaste... así que te lo diré. Tengo una semilla en el bolsillo que nunca he plantado. Era de mi padre. No sé qué planta es — y no tengo el coraje de averiguarlo, porque si muere, perderé lo último que me queda de él."
+Dialogue,dialogue.maren.default.topic_secret.choice0,"You should plant it. It's what he would have wanted.","Você devia plantá-la. É o que ele teria querido.","Deberías plantarla. Es lo que él hubiera querido."
+Dialogue,dialogue.maren.default.topic_secret.choice1,"Keep it as a memory. It belongs to her too.","Guarde como uma lembrança. Ela também pertence a você.","Guárdala como un recuerdo. También te pertenece."
+Dialogue,dialogue.maren.default.secret_plant,"Maybe you're right. When I have the courage, you'll be the first to know. I promise. Thank you... truly.","Talvez você esteja certo. Quando eu tiver coragem, você será o primeiro a saber. Eu prometo. Obrigada... de verdade.","Tal vez tengas razón. Cuando tenga el coraje, serás el primero en saberlo. Lo prometo. Gracias... de verdad."
+Dialogue,dialogue.maren.default.secret_keep,"You're... right too. Some things are better kept. But it's good to be able to talk about it with someone who understands.","Você... também está certo. Algumas coisas é melhor guardar. Mas é bom poder falar sobre isso com alguém que entende.","Tú... también tienes razón. Algunas cosas es mejor guardarlas. Pero es bueno poder hablar de esto con alguien que entiende."
+Dialogue,dialogue.maren.beloved.start,"I trust you more than anyone in this valley. There's something I want to show you.","Eu confio em você mais do que em qualquer pessoa neste vale. Tem algo que eu quero te mostrar.","Confío en ti más que en nadie en este valle. Hay algo que quiero mostrarte."
+Dialogue,dialogue.maren.beloved.secret_seed,"This seed... I found it in my father's coat pocket the day he died. I never knew what plant it was. I never had the courage to plant it — what if I lost the last thing I have left of him?","Esta semente... eu a encontrei no bolso do casaco do meu pai no dia em que ele morreu. Nunca soube que planta era. Nunca tive coragem de plantá-la — e se eu perder a última coisa que me resta dele?","Esta semilla... la encontré en el bolsillo del abrigo de mi padre el día que murió. Nunca supe qué planta era. Nunca tuve el coraje de plantarla — ¿y si pierdo lo último que me queda de él?"
+Dialogue,dialogue.maren.beloved.secret_seed.choice0,"You should plant it. It's what he would have wanted.","Você devia plantá-la. É o que ele teria querido.","Deberías plantarla. Es lo que él hubiera querido."
+Dialogue,dialogue.maren.beloved.secret_seed.choice1,"You don't have to plant it. Keep it as a memory.","Você não precisa plantá-la. Guarde como uma lembrança.","No tienes que plantarla. Guárdala como un recuerdo."
+Dialogue,dialogue.maren.beloved.encourage_plant,"Maybe you're right. He loved watching things grow. When I have the courage, you'll be the first to know. Thank you... truly.","Talvez você esteja certo. Ele amava ver as coisas crescerem. Quando eu tiver coragem, você será o primeiro a saber. Obrigada... de verdade.","Tal vez tengas razón. A él le encantaba ver crecer las cosas. Cuando tenga el coraje, serás el primero en saberlo. Gracias... de verdad."
+Dialogue,dialogue.maren.beloved.keep_memory,"You're... right too. Some things are better kept in the heart. But it's good to be able to talk about it with someone.","Você... também está certo. Algumas coisas é melhor guardar no coração. Mas é bom poder falar sobre isso com alguém.","Tú... también tienes razón. Algunas cosas es mejor guardarlas en el corazón. Pero es bueno poder hablar de esto con alguien."
+Dialogue,dialogue.maren.beloved.gift_reward,"Accept this as a gift. I always keep a special batch of seeds for the day I find someone I can trust. That day has come.","Aceite isto como um presente. Eu sempre guardo um lote especial de semente para o dia em que encontrar alguém em quem possa confiar. Esse dia chegou.","Acepta esto como un regalo. Siempre guardo un lote especial de semillas para el día en que encuentre a alguien en quien pueda confiar. Ese día ha llegado."
+Dialogue,dialogue.maren.friend.start,"Ah, you again! You know, few people bother to stop and talk. I'm glad you're different.","Ah, você de novo! Sabe, pouca gente se dá ao trabalho de parar para conversar. Fico feliz que você seja diferente.","¡Ah, tú de nuevo! Sabes, poca gente se molesta en detenerse a hablar. Me alegra que seas diferente."
+Dialogue,dialogue.maren.friend.lore_reveal,"I ended up here after a drought that destroyed everything I planted in the eastern valley. I lost three harvests in a row. But the soil here... it received me differently.","Acabei aqui depois de uma seca que destruiu tudo que eu plantei no vale do leste. Perdi três colheitas seguidas. Mas a terra aqui... me recebeu de um jeito diferente.","Terminé aquí después de una sequía que destruyó todo lo que planté en el valle del este. Perdí tres cosechas consecutivas. Pero la tierra aquí... me recibió de manera diferente."
+Dialogue,dialogue.maren.friend.lore_reveal.choice0,"What's so special about this soil?","O que há de tão especial nesta terra?","¿Qué tiene de especial esta tierra?"
+Dialogue,dialogue.maren.friend.lore_reveal.choice1,"Didn't you feel like giving up?","Você não pensou em desistir?","¿No sentiste ganas de rendirte?"
+Dialogue,dialogue.maren.friend.lore_soil,"There's something in the roots here, in the deepest layers. They say an ancient druid blessed the entire valley. I don't know if I believe in stories, but the plants grow too fast to just be luck.","Há algo nas raízes aqui, nas camadas mais profundas. Dizem que um druida antigo benzeu todo o vale. Não sei se acredito em histórias, mas as plantas crescem rápido demais para ser só sorte.","Hay algo en las raíces aquí, en las capas más profundas. Dicen que un druida antiguo bendijo todo el valle. No sé si creo en historias, pero las plantas crecen demasiado rápido para ser solo suerte."
+Dialogue,dialogue.maren.friend.lore_persevere,"Many times. But my mother always said: the seed that survives winter blooms stronger. I ended up believing it.","Muitas vezes. Mas minha mãe sempre dizia: a semente que sobrevive ao inverno floresce mais forte. Acabei acreditando nisso.","Muchas veces. Pero mi madre siempre decía: la semilla que sobrevive el invierno florece más fuerte. Terminé creyéndolo."
+Dialogue,dialogue.maren.friend.lore_gift_hint,"If you treat the land well, it gives back. Take care of your beds' fertility — tired soil gives less. Natural fertilizers help, but what works best is not rushing the process.","Se você tratar bem a terra, ela retribui. Cuide da fertilidade dos seus canteiros — terra cansada rende menos. Fertilizantes naturais ajudam, mas o que funciona melhor é não apressar o processo.","Si tratas bien la tierra, ella te lo devuelve. Cuida la fertilidad de tus huertos — el suelo cansado rinde menos. Los fertilizantes naturales ayudan, pero lo que mejor funciona es no apresurar el proceso."
+Dialogue,dialogue.maren.gift_reaction.start,"Oh! This is... you didn't have to. But I'm so glad you did. Rarely does anyone think of me like that.","Oh! Isso é... você não precisava. Mas estou tão feliz que tenha feito. Raramente alguém pensa em mim assim.","¡Oh! Esto es... no tenías que hacerlo. Pero me alegro mucho de que lo hayas hecho. Pocas veces alguien piensa en mí así."
+Dialogue,dialogue.maren.gift_reaction.gift_accept,"I'll keep it safe. And may you harvest twice what you sow this season — that's what I can give back right now.","Vou guardar com cuidado. E que você colha o dobro do que plantar nesta estação — é o que posso retribuir agora.","Lo guardaré a salvo. Y que coseches el doble de lo que siembres esta temporada — es lo que puedo devolver ahora."
+Dialogue,dialogue.maren.seasonal_spring.start,"Spring! This is the best time to start. Carrots and radishes come up quickly — if you haven't planted yet, hurry before the soil cools down again.","Primavera! Esta é a melhor época para começar. Cenouras e rabanetes crescem rápido — se você ainda não plantou, se apresse antes que a terra esfrie de novo.","¡Primavera! Este es el mejor momento para empezar. Las zanahorias y rábanos crecen rápido — si aún no has plantado, apúrate antes de que la tierra se enfríe de nuevo."
+Dialogue,dialogue.maren.seasonal_spring.start.choice0,"Which seeds do you recommend right now?","Quais sementes você recomenda agora?","¿Qué semillas recomiendas ahora?"
+Dialogue,dialogue.maren.seasonal_spring.start.choice1,"Thanks for the tip.","Obrigado pela dica.","Gracias por el consejo."
+Dialogue,dialogue.maren.seasonal_spring.spring_tip,"Carrot and cabbage are my bet. They grow fast, sell well, and refresh the soil for summer. Avoid pumpkin for now — it's finicky and only blooms in fall.","Cenoura e repolho são minha aposta. Crescem rápido, vendem bem e renovam a terra para o verão. Evite abóbora por agora — é exigente e só floresce no outono.","Zanahoria y repollo son mi apuesta. Crecen rápido, se venden bien y renuevan la tierra para el verano. Evita la calabaza por ahora — es exigente y solo florece en otoño."
+Dialogue,dialogue.choice.give_gift,"Give a gift","Dar um presente","Dar un regalo"
+Dialogue,dialogue.choice.give_gift_already_today,"Give a gift (already gifted today)","Dar um presente (já presenteou hoje)","Dar un regalo (ya regalado hoy)"
+Dialogue,dialogue.choice.view_relationship,"View relationship","Ver relacionamento","Ver relación"
+Dialogue,dialogue.choice.browse_seeds,"Browse seeds","Ver sementes","Ver semillas"

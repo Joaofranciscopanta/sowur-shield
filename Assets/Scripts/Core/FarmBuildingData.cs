@@ -1,0 +1,49 @@
+using UnityEngine;
+using UnityEngine.Localization;
+
+namespace SowurShield.Core
+{
+
+/// <summary>
+/// ScriptableObject defining a purchasable farm building.
+/// The game effect is keyed by BuildingType; FarmBuildingManager exposes
+/// IsBuilt() for other systems to query.
+///
+/// CREATE: Assets > Create > SowurShield > Farm Building Data
+/// </summary>
+[CreateAssetMenu(menuName = "SowurShield/Farm Building Data", fileName = "NewBuilding")]
+public class FarmBuildingData : ScriptableObject
+{
+    [Header("Identity")]
+    public BuildingType buildingType; // stable internal ID — used by FarmBuildingManager for save/effect lookups
+    public LocalizedString buildingName; // table "Farming", key "building.<buildingType>.name" — player-facing name
+    public LocalizedString description; // table "Farming", key "building.<buildingType>.description"
+    public Sprite icon;
+
+    [Header("Cost")]
+    [Min(0)]
+    public int goldCost = 500;
+    [Tooltip("Optional material cost — item name must match ItemDatabase exactly.")]
+    public string materialItemName = "";
+    [Min(0)]
+    public int materialQuantity = 0;
+
+    [Header("Effects (shown in UI — actual logic lives in game systems)")]
+    public LocalizedString effectDescription; // table "Farming", key "building.<buildingType>.effect"
+
+    [Header("World Presence (optional)")]
+    [Tooltip("Spawned in SampleScene once this building is constructed (and again on load if already built). Leave null to keep this building purely logical, with no object in the world.")]
+    public GameObject worldPrefab;
+    [Tooltip("World position the prefab is instantiated at.")]
+    public Vector2 worldPosition;
+}
+
+public enum BuildingType
+{
+    Barn,           // Increases AnimalZone capacity (default 5 → 10)
+    Greenhouse,     // Allows planting crops out of season
+    Silo,           // Harvest-All Upgrade: harvesting one ready crop harvests all ready crops on the farm
+    Workshop        // Lucky Seed Upgrade: chance to refund the planted seed on harvest
+}
+
+} // namespace SowurShield.Core

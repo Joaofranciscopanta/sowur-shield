@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 854ced050aa124346ba0b0dea78f6412, type: 3}
+  m_Name: CozyUITheme
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.UI.UITheme
+  backgroundCream: {r: 0.969, g: 0.949, b: 0.910, a: 1}
+  backgroundTan: {r: 0.937, g: 0.890, b: 0.753, a: 1}
+  woodLight: {r: 0.651, g: 0.416, b: 0.247, a: 1}
+  woodMid: {r: 0.545, g: 0.353, b: 0.169, a: 1}
+  woodDark: {r: 0.420, g: 0.267, b: 0.137, a: 1}
+  highlightGold: {r: 0.957, g: 0.827, b: 0.369, a: 1}
+  highlightYellow: {r: 1.000, g: 0.820, b: 0.400, a: 1}
+  positive: {r: 0.506, g: 0.784, b: 0.518, a: 1}
+  warning: {r: 1.000, g: 0.722, b: 0.302, a: 1}
+  negative: {r: 0.898, g: 0.451, b: 0.451, a: 1}
+  textDark: {r: 0.176, g: 0.165, b: 0.149, a: 1}
+  spacingXS: 4
+  spacingS: 8
+  spacingM: 12
+  spacingL: 16
+  spacingXL: 24
+  spacingXXL: 32
+  fontSizeH1: 32
+  fontSizeH2: 24
+  fontSizeBody: 16

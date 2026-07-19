@@ -1,0 +1,174 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9b5041c652cccf43bbd575d56fe419f, type: 3}
+  m_Name: Maren_Beloved
+  m_EditorClassIdentifier: SowurShield.Dialogue.DialogueTree
+  conversationId: maren_beloved
+  conversationDescription: "Unlocked at relationship >= 75. Maren reveals her secret — she keeps a special seed she has never dared to plant."
+  startNodeId: start
+  isRepeatable: 1
+  saveProgressOnExit: 1
+  nodes:
+  - nodeId: start
+    speakerName: Maren
+    speakerEmotion: 7
+    speakerPosition: 0
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.beloved.start
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    nodeType: 0
+    choices: []
+    nextNodeId: secret_seed
+    autoAdvanceDelay: 0
+    displayConditions:
+    - conditionType: 3
+      conditionKey: maren
+      conditionOperator: 4
+      conditionValue: "75"
+      invertCondition: 0
+      description: "Beloved tier"
+    nodeEffects: []
+  - nodeId: secret_seed
+    speakerName: Maren
+    speakerEmotion: 7
+    speakerPosition: 0
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.beloved.secret_seed
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    nodeType: 0
+    choices:
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.beloved.secret_seed.choice0
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      nextNodeId: encourage_plant
+      requirements: []
+      effects:
+      - effectType: 1
+        effectKey: maren
+        effectValue: ""
+        numericValue: 5
+        description: "+5 relationship for sincere encouragement"
+      isExitChoice: 0
+      choiceColor: {r: 1, g: 1, b: 1, a: 1}
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: dialogue.maren.beloved.secret_seed.choice1
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      nextNodeId: keep_memory
+      requirements: []
+      effects: []
+      isExitChoice: 0
+      choiceColor: {r: 1, g: 1, b: 1, a: 1}
+    nextNodeId: ""
+    autoAdvanceDelay: 0
+    displayConditions: []
+    nodeEffects: []
+  - nodeId: encourage_plant
+    speakerName: Maren
+    speakerEmotion: 1
+    speakerPosition: 0
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.beloved.encourage_plant
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    nodeType: 0
+    choices: []
+    nextNodeId: gift_reward
+    autoAdvanceDelay: 0
+    displayConditions: []
+    nodeEffects:
+    - effectType: 0
+      effectKey: maren_encouraged_seed
+      effectValue: "true"
+      numericValue: 0
+      description: "Flag: player encouraged Maren to plant her father's seed"
+  - nodeId: keep_memory
+    speakerName: Maren
+    speakerEmotion: 0
+    speakerPosition: 0
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.beloved.keep_memory
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    nodeType: 0
+    choices: []
+    nextNodeId: gift_reward
+    autoAdvanceDelay: 0
+    displayConditions: []
+    nodeEffects: []
+  - nodeId: gift_reward
+    speakerName: Maren
+    speakerEmotion: 1
+    speakerPosition: 0
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: dialogue.maren.beloved.gift_reward
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    nodeType: 0
+    choices: []
+    nextNodeId: ""
+    autoAdvanceDelay: 0
+    displayConditions: []
+    nodeEffects:
+    - effectType: 3
+      effectKey: PumpkinSeed
+      effectValue: ""
+      numericValue: 3
+      description: "Gives 3x Pumpkin Seeds as a trust reward"
+    - effectType: 0
+      effectKey: maren_gave_gift_seeds
+      effectValue: "true"
+      numericValue: 0
+      description: "Flag: reward already given, prevents second delivery"
+  tags:
+  - beloved
+  - lore
+  - secret
+  priority: 20

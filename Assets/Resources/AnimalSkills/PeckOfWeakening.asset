@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94047afeee17abb4fb1ede24849e6fe9, type: 3}
+  m_Name: PeckOfWeakening
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Animals.AnimalSkill
+  skillId: peck_of_weakening
+  skillName: Peck of Weakening
+  skillType: 0
+  skillIcon: {fileID: 0}
+  description: A sharp peck that leaves the target's attack and defense weakened
+    for a few turns.
+  unlockCondition:
+    conditionType: 0
+    requiredClass:
+    requiredFamily:
+    minFamilyCount: 0
+    minHappiness: 0
+    requiredSeason:
+    combinedConditions: []
+  damageMultiplier: 1.1
+  defenseMultiplier: 1
+  speedMultiplier: 1
+  attackMultiplier: 1
+  healAmount: 0
+  affectsAllies: 0
+  affectsSelf: 0
+  cooldownTurns: 2
+  statusEffect: 5
+  statusEffectValue: 0.2
+  statusEffectDuration: 3

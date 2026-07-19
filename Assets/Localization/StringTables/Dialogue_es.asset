@@ -1,0 +1,443 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Dialogue_es
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: es
+  m_SharedData: {fileID: 11400000, guid: 8e1fc22b183f5fa48982ba2f5bf5a30d, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 300670976
+    m_Localized: 'Descuento de Amistad: {0}% de descuento'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253888
+    m_Localized: 'Oro: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253889
+    m_Localized: '{0}g'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253890
+    m_Localized: "\u221E"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253891
+    m_Localized: x{0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253892
+    m_Localized: Elige un regalo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253893
+    m_Localized: Cerrar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253894
+    m_Localized: "Sin art\xEDculos para regalar"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253895
+    m_Localized: "{0} x{1} (+{2} relaci\xF3n)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253896
+    m_Localized: Dar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253897
+    m_Localized: Inventario no encontrado
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253898
+    m_Localized: No hay semillas disponibles.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253899
+    m_Localized: "C\xF3dice"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253900
+    m_Localized: "A\xFAn no hay informaci\xF3n disponible."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253901
+    m_Localized: '{0:F0} / 100'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253902
+    m_Localized: Amado
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253903
+    m_Localized: Amigo Cercano
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253904
+    m_Localized: Amigo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253905
+    m_Localized: Conocido
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253906
+    m_Localized: Tenso
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253907
+    m_Localized: Hostil
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253908
+    m_Localized: Tienda de Semillas
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253909
+    m_Localized: 'Oro: 0'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253910
+    m_Localized: Cerrar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253911
+    m_Localized: 'Oro: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253912
+    m_Localized: "{0}  \u2014 {1}g"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253913
+    m_Localized: Comprar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151131230208
+    m_Localized: "\xA1Buenos d\xEDas! Los huertos est\xE1n llamando. \xBFQu\xE9 puedo
+      hacer por ti?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590336
+    m_Localized: "H\xE1blame de ti."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590337
+    m_Localized: "\xBFQu\xE9 opinas de este valle?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590338
+    m_Localized: Dame un consejo de siembra.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590339
+    m_Localized: "\xBFQu\xE9 guardas tan cerca de tu coraz\xF3n?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590340
+    m_Localized: "Soy hija de agricultores del valle del este. Aprend\xED a plantar
+      antes de aprender a escribir. Pero la sequ\xEDa no perdona a nadie \u2014 termin\xE9
+      aqu\xED despu\xE9s de perderlo todo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590341
+    m_Localized: "Debe haber sido dif\xEDcil empezar de nuevo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590342
+    m_Localized: Te has adaptado bien.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590343
+    m_Localized: "Lo fue. Pero la tierra aqu\xED tiene algo especial. Me acogi\xF3
+      de una manera que el valle del este nunca hizo. Tal vez esto es lo que ahora
+      llamo hogar."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590344
+    m_Localized: "Tom\xF3 un tiempo. Cada suelo es diferente \u2014 tiene sus propias
+      maneras. Pero aprend\xED a escuchar lo que la tierra me pide."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590345
+    m_Localized: "Este valle tiene historia. La gente viene, planta, cosecha y se
+      va. Pocos se quedan. Algo aqu\xED te retiene \u2014 la tierra, el ritmo de
+      las estaciones, no lo s\xE9."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590346
+    m_Localized: "\xBFHay algo m\xEDstico en esta tierra?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590347
+    m_Localized: Entiendo ese sentimiento.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590348
+    m_Localized: "Dicen que un druida bendijo las capas m\xE1s profundas del suelo
+      aqu\xED. No s\xE9 si lo creo, pero las plantas crecen demasiado r\xE1pido para
+      ser solo el clima. Cuida bien la fertilidad de tus huertos \u2014 es m\xE1s
+      valiosa de lo que parece."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590349
+    m_Localized: "Bien. Eso significa que vienes para quedarte. Las mejores cosechas
+      vienen de quienes plantan con intenci\xF3n."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590350
+    m_Localized: "Consejo del d\xEDa: el suelo se cansa. Cada cosecha le quita un
+      poco de fertilidad. Cuanto menos f\xE9rtil, menor el rendimiento. Deja que
+      el suelo descanse o usa fertilizante \u2014 aunque todav\xEDa no vendo eso."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590351
+    m_Localized: "\xBFQu\xE9 hay de las restricciones estacionales?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590352
+    m_Localized: "\xA1Gracias por el consejo!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590353
+    m_Localized: "Cada planta tiene su estaci\xF3n preferida. Zanahoria y repollo
+      en Primavera, tomate en Verano, calabaza en Oto\xF1o, r\xE1bano en Primavera
+      u Oto\xF1o. Intenta plantar fuera de temporada y la tierra se negar\xE1."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590354
+    m_Localized: "Preguntaste... as\xED que te lo dir\xE9. Tengo una semilla en el
+      bolsillo que nunca he plantado. Era de mi padre. No s\xE9 qu\xE9 planta es
+      \u2014 y no tengo el coraje de averiguarlo, porque si muere, perder\xE9 lo
+      \xFAltimo que me queda de \xE9l."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590355
+    m_Localized: "Deber\xEDas plantarla. Es lo que \xE9l hubiera querido."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590356
+    m_Localized: "Gu\xE1rdala como un recuerdo. Tambi\xE9n te pertenece."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590357
+    m_Localized: "Tal vez tengas raz\xF3n. Cuando tenga el coraje, ser\xE1s el primero
+      en saberlo. Lo prometo. Gracias... de verdad."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590358
+    m_Localized: "T\xFA... tambi\xE9n tienes raz\xF3n. Algunas cosas es mejor guardarlas.
+      Pero es bueno poder hablar de esto con alguien que entiende."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590359
+    m_Localized: "Conf\xEDo en ti m\xE1s que en nadie en este valle. Hay algo que
+      quiero mostrarte."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590360
+    m_Localized: "Esta semilla... la encontr\xE9 en el bolsillo del abrigo de mi
+      padre el d\xEDa que muri\xF3. Nunca supe qu\xE9 planta era. Nunca tuve el coraje
+      de plantarla \u2014 \xBFy si pierdo lo \xFAltimo que me queda de \xE9l?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590361
+    m_Localized: "Deber\xEDas plantarla. Es lo que \xE9l hubiera querido."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590362
+    m_Localized: "No tienes que plantarla. Gu\xE1rdala como un recuerdo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590363
+    m_Localized: "Tal vez tengas raz\xF3n. A \xE9l le encantaba ver crecer las cosas.
+      Cuando tenga el coraje, ser\xE1s el primero en saberlo. Gracias... de verdad."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590364
+    m_Localized: "T\xFA... tambi\xE9n tienes raz\xF3n. Algunas cosas es mejor guardarlas
+      en el coraz\xF3n. Pero es bueno poder hablar de esto con alguien."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590365
+    m_Localized: "Acepta esto como un regalo. Siempre guardo un lote especial de
+      semillas para el d\xEDa en que encuentre a alguien en quien pueda confiar.
+      Ese d\xEDa ha llegado."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590366
+    m_Localized: "\xA1Ah, t\xFA de nuevo! Sabes, poca gente se molesta en detenerse
+      a hablar. Me alegra que seas diferente."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590367
+    m_Localized: "Termin\xE9 aqu\xED despu\xE9s de una sequ\xEDa que destruy\xF3
+      todo lo que plant\xE9 en el valle del este. Perd\xED tres cosechas consecutivas.
+      Pero la tierra aqu\xED... me recibi\xF3 de manera diferente."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590368
+    m_Localized: "\xBFQu\xE9 tiene de especial esta tierra?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590369
+    m_Localized: "\xBFNo sentiste ganas de rendirte?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590370
+    m_Localized: "Hay algo en las ra\xEDces aqu\xED, en las capas m\xE1s profundas.
+      Dicen que un druida antiguo bendijo todo el valle. No s\xE9 si creo en historias,
+      pero las plantas crecen demasiado r\xE1pido para ser solo suerte."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590371
+    m_Localized: "Muchas veces. Pero mi madre siempre dec\xEDa: la semilla que sobrevive
+      el invierno florece m\xE1s fuerte. Termin\xE9 crey\xE9ndolo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590372
+    m_Localized: "Si tratas bien la tierra, ella te lo devuelve. Cuida la fertilidad
+      de tus huertos \u2014 el suelo cansado rinde menos. Los fertilizantes naturales
+      ayudan, pero lo que mejor funciona es no apresurar el proceso."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590373
+    m_Localized: "\xA1Oh! Esto es... no ten\xEDas que hacerlo. Pero me alegro mucho
+      de que lo hayas hecho. Pocas veces alguien piensa en m\xED as\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590374
+    m_Localized: "Lo guardar\xE9 a salvo. Y que coseches el doble de lo que siembres
+      esta temporada \u2014 es lo que puedo devolver ahora."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590375
+    m_Localized: "\xA1Primavera! Este es el mejor momento para empezar. Las zanahorias
+      y r\xE1banos crecen r\xE1pido \u2014 si a\xFAn no has plantado, ap\xFArate
+      antes de que la tierra se enfr\xEDe de nuevo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590376
+    m_Localized: "\xBFQu\xE9 semillas recomiendas ahora?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590377
+    m_Localized: Gracias por el consejo.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590378
+    m_Localized: "Zanahoria y repollo son mi apuesta. Crecen r\xE1pido, se venden
+      bien y renuevan la tierra para el verano. Evita la calabaza por ahora \u2014
+      es exigente y solo florece en oto\xF1o."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590379
+    m_Localized: Dar un regalo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590380
+    m_Localized: Dar un regalo (ya regalado hoy)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590381
+    m_Localized: "Ver relaci\xF3n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590382
+    m_Localized: Ver semillas
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369969692672
+    m_Localized: Problemas en los Campos Soleados
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664192
+    m_Localized: "Algo ha estado asustando a los animales cerca de los Campos Soleados.
+      Lleva a tu equipo all\xED y resu\xE9lvelo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664193
+    m_Localized: Despejar los Campos Soleados
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664194
+    m_Localized: Coleccionista de Huevos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664195
+    m_Localized: "Tus gallinas est\xE1n poniendo huevos \u2014 recolecta algunos
+      para la despensa."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664196
+    m_Localized: Recolectar Huevos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664197
+    m_Localized: Primera Cosecha
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664198
+    m_Localized: ' and bring in your first harvest.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664199
+    m_Localized: Cosechar una Zanahoria
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664200
+    m_Localized: Conociendo a Maren
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664201
+    m_Localized: "Maren tambi\xE9n es nueva en el pueblo. Pasa a saludarla."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664202
+    m_Localized: Hablar con Maren
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664203
+    m_Localized: Cosecha de Bienvenida
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664204
+    m_Localized: Cosecha 3 zanahorias para comenzar tu granja.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664205
+    m_Localized: Cosechar 3 zanahorias
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664206
+    m_Localized: Primera Victoria
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664207
+    m_Localized: Gana tu primera batalla en la Pradera.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664208
+    m_Localized: Ganar una batalla en la Pradera
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664209
+    m_Localized: Tienda General
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

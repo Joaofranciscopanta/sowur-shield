@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: UI_Common_en
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 336dc5cbf649c1649936e2cb1f09a5a0, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 1013702656
+    m_Localized: Yes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1047257088
+    m_Localized: No
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1047257089
+    m_Localized: OK
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1047257090
+    m_Localized: Cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1051451392
+    m_Localized: Close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1051451393
+    m_Localized: Buy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1051451394
+    m_Localized: Give
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1051451395
+    m_Localized: Unassigned
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1051451396
+    m_Localized: '{0}g'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1051451397
+    m_Localized: 'Gold: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1051451398
+    m_Localized: 'Money: ${0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1051451399
+    m_Localized: ACHIEVEMENT UNLOCKED
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1051451400
+    m_Localized: 'Time: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1051451401
+    m_Localized: '{0} {1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1051451402
+    m_Localized: Day {0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2640681116622848
+    m_Localized: Spring
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2640681137594368
+    m_Localized: Summer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2640681137594369
+    m_Localized: Fall
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2640681137594370
+    m_Localized: Winter
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

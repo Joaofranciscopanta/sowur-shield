@@ -1,0 +1,159 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Inventory_es
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: es
+  m_SharedData: {fileID: 11400000, guid: c7818de13af7bf241b2d39f8152a219d, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 279699456
+    m_Localized: Inventario
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088064
+    m_Localized: 'Ordenar: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088065
+    m_Localized: '{0}/{1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088066
+    m_Localized: <i>{0}</i>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088067
+    m_Localized: '<color=#FFD700>Valor: {0} monedas</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088068
+    m_Localized: <color=#888888>No se puede vender</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088069
+    m_Localized: "<color=#AAAAAA>Pila M\xE1xima: {0}</color>"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088070
+    m_Localized: <color=#90EE90>Consumible</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088071
+    m_Localized: "  <color=#FFD700>+{0} Energ\xEDa</color>"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088072
+    m_Localized: '  <color=#FF6B6B>+{0} Vida</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088073
+    m_Localized: '<color=#87CEEB>Nivel de Herramienta: {0}</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088074
+    m_Localized: '<color=#FFA500>Durabilidad: {0}</color>'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088075
+    m_Localized: <color=#90EE90>Indestructible</color>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 288088076
+    m_Localized: <size=11><color=#888888>{0}</color></size>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878871007232
+    m_Localized: Semillas de Repollo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878896173056
+    m_Localized: Semillas de Zanahoria
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878896173057
+    m_Localized: Semilla Misteriosa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878896173058
+    m_Localized: Semillas de Calabaza
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367360
+    m_Localized: "Semillas de R\xE1bano"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367361
+    m_Localized: Semillas de Tomate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367362
+    m_Localized: Manzana
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367363
+    m_Localized: Repollo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367364
+    m_Localized: Zanahoria
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367365
+    m_Localized: Calabaza
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367366
+    m_Localized: "R\xE1bano"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367367
+    m_Localized: Tomate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367368
+    m_Localized: "Pl\xE1tano"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367369
+    m_Localized: Pan
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367370
+    m_Localized: Huevo de Pata
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367371
+    m_Localized: Huevo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367372
+    m_Localized: Pluma
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367373
+    m_Localized: Azada
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367374
+    m_Localized: Pala
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2617878900367375
+    m_Localized: Regadera
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

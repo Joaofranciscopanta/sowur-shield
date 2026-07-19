@@ -1,0 +1,404 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Dialogue Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: Dialogue
+  m_TableCollectionNameGuidString: 8e1fc22b183f5fa48982ba2f5bf5a30d
+  m_Entries:
+  - m_Id: 300670976
+    m_Key: dialogue.shop.friendship_discount
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253888
+    m_Key: dialogue.shop.gold_label
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253889
+    m_Key: dialogue.shop.price
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253890
+    m_Key: dialogue.shop.unlimited_stock
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253891
+    m_Key: dialogue.shop.stock_count
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253892
+    m_Key: dialogue.gift.choose_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253893
+    m_Key: dialogue.gift.close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253894
+    m_Key: dialogue.gift.no_giftable_items
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253895
+    m_Key: dialogue.gift.item_row
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253896
+    m_Key: dialogue.gift.give
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253897
+    m_Key: dialogue.gift.no_inventory_found
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253898
+    m_Key: dialogue.seedshop.no_seeds_available
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253899
+    m_Key: dialogue.relationship.codex_header
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253900
+    m_Key: dialogue.relationship.no_info
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253901
+    m_Key: dialogue.relationship.score
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253902
+    m_Key: dialogue.relationship.beloved
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253903
+    m_Key: dialogue.relationship.close_friend
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253904
+    m_Key: dialogue.relationship.friend
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253905
+    m_Key: dialogue.relationship.acquaintance
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253906
+    m_Key: dialogue.relationship.tense
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253907
+    m_Key: dialogue.relationship.hostile
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253908
+    m_Key: dialogue.seedshop.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253909
+    m_Key: dialogue.seedshop.gold_zero
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253910
+    m_Key: dialogue.seedshop.close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253911
+    m_Key: dialogue.seedshop.gold_label
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253912
+    m_Key: dialogue.seedshop.item_row
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313253913
+    m_Key: dialogue.seedshop.buy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151131230208
+    m_Key: dialogue.maren.default.start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590336
+    m_Key: dialogue.maren.default.start.choice0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590337
+    m_Key: dialogue.maren.default.start.choice1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590338
+    m_Key: dialogue.maren.default.start.choice2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590339
+    m_Key: dialogue.maren.default.start.choice3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590340
+    m_Key: dialogue.maren.default.topic_about
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590341
+    m_Key: dialogue.maren.default.topic_about.choice0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590342
+    m_Key: dialogue.maren.default.topic_about.choice1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590343
+    m_Key: dialogue.maren.default.about_restart
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590344
+    m_Key: dialogue.maren.default.about_adapted
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590345
+    m_Key: dialogue.maren.default.topic_valley
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590346
+    m_Key: dialogue.maren.default.topic_valley.choice0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590347
+    m_Key: dialogue.maren.default.topic_valley.choice1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590348
+    m_Key: dialogue.maren.default.valley_mystic
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590349
+    m_Key: dialogue.maren.default.valley_feel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590350
+    m_Key: dialogue.maren.default.topic_tip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590351
+    m_Key: dialogue.maren.default.topic_tip.choice0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590352
+    m_Key: dialogue.maren.default.topic_tip.choice1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590353
+    m_Key: dialogue.maren.default.tip_season
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590354
+    m_Key: dialogue.maren.default.topic_secret
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590355
+    m_Key: dialogue.maren.default.topic_secret.choice0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590356
+    m_Key: dialogue.maren.default.topic_secret.choice1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590357
+    m_Key: dialogue.maren.default.secret_plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590358
+    m_Key: dialogue.maren.default.secret_keep
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590359
+    m_Key: dialogue.maren.beloved.start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590360
+    m_Key: dialogue.maren.beloved.secret_seed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590361
+    m_Key: dialogue.maren.beloved.secret_seed.choice0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590362
+    m_Key: dialogue.maren.beloved.secret_seed.choice1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590363
+    m_Key: dialogue.maren.beloved.encourage_plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590364
+    m_Key: dialogue.maren.beloved.keep_memory
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590365
+    m_Key: dialogue.maren.beloved.gift_reward
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590366
+    m_Key: dialogue.maren.friend.start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590367
+    m_Key: dialogue.maren.friend.lore_reveal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590368
+    m_Key: dialogue.maren.friend.lore_reveal.choice0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590369
+    m_Key: dialogue.maren.friend.lore_reveal.choice1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590370
+    m_Key: dialogue.maren.friend.lore_soil
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590371
+    m_Key: dialogue.maren.friend.lore_persevere
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590372
+    m_Key: dialogue.maren.friend.lore_gift_hint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590373
+    m_Key: dialogue.maren.gift_reaction.start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590374
+    m_Key: dialogue.maren.gift_reaction.gift_accept
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590375
+    m_Key: dialogue.maren.seasonal_spring.start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590376
+    m_Key: dialogue.maren.seasonal_spring.start.choice0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590377
+    m_Key: dialogue.maren.seasonal_spring.start.choice1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590378
+    m_Key: dialogue.maren.seasonal_spring.spring_tip
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590379
+    m_Key: dialogue.choice.give_gift
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590380
+    m_Key: dialogue.choice.give_gift_already_today
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590381
+    m_Key: dialogue.choice.view_relationship
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2613151160590382
+    m_Key: dialogue.choice.browse_seeds
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369969692672
+    m_Key: quest.clear_sunny_fields.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664192
+    m_Key: quest.clear_sunny_fields.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664193
+    m_Key: quest.clear_sunny_fields.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664194
+    m_Key: quest.egg_collector.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664195
+    m_Key: quest.egg_collector.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664196
+    m_Key: quest.egg_collector.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664197
+    m_Key: quest.first_harvest.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664198
+    m_Key: quest.first_harvest.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664199
+    m_Key: quest.first_harvest.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664200
+    m_Key: quest.get_to_know_maren.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664201
+    m_Key: quest.get_to_know_maren.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664202
+    m_Key: quest.get_to_know_maren.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664203
+    m_Key: quest.welcome_harvest.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664204
+    m_Key: quest.welcome_harvest.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664205
+    m_Key: quest.welcome_harvest.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664206
+    m_Key: quest.first_victory.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664207
+    m_Key: quest.first_victory.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664208
+    m_Key: quest.first_victory.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630369990664209
+    m_Key: shop.general_store.title
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 3391914699650498659
+  references:
+    version: 2
+    RefIds:
+    - rid: 3391914699650498659
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1782074678111

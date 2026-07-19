@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a98ad4689e6eaa3448f4580edde09440, type: 3}
+  m_Name: cow
+  m_EditorClassIdentifier:
+  animalName: Cow
+  displayName:
+    m_TableReference:
+      m_TableCollectionName:
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key:
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  animalType:
+  animalFamily: Bovidae
+  animalClass: Mammal
+  idleSprite: {fileID: -4507601661114316402, guid: d1075b8b782910e42a8a5d9e18d14a9d, type: 3}
+  animatorController: {fileID: 9100000, guid: 60ce36c4aebbf5cb3f8e6b047c81a007, type: 2}
+  moveSpeed: 1.2
+  wanderRadius: 4
+  minIdleTime: 3
+  maxIdleTime: 6
+  minWalkTime: 1
+  maxWalkTime: 3
+  dailyFoodRequirements:
+  - itemName: CarrotSeed
+    quantityPerDay: 1
+  heartParticlePrefab: {fileID: 8335835914115039494, guid: dd1fca26b61cc1141a98509bb88c1e03, type: 3}
+  pettingCooldown: 5
+  canProduce: 1
+  produceItemName: Milk
+  productionIntervalDays: 1
+  minProduceAmount: 1
+  maxProduceAmount: 2
+  groundItemPrefab: {fileID: 4536615237796670113, guid: fd24e5cee34da98a0f8ee09cb9635eb7, type: 3}
+  produceOnlyIfFed: 0
+  happinessProductionBonus: 1
+  baseCombatStats:
+    baseAttack: 20
+    baseDefense: 24
+    baseSpeed: 4
+    baseAccuracy: 1
+    baseHealth: 220
+    currentHealth: 220
+    level: 1
+    experience: 0
+    attackGrowth: 1
+    defenseGrowth: 1
+    speedGrowth: 1
+    healthGrowth: 1
+    happiness: 50
+    seasonalAttackMod: 1
+    seasonalDefenseMod: 1
+    seasonalSpeedMod: 1
+    activeSkillId:
+    passiveSkillIds: []
+  combatClass: Tank
+  attackRange: 1
+  pettingStatBonus: 0.01
+  feedingStatBonus: 0.02
+  productionQualityBonus: 0
+  preferredSeason: Spring
+  seasonalAttackBonus: 1.1
+  seasonalDefenseBonus: 1.2
+  seasonalSpeedBonus: 1.05
+  canStack: 0
+  maxStackSize: 1
+  activeSkill: {fileID: 0}
+  availablePassiveSkills: []
+  canDoChores: 0
+  choreType:

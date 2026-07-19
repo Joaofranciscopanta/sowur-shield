@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sowur Shield — a cozy 2D farming sim with combat, animals, quests and a living world. Play the WebGL demo in your browser.">
+    <title>Sowur Shield — Farming Sim Demo</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="TemplateData/style.css">
+  </head>
+  <body>
+
+    <!-- Ambient backdrop: scroll parallax (sky/forest/farm) + lamp glow + fireflies -->
+    <div id="bg-fx" aria-hidden="true">
+      <div class="bg-layer bg-layer-sky" id="bg-layer-sky"></div>
+      <div class="bg-layer bg-layer-forest" id="bg-layer-forest"></div>
+      <div class="bg-layer bg-layer-farm" id="bg-layer-farm">
+        <div class="bg-bonfire-glow"></div>
+      </div>
+      <div class="bg-fx-fireflies" id="bg-fireflies"></div>
+      <div class="bg-fx-glow bg-lamp-glow" id="bg-cursor-glow">
+        <div class="bg-lamp-flame"></div>
+      </div>
+    </div>
+
+    <!-- ============================================= -->
+    <!-- NAV                                             -->
+    <!-- ============================================= -->
+    <header class="site-header">
+      <div class="nav-wrap">
+        <a href="#top" class="nav-brand">
+          <span class="nav-emoji">🌾</span>
+          <span>Sowur Shield</span>
+        </a>
+        <nav class="nav-links" id="nav-links">
+          <a href="#features" data-i18n="nav.features">Features</a>
+          <a href="#gallery" data-i18n="nav.gallery">Gallery</a>
+          <a href="#play" data-i18n="nav.play">Play Demo</a>
+          <a href="#controls" data-i18n="nav.controls">Controls</a>
+          <a href="https://github.com/Joaofranciscopanta/sowur-shield" target="_blank" rel="noopener">GitHub</a>
+        </nav>
+        <div class="lang-switch" id="lang-switch" role="group" aria-label="Language">
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+          <button type="button" class="lang-btn" data-lang="pt">PT</button>
+          <button type="button" class="lang-btn" data-lang="es">ES</button>
+        </div>
+        <a href="#play" class="btn btn-primary nav-cta" data-i18n="nav.playNow">Play Now</a>
+        <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ============================================= -->
+    <!-- HERO                                            -->
+    <!-- ============================================= -->
+    <section id="top" class="hero">
+      <div class="hero-glow"></div>
+      <div class="hero-content">
+        <div class="badge-row">
+          <span class="badge badge-live"><span class="live-dot"></span><span data-i18n="hero.badgeLive">Playable Demo</span></span>
+          <span class="badge" id="build-badge">Build #15 &middot; June 2026</span>
+        </div>
+        <h1 class="hero-title">
+          <span data-i18n="hero.titleLine1">Grow your farm.</span><br>
+          <span class="text-gradient" data-i18n="hero.titleLine2">Defend your world.</span>
+        </h1>
+        <p class="hero-subtitle" data-i18n="hero.subtitle">
+          Sowur Shield is a cozy 2D farming sim with deep systems — till the land, raise
+          animals, befriend villagers, and gear up for turn-based battles across a living
+          world map.
+        </p>
+        <div class="hero-actions">
+          <a href="#play" class="btn btn-primary btn-lg" data-i18n="hero.playBrowser">▶ Play in Browser</a>
+          <a href="#features" class="btn btn-ghost btn-lg" data-i18n="hero.exploreFeatures">Explore Features</a>
+        </div>
+        <div class="hero-meta">
+          <span data-i18n="hero.metaWebgl">🖥️ Runs in your browser via WebGL</span>
+          <span data-i18n="hero.metaKeyboard">🎮 Keyboard controls</span>
+          <span data-i18n="hero.metaFree">🆓 Free &amp; open source</span>
+        </div>
+      </div>
+
+      <img src="assets/hero-showcase.png" alt="Sowur Shield gameplay screenshot" class="hero-art">
+    </section>
+
+    <!-- ============================================= -->
+    <!-- FEATURES                                       -->
+    <!-- ============================================= -->
+    <section id="features" class="section">
+      <div class="section-head">
+        <span class="eyebrow" data-i18n="features.eyebrow">What's New</span>
+        <h2 data-i18n="features.title">Everything you need for a full farm life</h2>
+        <p class="section-sub" data-i18n="features.subtitle">Core systems built and playable right now in the demo build.</p>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🌱</div>
+          <h3 data-i18n="features.farming.title">Farming</h3>
+          <ul>
+            <li data-i18n="features.farming.li1">Till → Water → Plant → Harvest cycle</li>
+            <li data-i18n="features.farming.li2">Multi-stage crop growth with custom soil sprites</li>
+            <li data-i18n="features.farming.li3">Crops pulse when ready to harvest</li>
+            <li data-i18n="features.farming.li4">Seasonal calendar &amp; day/night cycle</li>
+          </ul>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🐔</div>
+          <h3 data-i18n="features.animals.title">Animal Husbandry</h3>
+          <ul>
+            <li data-i18n="features.animals.li1">Pet animals daily for happiness &amp; heart particles</li>
+            <li data-i18n="features.animals.li2">Feed via inventory or the Feeding Trough</li>
+            <li data-i18n="features.animals.li3">Happiness (0–100) affects production output</li>
+            <li data-i18n="features.animals.li4">Animal Roster UI tracks every animal</li>
+          </ul>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🎒</div>
+          <h3 data-i18n="features.inventory.title">Inventory &amp; Economy</h3>
+          <ul>
+            <li data-i18n="features.inventory.li1">36-slot inventory with drag &amp; drop</li>
+            <li data-i18n="features.inventory.li2">Automatic selling via SellBox on sleep</li>
+            <li data-i18n="features.inventory.li3">Shops &amp; quest rewards</li>
+          </ul>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3 data-i18n="features.npc.title">NPCs &amp; Story</h3>
+          <ul>
+            <li data-i18n="features.npc.li1">Branching dialogue with persistent memory</li>
+            <li data-i18n="features.npc.li2">Relationship system — unlock new dialogue as you bond</li>
+            <li data-i18n="features.npc.li3">NPC codex with lore that deepens over time</li>
+            <li data-i18n="features.npc.li4">Quest progression system</li>
+          </ul>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">⚔️</div>
+          <h3 data-i18n="features.combat.title">Combat &amp; World Map</h3>
+          <ul>
+            <li data-i18n="features.combat.li1">Turn-based battles with your team</li>
+            <li data-i18n="features.combat.li2">Explore stages on a world map</li>
+            <li data-i18n="features.combat.li3">Assemble your party before each fight</li>
+          </ul>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">💾</div>
+          <h3 data-i18n="features.save.title">Save Slots</h3>
+          <ul>
+            <li data-i18n="features.save.li1">4 slots: AutoSave + Slot 1, 2, 3</li>
+            <li data-i18n="features.save.li2">Play time tracked per slot</li>
+            <li data-i18n="features.save.li3">Auto-save on every sleep</li>
+            <li data-i18n="features.save.li4">3-state Minimap (Normal / Semi / Fullscreen)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================= -->
+    <!-- GALLERY                                        -->
+    <!-- ============================================= -->
+    <section id="gallery" class="section section-alt">
+      <div class="section-head">
+        <span class="eyebrow" data-i18n="gallery.eyebrow">Gallery</span>
+        <h2 data-i18n="gallery.title">A peek at the world</h2>
+        <p class="section-sub" data-i18n="gallery.subtitle">Screenshots and clips from the current build.</p>
+      </div>
+
+      <div class="gallery-grid">
+        <div class="gallery-item gallery-wide"><img src="assets/farm.png" alt="Farm overview" class="gallery-img" tabindex="0" role="button" aria-label="View full size: Farm overview"></div>
+        <div class="gallery-item"><img src="assets/animals.png" alt="Animal pen" class="gallery-img" tabindex="0" role="button" aria-label="View full size: Animal pen"></div>
+        <div class="gallery-item"><img src="assets/dialogue.png" alt="NPC dialogue" class="gallery-img" tabindex="0" role="button" aria-label="View full size: NPC dialogue"></div>
+        <div class="gallery-item"><img src="assets/combat.png" alt="Combat scene" class="gallery-img" tabindex="0" role="button" aria-label="View full size: Combat scene"></div>
+        <div class="gallery-item gallery-wide"><img src="assets/worldmap.png" alt="World map" class="gallery-img" tabindex="0" role="button" aria-label="View full size: World map"></div>
+      </div>
+    </section>
+
+    <!-- Lightbox overlay for full-size gallery images -->
+    <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Image preview" aria-hidden="true">
+      <button class="lightbox-close" aria-label="Close">&times;</button>
+      <img src="" alt="" class="lightbox-img">
+    </div>
+
+    <!-- ============================================= -->
+    <!-- PLAY (UNITY WEBGL)                             -->
+    <!-- ============================================= -->
+    <section id="play" class="section section-play">
+      <div class="section-head">
+        <span class="eyebrow" data-i18n="play.eyebrow">Live Demo</span>
+        <h2 data-i18n="play.title">Play Sowur Shield right now</h2>
+        <p class="section-sub" data-i18n="play.subtitle">Runs entirely in your browser — no install required. Best on desktop.</p>
+      </div>
+
+      <div class="play-frame">
+        <div id="unity-container" class="unity-desktop">
+          <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
+          <div id="unity-loading-bar">
+            <div id="unity-logo"></div>
+            <div id="unity-progress-bar-empty">
+              <div id="unity-progress-bar-full"></div>
+            </div>
+          </div>
+          <div id="unity-warning"> </div>
+          <div id="unity-footer">
+            <div id="unity-logo-title-footer"></div>
+            <div id="unity-fullscreen-button"></div>
+            <div id="unity-build-title">Sowur Shield</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================= -->
+    <!-- CONTROLS                                       -->
+    <!-- ============================================= -->
+    <section id="controls" class="section section-alt">
+      <div class="section-head">
+        <span class="eyebrow" data-i18n="controls.eyebrow">Controls</span>
+        <h2 data-i18n="controls.title">How to play</h2>
+        <p class="section-sub" data-i18n="controls.subtitle">Keyboard &amp; mouse — controller support coming later.</p>
+      </div>
+
+      <div class="controls-wrap">
+        <div class="key-grid">
+          <span class="key-pill"><kbd>WASD</kbd> <span data-i18n="controls.key.move">Move</span></span>
+          <span class="key-pill"><kbd>E</kbd> <span data-i18n="controls.key.interact">Interact</span></span>
+          <span class="key-pill"><kbd>Click</kbd> <span data-i18n="controls.key.useTool">Use tool</span></span>
+          <span class="key-pill"><kbd>I</kbd> <span data-i18n="controls.key.inventory">Inventory</span></span>
+          <span class="key-pill"><kbd>M</kbd> <span data-i18n="controls.key.minimap">Minimap</span></span>
+          <span class="key-pill"><kbd>1–9</kbd> <span data-i18n="controls.key.hotbar">Hotbar</span></span>
+          <span class="key-pill"><kbd>ESC</kbd> <span data-i18n="controls.key.menu">Menu / Save</span></span>
+          <span class="key-pill"><kbd>Shift</kbd> <span data-i18n="controls.key.sprint">Sprint</span></span>
+        </div>
+
+        <div class="howto-grid">
+          <div class="howto-card">
+            <h4 data-i18n="controls.farmingLoop.title">🚜 Farming Loop</h4>
+            <ol>
+              <li data-i18n="controls.farmingLoop.li1"><strong>Hoe</strong> → till soil</li>
+              <li data-i18n="controls.farmingLoop.li2"><strong>Watering Can</strong> → water it daily</li>
+              <li data-i18n="controls.farmingLoop.li3"><strong>Seeds</strong> → plant &amp; wait</li>
+              <li data-i18n="controls.farmingLoop.li4">Crop <strong>pulses</strong> when ready</li>
+              <li data-i18n="controls.farmingLoop.li5"><strong>E</strong> → harvest &amp; collect drops</li>
+            </ol>
+          </div>
+          <div class="howto-card">
+            <h4 data-i18n="controls.dailyRoutine.title">🏡 Daily Routine</h4>
+            <ol>
+              <li data-i18n="controls.dailyRoutine.li1"><strong>SellBox</strong> → drag items, earn on sleep</li>
+              <li data-i18n="controls.dailyRoutine.li2">Pet &amp; feed animals every day</li>
+              <li data-i18n="controls.dailyRoutine.li3">Talk to villagers for quests</li>
+              <li data-i18n="controls.dailyRoutine.li4">Sleep to advance to the next day</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================= -->
+    <!-- TEAM / FOOTER                                  -->
+    <!-- ============================================= -->
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="nav-brand">
+            <span class="nav-emoji">🌾</span>
+            <span>Sowur Shield</span>
+          </div>
+          <p data-i18n="footer.tagline">A cozy 2D farming sim built in Unity.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4 data-i18n="footer.team">Team</h4>
+          <ul>
+            <li><strong>João Francisco</strong> — <span data-i18n="footer.roleOwner">Owner &amp; Lead Dev</span></li>
+            <li><strong>Lucas Daniel</strong> — <span data-i18n="footer.roleCoOwner">Co-Owner &amp; Dev</span></li>
+            <li><strong>Isabella Freitas</strong> — <span data-i18n="footer.roleArt">Art &amp; Design</span></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 data-i18n="footer.links">Links</h4>
+          <ul>
+            <li><a href="https://github.com/Joaofranciscopanta/sowur-shield" target="_blank" rel="noopener">📂 <span data-i18n="footer.linkRepo">GitHub Repository</span></a></li>
+            <li><a href="https://github.com/Joaofranciscopanta/sowur-shield/blob/main/README.md" target="_blank" rel="noopener">📖 <span data-i18n="footer.linkDocs">Documentation</span></a></li>
+            <li><a href="#play">▶ <span data-i18n="nav.play">Play Demo</span></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span id="build-badge-footer">Build #15 &middot; June 2026</span>
+        <span data-i18n="footer.madeWith">Made with Unity</span>
+      </div>
+    </footer>
+
+    <script>
+      var canvas = document.querySelector("#unity-canvas");
+
+      function unityShowBanner(msg, type) {
+        var warningBanner = document.querySelector("#unity-warning");
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/Default WebGL.loader.js";
+      var config = {
+        arguments: [],
+        dataUrl: buildUrl + "/Default WebGL.data",
+        frameworkUrl: buildUrl + "/Default WebGL.framework.js",
+        codeUrl: buildUrl + "/Default WebGL.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "SoulStudio",
+        productName: "Sowur Shield",
+        productVersion: "1.0",
+        showBanner: unityShowBanner,
+      };
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+        document.querySelector("#unity-container").className = "unity-mobile";
+        canvas.className = "unity-mobile";
+      }
+
+      document.querySelector("#unity-loading-bar").style.display = "block";
+
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          progressBarFull.style.width = 100 * progress + "%";
+        }).then((unityInstance) => {
+          loadingBar.style.display = "none";
+          document.querySelector("#unity-fullscreen-button").onclick = () => {
+            unityInstance.SetFullscreen(1);
+          };
+        }).catch((message) => {
+          loadingBar.style.display = "none";
+          unityShowBanner('Could not load the game. Please check your connection and reload the page.', 'error');
+        });
+      };
+
+      document.body.appendChild(script);
+    </script>
+
+    <script>
+      // ---------------------------------------------
+      // Mobile nav toggle
+      // ---------------------------------------------
+      (() => {
+        const toggle = document.getElementById('nav-toggle');
+        const links = document.getElementById('nav-links');
+
+        function closeMenu() {
+          links.classList.remove('is-open');
+          toggle.setAttribute('aria-expanded', 'false');
+        }
+
+        toggle.addEventListener('click', () => {
+          const isOpen = links.classList.toggle('is-open');
+          toggle.setAttribute('aria-expanded', String(isOpen));
+        });
+
+        links.querySelectorAll('a').forEach((link) => {
+          link.addEventListener('click', closeMenu);
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') closeMenu();
+        });
+
+        // Close the menu if the viewport widens past the mobile breakpoint
+        // while it's open, so it doesn't reappear pre-opened later.
+        const desktopQuery = window.matchMedia('(min-width: 861px)');
+        desktopQuery.addEventListener('change', (e) => {
+          if (e.matches) closeMenu();
+        });
+      })();
+
+      // ---------------------------------------------
+      // Gallery lightbox
+      // ---------------------------------------------
+      (() => {
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = lightbox.querySelector('.lightbox-img');
+        const closeBtn = lightbox.querySelector('.lightbox-close');
+        let lastTrigger = null;
+
+        function openLightbox(trigger) {
+          lastTrigger = trigger;
+          lightboxImg.src = trigger.src;
+          lightboxImg.alt = trigger.alt || '';
+          lightbox.classList.add('is-open');
+          lightbox.setAttribute('aria-hidden', 'false');
+          document.body.classList.add('lightbox-locked');
+          closeBtn.focus();
+        }
+
+        function closeLightbox() {
+          lightbox.classList.remove('is-open');
+          lightbox.setAttribute('aria-hidden', 'true');
+          document.body.classList.remove('lightbox-locked');
+          lightboxImg.src = '';
+          if (lastTrigger) {
+            lastTrigger.focus();
+            lastTrigger = null;
+          }
+        }
+
+        document.querySelectorAll('.gallery-img').forEach((img) => {
+          img.addEventListener('click', () => openLightbox(img));
+          img.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openLightbox(img);
+            }
+          });
+        });
+
+        closeBtn.addEventListener('click', closeLightbox);
+        lightbox.addEventListener('click', (e) => {
+          if (e.target === lightbox) closeLightbox();
+        });
+        document.addEventListener('keydown', (e) => {
+          if (!lightbox.classList.contains('is-open')) return;
+          if (e.key === 'Escape') {
+            closeLightbox();
+          } else if (e.key === 'Tab') {
+            // Only the close button is focusable inside the lightbox —
+            // keep Tab from escaping to the page behind the overlay.
+            e.preventDefault();
+            closeBtn.focus();
+          }
+        });
+      })();
+
+      // ---------------------------------------------
+      // Ambient background fx: scroll parallax, lamp glow, fireflies
+      // ---------------------------------------------
+      (() => {
+        const lampGlow = document.getElementById('bg-cursor-glow');
+        const fireflyLayer = document.getElementById('bg-fireflies');
+        const skyLayer = document.getElementById('bg-layer-sky');
+        const forestLayer = document.getElementById('bg-layer-forest');
+        const farmLayer = document.getElementById('bg-layer-farm');
+
+        // Scroll parallax: each layer drifts at a different speed,
+        // revealing moon -> forest -> farm as the page scrolls down.
+        let lastScroll = -1;
+        function onScroll() {
+          const scrollY = window.scrollY;
+          if (scrollY === lastScroll) return;
+          lastScroll = scrollY;
+          const docHeight = Math.max(document.body.scrollHeight - window.innerHeight, 1);
+          const progress = Math.min(scrollY / docHeight, 1);
+
+          // Sky drifts down slightly; forest and farm rise into view
+          // (start shifted down/hidden, settle into place) as progress -> 1.
+          skyLayer.style.transform = `translateY(${progress * 13}%)`;
+          forestLayer.style.transform = `translateY(${(1 - progress) * 18}%)`;
+          farmLayer.style.transform = `translateY(${(1 - progress) * 30}%)`;
+
+          forestLayer.style.opacity = String(0.4 + progress * 0.6);
+          farmLayer.style.opacity = String(Math.min(Math.max(0, progress - 0.25) / 0.75, 0.7));
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+
+        // Drifting "firefly" particles (forest layer)
+        const FIREFLY_COUNT = 18;
+        for (let i = 0; i < FIREFLY_COUNT; i++) {
+          const fly = document.createElement('span');
+          fly.className = 'firefly';
+          fly.style.left = `${Math.random() * 100}%`;
+          fly.style.top = `${Math.random() * 100}%`;
+          fly.style.setProperty('--dur', `${14 + Math.random() * 18}s`);
+          fly.style.setProperty('--delay', `${Math.random() * -30}s`);
+          fly.style.setProperty('--drift', `${(Math.random() - 0.5) * 160}px`);
+          fly.style.setProperty('--size', `${2 + Math.random() * 3}px`);
+          fireflyLayer.appendChild(fly);
+        }
+
+        // ---------------------------------------------
+        // "Lamparina": the lamp glow follows the cursor vertically,
+        // but swings on a pendulum horizontally — mouse movement
+        // acts like wind nudging a hanging oil lamp.
+        // ---------------------------------------------
+        if (window.matchMedia('(pointer: fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          let targetX = window.innerWidth / 2;
+          let targetY = window.innerHeight / 2;
+          let lampX = targetX;
+          let lampY = targetY;
+          let angle = 0;       // current swing angle (radians)
+          let angVel = 0;      // angular velocity
+          let lastX = targetX;
+          let visible = false;
+
+          const SWING_LENGTH = 90;   // px, how far the lamp swings
+          const STIFFNESS = 0.012;   // pulls swing back to center
+          const DAMPING = 0.94;      // energy loss per frame
+          const WIND_FACTOR = 0.0028; // how strongly mouse velocity pushes the swing
+          const MAX_DX = 60;         // px per pointermove event, clamps "wind gust" strength
+          const MAX_ANGLE = 0.6;     // radians, caps how far the pendulum can swing
+
+          let rafId = null;
+
+          window.addEventListener('pointermove', (e) => {
+            let dx = e.clientX - lastX;
+            lastX = e.clientX;
+            // Clamp so a fast mouse flick doesn't inject a huge one-frame
+            // impulse that overshoots the spring and "explodes".
+            dx = Math.max(-MAX_DX, Math.min(MAX_DX, dx));
+            // Horizontal mouse velocity = "wind" pushing the lamp
+            angVel += dx * WIND_FACTOR;
+            targetX = e.clientX;
+            targetY = e.clientY;
+            if (!visible) {
+              lampX = targetX;
+              lampY = targetY;
+              visible = true;
+              lampGlow.style.opacity = '1';
+              if (rafId === null) rafId = requestAnimationFrame(tick);
+            }
+          });
+          window.addEventListener('pointerleave', () => {
+            lampGlow.style.opacity = '0';
+            visible = false;
+          });
+
+          const REST_THRESHOLD = 0.0008; // below this, snap the swing to a full stop
+
+          function tick() {
+            if (!visible) {
+              rafId = null;
+              return;
+            }
+
+            // Spring physics: swing angle oscillates back toward 0,
+            // damped over time, driven by wind impulses from the mouse.
+            angVel += -angle * STIFFNESS;
+            angVel *= DAMPING;
+            angle += angVel;
+
+            // Cap the swing amplitude so rapid mouse movement can't pile
+            // up impulses into an ever-growing oscillation.
+            if (angle > MAX_ANGLE) { angle = MAX_ANGLE; angVel = Math.min(angVel, 0); }
+            else if (angle < -MAX_ANGLE) { angle = -MAX_ANGLE; angVel = Math.max(angVel, 0); }
+
+            // Once the swing has settled to a tiny amplitude, stop it
+            // completely so the lamp doesn't rattle forever at idle.
+            if (Math.abs(angle) < REST_THRESHOLD && Math.abs(angVel) < REST_THRESHOLD) {
+              angle = 0;
+              angVel = 0;
+            }
+
+            // Lamp position eases toward the cursor (vertical follow),
+            // offset horizontally by the pendulum swing.
+            lampY += (targetY - lampY) * 0.12;
+            lampX += (targetX - lampX) * 0.12;
+
+            const swingOffset = Math.sin(angle) * SWING_LENGTH;
+            const rotation = angle * 12; // visual tilt in degrees
+
+            lampGlow.style.transform = `translate(${lampX + swingOffset}px, ${lampY}px) rotate(${rotation}deg)`;
+            rafId = requestAnimationFrame(tick);
+          }
+        }
+      })();
+
+      // ---------------------------------------------
+      // Build badge: read the build number and deploy date
+      // written by the deploy workflow into build-info.json.
+      // The hardcoded badge text stays as a fallback.
+      // ---------------------------------------------
+      (() => {
+        const badges = [
+          document.getElementById('build-badge'),
+          document.getElementById('build-badge-footer'),
+        ].filter(Boolean);
+        if (!badges.length) return;
+
+        fetch('build-info.json', { cache: 'no-store' })
+          .then((res) => (res.ok ? res.json() : null))
+          .then((info) => {
+            if (!info || !info.build) return;
+            const date = info.deployedAt ? new Date(info.deployedAt) : null;
+            const when = date && !isNaN(date)
+              ? ' · ' + date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+              : '';
+            badges.forEach((el) => { el.textContent = 'Build #' + info.build + when; });
+          })
+          .catch(() => { /* keep the hardcoded fallback */ });
+      })();
+
+      // ---------------------------------------------
+      // Site language switcher (EN/PT/ES) — translates
+      // the landing page text only, not the in-game UI.
+      // ---------------------------------------------
+      (() => {
+        const I18N = {
+          en: {
+            'nav.features': 'Features', 'nav.gallery': 'Gallery', 'nav.play': 'Play Demo',
+            'nav.controls': 'Controls', 'nav.playNow': 'Play Now',
+            'hero.badgeLive': 'Playable Demo',
+            'hero.titleLine1': 'Grow your farm.', 'hero.titleLine2': 'Defend your world.',
+            'hero.subtitle': 'Sowur Shield is a cozy 2D farming sim with deep systems — till the land, raise animals, befriend villagers, and gear up for turn-based battles across a living world map.',
+            'hero.playBrowser': '▶ Play in Browser', 'hero.exploreFeatures': 'Explore Features',
+            'hero.metaWebgl': '🖥️ Runs in your browser via WebGL', 'hero.metaKeyboard': '🎮 Keyboard controls', 'hero.metaFree': '🆓 Free &amp; open source',
+            'features.eyebrow': "What's New", 'features.title': 'Everything you need for a full farm life',
+            'features.subtitle': 'Core systems built and playable right now in the demo build.',
+            'features.farming.title': 'Farming',
+            'features.farming.li1': 'Till → Water → Plant → Harvest cycle',
+            'features.farming.li2': 'Multi-stage crop growth with custom soil sprites',
+            'features.farming.li3': 'Crops pulse when ready to harvest',
+            'features.farming.li4': 'Seasonal calendar &amp; day/night cycle',
+            'features.animals.title': 'Animal Husbandry',
+            'features.animals.li1': 'Pet animals daily for happiness &amp; heart particles',
+            'features.animals.li2': 'Feed via inventory or the Feeding Trough',
+            'features.animals.li3': 'Happiness (0–100) affects production output',
+            'features.animals.li4': 'Animal Roster UI tracks every animal',
+            'features.inventory.title': 'Inventory &amp; Economy',
+            'features.inventory.li1': '36-slot inventory with drag &amp; drop',
+            'features.inventory.li2': 'Automatic selling via SellBox on sleep',
+            'features.inventory.li3': 'Shops &amp; quest rewards',
+            'features.npc.title': 'NPCs &amp; Story',
+            'features.npc.li1': 'Branching dialogue with persistent memory',
+            'features.npc.li2': 'Relationship system — unlock new dialogue as you bond',
+            'features.npc.li3': 'NPC codex with lore that deepens over time',
+            'features.npc.li4': 'Quest progression system',
+            'features.combat.title': 'Combat &amp; World Map',
+            'features.combat.li1': 'Turn-based battles with your team',
+            'features.combat.li2': 'Explore stages on a world map',
+            'features.combat.li3': 'Assemble your party before each fight',
+            'features.save.title': 'Save Slots',
+            'features.save.li1': '4 slots: AutoSave + Slot 1, 2, 3',
+            'features.save.li2': 'Play time tracked per slot',
+            'features.save.li3': 'Auto-save on every sleep',
+            'features.save.li4': '3-state Minimap (Normal / Semi / Fullscreen)',
+            'gallery.eyebrow': 'Gallery', 'gallery.title': 'A peek at the world',
+            'gallery.subtitle': 'Screenshots and clips from the current build.',
+            'play.eyebrow': 'Live Demo', 'play.title': 'Play Sowur Shield right now',
+            'play.subtitle': 'Runs entirely in your browser — no install required. Best on desktop.',
+            'controls.eyebrow': 'Controls', 'controls.title': 'How to play',
+            'controls.subtitle': 'Keyboard &amp; mouse — controller support coming later.',
+            'controls.key.move': 'Move', 'controls.key.interact': 'Interact', 'controls.key.useTool': 'Use tool',
+            'controls.key.inventory': 'Inventory', 'controls.key.minimap': 'Minimap', 'controls.key.hotbar': 'Hotbar',
+            'controls.key.menu': 'Menu / Save', 'controls.key.sprint': 'Sprint',
+            'controls.farmingLoop.title': '🚜 Farming Loop',
+            'controls.farmingLoop.li1': '<strong>Hoe</strong> → till soil',
+            'controls.farmingLoop.li2': '<strong>Watering Can</strong> → water it daily',
+            'controls.farmingLoop.li3': '<strong>Seeds</strong> → plant &amp; wait',
+            'controls.farmingLoop.li4': 'Crop <strong>pulses</strong> when ready',
+            'controls.farmingLoop.li5': '<strong>E</strong> → harvest &amp; collect drops',
+            'controls.dailyRoutine.title': '🏡 Daily Routine',
+            'controls.dailyRoutine.li1': '<strong>SellBox</strong> → drag items, earn on sleep',
+            'controls.dailyRoutine.li2': 'Pet &amp; feed animals every day',
+            'controls.dailyRoutine.li3': 'Talk to villagers for quests',
+            'controls.dailyRoutine.li4': 'Sleep to advance to the next day',
+            'footer.tagline': 'A cozy 2D farming sim built in Unity.', 'footer.team': 'Team',
+            'footer.roleOwner': 'Owner &amp; Lead Dev', 'footer.roleCoOwner': 'Co-Owner &amp; Dev', 'footer.roleArt': 'Art &amp; Design',
+            'footer.links': 'Links', 'footer.linkRepo': 'GitHub Repository', 'footer.linkDocs': 'Documentation',
+            'footer.madeWith': 'Made with Unity',
+          },
+          pt: {
+            'nav.features': 'Recursos', 'nav.gallery': 'Galeria', 'nav.play': 'Jogar Demo',
+            'nav.controls': 'Controles', 'nav.playNow': 'Jogar Agora',
+            'hero.badgeLive': 'Demo Jogável',
+            'hero.titleLine1': 'Cultive sua fazenda.', 'hero.titleLine2': 'Defenda seu mundo.',
+            'hero.subtitle': 'Sowur Shield é um simulador de fazenda 2D acolhedor com sistemas profundos — cultive a terra, crie animais, faça amizade com os moradores e prepare-se para batalhas por turnos em um mapa-múndi vivo.',
+            'hero.playBrowser': '▶ Jogar no Navegador', 'hero.exploreFeatures': 'Explorar Recursos',
+            'hero.metaWebgl': '🖥️ Roda no seu navegador via WebGL', 'hero.metaKeyboard': '🎮 Controles de teclado', 'hero.metaFree': '🆓 Grátis e código aberto',
+            'features.eyebrow': 'Novidades', 'features.title': 'Tudo que você precisa para uma vida completa na fazenda',
+            'features.subtitle': 'Sistemas centrais já implementados e jogáveis na demo atual.',
+            'features.farming.title': 'Agricultura',
+            'features.farming.li1': 'Ciclo de Arar → Regar → Plantar → Colher',
+            'features.farming.li2': 'Crescimento de cultivo em múltiplos estágios com sprites de solo personalizados',
+            'features.farming.li3': 'Cultivos pulsam quando estão prontos para colher',
+            'features.farming.li4': 'Calendário sazonal e ciclo dia/noite',
+            'features.animals.title': 'Criação de Animais',
+            'features.animals.li1': 'Acaricie os animais diariamente para felicidade e partículas de coração',
+            'features.animals.li2': 'Alimente pelo inventário ou pelo Cocho de Alimentação',
+            'features.animals.li3': 'Felicidade (0–100) afeta a produção',
+            'features.animals.li4': 'UI de Lista de Animais rastreia cada animal',
+            'features.inventory.title': 'Inventário e Economia',
+            'features.inventory.li1': 'Inventário de 36 slots com arrastar e soltar',
+            'features.inventory.li2': 'Venda automática pela Caixa de Venda ao dormir',
+            'features.inventory.li3': 'Lojas e recompensas de missões',
+            'features.npc.title': 'NPCs e História',
+            'features.npc.li1': 'Diálogo em ramificações com memória persistente',
+            'features.npc.li2': 'Sistema de relacionamento — desbloqueie novos diálogos ao criar vínculos',
+            'features.npc.li3': 'Códice de NPCs com lore que se aprofunda com o tempo',
+            'features.npc.li4': 'Sistema de progressão de missões',
+            'features.combat.title': 'Combate e Mapa-Múndi',
+            'features.combat.li1': 'Batalhas por turnos com sua equipe',
+            'features.combat.li2': 'Explore fases em um mapa-múndi',
+            'features.combat.li3': 'Monte sua equipe antes de cada batalha',
+            'features.save.title': 'Slots de Save',
+            'features.save.li1': '4 slots: AutoSave + Slot 1, 2, 3',
+            'features.save.li2': 'Tempo de jogo rastreado por slot',
+            'features.save.li3': 'Auto-save a cada vez que dorme',
+            'features.save.li4': 'Minimapa com 3 estados (Normal / Semi / Tela cheia)',
+            'gallery.eyebrow': 'Galeria', 'gallery.title': 'Um vislumbre do mundo',
+            'gallery.subtitle': 'Capturas de tela e clipes da build atual.',
+            'play.eyebrow': 'Demo ao Vivo', 'play.title': 'Jogue Sowur Shield agora mesmo',
+            'play.subtitle': 'Roda inteiramente no seu navegador — sem necessidade de instalação. Melhor no desktop.',
+            'controls.eyebrow': 'Controles', 'controls.title': 'Como jogar',
+            'controls.subtitle': 'Teclado e mouse — suporte a controle em breve.',
+            'controls.key.move': 'Mover', 'controls.key.interact': 'Interagir', 'controls.key.useTool': 'Usar ferramenta',
+            'controls.key.inventory': 'Inventário', 'controls.key.minimap': 'Minimapa', 'controls.key.hotbar': 'Atalhos',
+            'controls.key.menu': 'Menu / Salvar', 'controls.key.sprint': 'Correr',
+            'controls.farmingLoop.title': '🚜 Ciclo da Fazenda',
+            'controls.farmingLoop.li1': '<strong>Enxada</strong> → arar o solo',
+            'controls.farmingLoop.li2': '<strong>Regador</strong> → regar diariamente',
+            'controls.farmingLoop.li3': '<strong>Semente</strong> → plantar e esperar',
+            'controls.farmingLoop.li4': 'O cultivo <strong>pulsa</strong> quando está pronto',
+            'controls.farmingLoop.li5': '<strong>E</strong> → colher e coletar itens',
+            'controls.dailyRoutine.title': '🏡 Rotina Diária',
+            'controls.dailyRoutine.li1': '<strong>Caixa de Venda</strong> → arraste itens, ganhe ao dormir',
+            'controls.dailyRoutine.li2': 'Acaricie e alimente os animais todos os dias',
+            'controls.dailyRoutine.li3': 'Converse com moradores para missões',
+            'controls.dailyRoutine.li4': 'Durma para avançar para o próximo dia',
+            'footer.tagline': 'Um simulador de fazenda 2D acolhedor feito em Unity.', 'footer.team': 'Equipe',
+            'footer.roleOwner': 'Dono e Dev Principal', 'footer.roleCoOwner': 'Co-Dono e Dev', 'footer.roleArt': 'Arte e Design',
+            'footer.links': 'Links', 'footer.linkRepo': 'Repositório no GitHub', 'footer.linkDocs': 'Documentação',
+            'footer.madeWith': 'Feito com Unity',
+          },
+          es: {
+            'nav.features': 'Funciones', 'nav.gallery': 'Galería', 'nav.play': 'Jugar Demo',
+            'nav.controls': 'Controles', 'nav.playNow': 'Jugar Ahora',
+            'hero.badgeLive': 'Demo Jugable',
+            'hero.titleLine1': 'Cultiva tu granja.', 'hero.titleLine2': 'Defiende tu mundo.',
+            'hero.subtitle': 'Sowur Shield es un acogedor simulador de granja 2D con sistemas profundos — labra la tierra, cría animales, hazte amigo de los aldeanos y prepárate para batallas por turnos en un mapa mundial vivo.',
+            'hero.playBrowser': '▶ Jugar en el Navegador', 'hero.exploreFeatures': 'Explorar Funciones',
+            'hero.metaWebgl': '🖥️ Funciona en tu navegador vía WebGL', 'hero.metaKeyboard': '🎮 Controles de teclado', 'hero.metaFree': '🆓 Gratis y de código abierto',
+            'features.eyebrow': 'Novedades', 'features.title': 'Todo lo que necesitas para una vida completa en la granja',
+            'features.subtitle': 'Sistemas principales ya implementados y jugables en la demo actual.',
+            'features.farming.title': 'Agricultura',
+            'features.farming.li1': 'Ciclo de Labrar → Regar → Plantar → Cosechar',
+            'features.farming.li2': 'Crecimiento de cultivos en varias etapas con sprites de suelo personalizados',
+            'features.farming.li3': 'Los cultivos pulsan cuando están listos para cosechar',
+            'features.farming.li4': 'Calendario estacional y ciclo día/noche',
+            'features.animals.title': 'Cría de Animales',
+            'features.animals.li1': 'Acaricia a los animales a diario para obtener felicidad y partículas de corazón',
+            'features.animals.li2': 'Alimenta desde el inventario o el Comedero',
+            'features.animals.li3': 'La felicidad (0–100) afecta la producción',
+            'features.animals.li4': 'La UI de Lista de Animales rastrea a cada animal',
+            'features.inventory.title': 'Inventario y Economía',
+            'features.inventory.li1': 'Inventario de 36 espacios con arrastrar y soltar',
+            'features.inventory.li2': 'Venta automática mediante la Caja de Venta al dormir',
+            'features.inventory.li3': 'Tiendas y recompensas de misiones',
+            'features.npc.title': 'NPCs e Historia',
+            'features.npc.li1': 'Diálogo en ramas con memoria persistente',
+            'features.npc.li2': 'Sistema de relaciones — desbloquea nuevos diálogos a medida que te vinculas',
+            'features.npc.li3': 'Códice de NPCs con historia que se profundiza con el tiempo',
+            'features.npc.li4': 'Sistema de progresión de misiones',
+            'features.combat.title': 'Combate y Mapa Mundial',
+            'features.combat.li1': 'Batallas por turnos con tu equipo',
+            'features.combat.li2': 'Explora etapas en un mapa mundial',
+            'features.combat.li3': 'Forma tu equipo antes de cada combate',
+            'features.save.title': 'Ranuras de Guardado',
+            'features.save.li1': '4 ranuras: AutoGuardado + Ranura 1, 2, 3',
+            'features.save.li2': 'Tiempo de juego registrado por ranura',
+            'features.save.li3': 'Autoguardado cada vez que duermes',
+            'features.save.li4': 'Minimapa de 3 estados (Normal / Semi / Pantalla completa)',
+            'gallery.eyebrow': 'Galería', 'gallery.title': 'Un vistazo al mundo',
+            'gallery.subtitle': 'Capturas de pantalla y clips de la build actual.',
+            'play.eyebrow': 'Demo en Vivo', 'play.title': 'Juega Sowur Shield ahora mismo',
+            'play.subtitle': 'Funciona completamente en tu navegador — no requiere instalación. Mejor en escritorio.',
+            'controls.eyebrow': 'Controles', 'controls.title': 'Cómo jugar',
+            'controls.subtitle': 'Teclado y ratón — soporte para mando próximamente.',
+            'controls.key.move': 'Mover', 'controls.key.interact': 'Interactuar', 'controls.key.useTool': 'Usar herramienta',
+            'controls.key.inventory': 'Inventario', 'controls.key.minimap': 'Minimapa', 'controls.key.hotbar': 'Accesos rápidos',
+            'controls.key.menu': 'Menú / Guardar', 'controls.key.sprint': 'Correr',
+            'controls.farmingLoop.title': '🚜 Ciclo de la Granja',
+            'controls.farmingLoop.li1': '<strong>Azada</strong> → labrar el suelo',
+            'controls.farmingLoop.li2': '<strong>Regadera</strong> → regar a diario',
+            'controls.farmingLoop.li3': '<strong>Semillas</strong> → plantar y esperar',
+            'controls.farmingLoop.li4': 'El cultivo <strong>pulsa</strong> cuando está listo',
+            'controls.farmingLoop.li5': '<strong>E</strong> → cosechar y recoger objetos',
+            'controls.dailyRoutine.title': '🏡 Rutina Diaria',
+            'controls.dailyRoutine.li1': '<strong>Caja de Venta</strong> → arrastra objetos, gana al dormir',
+            'controls.dailyRoutine.li2': 'Acaricia y alimenta a los animales todos los días',
+            'controls.dailyRoutine.li3': 'Habla con los aldeanos para conseguir misiones',
+            'controls.dailyRoutine.li4': 'Duerme para avanzar al siguiente día',
+            'footer.tagline': 'Un acogedor simulador de granja 2D hecho en Unity.', 'footer.team': 'Equipo',
+            'footer.roleOwner': 'Propietario y Dev Principal', 'footer.roleCoOwner': 'Copropietario y Dev', 'footer.roleArt': 'Arte y Diseño',
+            'footer.links': 'Enlaces', 'footer.linkRepo': 'Repositorio de GitHub', 'footer.linkDocs': 'Documentación',
+            'footer.madeWith': 'Hecho con Unity',
+          },
+        };
+
+        const STORAGE_KEY = 'sowurshield_lang';
+        const switcher = document.getElementById('lang-switch');
+        const buttons = switcher.querySelectorAll('.lang-btn');
+
+        function applyLanguage(lang) {
+          const dict = I18N[lang] || I18N.en;
+          document.querySelectorAll('[data-i18n]').forEach((el) => {
+            const key = el.getAttribute('data-i18n');
+            const value = dict[key];
+            if (value !== undefined) el.innerHTML = value;
+          });
+          document.documentElement.lang = lang === 'pt' ? 'pt-br' : (lang === 'es' ? 'es' : 'en-us');
+          buttons.forEach((btn) => btn.classList.toggle('is-active', btn.dataset.lang === lang));
+          localStorage.setItem(STORAGE_KEY, lang);
+        }
+
+        buttons.forEach((btn) => {
+          btn.addEventListener('click', () => applyLanguage(btn.dataset.lang));
+        });
+
+        const saved = localStorage.getItem(STORAGE_KEY);
+        const browserLang = (navigator.language || 'en').slice(0, 2);
+        const initialLang = saved || (I18N[browserLang] ? browserLang : 'en');
+        applyLanguage(initialLang);
+      })();
+    </script>
+  </body>
+</html>

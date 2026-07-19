@@ -1,0 +1,204 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Animals_pt
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: pt
+  m_SharedData: {fileID: 11400000, guid: 01a9d2485f97194418adb6fc4c188ae0, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 300670976
+    m_Localized: "Necessidades de Alimenta\xE7\xE3o Di\xE1rias:\\n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448192
+    m_Localized: "\u2022 {0}x {1}\\n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448193
+    m_Localized: "Nenhum alimento especial necess\xE1rio"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448194
+    m_Localized: Status:\n
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448195
+    m_Localized: "\u2022 DOENTE \u2014 use {0} para curar\\n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448196
+    m_Localized: "\u2022 Feliz (Acariciado hoje)\\n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448197
+    m_Localized: "\u2022 Bem Alimentado\\n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448198
+    m_Localized: "\u2022 Com Fome\\n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448199
+    m_Localized: 'Alimentado Hoje: {0}/{1}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448200
+    m_Localized: 'Felicidade: {0:F0}/100'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448201
+    m_Localized: 'Multiplicador de Status: {0:F2}x'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448202
+    m_Localized: "Sem produ\xE7\xE3o"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448203
+    m_Localized: 'Produz: {0}\n'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448204
+    m_Localized: '{0}g'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448205
+    m_Localized: +{0}g
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448206
+    m_Localized: "N\xE3o atribu\xEDdo"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448207
+    m_Localized: Ouro insuficiente.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448208
+    m_Localized: "Todas as zonas est\xE3o cheias! Construa um Celeiro ou libere espa\xE7o."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448209
+    m_Localized: Bem-vindo(a), {0}!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448210
+    m_Localized: Vender {0}?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448211
+    m_Localized: +{0} ouro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448212
+    m_Localized: "Falha na venda \u2014 refer\xEAncias ausentes."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448213
+    m_Localized: '{0} vendido.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448214
+    m_Localized: 'Desconto de Amizade: {0}% off'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448215
+    m_Localized: 'Ouro: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448216
+    m_Localized: '{0} ({1} animais)'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448217
+    m_Localized: "\u263A"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448218
+    m_Localized: "\u2022"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448219
+    m_Localized: "\u2639"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448220
+    m_Localized: Com Fome
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448221
+    m_Localized: Alimentado
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448222
+    m_Localized: '{0} {1:F0}%  |  {2}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448223
+    m_Localized: "Lista de Animais \u2014 {0} Animal{1}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448224
+    m_Localized: Nenhum animal registrado ainda.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448225
+    m_Localized: "Felicidade M\xE9dia: {0:F0}  |  Com Fome: {1}/{2}"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448226
+    m_Localized: 'Requer: '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448227
+    m_Localized: '  E  '
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448228
+    m_Localized: <b>{0}</b> ({1})\n
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448229
+    m_Localized: '{0}\n\n'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448230
+    m_Localized: 'Desbloqueio: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448231
+    m_Localized: Comedouro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 317448232
+    m_Localized: "Comida armazenada: {0} itens\\nPode alimentar: {1}/{2} animais
+      amanh\xE3"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370665947136
+    m_Localized: Galinha
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370686918656
+    m_Localized: Pato
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2630370686918657
+    m_Localized: Pardal
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

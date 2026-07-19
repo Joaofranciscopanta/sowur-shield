@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fe9390976aeace449ceeb0ce9cc35bf, type: 3}
+  m_Name: RadishCropData
+  m_EditorClassIdentifier:
+  cropName: Radish
+  displayName:
+    m_TableReference:
+      m_TableCollectionName: Farming
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: crop.Radish.name
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  description: A fast-growing root vegetable. Perfect for the impatient farmer.
+  seedItem: {fileID: 11400000, guid: b08a7959708b40fc9f1c479060ffa24c, type: 2}
+  harvestItem: {fileID: 11400000, guid: e429b91939144d1e962013ae08ce13ed, type: 2}
+  daysPerStage: 4
+  totalStages: 4
+  totalGrowthDays: 16
+  growthStages:
+  - {fileID: 1735781140512758740, guid: a59416ae131f12a44897c3e29dabb12f, type: 3}
+  - {fileID: -1627548589801466467, guid: 25ee898ab3dff8548a52a0d08ec1c49c, type: 3}
+  - {fileID: 6636620481729201767, guid: c35a74361d148f84b82c3162fa52e3b7, type: 3}
+  - {fileID: -4861383571120480942, guid: 8b7b6f42692193941a46b0c0a719bf83, type: 3}
+  deadCropSprite: {fileID: 0}
+  seedlingSprite: {fileID: 1735781140512758740, guid: a59416ae131f12a44897c3e29dabb12f, type: 3}
+  requiresWater: 1
+  maxDaysWithoutWater: 2
+  growsInAllSeasons: 0
+  validSeasons:
+  - 0
+  - 2
+  minYield: 2
+  maxYield: 5
+  regrowsAfterHarvest: 0
+  regrowthDays: 0
+  maxRegrowths: 0
+  canGrowInWinter: 0
+  needsTrellis: 0
+  spreadsToCells: 0
+  baseValue: 30
+  qualityMultiplier: 1
