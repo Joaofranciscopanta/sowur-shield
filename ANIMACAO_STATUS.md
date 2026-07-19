@@ -42,11 +42,11 @@
 - Clipes `.anim` de idle permanecem em `Generated/Enemies/` como referência mas não estão na cena.
 
 ### Cenário — 5 com Prefab + Controller
-- `BirdDecor` — estados Fly / Jump, parâmetro `IsJumping` (x≈-10, y≈5)
-- `CatDecor` — estados Idle / Walk, parâmetro `IsWalking` (x≈-7, y≈5)
-- `SmokeDecor` — estado único loop (x≈-4, y≈5)
-- `WaterDecor` — estado único loop (x≈-1, y≈5)
-- `HomeTreeDecor` — estado único Sway (x≈2, y≈5)
+- `BirdDecor` — estados Fly / Jump, parâmetro `IsJumping` (3, 8)
+- `CatDecor` — estados Idle / Walk, parâmetro `IsWalking` (-3, -3.5)
+- `SmokeDecor` — estado único loop (-5, -4) — perto da casa
+- `WaterDecor` — estado único loop (-1, -6) — lago perto da casa
+- `HomeTreeDecor` — estado único Sway (0, 5.5) — centro da vila
 
 ## ✅ Sistema de Pesca (novo)
 
@@ -75,7 +75,7 @@
   - `FruitTree{Type}_Grow.anim` (4 frames, 2fps, once) — estágios de crescimento
   - `FruitTree{Type}Controller.controller` — Idle→Shake via trigger `Shake`, auto-retorno
 - Prefabs em `Prefabs/FruitTrees/FruitTree_{Type}.prefab` (Animator + SpriteRenderer + BoxCollider2D).
-- Na cena: Apple (5,3), Orange (7,3), Peach (9,3), Pear (11,3).
+- Na cena: Apple (13,-2), Orange (15.5,-2), Peach (13,-4.5), Pear (15.5,-4.5) — pomar à direita.
 - Sheets: `tree_appel/orange/peach/pear_sprites.png` do premium pack.
 
 ## ✅ Plantações (análise concluída)
@@ -84,6 +84,38 @@
 - 6 CropData existentes (Cabbage, Carrot, Mystery, Pumpkin, Radish, Tomato) usam PNGs individuais de `growing_plants/`.
 - Sheet `Farming Plants.png` (54 sprites, 80×240) do premium pack está disponível para futuros crops mas não é referenciado por nenhum CropData.
 - **Não necessita de .anim clips** — sistema funciona corretamente com sprite swap.
+
+## ✅ Decorações (34 prefabs estáticos)
+
+- Prefabs em `Prefabs/Decorations/` — sprites do premium pack, sem animação (estáticos).
+- **Utilidades**: WorkStation (-3, 3), WaterWell (-1.5, 4.5)
+- **Flores**: Sunflower (1, 6), Pink (2.5, 6.5), Purple (4, 6), Blue (5.5, 6.5), Red (3, 7) — jardim acima do spawn
+- **Cogumelos**: Pink (-9, 3), Brown (-8, 2), Purple (-10, 4), Group (-7.5, 3.5) — bosque à esquerda
+- **Pedras**: Small1 (-4, 1), Small2 (5, 2), Large1 (-8, -2), Large2 (13, 3)
+- **Arbustos verdes**: Green1 (-7, -3), Green2 (-5.5, -2.5), Clover (-6, -1.5)
+- **Arbustos frutíferos**: Berry1 (-8, -6), Berry2 (-6.5, -6.5), Berry3 (-5, -6)
+- **Árvores decorativas**: HeartFruit (-11, 6), OrangeFruit (-10, 3), PearFruit (12, 7), Big (14, 5)
+- **Tocos**: Small (-9, 0), Large (11, 4)
+- **Barcos**: Small (4, -13), Large (6, -12) — área do lago
+- **Piknik**: Blanket (6, -9), Basket (6.3, -8.5)
+- **Placas**: Crops (-2, 0.5), Fruit (-1, 0.5), Fish (0, 0.5) — perto do SellBox
+
+## 🗺️ Layout da Cena (reorganizado)
+
+```
+  y=8  ── Floresta (cogumelos, árvores, Bird) ──── Jardim de flores ──
+  y=5  ── HomeTree  WaterWell  Tree ──────────── Árvores decorativas ──
+  y=3  ── WorkStation  NPC  Player(2,3.5) ────── Pedras / Stumps ─────
+  y=1  ── Stones  Signs ──────────────────────── GroundAxe ────────────
+  y=0  ──────────── SellBox(0,0) ─────────────── FeedingTrough(6,0.5) ─
+  y=-2 ── Bushes ────────────────────────────── Galinhas(8-11) + Pomar(13-16)
+  y=-5 ── Bed(-6,-5) Casa/Smoke ─────────────── Vacas(8-11) + Pomar ──
+  y=-6 ── Berry bushes ──────────────────────────────────────────────── 
+  y=-8 ──── Piknik(6,-9) ───────────────────── Pintinhos(8-11) ───────
+  y=-11 ─────────────────────────────────────── Bezerros(8-11) ───────
+  y=-13 ── Boats(4-6) ── FishingRod(3.5) ──── Ovos(8-11) ────────────
+  y=-15 ── FishingSpots(5-8) ─────────────────────────────────────────
+```
 
 ## ⬜ Pendente
 
