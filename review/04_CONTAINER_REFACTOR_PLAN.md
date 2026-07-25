@@ -284,7 +284,56 @@ comedouro carregaria errado num save com comida dentro.
 ---
 
 ### ETAPA 4 — Migrar SellBox e Inventory; limpar o `OnDrop`
-- [ ] status
+
+Dividida em 4a (adoção da `ContainerView`) e 4b (unificação do drag) depois do achado abaixo.
+
+#### Achado que dividiu a etapa: o drag esvazia a origem antes do drop
+
+`SlotDragHandler.BeginDrag` chama `inventoryManager.ClearSlotForDrag(slot)`, que faz
+`container.SetSlot(slotIndex, new ItemStack())`. Quando o `OnDrop` roda, **o slot de origem no
+inventário já está vazio** — o item vive só no `draggedItemStack` do handler.
+
+Isso invalida a premissa do `ItemTransferService.Transfer(from, fromIndex, ...)` da Etapa 1 no
+caminho principal de drag: não há o que ler na origem.
+
+Pior, há assimetria: slots do inventário são destrutivos no `BeginDrag`; os do SellBox e do
+comedouro **não** (mantêm o item no container e limpam só o visual). **É essa assimetria que
+gerou os cinco ramos do `OnDrop`** — o acoplamento é sintoma, não doença.
+
+Decisão (2026-07-25): overload por payload agora, drag não-destrutivo depois como tarefa
+própria com validação no Editor. Ver Etapa 4b.
+
+#### ETAPA 4a — SellBox adota a `ContainerView`
+- [x] status — feito 2026-07-25. `SellBox.cs` 1174 → 1141 linhas. **Inventory NÃO migrado**,
+  ver 4a-bis abaixo. Pendente de verificação no Editor.
+- risco: médio
+- arquivos: `Core/SellBox.cs`
+
+Sumiram: `CreateSellBoxSlotUI`, `UpdateSlot`, `UpdateAllSlots` e a lista `sellBoxSlotUIs`.
+`ForceUpdateAllUI` virou `view.Refresh()` + total + sprite. Mesmo padrão do comedouro: view
+criada em runtime, `Configure` + `Bind`, zero wiring de cena.
+
+Mesma divisão do comedouro, pelo mesmo motivo: `UpdateTotalValueDisplay`/`UpdateBoxSprite`
+continuam assinados direto no container porque precisam rodar **sem** slot UI — o
+`SellAllItemsAutomatically` esvazia a caixa durante o sono, com o painel fechado.
+
+Efeito colateral bom: o antigo `UpdateSlot` tinha guarda `activeInHierarchy` e por isso não
+atualizava nada com o painel fechado — era exatamente o que o `ForceUpdateAllUI` existia para
+contornar. A view não tem essa guarda.
+
+#### ETAPA 4a-bis — Inventory adota a `ContainerView` (BLOQUEADO)
+- [ ] status — **bloqueado por bug de cena, ver §6.6**
+- risco: alto
+
+O `Inventory` não cabe na `ContainerView` como ela está hoje, por três motivos legítimos:
+dois parents com ranges diferentes (hotbar 0-8 em `hotbarParent`, storage no `storageParent`),
+slots de storage nascem desativados, e existe um caminho legado que **adota** slots já
+presentes na cena em vez de instanciar.
+
+Suportar isso pede um conceito de grupo de slots na view:
+`SlotGroup { parent, startIndex, count, startActive, namePrefix }`. É desenhável, mas fazer
+isso às cegas por cima de um bug de cena não confirmado seria construir na areia.
+
 - risco: **alto** — é a etapa perigosa
 - depende de: Etapa 3
 - arquivos: `Core/SellBox.cs`, `Inventory/Inventory.cs`, `Inventory/InventorySlot.cs`,
@@ -401,6 +450,42 @@ dos `SetSlot`. Correção provável: mover a chamada para depois do `SetSlot` na
 
 **Não corrigido** — é bug de gameplay, não do refactor, e a Etapa 4 mexe justamente nesse
 arquivo. Melhor como commit próprio, com teste, para não se misturar ao refactor.
+
+### 6.6 🔴 GRAVE: existem DOIS componentes `Inventory` ativos na SampleScene
+
+Encontrado ao preparar a Etapa 4a. Bug de cena, não de código.
+
+| GameObject | `inventorySize` | Referências | Estado |
+|---|---|---|---|
+| `Bunny` (jogador) | 45 | todas ligadas (`slotParent`, `slotPrefab`, `hotbarParent`, `storageParent`) | o real |
+| `InventoryManager` | 36 | **todas nulas** | órfão |
+
+Ambos com `m_Enabled: 1`, em GameObjects ativos. O `InventoryManager` tem só um `Transform` e
+esse componente — nada mais. Nenhum outro objeto da cena referencia ele (as únicas ocorrências
+dos seus fileIDs são a própria lista de componentes e a raiz da hierarquia).
+
+**Por que é grave:**
+
+1. **Corrupção de save dependente de ordem.** `Inventory.SaveData` escreve em
+   `gameData.inventoryData` — um único campo compartilhado do `GameData`, não indexado por
+   objeto. Os dois estão registrados no `SaveManager`. Quem salvar por último vence; no load,
+   os dois leem o mesmo dado. O órfão (36 slots, vazio) pode sobrescrever o inventário real
+   (45 slots) — ou o contrário, conforme a ordem de registro.
+
+2. **13 call sites em 11 arquivos** usam `FindFirstObjectByType<Inventory>()` — entre eles
+   `SellBox`, `ConsumableBattleUI`, `TeamAssemblerUI`, `SeedShopUI`, `GiftSelectionUI`,
+   `InventorySlot` (fallback). Cada um pode pegar qualquer um dos dois, sem determinismo.
+   Se pegarem o órfão, itens vão para um container fantasma sem UI.
+
+**Correção sugerida:** deletar o GameObject `InventoryManager` da SampleScene pelo Editor
+(um clique, e é o objeto todo — não sobra nada útil nele). Fazer isso editando YAML na mão
+seria arriscado sem necessidade.
+
+**Também descoberto:** `inventorySize` real é **45**, não 36. `CLAUDE.md` e
+`SOWUR_SHIELD_STATUS.md` dizem "36 slots (9 hotbar + 27 storage)" — o certo é 9 + 36.
+
+**Bloqueia a Etapa 4a-bis.** Migrar o `Inventory` para a `ContainerView` com dois deles vivos
+seria construir na areia, e a migração poderia mascarar ou deslocar o sintoma.
 
 ---
 
