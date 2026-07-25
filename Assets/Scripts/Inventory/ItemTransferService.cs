@@ -250,8 +250,10 @@ namespace SowurShield.Inventory
             WriteBackSource(from, fromIndex, source, moved);
 
             toPolicy.OnAccepted(source.item, moved);
+            // Compared against the REQUEST, not the source stack: moving 4 of 9 when 4 were asked
+            // for is a complete transfer. Partial means "less moved than requested".
             return new TransferResult(
-                moved == source.quantity ? TransferOutcome.Moved : TransferOutcome.Partial, moved);
+                moved == requested ? TransferOutcome.Moved : TransferOutcome.Partial, moved);
         }
 
         /// <summary>
