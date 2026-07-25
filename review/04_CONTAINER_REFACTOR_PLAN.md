@@ -245,7 +245,8 @@ seria pior que aceitar demais. Lista vazia é resposta legítima e rejeita tudo.
 ---
 
 ### ETAPA 3 — `ContainerView` e migração do FeedingTrough
-- [x] status — código feito 2026-07-25. **Pendente de verificação no Editor** (roteiro abaixo).
+- [x] status — feito e **verificado no Editor em 2026-07-25**: compila, 709 testes rodados
+  (708 verdes), e o roteiro manual de 8 passos passou inteiro.
 - risco: médio (primeiro container real migrado)
 - depende de: Etapa 2
 - arquivos: novo `Assets/Scripts/Inventory/ContainerView.cs`, `Animals/FeedingTrough.cs`
@@ -304,8 +305,8 @@ Decisão (2026-07-25): overload por payload agora, drag não-destrutivo depois c
 própria com validação no Editor. Ver Etapa 4b.
 
 #### ETAPA 4a — SellBox adota a `ContainerView`
-- [x] status — feito 2026-07-25. `SellBox.cs` 1174 → 1141 linhas. **Inventory NÃO migrado**,
-  ver 4a-bis abaixo. Pendente de verificação no Editor.
+- [x] status — feito e **verificado no Editor em 2026-07-25**. `SellBox.cs` 1174 → 1141 linhas.
+  **Inventory NÃO migrado**, ver 4a-bis abaixo.
 - risco: médio
 - arquivos: `Core/SellBox.cs`
 
@@ -335,7 +336,8 @@ Suportar isso pede um conceito de grupo de slots na view:
 isso às cegas por cima de um bug de cena não confirmado seria construir na areia.
 
 #### ETAPA 4b — Unificar o `OnDrop`
-- [x] status — feito 2026-07-25. **Pendente de verificação no Editor.**
+- [x] status — feito e **verificado no Editor em 2026-07-25**: roteiro manual de drag/drop
+  passou inteiro, incluindo as duas mudanças de comportamento deliberadas.
 - risco: **alto**
 - arquivos: novo `Inventory/SlotTransferRouter.cs`, `Inventory/InventorySlot.cs`,
   `Inventory/Inventory.cs`, `Inventory/ContainerView.cs`, `Core/SellBox.cs`,
@@ -500,9 +502,11 @@ dos `SetSlot`. Correção provável: mover a chamada para depois do `SetSlot` na
 **Não corrigido** — é bug de gameplay, não do refactor, e a Etapa 4 mexe justamente nesse
 arquivo. Melhor como commit próprio, com teste, para não se misturar ao refactor.
 
-### 6.6 🔴 GRAVE: existem DOIS componentes `Inventory` ativos na SampleScene
+### 6.6 ✅ RESOLVIDO: existiam DOIS componentes `Inventory` ativos na SampleScene
 
 Encontrado ao preparar a Etapa 4a. Bug de cena, não de código.
+**Corrigido em 2026-07-25**: o GameObject `InventoryManager` foi deletado pelo Editor
+(−58 linhas na `SampleScene.unity`). Sobrou um único `Inventory`, no `Bunny`.
 
 | GameObject | `inventorySize` | Referências | Estado |
 |---|---|---|---|
@@ -533,8 +537,8 @@ seria arriscado sem necessidade.
 **Também descoberto:** `inventorySize` real é **45**, não 36. `CLAUDE.md` e
 `SOWUR_SHIELD_STATUS.md` dizem "36 slots (9 hotbar + 27 storage)" — o certo é 9 + 36.
 
-**Bloqueia a Etapa 4a-bis.** Migrar o `Inventory` para a `ContainerView` com dois deles vivos
-seria construir na areia, e a migração poderia mascarar ou deslocar o sintoma.
+~~**Bloqueia a Etapa 4a-bis.**~~ Desbloqueado — a Etapa 4a-bis agora depende só do desenho de
+`SlotGroup` na `ContainerView`.
 
 ---
 

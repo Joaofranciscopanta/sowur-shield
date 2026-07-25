@@ -16,7 +16,8 @@
 | [CLAUDE.md](CLAUDE.md) | Dev conventions, Unity setup requirements, bug-fix history, namespace rules |
 | [review/01_ARCHITECTURE.md](review/01_ARCHITECTURE.md) | Deep architecture map (code-review ground truth, 2026-06-12) |
 | [review/02_FINDINGS.md](review/02_FINDINGS.md) | Code-quality findings with file:line citations |
-| [review/03_WORKLIST.md](review/03_WORKLIST.md) | Atomic task backlog (2 tasks remaining + follow-ups) |
+| [review/03_WORKLIST.md](review/03_WORKLIST.md) | Atomic task backlog (14/14 done Jul/25) |
+| [review/04_CONTAINER_REFACTOR_PLAN.md](review/04_CONTAINER_REFACTOR_PLAN.md) | Inventory/SellBox/trough container architecture — Etapas 0–4b done, 5 pending |
 | [review/PROGRESS.md](review/PROGRESS.md) | Log of completed review tasks |
 | [UI_ART_PLACEHOLDERS.md](UI_ART_PLACEHOLDERS.md) | UI elements still needing custom art + generation prompts |
 | [AI_Sprite_Prompts.md](AI_Sprite_Prompts.md) | Sprite-generation prompts matching the project art style |
@@ -67,7 +68,7 @@
 - DualGridTilemap: 16-tile rule-based rendering
 
 ### Economy
-- Inventory: 36 slots (9 hotbar + 27 storage), drag/drop, stacking, tooltips.
+- Inventory: 45 slots (9 hotbar + 36 storage), drag/drop, stacking, tooltips.
   Storage grid opens over a themed wood window panel (`storagePanelBackground`, Jul/2)
 - SellBox: auto-sell on sleep (80% via `GameBalance.sellMultiplier`), movement lock while open
 - Shops: `ShopData`/`ShopNPC`/`ShopUI` with relationship discount (0.2%/pt, max 20%), limited
@@ -229,9 +230,10 @@ Inventory into CombatScene or reading from `SaveManager`/`GameData` (deferred)
 ## Known Tech Debt
 
 See [review/02_FINDINGS.md](review/02_FINDINGS.md) for the full diagnostic. Headlines:
-- God classes: `SellBox` 1174, `Inventory` ~1178, `MainMenuUI` 1036, `Animal` 1048,
-  `InventorySlot` 907 lines. `MainMenuUI` and `Animal` were trimmed Jul/25 (TASK-011/012);
-  `SellBox` and `Inventory` are now the worst two and have no extraction task yet
+- God classes, after the Jul/25 sweeps: `Inventory` 1135, `MainMenuUI` 1036, `Animal` 1048,
+  `SellBox` 998, `InventorySlot` 844. `SellBox` lost 176 lines and `InventorySlot` 63 to the
+  container refactor ([review/04_CONTAINER_REFACTOR_PLAN.md](review/04_CONTAINER_REFACTOR_PLAN.md)),
+  which also gave every container one shared transfer path instead of four hand-written copies
 - ~~`UIManager` has two coexisting window systems~~ — **fixed Jul/25**: the legacy
   `OpenPanel`/`ClosePanel` system is gone (`UIManager` 321 → 212 lines) and the `IUIWindow`
   stack is the single source of truth. `IsAnyPanelOpen()` callers moved to `IsAnyWindowOpen()`
