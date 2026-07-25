@@ -160,11 +160,27 @@ produção — se mais suítes precisarem, aí sim vale um seam de verdade.
 ---
 
 ### ETAPA 1 — `ItemTransferService`
-- [ ] status
+- [x] status — feito 2026-07-25. Service + `IContainerPolicy` + `DefaultContainerPolicy`,
+  **38 testes**. Nada em produção chama o serviço ainda.
 - risco: baixo (código novo, ainda não plugado)
 - depende de: Etapa 0
 - arquivos: novo `Assets/Scripts/Inventory/ItemTransferService.cs`,
+  novo `Assets/Scripts/Inventory/IContainerPolicy.cs`,
   novo `Assets/Tests/EditMode/ItemTransferServiceTests.cs`
+
+**Ajuste em relação ao plano original:** a interface `IContainerPolicy` e o
+`DefaultContainerPolicy` vieram da Etapa 2 para cá — a assinatura do serviço depende deles,
+e sem um policy permissivo não dá para testar o serviço isoladamente. A Etapa 2 fica só com as
+policies concretas (SellBox e comedouro).
+
+**Decisão de desenho — `SlotRole` é metadado, não permissão.** O enum descreve o slot para a UI
+(renderizar um slot de saída diferente); quem decide é `CanAccept`/`CanWithdraw`. O serviço nunca
+lê `GetRole`. Assim existe uma única fonte de verdade: uma policy de bancada devolve `Output`
+para o slot de resultado **e** `CanAccept == false` para ele.
+
+**Comportamentos preservados de propósito:** soltar um stack sobre um stack cheio do mesmo item
+faz swap (não rejeita), igual ao `Inventory.HandleSlotDrop` de hoje. Swap parcial não existe —
+não há onde colocar o resto, então nada acontece.
 
 Classe estática pura. Uma única entrada:
 
@@ -196,12 +212,13 @@ Nenhum arquivo de produção ainda chama o serviço.
 
 ---
 
-### ETAPA 2 — `IContainerPolicy` e as três policies de hoje
+### ETAPA 2 — As policies concretas
 - [ ] status
 - risco: baixo
 - depende de: Etapa 1
-- arquivos: novo `Assets/Scripts/Inventory/IContainerPolicy.cs`,
-  `Policies/DefaultContainerPolicy.cs`, `SellBoxPolicy.cs`, `FeedingTroughPolicy.cs`
+- arquivos: novos `Assets/Scripts/Inventory/Policies/SellBoxPolicy.cs`,
+  `FeedingTroughPolicy.cs`
+  (a interface e o `DefaultContainerPolicy` já vieram na Etapa 1)
 
 `SellBoxPolicy.CanAccept` = `item.canBeSold` (hoje vive dentro do `HandleSlotDrop`).
 `FeedingTroughPolicy.CanAccept` = o item é ração de algum animal — **isso é comportamento
