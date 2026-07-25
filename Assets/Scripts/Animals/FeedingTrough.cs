@@ -167,7 +167,8 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
             view = gameObject.AddComponent<ContainerView>();
 
         view.Configure(slotParent, slotPrefab, "TroughSlot");
-        view.Bind(container, policy, (slotUI, _) => slotUI.EnableTroughMode(container));
+        // No per-slot configuration needed: the slot's OwnerView is what identifies it now.
+        view.Bind(container, policy);
 
         if (titleText != null)
             titleText.text = troughTitleText.SafeGetLocalizedString();

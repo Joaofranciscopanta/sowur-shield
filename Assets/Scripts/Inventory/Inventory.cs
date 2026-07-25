@@ -438,71 +438,10 @@ public class Inventory : MonoBehaviour, ISaveable
     // DRAG AND DROP OPERATIONS
     // ============================================================================
 
-    public void HandleSlotDrop(InventorySlot fromSlot, InventorySlot toSlot)
-    {
-        int fromIndex = slotUIs.IndexOf(fromSlot);
-        int toIndex = slotUIs.IndexOf(toSlot);
+    // HandleSlotDrop was deleted in Etapa 4b: every drop now goes through
+    // SlotTransferRouter -> ItemTransferService. Post-move bookkeeping that used to live
+    // at the end of it (hotbar auto-refill, drop sound) is in OnSlotsChangedExternally.
 
-        if (fromIndex < 0 || toIndex < 0 || fromIndex >= inventorySize || toIndex >= inventorySize)
-            return;
-
-        // Get the dragged item instead of the (now empty) slot
-        ItemStack fromStack = fromSlot.GetDraggedItem();
-        ItemStack toStack = container.GetSlot(toIndex);
-
-        if (fromStack == null || fromStack.IsEmpty)
-        {
-            return;
-        }
-
-        // Handle different drop scenarios
-        if (toStack.IsEmpty)
-        {
-            // Move entire stack to empty slot
-            container.SetSlot(toIndex, fromStack.Clone());
-            // Don't clear fromIndex - it's already cleared by the drag system
-
-            // Consume the dragged item
-            fromSlot.ConsumeDraggedItem();
-        }
-        else if (toStack.CanStack(fromStack.item))
-        {
-            // Stack compatible items
-            ItemStack tempStack = toStack.Clone();
-            int leftover = tempStack.AddQuantity(fromStack.quantity);
-            container.SetSlot(toIndex, tempStack);
-
-            if (leftover == 0)
-            {
-                // All items were stacked - consume the dragged item
-                fromSlot.ConsumeDraggedItem();
-            }
-            else
-            {
-                // Some items left over - restore leftover to fromSlot
-                ItemStack leftoverStack = new ItemStack(fromStack.item, leftover);
-                container.SetSlot(fromIndex, leftoverStack);
-                fromSlot.MarkDragSuccessful(); // Mark as successful (partial consumption)
-            }
-        }
-        else
-        {
-            // Swap stacks - put toStack in fromSlot, fromStack in toSlot
-            container.SetSlot(fromIndex, toStack.Clone());
-            container.SetSlot(toIndex, fromStack.Clone());
-
-            // Consume the dragged item since swap succeeded
-            fromSlot.ConsumeDraggedItem();
-        }
-
-        // Check for hotbar auto-refill after drop
-        CheckHotbarAutoRefill(fromIndex);
-        CheckHotbarAutoRefill(toIndex);
-
-        UpdateSlot(fromIndex);
-        UpdateSlot(toIndex);
-        PlaySound(dropSound);
-    }
 
     public void SplitStack(InventorySlot slotUI)
     {
@@ -772,6 +711,24 @@ public class Inventory : MonoBehaviour, ISaveable
 
     /// <summary>Total slot count (hotbar + storage) — for per-slot snapshots.</summary>
     public int SlotCount => inventorySize;
+
+    /// <summary>The backing container, so SlotTransferRouter can move items in and out of it.</summary>
+    public IInventoryContainer Container => container;
+
+    /// <summary>Index of one of this inventory's slot UIs, or -1 if it is not ours.</summary>
+    public int IndexOfSlot(InventorySlot slotUI) => slotUI == null ? -1 : slotUIs.IndexOf(slotUI);
+
+    /// <summary>
+    /// Called by SlotTransferRouter after it moved items in or out of one of our slots.
+    /// Covers the bookkeeping that used to live at the end of HandleSlotDrop — the container
+    /// itself already refreshed the slot UI through OnSlotChanged.
+    /// </summary>
+    public void OnSlotsChangedExternally(int slotIndex)
+    {
+        CheckHotbarAutoRefill(slotIndex);
+        UpdateSlot(slotIndex);
+        PlaySound(dropSound);
+    }
 
     /// <summary>Per-index slot access, used by InventorySceneSnapshot to preserve layout.</summary>
     public ItemStack GetSlotAt(int index) => container.GetSlot(index);

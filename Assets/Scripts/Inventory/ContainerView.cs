@@ -154,6 +154,7 @@ namespace SowurShield.Inventory
                 }
 
                 slotUIs.Add(slotUI);
+                slotUI.OwnerView = this;   // lets SlotTransferRouter resolve the slot's container
                 slotUI.SetSlotIndex(i);
                 slotUI.SetItemStack(container.GetSlot(i));
                 configureSlot?.Invoke(slotUI, i);

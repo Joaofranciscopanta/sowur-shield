@@ -334,6 +334,55 @@ Suportar isso pede um conceito de grupo de slots na view:
 `SlotGroup { parent, startIndex, count, startActive, namePrefix }`. É desenhável, mas fazer
 isso às cegas por cima de um bug de cena não confirmado seria construir na areia.
 
+#### ETAPA 4b — Unificar o `OnDrop`
+- [x] status — feito 2026-07-25. **Pendente de verificação no Editor.**
+- risco: **alto**
+- arquivos: novo `Inventory/SlotTransferRouter.cs`, `Inventory/InventorySlot.cs`,
+  `Inventory/Inventory.cs`, `Inventory/ContainerView.cs`, `Core/SellBox.cs`,
+  `Animals/FeedingTrough.cs`
+
+**O overload por payload não foi necessário.** A decisão aprovada era adicionar uma entrada
+no serviço que recebesse o `ItemStack` arrastado. Ao implementar, apareceu algo mais simples:
+**restaurar antes de transferir**. O router devolve o item arrastado ao slot de origem e só
+então chama o serviço — a partir daí todo caso vira um movimento container-a-container normal,
+com a atomicidade e as policies que já existem. Restauração e movimento acontecem no mesmo
+frame, nada renderiza no meio. Zero API nova.
+
+**Resultado no `OnDrop`:** 71 → 12 linhas, sem citar nenhum container concreto e sem o
+`FindFirstObjectByType<SellBox>()` que rodava a cada drop.
+
+Deletados: `SellBox.HandleSlotDrop`, `HandleSellBoxInternalMove`,
+`HandleSellBoxToInventoryDrop` (149 linhas) e `Inventory.HandleSlotDrop` (65 linhas).
+`SellBox.cs` 1141 → 998, `Inventory.cs` 1200 → 1135.
+
+**Modo trough removido.** `isTroughMode`/`troughContainer`/`IsTroughMode`/`EnableTroughMode`
+existiam só para o `OnDrop` saber rotear. Com o `OwnerView`, um slot não precisa mais de um
+"modo" por tipo de container — que era exatamente o acoplamento que essa etapa atacava.
+
+**Duas mudanças de comportamento deliberadas** (as duas precisam de confirmação no Editor):
+
+1. **Drop em slot do SellBox agora respeita o slot alvo.** O `HandleSlotDrop` antigo calculava
+   `toIndex` e ignorava, sempre usando primeiro-encaixe. Manter isso exigiria um ramo especial
+   "SellBox usa primeiro-encaixe, inventário usa slot exato" — justamente o tipo de ramo que a
+   etapa remove. Mais previsível e é o que qualquer jogo do gênero faz.
+
+2. **Não dá mais para soltar item de container no chão.** Slots donos de uma `ContainerView`
+   nunca abrem mão do item no `BeginDrag`, então soltar fora da UI e gerar um `GroundItem`
+   **duplicaria** o item — ele continuaria no container. O comedouro já se protegia disso; a
+   regra agora vale para todo slot de container, o que fecha o mesmo buraco no SellBox.
+
+**Não testado automaticamente.** O router depende de `InventorySlot`, que é MonoBehaviour com
+`Canvas`/`Image` e não instancia limpo em EditMode. A lógica de transferência por baixo tem 38
+testes; o roteamento em si precisa do Editor.
+
+**Roteiro de verificação (pendente):** inventário→inventário (mover, empilhar com sobra,
+trocar dois itens diferentes), inventário→SellBox, SellBox→inventário, mover dentro do SellBox,
+item não-vendável rejeitado com feedback vermelho, inventário→comedouro, comedouro→inventário,
+arrastar para fora do painel (volta pro container, **não** cai no chão), arrastar para fora do
+inventário (cai no chão, como antes), auto-refill da hotbar após arrastar, dormir e vender.
+
+---
+
 - risco: **alto** — é a etapa perigosa
 - depende de: Etapa 3
 - arquivos: `Core/SellBox.cs`, `Inventory/Inventory.cs`, `Inventory/InventorySlot.cs`,
