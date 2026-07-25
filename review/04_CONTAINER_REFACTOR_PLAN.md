@@ -410,8 +410,32 @@ E e clique esquerdo abrindo a caixa, ESC.
 ---
 
 ### ETAPA 5 — Unificar persistência (`saveVersion` 1 → 2)
-- [ ] status
+- [x] status — feito 2026-07-25, **15 testes**. Pendente de verificação no Editor.
 - risco: médio
+
+`ContainerPersistence.Save/Load` + `GameData.containerData` (uma `List` de
+`ContainerSaveData`, **não** um `Dictionary` — `JsonUtility` não serializa dicionário, que foi
+exatamente o bug de corrupção de save de Jun/26). SellBox e comedouro perderam os laços
+slot-a-slot; cada um virou duas linhas.
+
+`CURRENT_SAVE_VERSION` foi para **2** e o `MigrateV1ToV2` é o **primeiro uso real** do
+dispatch de migração criado na TASK-004, que nunca tinha rodado.
+
+Três detalhes que apareceram na implementação:
+
+1. **O `ContainerID` do SellBox era `"SellBox"` fixo** — não único por instância. Como o ID é
+   a chave do save, duas caixas na cena colidiriam. Passou a ser `$"SellBox_{gameObject.name}"`,
+   igual ao comedouro já fazia.
+2. **`GameData.saveVersion` nascia em 1.** Um save novo seria carimbado v1 e passaria pela
+   migração (com warning) a cada load. Agora nasce em `CURRENT_SAVE_VERSION`.
+3. **O loader antigo do comedouro usava `AddItem`**, então os itens voltavam onde coubesse, não
+   no slot de onde saíram. O formato compartilhado restaura o índice exato.
+
+`ContainerPersistence.Load` devolve `false` quando não há dado salvo, e o chamador **não** deve
+limpar o container nesse caso — é o que acontece em jogo novo e em save v1 migrado.
+
+**Perda consciente confirmada:** conteúdo de SellBox e comedouro em saves v1. O resto do save
+sobrevive; a migração só remove as chaves órfãs para não ficarem parecendo dado vivo.
 - depende de: Etapa 4
 - arquivos: `Inventory/ContainerPersistence.cs` (novo), `Core/GameData.cs`,
   `Core/SaveManager.cs`, os três containers

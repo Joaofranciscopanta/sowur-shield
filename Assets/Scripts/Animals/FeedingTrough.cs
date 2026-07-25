@@ -467,51 +467,23 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
     // ISaveable Implementation
     // =========================================================================
 
+    // Save version 2: the per-slot worldStrings/worldCounters loop this used to carry is gone,
+    // replaced by the shared container format. See ContainerPersistence.
+    //
+    // Behaviour note: the old loader used AddItem, so items landed wherever they fit rather than
+    // back in the slot they were saved from. The shared format restores exact indices.
+
     public void SaveData(GameData gameData)
     {
-        if (gameData?.worldData == null) return;
-
-        string prefix = $"feedingtrough_{gameObject.name}";
-
-        for (int i = 0; i < container.MaxSlots; i++)
-        {
-            ItemStack stack = container.GetSlot(i);
-            if (stack != null && !stack.IsEmpty)
-            {
-                gameData.worldData.worldStrings[$"{prefix}_slot{i}_item"] = stack.item.itemName;
-                gameData.worldData.worldCounters[$"{prefix}_slot{i}_qty"] = stack.quantity;
-            }
-            else
-            {
-                // Clear saved data for empty slots
-                gameData.worldData.worldStrings.Remove($"{prefix}_slot{i}_item");
-                gameData.worldData.worldCounters.Remove($"{prefix}_slot{i}_qty");
-            }
-        }
-
-        gameData.worldData.worldCounters[$"{prefix}_slotCount"] = container.MaxSlots;
+        ContainerPersistence.Save(gameData, container);
     }
 
     public void LoadData(GameData gameData)
     {
-        if (gameData?.worldData == null) return;
-
-        string prefix = $"feedingtrough_{gameObject.name}";
-
-        for (int i = 0; i < container.MaxSlots; i++)
-        {
-            if (gameData.worldData.worldStrings.TryGetValue($"{prefix}_slot{i}_item", out string itemName) &&
-                gameData.worldData.worldCounters.TryGetValue($"{prefix}_slot{i}_qty", out int qty))
-            {
-                Item item = ItemDatabase.GetItem(itemName);
-                if (item != null && qty > 0)
-                {
-                    container.AddItem(item, qty);
-                }
-            }
-        }
+        ContainerPersistence.Load(gameData, container);
 
         UpdateTroughSprite();
+        UpdateStatusText();
     }
 
     // =========================================================================

@@ -362,8 +362,9 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         // Initialize ItemDatabase
         var _ = ItemDatabase.Instance;
 
-        // Create container
-        container = new InventoryContainer(boxInventorySize, "SellBox");
+        // The ID is the save key, so it has to be unique per instance — it used to be a bare
+        // "SellBox", which would have collided the moment a second box existed.
+        container = new InventoryContainer(boxInventorySize, $"SellBox_{gameObject.name}");
 
         // canBeSold used to be checked inline in HandleSlotDrop, so it only guarded that one
         // path. As a policy the transfer service applies it to every route into the box.
@@ -949,46 +950,17 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
     // =========================================================================
     // ISaveable Implementation
     // =========================================================================
-    // Mirrors FeedingTrough's per-slot item/quantity persistence pattern.
+    // Save version 2: the per-slot worldStrings/worldCounters loop this used to carry is gone,
+    // replaced by the shared container format. See ContainerPersistence.
 
     public void SaveData(GameData gameData)
     {
-        if (gameData?.worldData == null) return;
-
-        string prefix = $"sellbox_{gameObject.name}";
-
-        for (int i = 0; i < boxInventorySize; i++)
-        {
-            ItemStack stack = container.GetSlot(i);
-            if (stack != null && !stack.IsEmpty)
-            {
-                gameData.worldData.worldStrings[$"{prefix}_slot{i}_item"] = stack.item.itemName;
-                gameData.worldData.worldCounters[$"{prefix}_slot{i}_qty"] = stack.quantity;
-            }
-            else
-            {
-                gameData.worldData.worldStrings.Remove($"{prefix}_slot{i}_item");
-                gameData.worldData.worldCounters.Remove($"{prefix}_slot{i}_qty");
-            }
-        }
+        ContainerPersistence.Save(gameData, container);
     }
 
     public void LoadData(GameData gameData)
     {
-        if (gameData?.worldData == null) return;
-
-        string prefix = $"sellbox_{gameObject.name}";
-
-        for (int i = 0; i < boxInventorySize; i++)
-        {
-            if (gameData.worldData.worldStrings.TryGetValue($"{prefix}_slot{i}_item", out string itemName) &&
-                gameData.worldData.worldCounters.TryGetValue($"{prefix}_slot{i}_qty", out int qty))
-            {
-                Item item = ItemDatabase.GetItem(itemName);
-                if (item != null && qty > 0)
-                    container.SetSlot(i, new ItemStack(item, qty));
-            }
-        }
+        ContainerPersistence.Load(gameData, container);
 
         UpdateTotalValueDisplay();
         UpdateBoxSprite();

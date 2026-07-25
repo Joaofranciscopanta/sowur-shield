@@ -32,9 +32,19 @@ public class GameDataTests
     }
 
     [Test]
-    public void Constructor_SetsSaveVersionToDefault()
+    public void Constructor_SetsSaveVersionToCurrent()
     {
-        Assert.AreEqual(1, data.saveVersion);
+        // Was hardcoded to 1. A new GameData is current by definition, so it now tracks the
+        // constant — otherwise every new save would be stamped v1 and migrated on load.
+        Assert.AreEqual(GameData.CURRENT_SAVE_VERSION, data.saveVersion);
+    }
+
+    [Test]
+    public void Constructor_CreatesContainerData()
+    {
+        Assert.IsNotNull(data.containerData);
+        Assert.IsNotNull(data.containerData.containers);
+        Assert.AreEqual(0, data.containerData.containers.Count);
     }
 
     [Test]

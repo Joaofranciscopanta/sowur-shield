@@ -14,8 +14,17 @@ namespace SowurShield.Core
 public class GameData
 {
     [Header("Save Metadata")]
-    public int saveVersion = 1;
-    public const int CURRENT_SAVE_VERSION = 1;
+    // A freshly constructed GameData is current by definition. Leaving this at 1 would stamp
+    // every new save as v1 and send it through the migration (and its warning log) on each load.
+    // Old saves still deserialize with whatever version their JSON carries.
+    public int saveVersion = CURRENT_SAVE_VERSION;
+
+    /// <summary>
+    /// v2 (Etapa 5 of the container refactor): SellBox and FeedingTrough contents moved out of
+    /// the loose worldStrings/worldCounters keys into <see cref="containerData"/>. v1 saves load
+    /// with those two containers empty — see SaveManager.MigrateV1ToV2.
+    /// </summary>
+    public const int CURRENT_SAVE_VERSION = 2;
     public string saveTimestamp;
     public float totalPlayTime = 0f;
     public int saveCount = 0;
@@ -41,6 +50,12 @@ public class GameData
     [Header("Progress Data")]
     public ProgressGameData progressData;
 
+    [Header("Container Data")]
+    /// Every non-player item container (SellBox, feeding troughs, and any chest or bench added
+    /// later), keyed by container ID. Replaces the per-slot worldStrings/worldCounters keys each
+    /// of them used to write by hand.
+    public ContainerCollectionData containerData;
+
     public GameData()
     {
         // Initialize all data structures
@@ -51,9 +66,54 @@ public class GameData
         farmingData = new FarmingGameData();
         combatData = new CombatGameData();
         progressData = new ProgressGameData();
+        containerData = new ContainerCollectionData();
 
         // Set metadata
         saveTimestamp = System.DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+    }
+}
+
+// ============================================================================
+// CONTAINER DATA
+// ============================================================================
+
+/// <summary>
+/// Holds the saved contents of every non-player container. A plain List rather than a
+/// dictionary on purpose: JsonUtility does not serialize Dictionary at all (the bug that cost
+/// this project a save-corruption fix in Jun/26), while a List of serializable classes is fine.
+/// </summary>
+[System.Serializable]
+public class ContainerCollectionData
+{
+    public List<InventoryContainer.ContainerSaveData> containers = new List<InventoryContainer.ContainerSaveData>();
+
+    /// <summary>Stored data for a container ID, or null if it was never saved.</summary>
+    public InventoryContainer.ContainerSaveData Find(string containerID)
+    {
+        if (string.IsNullOrEmpty(containerID)) return null;
+
+        for (int i = 0; i < containers.Count; i++)
+            if (containers[i] != null && containers[i].containerID == containerID)
+                return containers[i];
+
+        return null;
+    }
+
+    /// <summary>Insert or replace the entry for this container ID.</summary>
+    public void Store(InventoryContainer.ContainerSaveData data)
+    {
+        if (data == null || string.IsNullOrEmpty(data.containerID)) return;
+
+        for (int i = 0; i < containers.Count; i++)
+        {
+            if (containers[i] != null && containers[i].containerID == data.containerID)
+            {
+                containers[i] = data;
+                return;
+            }
+        }
+
+        containers.Add(data);
     }
 }
 
