@@ -245,20 +245,41 @@ seria pior que aceitar demais. Lista vazia é resposta legítima e rejeita tudo.
 ---
 
 ### ETAPA 3 — `ContainerView` e migração do FeedingTrough
-- [ ] status
+- [x] status — código feito 2026-07-25. **Pendente de verificação no Editor** (roteiro abaixo).
 - risco: médio (primeiro container real migrado)
 - depende de: Etapa 2
 - arquivos: novo `Assets/Scripts/Inventory/ContainerView.cs`, `Animals/FeedingTrough.cs`
 
 `ContainerView` recebe container + `slotParent` + `slotPrefab` + policy, instancia os slots,
-assina `OnSlotChanged` e faz refresh. Expõe `SlotCount`, `GetSlotUI(i)`, `Refresh()`.
+assina `OnSlotChanged` e faz refresh. Expõe `SlotCount`, `GetSlotUI(i)`, `IndexOf(slotUI)`,
+`Refresh()`, `RefreshSlot(i)`, `ForEachSlot(...)` e o evento `OnSlotRefreshed`.
 
-**O trough é o cobaia de propósito:** é o menor (509 linhas), o mais recente, o menos
-acoplado e o único sem histórico de bug. Se a abstração estiver errada, descobrimos aqui e
-não dentro do SellBox.
+**O trough é o cobaia de propósito:** é o menor, o mais recente, o menos acoplado e o único
+sem histórico de bug. Se a abstração estiver errada, descobrimos aqui e não dentro do SellBox.
 
-**Feito quando:** comedouro abre, aceita drag do inventário, devolve item ao inventário,
-persiste, alimenta no `OnDayChanged` — tudo como antes. Requer sessão no Editor.
+**Zero wiring de cena.** A view é adicionada em runtime (`AddComponent<ContainerView>()`) e
+recebe as referências por `Configure(slotParent, slotPrefab, prefix)` — o comedouro já tem
+essas referências, então nenhum `.unity` ou prefab foi tocado. Containers novos podem
+simplesmente ligar os campos no Inspector e pular o `Configure`.
+
+**Divisão de responsabilidade que apareceu na migração:** o handler original de
+`OnSlotChanged` fazia três coisas (empurrar o stack pro slot UI, atualizar o sprite do
+comedouro, atualizar o texto de status). Só a primeira é da view. As outras duas continuam
+assinadas direto no container, e isso **não é estilo, é necessidade**: `LoadData` escreve nos
+slots durante o `Start`, antes do `SetupUI` existir — se dependessem da view, o sprite do
+comedouro carregaria errado num save com comida dentro.
+
+**Achado:** `FeedingTrough.RefreshSlots()` nunca era chamado por ninguém. Removido junto.
+
+**Roteiro de verificação no Editor (pendente):**
+1. Abrir o comedouro com E — os 12 slots aparecem.
+2. Arrastar ração do inventário pro comedouro — item entra, sprite muda (vazio → parcial → cheio).
+3. Arrastar do comedouro de volta pro inventário — item volta.
+4. Arrastar do comedouro pra fora do painel — item **volta pro comedouro**, não cai no chão.
+5. Texto de status mostra `"Food stored: X items / Can feed: Y/Z animals tomorrow"`.
+6. Dormir — animais são alimentados, comida some, sprite atualiza.
+7. Salvar, sair pro menu, carregar — conteúdo e sprite voltam corretos.
+8. Console limpo em toda a sequência.
 
 ---
 
@@ -356,6 +377,30 @@ não há bug em produção — mas um baú com tamanho configurável (caso de us
 nisso na primeira vez que alguém reduzir o tamanho.
 
 Teste: `SetMaxSlots_Shrinking_SilentlyDestroysItemsInRemovedSlots`.
+
+### 6.4 Auditoria de mutação via `GetSlot` — resultado: limpa (Etapa 3)
+
+Antes de construir a `ContainerView` (que faz todo o refresh via `OnSlotChanged`), varri o
+projeto atrás de código que escreva pela referência viva do §6.2. **Nenhum caso.** Todos os
+call sites ou só leem, ou clonam antes de mutar e devolvem por `SetSlot`. A view pode confiar
+no evento.
+
+Regra a manter: **todo código novo que escreva num container passa por `SetSlot`.** Mutar o
+retorno do `GetSlot` não dispara evento e deixa a UI desatualizada sem erro nenhum.
+
+### 6.5 Bug encontrado de raspão: auto-refill da hotbar nunca dispara ao consumir
+
+`Inventory.UseItem` (`Inventory.cs:540-570`) chama `CheckHotbarAutoRefill(slotIndex)` na
+linha 562, **antes** do `container.SetSlot(slotIndex, updatedStack)` da linha 566. O
+`CheckHotbarAutoRefill` começa com `if (!currentStack.IsEmpty) return;` lendo o container —
+que nesse instante ainda tem o stack antigo com quantidade 1. Ou seja: ao consumir o último
+item de um slot da hotbar, o refill sempre sai na primeira linha.
+
+O caminho do `HandleSlotDrop` funciona, porque lá o `CheckHotbarAutoRefill` é chamado depois
+dos `SetSlot`. Correção provável: mover a chamada para depois do `SetSlot` na linha 566.
+
+**Não corrigido** — é bug de gameplay, não do refactor, e a Etapa 4 mexe justamente nesse
+arquivo. Melhor como commit próprio, com teste, para não se misturar ao refactor.
 
 ---
 

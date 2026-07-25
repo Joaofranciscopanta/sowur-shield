@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Localization;
 using SowurShield.Core;
 using SowurShield.Inventory;
+using SowurShield.Inventory.Policies;
 
 namespace SowurShield.Animals
 {
@@ -49,9 +50,13 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
     // Internal storage
     private InventoryContainer container;
     private SpriteRenderer spriteRenderer;
-    private List<InventorySlot> slotUIs = new List<InventorySlot>();
     private bool isOpen = false;
-    private bool uiSetup = false;
+
+    // Slot UI is owned by ContainerView (Etapa 3 of review/04_CONTAINER_REFACTOR_PLAN.md).
+    // The component is added at runtime rather than wired in the Inspector so this migration
+    // needs no scene changes — the trough already holds slotParent/slotPrefab and hands them over.
+    private ContainerView view;
+    private FeedingTroughPolicy policy;
 
     // =========================================================================
     // IUIWindow Implementation
@@ -94,13 +99,14 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         spriteRenderer = GetComponent<SpriteRenderer>();
         container = new InventoryContainer(slotCount, $"FeedingTrough_{gameObject.name}");
 
-        container.OnSlotChanged += (index, stack) =>
-        {
-            if (index >= 0 && index < slotUIs.Count && slotUIs[index] != null)
-                slotUIs[index].SetItemStack(stack);
-            UpdateTroughSprite();
-            UpdateStatusText();
-        };
+        // RejectNonFood stays false: the trough accepts anything today and simply never consumes
+        // what no animal eats. Changing that is a gameplay decision, not part of this refactor.
+        policy = new FeedingTroughPolicy(GetAcceptedFood);
+
+        // The view handles the slot UI. This handler covers what is the trough's own business,
+        // and stays subscribed directly to the container because it must also run before the
+        // slot UI exists — LoadData writes slots during Start, ahead of SetupUI.
+        container.OnSlotChanged += HandleContainerChanged;
 
         if (troughPanel != null)
             troughPanel.SetActive(false);
@@ -140,12 +146,16 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         UpdateStatusText();
     }
 
+    /// <summary>Reacts to the container changing. Slot UI is the view's job; this is ours.</summary>
+    private void HandleContainerChanged(int index, ItemStack stack)
+    {
+        UpdateTroughSprite();
+        UpdateStatusText();
+    }
+
     private void SetupUI()
     {
-        if (uiSetup) return;
-        uiSetup = true;
-
-        slotUIs.Clear();
+        if (view != null && view.IsBuilt) return;
 
         if (slotParent == null || slotPrefab == null)
         {
@@ -153,20 +163,11 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
             return;
         }
 
-        for (int i = 0; i < slotCount; i++)
-        {
-            GameObject slotObj = Instantiate(slotPrefab, slotParent);
-            slotObj.name = $"TroughSlot_{i}";
+        if (view == null)
+            view = gameObject.AddComponent<ContainerView>();
 
-            InventorySlot slotUI = slotObj.GetComponent<InventorySlot>();
-            if (slotUI != null)
-            {
-                slotUIs.Add(slotUI);
-                slotUI.SetSlotIndex(i);
-                slotUI.SetItemStack(container.GetSlot(i));
-                slotUI.EnableTroughMode(container);
-            }
-        }
+        view.Configure(slotParent, slotPrefab, "TroughSlot");
+        view.Bind(container, policy, (slotUI, _) => slotUI.EnableTroughMode(container));
 
         if (titleText != null)
             titleText.text = troughTitleText.SafeGetLocalizedString();
@@ -174,12 +175,26 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         UpdateStatusText();
     }
 
-    private void RefreshSlots()
+    /// <summary>
+    /// Every item animals in the linked zone eat. Feeds FeedingTroughPolicy — only consulted
+    /// while RejectNonFood is on, which it is not by default.
+    /// </summary>
+    private IEnumerable<Item> GetAcceptedFood()
     {
-        for (int i = 0; i < slotUIs.Count; i++)
+        if (linkedZone == null) yield break;
+
+        foreach (Animal animal in linkedZone.GetAnimals())
         {
-            if (slotUIs[i] != null)
-                slotUIs[i].SetItemStack(container.GetSlot(i));
+            AnimalData data = animal != null ? animal.AnimalData : null;
+            if (data?.dailyFoodRequirements == null) continue;
+
+            foreach (FoodRequirement req in data.dailyFoodRequirements)
+            {
+                if (string.IsNullOrEmpty(req.itemName)) continue;
+
+                Item food = ItemDatabase.GetItem(req.itemName);
+                if (food != null) yield return food;
+            }
         }
     }
 
@@ -196,6 +211,9 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
 
         if (GameTimeController.instance != null)
             GameTimeController.instance.OnDayChanged -= OnDayChanged;
+
+        if (container != null)
+            container.OnSlotChanged -= HandleContainerChanged;
 
         SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
     }
