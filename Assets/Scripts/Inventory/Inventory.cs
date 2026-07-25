@@ -414,15 +414,15 @@ public class Inventory : MonoBehaviour, ISaveable
     private void UpdateSlot(int index)
     {
         if (index >= 0 && index < slotUIs.Count && slotUIs[index] != null)
-        {
             slotUIs[index].SetItemStack(container.GetSlot(index));
 
-            // Update hotbar tracking
-            if (index < hotbarSize)
-            {
-                ItemStack stack = container.GetSlot(index);
-                lastHotbarItems[index] = stack.IsEmpty ? null : stack.item;
-            }
+        // Hotbar tracking is data, not UI. It used to sit inside the guard above, so it only
+        // ran when a slot UI happened to exist — which made auto-refill silently depend on UI
+        // construction order and impossible to test without a scene.
+        if (index >= 0 && index < hotbarSize && lastHotbarItems != null)
+        {
+            ItemStack stack = container.GetSlot(index);
+            lastHotbarItems[index] = stack.IsEmpty ? null : stack.item;
         }
     }
 
@@ -478,34 +478,46 @@ public class Inventory : MonoBehaviour, ISaveable
 
     public void UseItem(InventorySlot slotUI)
     {
-        int slotIndex = slotUIs.IndexOf(slotUI);
-        if (slotIndex < 0 || slotIndex >= inventorySize) return;
+        UseItemAt(slotUIs.IndexOf(slotUI));
+    }
+
+    /// <summary>
+    /// Consume one item from a slot by index. Split out of <see cref="UseItem(InventorySlot)"/>
+    /// so the consume-and-refill behaviour can be exercised without a slot UI.
+    /// </summary>
+    /// <returns>True if an item was actually consumed.</returns>
+    public bool UseItemAt(int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= inventorySize) return false;
 
         ItemStack stack = container.GetSlot(slotIndex);
-        if (stack.IsEmpty || !stack.item.isConsumable) return;
+        if (stack.IsEmpty || !stack.item.isConsumable) return false;
 
         Item usedItem = stack.item;
 
-        // Use the item
+        // Apply the item's effect
         UseItem(usedItem);
 
         // Remove one from stack
         ItemStack updatedStack = stack.Clone();
         updatedStack.quantity--;
         if (updatedStack.quantity <= 0)
-        {
             updatedStack.Clear();
-            // Check for auto-refill when hotbar slot empties
-            if (slotIndex < hotbarSize)
-            {
-                CheckHotbarAutoRefill(slotIndex);
-            }
-        }
 
         container.SetSlot(slotIndex, updatedStack);
+
+        // Refill AFTER the slot is actually empty in the container. This call used to run
+        // BEFORE the write above, so CheckHotbarAutoRefill's "is this slot empty now?" guard
+        // always saw the pre-consumption stack and returned immediately — hotbar auto-refill
+        // never fired on the consume path (it worked on the drag path, where the call already
+        // came after the writes).
+        if (updatedStack.IsEmpty && slotIndex < hotbarSize)
+            CheckHotbarAutoRefill(slotIndex);
+
         UpdateSlot(slotIndex);
         PlaySound(useSound);
         OnItemUsed?.Invoke(new ItemStack(usedItem, 1));
+        return true;
     }
 
     private void UseItem(Item item)
