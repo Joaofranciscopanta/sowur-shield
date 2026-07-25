@@ -322,18 +322,49 @@ Efeito colateral bom: o antigo `UpdateSlot` tinha guarda `activeInHierarchy` e p
 atualizava nada com o painel fechado — era exatamente o que o `ForceUpdateAllUI` existia para
 contornar. A view não tem essa guarda.
 
-#### ETAPA 4a-bis — Inventory adota a `ContainerView` (BLOQUEADO)
-- [ ] status — **bloqueado por bug de cena, ver §6.6**
+#### ETAPA 4a-bis — Inventory adota a `ContainerView`
+- [x] parte 1: `SlotGroup` na `ContainerView` — feito 2026-07-25, **8 testes**
+- [ ] parte 2: migrar o `Inventory` — **deliberadamente adiada, ver abaixo**
 - risco: alto
 
-O `Inventory` não cabe na `ContainerView` como ela está hoje, por três motivos legítimos:
-dois parents com ranges diferentes (hotbar 0-8 em `hotbarParent`, storage no `storageParent`),
-slots de storage nascem desativados, e existe um caminho legado que **adota** slots já
-presentes na cena em vez de instanciar.
+O `Inventory` não cabia na `ContainerView` por três motivos legítimos: dois parents com ranges
+diferentes (hotbar 0-8 em `hotbarParent`, storage no `storageParent`), slots de storage nascem
+desativados, e um caminho legado que **adota** slots já presentes na cena em vez de instanciar.
 
-Suportar isso pede um conceito de grupo de slots na view:
-`SlotGroup { parent, startIndex, count, startActive, namePrefix }`. É desenhável, mas fazer
-isso às cegas por cima de um bug de cena não confirmado seria construir na areia.
+**Parte 1 (feita):** a view agora entende grupos.
+`SlotGroup { parent, startIndex, count, startActive, namePrefix }`, com `count: 0` significando
+"daqui até o fim". `Configure(prefab, params SlotGroup[])` para o caso multi-parent e
+`SetGroupActive(i, bool)` para mostrar/esconder um grupo inteiro — que é como o inventário
+revelaria o storage sem o container saber nada sobre visibilidade. A lista interna passou a ser
+indexada pelo índice **do container**, não pela ordem de criação, então um container espalhado
+por vários parents ainda responde `GetSlotUI(i)` corretamente.
+
+Isso já vale sozinho: a bancada de craft precisa exatamente disso (entrada e saída em parents
+diferentes, um container só).
+
+**Parte 2 (adiada de propósito):** a migração em si toca **~35 pontos** do `Inventory.cs` —
+`SetupUI`, `CreateSlotUI`, `SelectSlot` (2×), `UpdateSlot`, `UpdateAllSlots`, `SplitStack`,
+`UseItem`, `ClearSlotForDrag`, `RestoreSlotFromDrag`, `IndexOfSlot`, `ToggleInventory` (que
+ainda cria slots preguiçosamente), `LoadData` e `SetInventorySize` (que destrói e apara a
+lista).
+
+Não fiz às cegas, e a razão é a mesma que guiou o plano inteiro: o retorno aqui é o menor de
+todos — sobra só a última cópia da **construção** de slots, enquanto a duplicação que
+importava, a de **transferência**, já saiu na 4b — e o risco é o maior, porque é o inventário
+do jogador logo depois de uma cirurgia em drag/drop que ainda nem foi mergeada.
+
+**Receita para fazer com o Unity aberto** (é meia hora com feedback imediato):
+1. `view.Configure(slotPrefab, new SlotGroup(hotbarParent, 0, hotbarSize, true, "HotbarSlot"),
+   new SlotGroup(storageParent, hotbarSize, 0, false, "StorageSlot"))` e `Bind(container)`.
+2. Trocar os ~35 usos de `slotUIs` por `view.GetSlotUI(i)` / `view.IndexOf(slot)` /
+   `view.ForEachSlot(...)`.
+3. `ToggleInventory` vira `view.SetGroupActive(1, isInventoryOpen)` — e a criação preguiçosa
+   de slots some, porque a view já constrói tudo no `Bind`.
+4. Apagar o caminho legado de `SetupUI` (adoção de slots da cena): na `SampleScene`
+   `hotbarParent` e `storageParent` estão ligados, então ele nunca roda — e é a única cena com
+   um `Inventory`.
+5. `SetInventorySize` passa a confiar no `OnSizeChanged`, que a view já escuta e responde com
+   `Rebuild()`.
 
 #### ETAPA 4b — Unificar o `OnDrop`
 - [x] status — feito e **verificado no Editor em 2026-07-25**: roteiro manual de drag/drop

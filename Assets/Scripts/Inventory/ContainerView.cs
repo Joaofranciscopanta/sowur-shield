@@ -18,17 +18,60 @@ namespace SowurShield.Inventory
     /// review/04_CONTAINER_REFACTOR_PLAN.md §5.2). Anything added later that writes to a
     /// container MUST go through <c>SetSlot</c> or this view will silently go stale.
     /// </summary>
+    /// <summary>
+    /// A contiguous run of slots rendered under one parent.
+    ///
+    /// Most containers are a single group covering everything. Groups exist for the ones that
+    /// are not: the player inventory splits 0-8 into a hotbar and the rest into a storage grid
+    /// that starts hidden, and a crafting bench will want its input and output slots under
+    /// different parents while remaining ONE container.
+    /// </summary>
+    [System.Serializable]
+    public class SlotGroup
+    {
+        [Tooltip("Where these slots are instantiated. Usually a grid layout.")]
+        public Transform parent;
+
+        [Tooltip("First container slot index this group renders.")]
+        public int startIndex;
+
+        [Tooltip("How many slots. 0 means 'everything from startIndex to the end'.")]
+        public int count;
+
+        [Tooltip("Whether these slots start visible. The inventory's storage grid does not.")]
+        public bool startActive = true;
+
+        [Tooltip("Slots are named <prefix>_<index>, which is what scene debugging reads.")]
+        public string namePrefix = "Slot";
+
+        public SlotGroup() { }
+
+        public SlotGroup(Transform parent, int startIndex, int count,
+            bool startActive = true, string namePrefix = "Slot")
+        {
+            this.parent = parent;
+            this.startIndex = startIndex;
+            this.count = count;
+            this.startActive = startActive;
+            this.namePrefix = namePrefix;
+        }
+
+        /// <summary>Last index (exclusive) this group covers, given the container's size.</summary>
+        public int EndIndexExclusive(int containerSlots)
+        {
+            int end = count > 0 ? startIndex + count : containerSlots;
+            return Mathf.Min(end, containerSlots);
+        }
+    }
+
     public class ContainerView : MonoBehaviour
     {
         [Header("Slot UI")]
-        [Tooltip("Parent the slot prefabs are instantiated under. Usually a grid layout.")]
-        [SerializeField] private Transform slotParent;
-
         [Tooltip("Prefab carrying an InventorySlot component.")]
         [SerializeField] private GameObject slotPrefab;
 
-        [Tooltip("Instantiated slots are named <prefix>_<index>, which is what scene debugging reads.")]
-        [SerializeField] private string slotNamePrefix = "Slot";
+        [Tooltip("Where the slots go. Leave as one entry unless the container is split across parents.")]
+        [SerializeField] private List<SlotGroup> slotGroups = new List<SlotGroup>();
 
         private InventoryContainer container;
         private IContainerPolicy policy;
@@ -60,21 +103,59 @@ namespace SowurShield.Inventory
         // =====================================================================
 
         /// <summary>
-        /// Set the slot UI references from code instead of the Inspector.
+        /// Single-parent setup: every slot under one transform. Covers the SellBox, the feeding
+        /// trough and any plain chest.
         ///
-        /// This exists so an existing container can adopt the view without any scene changes:
-        /// it already holds its own slotParent/slotPrefab references, adds this component at
-        /// runtime and hands them over. New containers can just wire the Inspector fields and
-        /// skip this. Call before <see cref="Bind"/>.
+        /// Set from code rather than the Inspector so an existing container can adopt the view
+        /// with no scene changes: it already holds its own slotParent/slotPrefab references,
+        /// adds this component at runtime and hands them over. New containers can wire the
+        /// Inspector fields and skip this. Call before <see cref="Bind"/>.
         /// </summary>
         public void Configure(Transform slotParent, GameObject slotPrefab, string slotNamePrefix = null)
         {
-            this.slotParent = slotParent;
+            Configure(slotPrefab, new SlotGroup(
+                slotParent, 0, 0, true,
+                string.IsNullOrEmpty(slotNamePrefix) ? "Slot" : slotNamePrefix));
+        }
+
+        /// <summary>
+        /// Multi-parent setup: the container's slots are split across several transforms, each
+        /// with its own index range and initial visibility. Groups are rendered in the order
+        /// given. Call before <see cref="Bind"/>.
+        /// </summary>
+        public void Configure(GameObject slotPrefab, params SlotGroup[] groups)
+        {
             this.slotPrefab = slotPrefab;
 
-            if (!string.IsNullOrEmpty(slotNamePrefix))
-                this.slotNamePrefix = slotNamePrefix;
+            slotGroups.Clear();
+            if (groups != null)
+                foreach (SlotGroup group in groups)
+                    if (group != null)
+                        slotGroups.Add(group);
         }
+
+        /// <summary>
+        /// Show or hide every slot belonging to one group — how the inventory reveals its
+        /// storage grid without the container knowing anything about visibility.
+        /// </summary>
+        public void SetGroupActive(int groupIndex, bool active)
+        {
+            if (container == null) return;
+            if (groupIndex < 0 || groupIndex >= slotGroups.Count) return;
+
+            SlotGroup group = slotGroups[groupIndex];
+            int end = group.EndIndexExclusive(container.MaxSlots);
+
+            for (int i = group.startIndex; i < end; i++)
+            {
+                InventorySlot slotUI = GetSlotUI(i);
+                if (slotUI != null)
+                    slotUI.gameObject.SetActive(active);
+            }
+        }
+
+        /// <summary>How many slot groups this view renders.</summary>
+        public int GroupCount => slotGroups.Count;
 
         /// <summary>
         /// Attach this view to a container and build its slots. Safe to call again with a
@@ -130,34 +211,54 @@ namespace SowurShield.Inventory
         {
             if (container == null) return;
 
-            if (slotParent == null || slotPrefab == null)
+            if (slotPrefab == null || slotGroups.Count == 0)
             {
                 Debug.LogWarning(
-                    $"[ContainerView] {name}: slotParent or slotPrefab is not assigned — no slots will be created.", this);
+                    $"[ContainerView] {name}: slotPrefab or slot groups not configured — no slots will be created.", this);
                 return;
             }
 
             ClearSlots();
 
+            // Indexed by CONTAINER slot index, not creation order, so a container split across
+            // several parents still answers GetSlotUI(i) correctly. Indices no group covers
+            // stay null.
             for (int i = 0; i < container.MaxSlots; i++)
-            {
-                GameObject slotObj = Instantiate(slotPrefab, slotParent);
-                slotObj.name = $"{slotNamePrefix}_{i}";
+                slotUIs.Add(null);
 
-                InventorySlot slotUI = slotObj.GetComponent<InventorySlot>();
-                if (slotUI == null)
+            foreach (SlotGroup group in slotGroups)
+            {
+                if (group.parent == null)
                 {
-                    Debug.LogWarning(
-                        $"[ContainerView] {name}: slotPrefab has no InventorySlot component.", this);
-                    Destroy(slotObj);
+                    Debug.LogWarning($"[ContainerView] {name}: a slot group has no parent — skipped.", this);
                     continue;
                 }
 
-                slotUIs.Add(slotUI);
-                slotUI.OwnerView = this;   // lets SlotTransferRouter resolve the slot's container
-                slotUI.SetSlotIndex(i);
-                slotUI.SetItemStack(container.GetSlot(i));
-                configureSlot?.Invoke(slotUI, i);
+                int end = group.EndIndexExclusive(container.MaxSlots);
+
+                for (int i = Mathf.Max(0, group.startIndex); i < end; i++)
+                {
+                    GameObject slotObj = Instantiate(slotPrefab, group.parent);
+                    slotObj.name = $"{group.namePrefix}_{i}";
+
+                    InventorySlot slotUI = slotObj.GetComponent<InventorySlot>();
+                    if (slotUI == null)
+                    {
+                        Debug.LogWarning(
+                            $"[ContainerView] {name}: slotPrefab has no InventorySlot component.", this);
+                        Destroy(slotObj);
+                        continue;
+                    }
+
+                    slotUIs[i] = slotUI;
+                    slotUI.OwnerView = this;   // lets SlotTransferRouter resolve the slot's container
+                    slotUI.SetSlotIndex(i);
+                    slotUI.SetItemStack(container.GetSlot(i));
+                    configureSlot?.Invoke(slotUI, i);
+
+                    if (!group.startActive)
+                        slotObj.SetActive(false);
+                }
             }
 
             isBuilt = true;
