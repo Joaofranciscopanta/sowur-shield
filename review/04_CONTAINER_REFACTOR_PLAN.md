@@ -213,19 +213,34 @@ Nenhum arquivo de produção ainda chama o serviço.
 ---
 
 ### ETAPA 2 — As policies concretas
-- [ ] status
+- [x] status — feito 2026-07-25. `SellBoxPolicy` + `FeedingTroughPolicy`, **25 testes**
+  (isoladas e através do `ItemTransferService`). Nada em produção usa ainda.
 - risco: baixo
 - depende de: Etapa 1
 - arquivos: novos `Assets/Scripts/Inventory/Policies/SellBoxPolicy.cs`,
   `FeedingTroughPolicy.cs`
   (a interface e o `DefaultContainerPolicy` já vieram na Etapa 1)
 
-`SellBoxPolicy.CanAccept` = `item.canBeSold` (hoje vive dentro do `HandleSlotDrop`).
-`FeedingTroughPolicy.CanAccept` = o item é ração de algum animal — **isso é comportamento
-novo**: hoje o comedouro aceita qualquer item e só ignora o que não serve na hora de
-alimentar. Vale confirmar se é o desejado antes de ligar.
+`SellBoxPolicy.CanAccept` = `item.canBeSold`. Ganho colateral: hoje essa checagem está inline
+no `SellBox.HandleSlotDrop`, ou seja, só vale naquele caminho — como policy, o
+`ItemTransferService` a aplica em toda rota de entrada, inclusive no swap, onde um item
+não-vendável poderia ser empurrado para dentro da caixa.
 
-**Feito quando:** policies testadas isoladamente + integradas ao `ItemTransferService`.
+**`FeedingTroughPolicy` NÃO muda o jogo** — decisão revista durante a implementação. O plano
+original previa rejeitar não-ração no drop, mas isso é mudança de gameplay, não refactor.
+A flag `RejectNonFood` existe e está testada nos dois estados, mas nasce em **`false`**, que é
+exatamente o que o jogo faz hoje (aceita tudo, ignora o que não serve na hora de alimentar).
+Assim a Etapa 4 pode subir sem alterar o jogo, e virar a flag depois é uma decisão isolada e
+revertível.
+
+O conjunto do que conta como ração vem por callback (`Func<IEnumerable<Item>>`), não lido do
+`AnimalZone` direto: o conjunto depende de quais animais estão na zona **naquele momento**, e
+o callback é o que permite testar a policy sem cena, sem `AnimalZone` e sem `ItemDatabase`
+populado. Se o callback devolver `null` (sem zona ligada, ou `ItemDatabase` ainda não pronto)
+a policy fica permissiva — trancar o jogador fora de um comedouro que ele não consegue encher
+seria pior que aceitar demais. Lista vazia é resposta legítima e rejeita tudo.
+
+**Feito quando:** policies testadas isoladamente + integradas ao `ItemTransferService`. ✅
 
 ---
 
