@@ -330,24 +330,18 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
             currentlyOpenSellBox.CloseSellBox();
         }
 
-        // Use UIManager if available, otherwise fallback to manual closing
-        if (UIManager.Instance != null)
+        // Only reached when there is no UIManager (see OpenSellBox) — with a UIManager present,
+        // TryOpenWindow's stack already guarantees no other window is open.
+        // Fallback: close the inventory if it's open.
+        if (playerInventory != null)
         {
-            UIManager.Instance.CloseAllPanels();
-        }
-        else
-        {
-            // Fallback: Close inventory if it's open
-            if (playerInventory != null)
+            var inventory = playerInventory.GetComponent<SowurShield.Inventory.Inventory>();
+            if (inventory != null)
             {
-                var inventory = playerInventory.GetComponent<SowurShield.Inventory.Inventory>();
-                if (inventory != null)
-                {
-                    var closeMethod = inventory.GetType().GetMethod("CloseInventory") ??
-                                    inventory.GetType().GetMethod("Close") ??
-                                    inventory.GetType().GetMethod("SetActive");
-                    closeMethod?.Invoke(inventory, new object[] { false });
-                }
+                var closeMethod = inventory.GetType().GetMethod("CloseInventory") ??
+                                inventory.GetType().GetMethod("Close") ??
+                                inventory.GetType().GetMethod("SetActive");
+                closeMethod?.Invoke(inventory, new object[] { false });
             }
         }
 
@@ -425,44 +419,26 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
 
     public void OpenSellBox()
     {
-        // Use UIManager to try opening this window
-        if (UIManager.Instance != null && !UIManager.Instance.TryOpenWindow(this))
+        if (UIManager.Instance != null)
         {
-            return; // Window was blocked by another window
+            // TryOpenWindow calls OpenWindow() on success, which does all the actual opening
+            // work (panel, movement lock, sound, display refresh, OnSellBoxToggled).
+            // Previously this method repeated that work inline AND called the legacy
+            // OpenPanel() — which fired OnSellBoxToggled twice per open.
+            if (!UIManager.Instance.TryOpenWindow(this))
+                return; // Window was blocked by another window
         }
-
-        // If no UIManager, fall back to old behavior
-        if (UIManager.Instance == null)
+        else
         {
+            // No UIManager in the scene — close other UI ourselves and open directly.
             CloseOtherUIWindows();
-        }
-
-        isSellBoxOpen = true;
-
-        // Reset input tracking for auto-close
-        ResetInputTracking();
-
-        // Disable player movement when SellBox is open
-        if (playerMove != null)
-        {
-            playerMove.DisableMovement();
+            OpenWindow();
         }
 
         // Ensure cursor is visible for UI interaction
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // Use UIManager if available
-        if (UIManager.Instance != null && sellBoxMainPanel != null)
-        {
-            UIManager.Instance.OpenPanel(sellBoxMainPanel);
-        }
-        else if (sellBoxMainPanel != null)
-        {
-            sellBoxMainPanel.SetActive(true);
-        }
-
-        OnSellBoxToggled?.Invoke();
         UpdateTotalValueDisplay();
     }
 
@@ -532,12 +508,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
             playerMove.EnableMovement();
         }
 
-        // Use UIManager if available
-        if (UIManager.Instance != null && sellBoxMainPanel != null)
-        {
-            UIManager.Instance.ClosePanel(sellBoxMainPanel);
-        }
-        else if (sellBoxMainPanel != null)
+        if (sellBoxMainPanel != null)
         {
             sellBoxMainPanel.SetActive(false);
         }

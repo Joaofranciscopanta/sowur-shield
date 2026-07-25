@@ -62,12 +62,11 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     // in GameData.purchasedAnimals so AnimalPurchaseLoader can re-instantiate them.
     private bool isPurchased = false;
 
-    // Illness tracking
-    private bool isIll = false;
-    private int neglectDays = 0;
+    // Illness tracking — state machine lives in AnimalIllness (see AnimalIllness.cs)
+    private readonly AnimalIllness illness = new AnimalIllness();
 
     /// <summary>True when the animal is ill (production blocked, stats penalised).</summary>
-    public bool IsIll => isIll;
+    public bool IsIll => illness.IsIll;
 
     // Particle system
     private GameObject currentHeartParticle;
@@ -295,7 +294,7 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
 
     public string GetInteractionPrompt()
     {
-        if (isIll)
+        if (illness.IsIll)
         {
             if (playerInventory != null)
             {
@@ -328,7 +327,7 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
             {
                 // Medicine cures illness (checked first so medicine isn't accidentally fed)
                 string cureItem = animalData?.illnessCureItemName ?? "Medicine";
-                if (isIll && selectedItem.itemName == cureItem)
+                if (illness.IsIll && selectedItem.itemName == cureItem)
                 {
                     CureIllness(playerInventory);
                     return;
@@ -538,7 +537,7 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         needsFeeding = true;
 
         // Check for production — blocked when ill
-        if (animalData.canProduce && !isIll)
+        if (animalData.canProduce && !illness.IsIll)
         {
             CheckProduction();
         }
@@ -653,9 +652,9 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
             gameData.worldData.worldCounters[$"{prefix}_experience"] = Mathf.RoundToInt(combatStats.experience);
         }
 
-        // Save illness state
-        gameData.worldData.worldFlags[$"{prefix}_isIll"] = isIll;
-        gameData.worldData.worldCounters[$"{prefix}_neglectDays"] = neglectDays;
+        // Save illness state (same keys as before the AnimalIllness extraction)
+        gameData.worldData.worldFlags[$"{prefix}_isIll"] = illness.IsIll;
+        gameData.worldData.worldCounters[$"{prefix}_neglectDays"] = illness.NeglectDays;
 
         // Save custom name (only if set)
         if (!string.IsNullOrEmpty(customName))
@@ -701,11 +700,15 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         if (gameData.worldData.worldCounters.TryGetValue($"{prefix}_experience", out int savedXP))
             combatStats.experience = Mathf.Max(0f, savedXP);
 
-        // Load illness state
-        if (gameData.worldData.worldFlags.TryGetValue($"{prefix}_isIll", out bool savedIll))
-            isIll = savedIll;
-        if (gameData.worldData.worldCounters.TryGetValue($"{prefix}_neglectDays", out int savedNeglect))
-            neglectDays = Mathf.Max(0, savedNeglect);
+        // Load illness state — each key is optional, so fall back to the current value
+        // (preserves the pre-extraction behaviour of restoring the two fields independently).
+        bool restoredIll = gameData.worldData.worldFlags.TryGetValue($"{prefix}_isIll", out bool savedIll)
+            ? savedIll
+            : illness.IsIll;
+        int restoredNeglect = gameData.worldData.worldCounters.TryGetValue($"{prefix}_neglectDays", out int savedNeglect)
+            ? savedNeglect
+            : illness.NeglectDays;
+        illness.RestoreState(restoredNeglect, restoredIll);
 
         // Load custom name
         if (gameData.worldData.worldStrings.TryGetValue($"{prefix}_customName", out string savedName))
@@ -972,36 +975,27 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     #region Illness System
 
     /// <summary>
-    /// Called once per day (before daily flags reset) to update neglect counter and
+    /// Called once per day (before daily flags reset) to update the neglect counter and
     /// transition the animal into the ill state if fully neglected too many days in a row.
     /// Neglect = not petted AND not fed on the same day.
     /// Any care action (petting OR feeding) resets the neglect counter.
+    /// Thin wrapper — the state machine itself lives in <see cref="AnimalIllness"/>.
     /// </summary>
     private void UpdateNeglectAndIllness()
     {
         if (animalData == null) return;
 
-        bool neglectedToday = !hasBeenPetToday && needsFeeding;
-
-        if (neglectedToday)
-        {
-            neglectDays++;
-            if (!isIll && neglectDays >= animalData.illnessThresholdDays)
-                isIll = true;
-        }
-        else
-        {
-            // Animal was cared for — reset neglect streak (illness still requires medicine)
-            neglectDays = 0;
-        }
+        bool caredForToday = hasBeenPetToday || !needsFeeding;
+        illness.UpdateNeglect(caredForToday, animalData.illnessThresholdDays);
     }
 
     /// <summary>
     /// Cure the animal's illness by consuming one medicine item from the player's inventory.
+    /// The inventory transaction stays here; <see cref="AnimalIllness"/> only owns the state.
     /// </summary>
     private void CureIllness(SowurShield.Inventory.Inventory inventory)
     {
-        if (!isIll || inventory == null || animalData == null) return;
+        if (!illness.IsIll || inventory == null || animalData == null) return;
 
         Item medicine = ItemDatabase.GetItem(animalData.illnessCureItemName);
         if (medicine == null)
@@ -1012,8 +1006,7 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
 
         if (!inventory.RemoveItem(medicine, 1)) return;
 
-        isIll = false;
-        neglectDays = 0;
+        illness.Cure();
         ModifyHappiness(10f); // Recovery happiness boost
         SpawnHeartParticle();
     }

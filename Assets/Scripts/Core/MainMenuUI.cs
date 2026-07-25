@@ -17,8 +17,6 @@ namespace SowurShield.Core
 /// </summary>
 public class MainMenuUI : MonoBehaviour
 {
-    private enum SlotPickerMode { Load, NewGame }
-
     [Header("Main Menu Buttons")]
     [SerializeField] private Button newGameButton;
     [SerializeField] private Button continueButton;
@@ -40,12 +38,9 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private Button languageSelectPortugueseButton;
     [SerializeField] private Button languageSelectSpanishButton;
 
-    [Header("Slot Picker Panel")]
-    [SerializeField] private GameObject slotPickerPanel;
-    [SerializeField] private Transform slotListParent;
-    [SerializeField] private GameObject saveSlotButtonPrefab;
-    [SerializeField] private Button slotPickerBackButton;
-    [SerializeField] private TextMeshProUGUI slotPickerTitleText;
+    [Header("Slot Picker")]
+    [Tooltip("Owns the save-slot picker panel. Extracted from this class — see MainMenuSaveSlotController.")]
+    [SerializeField] private MainMenuSaveSlotController saveSlotController;
 
     [Header("Localized Strings")]
     [SerializeField] private LocalizedString loadGameTitleText; // table "MainMenu", key "mainmenu.load_game_title"
@@ -111,6 +106,13 @@ public class MainMenuUI : MonoBehaviour
     {
         LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
         LocalizationManager.OnTablesReady -= HandleLanguageChanged_NoArg;
+
+        if (saveSlotController != null)
+        {
+            saveSlotController.OnSlotChosen -= OnSlotSelected;
+            saveSlotController.OnBackRequested -= ShowMainPanel;
+            saveSlotController.OnSlotDeleted -= CheckSaveFileAvailability;
+        }
     }
 
     private void HandleLanguageChanged(UnityEngine.Localization.Locale locale) => HandleLanguageChanged_NoArg();
@@ -124,14 +126,10 @@ public class MainMenuUI : MonoBehaviour
 
         // If the slot picker was opened before the string tables finished preloading,
         // its title resolved to "" — re-resolve it (and the rows) now that tables are ready.
-        if (slotPickerPanel != null && slotPickerPanel.activeSelf)
+        if (saveSlotController != null && saveSlotController.IsOpen)
         {
-            if (slotPickerTitleText != null)
-                slotPickerTitleText.text = currentSlotPickerMode == SlotPickerMode.Load
-                    ? loadGameTitleText.SafeGetLocalizedString()
-                    : newGameTitleText.SafeGetLocalizedString();
-
-            PopulateSlotPicker(currentSlotPickerMode);
+            saveSlotController.SetTitle(GetSlotPickerTitle(saveSlotController.CurrentMode));
+            saveSlotController.Refresh();
         }
     }
 
@@ -182,9 +180,21 @@ public class MainMenuUI : MonoBehaviour
             quitButton.interactable = true;
         }
         
-        // Setup slot picker back button
-        if (slotPickerBackButton != null)
-            slotPickerBackButton.onClick.AddListener(ShowMainPanel);
+        // Slot picker: the controller owns its panel and back button; we only react to its events.
+        // Auto-find as a safety net so a missing Inspector reference doesn't break New Game / Load.
+        if (saveSlotController == null)
+            saveSlotController = FindFirstObjectByType<MainMenuSaveSlotController>(FindObjectsInactive.Include);
+
+        if (saveSlotController != null)
+        {
+            saveSlotController.OnSlotChosen += OnSlotSelected;
+            saveSlotController.OnBackRequested += ShowMainPanel;
+            saveSlotController.OnSlotDeleted += CheckSaveFileAvailability;
+        }
+        else
+        {
+            Debug.LogWarning("[MainMenuUI] saveSlotController is not assigned — New Game and Load Game will do nothing. Assign it in the Inspector.");
+        }
 
         // Setup settings panel
         if (settingsBackButton != null)
@@ -416,7 +426,7 @@ public class MainMenuUI : MonoBehaviour
     private void OnNewGameClicked()
     {
         PlaySound(buttonClickSound);
-        OpenSlotPicker(SlotPickerMode.NewGame);
+        OpenSlotPicker(SaveSlotPickerMode.NewGame);
     }
 
     private void OnContinueClicked()
@@ -432,7 +442,7 @@ public class MainMenuUI : MonoBehaviour
     private void OnLoadGameClicked()
     {
         PlaySound(buttonClickSound);
-        OpenSlotPicker(SlotPickerMode.Load);
+        OpenSlotPicker(SaveSlotPickerMode.Load);
     }
     
     private void OnSettingsClicked()
@@ -465,77 +475,26 @@ public class MainMenuUI : MonoBehaviour
     // SLOT PICKER
     // ============================================================================
 
-    private SlotPickerMode currentSlotPickerMode;
-
-    private void OpenSlotPicker(SlotPickerMode mode)
+    /// <summary>Resolves the localized picker header for a mode (tables may not be ready yet).</summary>
+    private string GetSlotPickerTitle(SaveSlotPickerMode mode)
     {
-        currentSlotPickerMode = mode;
+        return mode == SaveSlotPickerMode.Load
+            ? loadGameTitleText.SafeGetLocalizedString()
+            : newGameTitleText.SafeGetLocalizedString();
+    }
 
-        if (slotPickerTitleText != null)
-            slotPickerTitleText.text = mode == SlotPickerMode.Load ? loadGameTitleText.SafeGetLocalizedString() : newGameTitleText.SafeGetLocalizedString();
-
-        PopulateSlotPicker(mode);
+    private void OpenSlotPicker(SaveSlotPickerMode mode)
+    {
+        if (saveSlotController == null) return;
 
         SetPanelActive(mainPanel, false);
-        SetPanelActive(slotPickerPanel, true);
+        saveSlotController.Open(mode, GetSlotPickerTitle(mode));
     }
 
-    private void PopulateSlotPicker(SlotPickerMode mode)
+    /// <summary>Called by MainMenuSaveSlotController once the player commits to a slot.</summary>
+    private void OnSlotSelected(string slotName, SaveSlotPickerMode mode)
     {
-        if (slotListParent == null || saveSlotButtonPrefab == null)
-            return;
-
-        // Clear old buttons
-        foreach (Transform child in slotListParent)
-            Destroy(child.gameObject);
-
-        // SaveManager may not exist in the main menu scene yet — read slots directly from disk
-        SaveSlotInfo[] slots;
-        if (SaveManager.Instance != null)
-        {
-            slots = SaveManager.Instance.GetAllSlotInfos();
-        }
-        else
-        {
-            slots = ReadSlotInfosFromDisk();
-        }
-
-        foreach (var info in slots)
-        {
-            GameObject go = Instantiate(saveSlotButtonPrefab, slotListParent);
-            SaveSlotButton btn = go.GetComponent<SaveSlotButton>();
-            if (btn == null) continue;
-
-            string slotName = info.slotName;
-
-            if (mode == SlotPickerMode.Load)
-            {
-                bool locked = info.isEmpty;
-                btn.Initialize(
-                    info,
-                    locked ? null : (System.Action)(() => OnSlotSelected(slotName)),
-                    // Delete in Load mode: erase save and repopulate list
-                    info.isEmpty || info.isAutoSave ? null : (System.Action)(() => DeleteSlotAndRefresh(slotName)),
-                    locked
-                );
-            }
-            else // NewGame
-            {
-                btn.Initialize(
-                    info,
-                    // Click on slot = start new game in that slot
-                    () => OnSlotSelected(slotName),
-                    // Delete button = only erase, do NOT start game
-                    info.isEmpty || info.isAutoSave ? null : (System.Action)(() => DeleteSlotAndRefresh(slotName)),
-                    false
-                );
-            }
-        }
-    }
-
-    private void OnSlotSelected(string slotName)
-    {
-        if (currentSlotPickerMode == SlotPickerMode.Load)
+        if (mode == SaveSlotPickerMode.Load)
         {
             LoadGameFromSlot(slotName);
         }
@@ -549,35 +508,11 @@ public class MainMenuUI : MonoBehaviour
     private string _pendingNewGameSlot;
 
     /// <summary>
-    /// Deletes a slot's files and repopulates the picker — does NOT start the game.
-    /// </summary>
-    private void DeleteSlotAndRefresh(string slotName)
-    {
-        if (SaveManager.Instance != null)
-        {
-            SaveManager.Instance.DeleteSlot(slotName);
-        }
-        else
-        {
-            string dir = Path.Combine(Application.persistentDataPath, "Saves", slotName);
-            if (Directory.Exists(dir))
-                foreach (string f in Directory.GetFiles(dir))
-                    File.Delete(f);
-        }
-
-        // Repopulate the list in place so the player can choose another slot
-        PopulateSlotPicker(currentSlotPickerMode);
-        CheckSaveFileAvailability();
-    }
-
-    /// <summary>
     /// Returns the slot name with the most recent save timestamp, read directly from disk.
     /// </summary>
     private string GetMostRecentSlotFromDisk()
     {
-        var slots = SaveManager.Instance != null
-            ? SaveManager.Instance.GetAllSlotInfos()
-            : ReadSlotInfosFromDisk();
+        var slots = MainMenuSaveSlotController.GetSlotInfos();
 
         string best = null;
         System.DateTime bestTime = System.DateTime.MinValue;
@@ -593,48 +528,6 @@ public class MainMenuUI : MonoBehaviour
         }
 
         return best;
-    }
-
-    /// <summary>
-    /// Reads slot metadata directly from disk when SaveManager is not loaded yet.
-    /// </summary>
-    private SaveSlotInfo[] ReadSlotInfosFromDisk()
-    {
-        string[] slotNames = { "AutoSave", "Slot1", "Slot2", "Slot3" };
-        var result = new SaveSlotInfo[slotNames.Length];
-
-        string savesRoot = Path.Combine(Application.persistentDataPath, "Saves");
-
-        for (int i = 0; i < slotNames.Length; i++)
-        {
-            string slotName = slotNames[i];
-            string metaPath = Path.Combine(savesRoot, slotName, "SlotMeta.json");
-
-            if (File.Exists(metaPath))
-            {
-                try
-                {
-                    var info = JsonUtility.FromJson<SaveSlotInfo>(File.ReadAllText(metaPath));
-                    if (info != null)
-                    {
-                        info.slotName = slotName;
-                        info.isAutoSave = slotName == "AutoSave";
-                        result[i] = info;
-                        continue;
-                    }
-                }
-                catch { }
-            }
-
-            result[i] = new SaveSlotInfo
-            {
-                slotName = slotName,
-                isAutoSave = slotName == "AutoSave",
-                isEmpty = true
-            };
-        }
-
-        return result;
     }
 
     private bool SlotHasSaveFile(string slotName)
@@ -747,7 +640,9 @@ public class MainMenuUI : MonoBehaviour
         SetPanelActive(creditsPanel, false);
         SetPanelActive(confirmationPanel, false);
         SetPanelActive(loadingPanel, false);
-        SetPanelActive(slotPickerPanel, false);
+
+        if (saveSlotController != null)
+            saveSlotController.Close();
     }
     
     private void ShowSettingsPanel()
@@ -1028,12 +923,7 @@ public class MainMenuUI : MonoBehaviour
     
     private void CheckSaveFileAvailability()
     {
-        bool hasSave;
-
-        if (SaveManager.Instance != null)
-            hasSave = SaveManager.Instance.GetAllSlotInfos().Any(s => !s.isEmpty);
-        else
-            hasSave = ReadSlotInfosFromDisk().Any(s => !s.isEmpty);
+        bool hasSave = MainMenuSaveSlotController.GetSlotInfos().Any(s => !s.isEmpty);
 
         if (continueButton != null)
         {

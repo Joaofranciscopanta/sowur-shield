@@ -77,7 +77,7 @@ public class UIInput : MonoBehaviour
         // Check if any UI is still open that needs cursor
         bool needsCursor = false;
         
-        if (UIManager.Instance != null && UIManager.Instance.IsAnyPanelOpen())
+        if (UIManager.Instance != null && UIManager.Instance.IsAnyWindowOpen())
         {
             needsCursor = true;
         }

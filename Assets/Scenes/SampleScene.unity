@@ -30465,10 +30465,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2c4d6e8f0a2c4e6a8b2c4d6e8f0a2c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventoryPanel: {fileID: 0}
-  sellBoxPanel: {fileID: 1879396874}
-  gameMenuPanel: {fileID: 0}
-  enableDebugLogs: 1
+  enableDebugLogs: 0
 --- !u!114 &2100000004
 MonoBehaviour:
   m_ObjectHideFlags: 0

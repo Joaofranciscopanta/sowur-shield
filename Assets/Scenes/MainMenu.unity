@@ -8963,6 +8963,7 @@ GameObject:
   - component: {fileID: 1865434775}
   - component: {fileID: 1865434774}
   - component: {fileID: 1865434773}
+  - component: {fileID: 1865434790}
   m_Layer: 5
   m_Name: MainMenuCanvas
   m_TagString: Untagged
@@ -9072,6 +9073,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1865434790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1865434772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9b7d2a5c1f48a0b6d3f81c47e29a05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slotPickerPanel: {fileID: 1609718290}
+  slotListParent: {fileID: 973124826}
+  saveSlotButtonPrefab: {fileID: 6556783366000767724, guid: e456aaf08e1b5a547895f59dea60c98c, type: 3}
+  backButton: {fileID: 1580990072}
+  titleText: {fileID: 2002462113}
 --- !u!114 &1865434778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9099,11 +9117,7 @@ MonoBehaviour:
   languageSelectEnglishButton: {fileID: 478717885}
   languageSelectPortugueseButton: {fileID: 2066499174}
   languageSelectSpanishButton: {fileID: 1393423860}
-  slotPickerPanel: {fileID: 1609718290}
-  slotListParent: {fileID: 973124826}
-  saveSlotButtonPrefab: {fileID: 6556783366000767724, guid: e456aaf08e1b5a547895f59dea60c98c, type: 3}
-  slotPickerBackButton: {fileID: 1580990072}
-  slotPickerTitleText: {fileID: 2002462113}
+  saveSlotController: {fileID: 1865434790}
   loadGameTitleText:
     m_TableReference:
       m_TableCollectionName: MainMenu
