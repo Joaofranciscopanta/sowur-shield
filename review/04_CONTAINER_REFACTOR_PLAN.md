@@ -324,8 +324,55 @@ contornar. A view não tem essa guarda.
 
 #### ETAPA 4a-bis — Inventory adota a `ContainerView`
 - [x] parte 1: `SlotGroup` na `ContainerView` — feito 2026-07-25, **8 testes**
-- [ ] parte 2: migrar o `Inventory` — **deliberadamente adiada, ver abaixo**
+- [x] parte 2: migrar o `Inventory` — feito e **verificado em Play Mode 2026-07-26**, **9 testes**
 - risco: alto
+
+**Resultado da parte 2 (2026-07-26).** `Inventory.cs` 1147 → 1056 linhas. Sumiram `SetupUI`
+(o corpo inteiro), `CreateSlotUI`, o caminho legado de adoção de slots da cena, a criação
+preguiçosa dentro do `ToggleInventory`, e os laços de criar/destruir prefab de
+`UpgradeInventorySize` e `SetInventorySize`. A lista `slotUIs` deixou de existir: os ~35 usos
+viraram `view.GetSlotUI(i)` / `view.IndexOf(slot)` / `view.SetGroupActive(...)`, e `IndexOfSlot`
+virou a única porta de entrada (os seis call sites que faziam `slotUIs.IndexOf` na mão agora
+passam por ela).
+
+O tracking da hotbar saiu do `UpdateSlot` para um `TrackHotbarItem` próprio, alimentado pelo
+callback `configureSlot` do `Bind` — assim ele sobrevive a um rebuild sem depender da ordem de
+construção da UI.
+
+Confirmado no Editor antes de apagar: `hotbarParent` e `storageParent` estão ambos ligados no
+`Bunny`, com zero filhos pré-existentes, então o caminho legado era realmente inalcançável.
+`slotParent` foi **mantido** — está deprecado para o `Inventory`, mas `InventorySpacingFix` e
+`InventorySetupHelper` ainda o leem.
+
+**Dois bugs da `ContainerView` que só apareceram aqui**, porque o `Inventory` é o primeiro
+container que muda de tamanho (SellBox e comedouro são fixos e constroem uma vez só):
+
+1. **Slots órfãos a cada resize.** `Destroy` é adiado até o fim do frame, então os slots antigos
+   continuavam filhos enquanto o `Rebuild` instanciava os novos. Crescer o inventário de 45 uma
+   vez deixava **81 filhos** num parent que deveria ter 45 — 36 órfãos, duplicados por nome e
+   desconhecidos da view, que renderizam por cima dos slots vivos se o resize acontecer com o
+   painel aberto. Corrigido desparenteando antes de destruir.
+
+2. **Rebuild fechava o grid aberto.** Slots recriados voltavam no `startActive` do grupo
+   (`false` para storage), então crescer o inventário com ele aberto apagava o grid até o
+   jogador alternar duas vezes. A view agora lembra a visibilidade corrente por grupo e a
+   restaura no `Rebuild` — responsabilidade da view, não de cada dono.
+
+**Nota de método:** o primeiro diagnóstico do bug 1 foi um falso negativo meu. Medir os filhos
+no mesmo frame do resize conta os objetos condenados junto com os novos; medir depois de eu já
+ter restaurado o tamanho mascarava o acúmulo. Só medindo **na chamada seguinte**, com o tamanho
+ainda crescido, o vazamento aparece de forma estável.
+
+**Limite honesto dos 9 testes novos (`ContainerViewRebuildTests`):** os de visibilidade pegam o
+bug 2 de verdade — verificado revertendo o fix e vendo-os ficar vermelhos. Os de vazamento
+**não podem** pegar o bug 1: em EditMode o código usa `DestroyImmediate`, os filhos somem na
+hora e as contagens dão certo mesmo com o fix revertido. Ficam como guarda do invariante; o
+bug 1 é coberto pela verificação em Play Mode registrada aqui.
+
+**Verificado em Play Mode:** 45 slots em 2 grupos (9 hotbar visíveis + 36 storage ocultos),
+nomes e índices corretos, `OwnerView` ligado (o router resolve o inventário pela view agora, não
+mais pelo fallback), toggle abre/fecha, seleção, refill da hotbar, save/load com item em slot de
+storage, as sete rotas de transferência, e resize aberto/fechado sem órfãos. Console sem erros.
 
 O `Inventory` não cabia na `ContainerView` por três motivos legítimos: dois parents com ranges
 diferentes (hotbar 0-8 em `hotbarParent`, storage no `storageParent`), slots de storage nascem

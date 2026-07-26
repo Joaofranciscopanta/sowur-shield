@@ -78,6 +78,10 @@ namespace SowurShield.Inventory
         private Action<InventorySlot, int> configureSlot;
 
         private readonly List<InventorySlot> slotUIs = new List<InventorySlot>();
+
+        /// <summary>Visibility per group index, so Rebuild can restore it. See SetGroupActive.</summary>
+        private readonly Dictionary<int, bool> groupActive = new Dictionary<int, bool>();
+
         private bool isBuilt;
 
         /// <summary>
@@ -143,6 +147,11 @@ namespace SowurShield.Inventory
             if (container == null) return;
             if (groupIndex < 0 || groupIndex >= slotGroups.Count) return;
 
+            // Remembered so a Rebuild can restore it. A resize rebuilds every slot, and fresh
+            // slots come back at the group's startActive — so without this, growing the
+            // inventory while it was open blanked the storage grid until the next toggle.
+            groupActive[groupIndex] = active;
+
             SlotGroup group = slotGroups[groupIndex];
             int end = group.EndIndexExclusive(container.MaxSlots);
 
@@ -152,6 +161,13 @@ namespace SowurShield.Inventory
                 if (slotUI != null)
                     slotUI.gameObject.SetActive(active);
             }
+        }
+
+        /// <summary>Current visibility per group, seeded from each group's startActive.</summary>
+        private bool IsGroupActive(int groupIndex)
+        {
+            if (groupActive.TryGetValue(groupIndex, out bool active)) return active;
+            return slotGroups[groupIndex].startActive;
         }
 
         /// <summary>How many slot groups this view renders.</summary>
@@ -226,14 +242,19 @@ namespace SowurShield.Inventory
             for (int i = 0; i < container.MaxSlots; i++)
                 slotUIs.Add(null);
 
-            foreach (SlotGroup group in slotGroups)
+            for (int g = 0; g < slotGroups.Count; g++)
             {
+                SlotGroup group = slotGroups[g];
+
                 if (group.parent == null)
                 {
                     Debug.LogWarning($"[ContainerView] {name}: a slot group has no parent — skipped.", this);
                     continue;
                 }
 
+                // Whatever the group is showing right now, not what it started as — a rebuild
+                // triggered by a resize must not close a grid the player has open.
+                bool active = IsGroupActive(g);
                 int end = group.EndIndexExclusive(container.MaxSlots);
 
                 for (int i = Mathf.Max(0, group.startIndex); i < end; i++)
@@ -256,7 +277,7 @@ namespace SowurShield.Inventory
                     slotUI.SetItemStack(container.GetSlot(i));
                     configureSlot?.Invoke(slotUI, i);
 
-                    if (!group.startActive)
+                    if (!active)
                         slotObj.SetActive(false);
                 }
             }
@@ -334,10 +355,32 @@ namespace SowurShield.Inventory
         {
             foreach (InventorySlot slotUI in slotUIs)
                 if (slotUI != null)
-                    Destroy(slotUI.gameObject);
+                    DestroySlotObject(slotUI.gameObject);
 
             slotUIs.Clear();
             isBuilt = false;
+        }
+
+        /// <summary>
+        /// Remove a slot from its parent and destroy it.
+        ///
+        /// Destroy is deferred to the end of the frame, but Rebuild clears and re-instantiates
+        /// within a single frame — so without the explicit unparenting the outgoing slots were
+        /// still children while the new ones were created, and the grid layout kept laying them
+        /// out. Growing a 45-slot inventory once left 81 children under a parent that should
+        /// hold 45: 36 orphans, duplicated by name and unknown to the view. They are inactive
+        /// while the panel is closed, which is why this stayed invisible, but a resize with the
+        /// inventory open renders them on top of the live slots.
+        ///
+        /// Only Inventory reaches this: SellBox and the trough are fixed-size and build once.
+        /// </summary>
+        private static void DestroySlotObject(GameObject slotObject)
+        {
+            slotObject.transform.SetParent(null, false);
+
+            // Edit Mode (tests, editor tooling) rejects Destroy.
+            if (Application.isPlaying) Destroy(slotObject);
+            else DestroyImmediate(slotObject);
         }
     }
 }
