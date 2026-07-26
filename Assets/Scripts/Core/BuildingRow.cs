@@ -41,10 +41,17 @@ public class BuildingRow : MonoBehaviour
     [SerializeField] private LocalizedString builtText; // table "Farming", key "farming.building.built"
     [SerializeField] private LocalizedString cannotAffordText; // table "Farming", key "farming.building.cannot_afford"
 
-    // Colour palette
-    private static readonly Color COLOR_AFFORDABLE   = new Color(0.2f, 0.75f, 0.3f);
-    private static readonly Color COLOR_UNAFFORDABLE = new Color(0.85f, 0.35f, 0.25f);
-    private static readonly Color COLOR_BUILT        = new Color(0.5f, 0.5f, 0.5f);
+    // Colour palette. Deepened when rows went from a dark grey background to the theme's tan
+    // (UIThemeStyler.StyleListRow): the bright versions were tuned for light-on-dark and scored
+    // 1.88 / 3.01 / 3.11 contrast against tan, all under the 4.5 wanted for body text — the
+    // green "affordable" was very nearly unreadable. These score 4.62 / 6.12 / 4.46 and keep
+    // the same green/red/grey meaning.
+    private static readonly Color COLOR_AFFORDABLE   = new Color(0.13f, 0.45f, 0.20f);
+    private static readonly Color COLOR_UNAFFORDABLE = new Color(0.60f, 0.16f, 0.10f);
+    private static readonly Color COLOR_BUILT        = new Color(0.42f, 0.40f, 0.36f);
+
+    /// <summary>Multiplier for the buy button's gold sprite when the option is unavailable.</summary>
+    private static readonly Color BUTTON_TINT_DIMMED = new Color(0.65f, 0.62f, 0.58f);
 
     public void Populate(FarmBuildingData data, bool alreadyBuilt, bool canAfford, int playerMaterialCount)
     {
@@ -105,14 +112,15 @@ public class BuildingRow : MonoBehaviour
             iconImage.enabled = data.icon != null;
         }
 
-        // Buy button
+        // Buy button. These tint the themed gold sprite rather than filling a plain button, so
+        // they are near-white multipliers, not the text colours above — pushing a deep green
+        // through the gold art just makes it look dirty. Availability is carried by the button
+        // dimming and by interactable; the status label states it in words.
         if (buyButton != null)
         {
             buyButton.interactable = !alreadyBuilt && canAfford;
             ColorBlock cb = buyButton.colors;
-            cb.normalColor = alreadyBuilt ? COLOR_BUILT
-                           : canAfford    ? COLOR_AFFORDABLE
-                           :               COLOR_UNAFFORDABLE;
+            cb.normalColor = alreadyBuilt || !canAfford ? BUTTON_TINT_DIMMED : Color.white;
             buyButton.colors = cb;
         }
     }

@@ -154,6 +154,12 @@ public class GameMenuUI : MonoBehaviour
             UIThemeStyler.TintText(confirmationText, theme.backgroundCream);
             UIThemeStyler.TintText(saveInfoText, theme.backgroundCream);
             UIThemeStyler.TintText(saveSlotPanelTitle, theme.highlightGold);
+
+            // Headings with no serialized field of their own. "Game Menu" kept the scene's old
+            // brown on the panel sprite's dark top border — a 1.06 contrast ratio, invisible.
+            UIThemeStyler.StylePanelTitle(mainMenuPanel, theme);
+            UIThemeStyler.StylePanelTitle(settingsPanel, theme);
+            UIThemeStyler.StylePanelTitle(saveInfoPanel, theme);
         }
     }
 

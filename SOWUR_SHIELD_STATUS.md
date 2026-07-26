@@ -170,11 +170,34 @@
   `BattleResultsUI` (uses the previously-unused `panel_victory`/`panel_defeat` sprites)
 - `AnimalMarketUI` skipped intentionally — its builder already applies the theme at build time
 
+**Verified in Play Mode (Jul/26)** — pause menu + building shop. Three contrast bugs found and
+fixed; every colour decision was measured (WCAG ratio), not eyeballed:
+- **Pause menu title was invisible** — "Game Menu" kept the scene's old brown on the panel
+  sprite's dark border: a **1.06** contrast ratio. New `UIThemeStyler.StylePanelTitle` recolours
+  headings that have no serialized field, found by name so no Editor wiring is needed. Cream,
+  not the gold used elsewhere: a heading can land on any wood tone, and gold only clears the
+  bar on the darkest (3.01 on woodLight vs cream's 3.96/5.24/7.59 across the range).
+- **Building shop rows ignored the theme** — a hardcoded 0.15 grey row with a flat green button
+  on a cream panel. New `UIThemeStyler.StyleListRow`, applied at row instantiation since the
+  prefab is Editor-owned. Row labels flip dark to match the new light background.
+- **`BuildingRow`'s state colours were tuned for light-on-dark** — green/red/grey scored
+  **1.88 / 3.01 / 3.11** against the new tan row, all under the 4.5 wanted for body text (the
+  green "affordable" was nearly unreadable). Deepened to 4.62 / 6.12 / 4.46, same meanings.
+  The buy button's tint was split off: it multiplies the gold sprite, so it stays a near-white
+  dim rather than a deep hue that would just look dirty.
+
 **Remaining**:
-- [ ] Visual verification of the combat Items button/panel in a live battle (code compiled
-  clean; not yet seen on screen — needs editor-focused play session)
-- [ ] Visual verification of the Jul/11 runtime theming above (shops, pause menu, quests,
-  victory/defeat) in an editor play session
+- [ ] Visual verification of the combat Items button/panel in a live battle (`ConsumableBattleUI`
+  is in SampleScene, but the panel only makes sense mid-battle — needs a CombatScene run)
+- [ ] `ShopUI` and `BattleResultsUI` unverified — neither lives in SampleScene (`ShopUI` is
+  NPC-driven, `BattleResultsUI` is in CombatScene)
+- [ ] `QuestsUI` — **the Jul/11 note above is wrong about it**: `Scripts/Dialogue/QuestsUI.cs`
+  contains no `ApplyTheme` call at all, so the "panel + close button" theming claimed there was
+  never applied. It's also absent from SampleScene (built on demand by the `QuestsUIBuilder`
+  editor window), which is likely how it went unnoticed. Theme it or drop the claim
+- [ ] Building shop's "Farm Buildings" title sits on the panel sprite's wide wood border rather
+  than the cream field — legible, but a RectTransform nudge in the Editor, not a code fix
+- [ ] Settings panel's sliders/dropdown/checkbox still use stock Unity visuals
 - [ ] Stamina bar has no icon (no energy icon exists in the sprite kit yet)
 
 ---
