@@ -186,11 +186,29 @@ fixed; every colour decision was measured (WCAG ratio), not eyeballed:
   The buy button's tint was split off: it multiplies the gold sprite, so it stays a near-white
   dim rather than a deep hue that would just look dirty.
 
+**`BattleResultsUI` verified in CombatScene (Jul/26)** — two more bugs, one of them not a
+colour problem at all:
+- **The victory title was hidden behind the battle HUD.** `BattleResultsCanvas` and
+  `BattleStatusCanvas` both sat at sortingOrder 10, so which drew on top was arbitrary — and
+  the HUD's `TurnOrderPanel` (y 936–996) covered the "Victory!" heading (y 930–1030) exactly.
+  The results screen genuinely looked like it had no title. Now set from code to 150: above
+  `BattleHudOverlay`/`ConsumableBattleUI` (100), below the achievement toast (200).
+- **Both panels' text was tuned for a dark background they don't have.** `panel_victory` /
+  `panel_defeat` are light art, but the title got gold and the body cream: **1.20** and
+  **1.03** contrast — invisible. Body text and the victory heading are now dark (8.10 on the
+  gold ribbon, 12.48 on the cream field).
+- The defeat heading needed the **opposite** treatment: its ribbon is red, where nothing dark
+  works (textDark only reaches 2.40). Cream, at 5.32. The ribbon already carries the "defeat"
+  colour.
+
 **Remaining**:
-- [ ] Visual verification of the combat Items button/panel in a live battle (`ConsumableBattleUI`
-  is in SampleScene, but the panel only makes sense mid-battle — needs a CombatScene run)
-- [ ] `ShopUI` and `BattleResultsUI` unverified — neither lives in SampleScene (`ShopUI` is
-  NPC-driven, `BattleResultsUI` is in CombatScene)
+- [ ] Visual verification of the combat Items button/panel in a live battle — `ConsumableBattleUI`
+  self-spawns in CombatScene, but the panel only populates mid-battle with real units
+- [ ] `ShopUI` unverified — NPC-driven, not present in either scene at rest
+- [ ] `BattleResultsUI` buttons are anchored to the **screen corners** (anchor 0,0 and 1,0 at
+  y 0–30), so all four sit clipped at the bottom edge instead of inside the panel. Scene-only
+  layout — no code touches it — so it needs a RectTransform fix in the Editor: anchor to
+  (0.5, 0.5), roughly x ±110, y −260, which lands them under the stats block
 - [ ] `QuestsUI` — **the Jul/11 note above is wrong about it**: `Scripts/Dialogue/QuestsUI.cs`
   contains no `ApplyTheme` call at all, so the "panel + close button" theming claimed there was
   never applied. It's also absent from SampleScene (built on demand by the `QuestsUIBuilder`
