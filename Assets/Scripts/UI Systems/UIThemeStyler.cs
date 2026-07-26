@@ -75,11 +75,100 @@ public static class UIThemeStyler
         }
     }
 
+    /// <summary>
+    /// Style one row of a runtime-populated list (shop entries, build options).
+    ///
+    /// Rows come from a prefab whose colours predate the theme — the building shop's rows are
+    /// a hardcoded 0.15 grey with a flat green button, which reads as a different application
+    /// sitting on top of the cream panel. Applied per row after Instantiate, since the prefab
+    /// itself is Editor-owned.
+    /// </summary>
+    public static void StyleListRow(GameObject row, UITheme theme)
+    {
+        if (row == null || theme == null) return;
+
+        Image background = row.GetComponent<Image>();
+        if (background != null && background.sprite == null)
+        {
+            // Tan rather than the panel's cream, so rows stay distinguishable from the panel
+            // they sit on without going dark.
+            background.color = new Color(
+                theme.backgroundTan.r, theme.backgroundTan.g, theme.backgroundTan.b, 0.9f);
+        }
+
+        // The row's labels were light-on-dark. Flipping the background without flipping these
+        // would trade one unreadable row for another, so anything pale goes dark; colours that
+        // carry meaning (cost, status) are darkened rather than replaced, keeping the hue.
+        foreach (TextMeshProUGUI text in row.GetComponentsInChildren<TextMeshProUGUI>(true))
+        {
+            if (text.GetComponentInParent<Button>() != null) continue;   // StyleButton owns it
+
+            // 0.45, not something gentler: the gold cost label only reaches a 3.43 contrast
+            // ratio against the tan row at 0.55, under the 4.5 wanted for body text. At 0.45
+            // it clears it (4.73) and the red status label stays well clear too (8.93).
+            text.color = IsPale(text.color)
+                ? theme.textDark
+                : Darken(text.color, 0.45f);
+        }
+
+        foreach (Button button in row.GetComponentsInChildren<Button>(true))
+            StyleButton(button, theme, ButtonPrimaryPath);
+    }
+
+    /// <summary>Near-white/grey, i.e. carrying no meaning beyond "readable on a dark row".</summary>
+    private static bool IsPale(Color c)
+    {
+        const float spread = 0.12f;
+        float max = Mathf.Max(c.r, Mathf.Max(c.g, c.b));
+        float min = Mathf.Min(c.r, Mathf.Min(c.g, c.b));
+        return max - min < spread && max > 0.6f;
+    }
+
+    /// <summary>Scale a colour toward black, preserving its hue.</summary>
+    private static Color Darken(Color c, float factor)
+    {
+        return new Color(c.r * factor, c.g * factor, c.b * factor, c.a);
+    }
+
     /// <summary>Tint a TMP text with a theme color, null-safe on both sides.</summary>
     public static void TintText(TextMeshProUGUI text, Color color)
     {
         if (text != null)
             text.color = color;
+    }
+
+    /// <summary>
+    /// Recolour a panel's heading to cream so it reads against the wood art.
+    ///
+    /// A panel title sits on the sprite's border, where the dark label colour used on gold
+    /// buttons disappears — the pause menu's "Game Menu" heading measured a 1.06 contrast
+    /// ratio against woodDark, i.e. invisible.
+    ///
+    /// Cream rather than the gold used by saveSlotPanelTitle: a heading can land on any wood
+    /// tone depending on the panel sprite, and gold only clears the WCAG 3.0 bar for large
+    /// text on the darkest one (5.77 on woodDark, but 3.01 on woodLight). Cream holds up
+    /// across the range — 7.59 / 5.24 / 3.96 on dark / mid / light.
+    ///
+    /// Found by name so a panel whose heading has no serialized field still gets themed,
+    /// rather than needing a new Inspector reference wired by hand in every scene. Panels that
+    /// do expose the field should keep calling <see cref="TintText"/> directly.
+    /// </summary>
+    /// <param name="nameHint">
+    /// Substring matched case-insensitively against child object names, e.g. "Title".
+    /// </param>
+    public static void StylePanelTitle(GameObject panel, UITheme theme, string nameHint = "Title")
+    {
+        if (panel == null || theme == null) return;
+
+        foreach (TextMeshProUGUI text in panel.GetComponentsInChildren<TextMeshProUGUI>(true))
+        {
+            // Only direct headings — a title nested inside a button is that button's label,
+            // and StyleButton has already given it the right colour for gold art.
+            if (text.GetComponentInParent<Button>() != null) continue;
+
+            if (text.gameObject.name.IndexOf(nameHint, System.StringComparison.OrdinalIgnoreCase) >= 0)
+                text.color = theme.backgroundCream;
+        }
     }
 }
 

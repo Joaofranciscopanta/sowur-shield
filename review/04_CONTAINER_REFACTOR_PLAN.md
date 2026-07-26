@@ -1,0 +1,717 @@
+# Plano — Arquitetura de Containers de Inventário
+
+> Criado 2026-07-25. Sucessor natural do `03_WORKLIST.md` (14/14 concluído).
+> Alvo: `SellBox.cs` (1174), `Inventory.cs` (1178), `InventorySlot.cs` (907), `FeedingTrough.cs` (509).
+> Mesmo protocolo de execução do `00_README.md`: pegue a primeira etapa não marcada
+> cujas dependências estejam `[x]`.
+
+---
+
+## 1. Diagnóstico
+
+O problema **não é** o tamanho dos arquivos. É que três containers reimplementam as mesmas
+quatro responsabilidades, e o slot de UI conhece cada um deles pelo nome.
+
+### 1.1 O acoplamento central
+
+`InventorySlot.OnDrop` (`InventorySlot.cs:835-905`) é uma cadeia de cinco `if` que cita
+`SellBox`, `IsTroughMode` e o inventário do jogador, e chama
+`FindFirstObjectByType<SellBox>()` **a cada drop**:
+
+```
+if (draggedSlot.isSellBoxMode && !isSellBoxMode && sellBox.IsOpen)  -> sellBox.HandleSellBoxToInventoryDrop
+if (draggedSlot.isSellBoxMode &&  isSellBoxMode && sellBox.IsOpen)  -> sellBox.HandleSellBoxInternalMove
+if (isSellBoxMode && sellBox.IsOpen)                                -> sellBox.HandleSlotDrop
+if (draggedSlot.IsTroughMode && !isTroughMode)                      -> lógica inline
+if (isTroughMode && troughContainer != null)                        -> lógica inline
+                                                                    -> inventoryManager.HandleSlotDrop
+```
+
+Um container novo (baú, loja, bancada) exige editar `InventorySlot.OnDrop` **e** escrever a
+quarta cópia de build de slots, refresh, transferência e save. É esse custo marginal que o
+plano ataca — não a contagem de linhas.
+
+### 1.2 Duplicação por container
+
+| Responsabilidade | Inventory | SellBox | FeedingTrough |
+|---|---|---|---|
+| Construir slots do prefab | `SetupUI`/`CreateSlotUI` | `SetupUI`/`CreateSellBoxSlotUI` | `SetupUI` |
+| Assinar `OnSlotChanged` → refresh | `UpdateSlot`/`UpdateAllSlots` | idem + valor total + sprite | `RefreshSlots` |
+| Transferência entre containers | `HandleSlotDrop` | 3 métodos distintos | inline no `OnDrop` |
+| Save/load slot a slot | `InventoryData` própria | `worldStrings`/`worldCounters` | `worldStrings`/`worldCounters` |
+| Travar movimento do jogador | — | inline | `DisablePlayerMovement` |
+
+### 1.3 O que já está certo (a base do plano)
+
+- `IInventoryContainer` + `InventoryContainer` (443 linhas) — add/remove/slots/stacking, sólido.
+- `InventoryContainer.GetSaveData()` / `LoadFromSaveData()` **já existem e ninguém usa**:
+  SellBox e FeedingTrough persistem slot a slot na mão.
+- `InventorySlot` já foi parcialmente decomposto: `SlotVisualController`, `SlotDragHandler`,
+  `SlotSellBoxAdapter`. Há precedente de componentização — o plano continua esse caminho.
+
+### 1.4 O ponto cego
+
+`ItemStack` tem 33 testes. `InventoryContainer`, `Inventory`, `SellBox`, `FeedingTrough` e toda
+a lógica de transferência têm **zero**. É simultaneamente a área com mais correções de bug
+documentadas (4 no `CLAUDE.md`, todas em interação de SellBox) e a com menos rede de proteção.
+**Por isso a Etapa 0 vem antes de qualquer refactor.**
+
+---
+
+## 2. Arquitetura alvo
+
+```
+InventorySlot.OnDrop            ← 2 linhas, não conhece nenhum container concreto
+        │
+        ▼
+ItemTransferService             ← C# puro, sem MonoBehaviour, testável sem cena
+        │
+        ▼
+ContainerView (MonoBehaviour)   ← slots, refresh, save; um por container na cena
+        │
+        ▼
+IContainerPolicy                ← ponto de extensão: Sell / Player / Food / Chest / Craft
+        │
+        ▼
+IInventoryContainer             ← INALTERADO
+```
+
+### 2.1 Decisões travadas com o Lucas (2026-07-25)
+
+| Decisão | Escolha | Consequência no desenho |
+|---|---|---|
+| Escopo | Etapas 0–5 completas | — |
+| Saves antigos | **Podem quebrar** | Formato novo direto; bump `CURRENT_SAVE_VERSION` 1 → 2 e migração V1→V2 que descarta as chaves antigas. Primeiro uso real do dispatch criado na TASK-004. |
+| Containers futuros | Baú, Loja, Cozinha | A cozinha é a que mais restringe: entrada e saída com regras diferentes **no mesmo container** ⇒ a policy tem que valer por slot. |
+
+### 2.2 `IContainerPolicy` — assinatura por slot
+
+A cozinha força isto. Se a policy fosse por container, uma bancada com slots de entrada
+(aceita ingredientes) e de saída (só permite retirar) precisaria de dois containers e de um
+caso especial no serviço de transferência — exatamente o que estamos removendo.
+
+```csharp
+public enum SlotRole { Storage, Input, Output }
+
+public interface IContainerPolicy
+{
+    SlotRole GetRole(int slotIndex);              // default: Storage
+    bool CanAccept(Item item, int slotIndex);     // SellBox: item.canBeSold
+    bool CanWithdraw(int slotIndex);              // Output de craft: true; Input: false
+    void OnAccepted(Item item, int quantity);     // som, partícula, sprite da caixa
+    void OnRejected(Item item, int slotIndex);    // feedback vermelho
+}
+```
+
+`DefaultContainerPolicy` implementa tudo como "Storage, aceita e permite retirar" — o baú é
+literalmente isso, zero código novo.
+
+### 2.3 Onde as lojas entram (e onde não entram)
+
+`ShopUI` (403), `AnimalMarketUI` (512) e `BuildingShopUI` (402) hoje vivem fora dessa
+arquitetura e **compram por botão, não por arrastar**. O plano os trata assim:
+
+- Eles **ganham** a `ContainerView` para exibir estoque (mata o build de slots duplicado).
+- Eles **não** entram no `ItemTransferService` — uma compra é uma transação com preço,
+  estoque e desconto por relacionamento, não um movimento de itens. Forçar isso na policy
+  transformaria `CanAccept` num monstro.
+- A policy da loja retorna `CanAccept == false` para todo drop direto, e a compra continua
+  passando pelo caminho de botão que já funciona.
+
+Isto é uma limitação consciente, não um esquecimento. Migrar as lojas é escopo da Etapa 6,
+que **não faz parte deste plano** — fica registrada como continuação.
+
+---
+
+## 3. Etapas
+
+Cada etapa compila, passa nos testes e é commitável sozinha. Perder uma sessão no meio custa
+no máximo uma etapa.
+
+---
+
+### ETAPA 0 — Rede de proteção para `InventoryContainer`
+- [x] status — feito 2026-07-25. `InventoryContainerTests.cs`, **56 testes** (plano previa ~40).
+  Nenhum arquivo de produção alterado. Três achados registrados na seção 6.
+- risco: nenhum (só adiciona testes)
+- depende de: nada
+- arquivos: novo `Assets/Tests/EditMode/InventoryContainerTests.cs`
+
+**Por quê primeiro:** as etapas 1–5 movem lógica de lugar. Sem testes, "movi sem quebrar" é fé.
+
+**Coberto:**
+- `AddItem` em container vazio, parcialmente cheio, cheio; retorno em overflow parcial
+- Stacking até `maxStackSize` e transbordo para o próximo slot livre
+- `RemoveItem` atravessando múltiplos slots; remoção maior que o estoque
+- `CanAdd` / `HasEmptySlot` / `GetFirstEmptySlotIndex` nas bordas
+- `SetMaxSlots` **encolhendo com itens nos slots removidos** (hoje sem teste, e
+  `Inventory.SetInventorySize` depende disso)
+- `FindSlotWithItem` com o item ausente
+- Round-trip `GetSaveData()` → `LoadFromSaveData()` preservando índices e quantidades
+- Eventos `OnSlotChanged` / `OnItemAdded` / `OnItemRemoved` disparando na quantidade certa
+
+**Nota de implementação:** `ItemDatabase` resolve nomes via `Resources` e não tem ponto de
+injeção, então `InstallTestItemDatabase()` no fim do arquivo de teste alcança os estáticos
+privados por reflection. Ficou contido no teste em vez de adicionar API só-para-teste na
+produção — se mais suítes precisarem, aí sim vale um seam de verdade.
+
+**Feito quando:** ~40 testes passando; nenhum arquivo de produção alterado. ✅
+
+---
+
+### ETAPA 1 — `ItemTransferService`
+- [x] status — feito 2026-07-25. Service + `IContainerPolicy` + `DefaultContainerPolicy`,
+  **38 testes**. Nada em produção chama o serviço ainda.
+- risco: baixo (código novo, ainda não plugado)
+- depende de: Etapa 0
+- arquivos: novo `Assets/Scripts/Inventory/ItemTransferService.cs`,
+  novo `Assets/Scripts/Inventory/IContainerPolicy.cs`,
+  novo `Assets/Tests/EditMode/ItemTransferServiceTests.cs`
+
+**Ajuste em relação ao plano original:** a interface `IContainerPolicy` e o
+`DefaultContainerPolicy` vieram da Etapa 2 para cá — a assinatura do serviço depende deles,
+e sem um policy permissivo não dá para testar o serviço isoladamente. A Etapa 2 fica só com as
+policies concretas (SellBox e comedouro).
+
+**Decisão de desenho — `SlotRole` é metadado, não permissão.** O enum descreve o slot para a UI
+(renderizar um slot de saída diferente); quem decide é `CanAccept`/`CanWithdraw`. O serviço nunca
+lê `GetRole`. Assim existe uma única fonte de verdade: uma policy de bancada devolve `Output`
+para o slot de resultado **e** `CanAccept == false` para ele.
+
+**Comportamentos preservados de propósito:** soltar um stack sobre um stack cheio do mesmo item
+faz swap (não rejeita), igual ao `Inventory.HandleSlotDrop` de hoje. Swap parcial não existe —
+não há onde colocar o resto, então nada acontece.
+
+Classe estática pura. Uma única entrada:
+
+```csharp
+public static TransferResult Transfer(
+    IInventoryContainer from, int fromIndex,
+    IInventoryContainer to,   int toIndex,
+    IContainerPolicy toPolicy, int quantity = -1);   // -1 = stack inteiro
+
+public readonly struct TransferResult
+{
+    public bool Moved;            // algo saiu da origem
+    public int  QuantityMoved;
+    public bool Rejected;         // policy recusou
+    public bool Partial;          // coube parte
+}
+```
+
+Absorve os quatro caminhos que hoje estão espalhados: `Inventory.HandleSlotDrop:441`,
+`SellBox.HandleSlotDrop:607`, `SellBox.HandleSellBoxInternalMove:673`,
+`SellBox.HandleSellBoxToInventoryDrop:705`.
+
+Precisa cobrir os quatro cenários que a versão do `Inventory` já trata e a do `SellBox` não:
+slot destino vazio, stack compatível com sobra, stack compatível sem sobra, e **swap** de
+itens incompatíveis.
+
+**Feito quando:** ~30 testes, incluindo `from == to` (movimento interno) e destino que rejeita.
+Nenhum arquivo de produção ainda chama o serviço.
+
+---
+
+### ETAPA 2 — As policies concretas
+- [x] status — feito 2026-07-25. `SellBoxPolicy` + `FeedingTroughPolicy`, **25 testes**
+  (isoladas e através do `ItemTransferService`). Nada em produção usa ainda.
+- risco: baixo
+- depende de: Etapa 1
+- arquivos: novos `Assets/Scripts/Inventory/Policies/SellBoxPolicy.cs`,
+  `FeedingTroughPolicy.cs`
+  (a interface e o `DefaultContainerPolicy` já vieram na Etapa 1)
+
+`SellBoxPolicy.CanAccept` = `item.canBeSold`. Ganho colateral: hoje essa checagem está inline
+no `SellBox.HandleSlotDrop`, ou seja, só vale naquele caminho — como policy, o
+`ItemTransferService` a aplica em toda rota de entrada, inclusive no swap, onde um item
+não-vendável poderia ser empurrado para dentro da caixa.
+
+**`FeedingTroughPolicy` NÃO muda o jogo** — decisão revista durante a implementação. O plano
+original previa rejeitar não-ração no drop, mas isso é mudança de gameplay, não refactor.
+A flag `RejectNonFood` existe e está testada nos dois estados, mas nasce em **`false`**, que é
+exatamente o que o jogo faz hoje (aceita tudo, ignora o que não serve na hora de alimentar).
+Assim a Etapa 4 pode subir sem alterar o jogo, e virar a flag depois é uma decisão isolada e
+revertível.
+
+O conjunto do que conta como ração vem por callback (`Func<IEnumerable<Item>>`), não lido do
+`AnimalZone` direto: o conjunto depende de quais animais estão na zona **naquele momento**, e
+o callback é o que permite testar a policy sem cena, sem `AnimalZone` e sem `ItemDatabase`
+populado. Se o callback devolver `null` (sem zona ligada, ou `ItemDatabase` ainda não pronto)
+a policy fica permissiva — trancar o jogador fora de um comedouro que ele não consegue encher
+seria pior que aceitar demais. Lista vazia é resposta legítima e rejeita tudo.
+
+**Feito quando:** policies testadas isoladamente + integradas ao `ItemTransferService`. ✅
+
+---
+
+### ETAPA 3 — `ContainerView` e migração do FeedingTrough
+- [x] status — feito e **verificado no Editor em 2026-07-25**: compila, 709 testes rodados
+  (708 verdes), e o roteiro manual de 8 passos passou inteiro.
+- risco: médio (primeiro container real migrado)
+- depende de: Etapa 2
+- arquivos: novo `Assets/Scripts/Inventory/ContainerView.cs`, `Animals/FeedingTrough.cs`
+
+`ContainerView` recebe container + `slotParent` + `slotPrefab` + policy, instancia os slots,
+assina `OnSlotChanged` e faz refresh. Expõe `SlotCount`, `GetSlotUI(i)`, `IndexOf(slotUI)`,
+`Refresh()`, `RefreshSlot(i)`, `ForEachSlot(...)` e o evento `OnSlotRefreshed`.
+
+**O trough é o cobaia de propósito:** é o menor, o mais recente, o menos acoplado e o único
+sem histórico de bug. Se a abstração estiver errada, descobrimos aqui e não dentro do SellBox.
+
+**Zero wiring de cena.** A view é adicionada em runtime (`AddComponent<ContainerView>()`) e
+recebe as referências por `Configure(slotParent, slotPrefab, prefix)` — o comedouro já tem
+essas referências, então nenhum `.unity` ou prefab foi tocado. Containers novos podem
+simplesmente ligar os campos no Inspector e pular o `Configure`.
+
+**Divisão de responsabilidade que apareceu na migração:** o handler original de
+`OnSlotChanged` fazia três coisas (empurrar o stack pro slot UI, atualizar o sprite do
+comedouro, atualizar o texto de status). Só a primeira é da view. As outras duas continuam
+assinadas direto no container, e isso **não é estilo, é necessidade**: `LoadData` escreve nos
+slots durante o `Start`, antes do `SetupUI` existir — se dependessem da view, o sprite do
+comedouro carregaria errado num save com comida dentro.
+
+**Achado:** `FeedingTrough.RefreshSlots()` nunca era chamado por ninguém. Removido junto.
+
+**Roteiro de verificação no Editor (pendente):**
+1. Abrir o comedouro com E — os 12 slots aparecem.
+2. Arrastar ração do inventário pro comedouro — item entra, sprite muda (vazio → parcial → cheio).
+3. Arrastar do comedouro de volta pro inventário — item volta.
+4. Arrastar do comedouro pra fora do painel — item **volta pro comedouro**, não cai no chão.
+5. Texto de status mostra `"Food stored: X items / Can feed: Y/Z animals tomorrow"`.
+6. Dormir — animais são alimentados, comida some, sprite atualiza.
+7. Salvar, sair pro menu, carregar — conteúdo e sprite voltam corretos.
+8. Console limpo em toda a sequência.
+
+---
+
+### ETAPA 4 — Migrar SellBox e Inventory; limpar o `OnDrop`
+
+Dividida em 4a (adoção da `ContainerView`) e 4b (unificação do drag) depois do achado abaixo.
+
+#### Achado que dividiu a etapa: o drag esvazia a origem antes do drop
+
+`SlotDragHandler.BeginDrag` chama `inventoryManager.ClearSlotForDrag(slot)`, que faz
+`container.SetSlot(slotIndex, new ItemStack())`. Quando o `OnDrop` roda, **o slot de origem no
+inventário já está vazio** — o item vive só no `draggedItemStack` do handler.
+
+Isso invalida a premissa do `ItemTransferService.Transfer(from, fromIndex, ...)` da Etapa 1 no
+caminho principal de drag: não há o que ler na origem.
+
+Pior, há assimetria: slots do inventário são destrutivos no `BeginDrag`; os do SellBox e do
+comedouro **não** (mantêm o item no container e limpam só o visual). **É essa assimetria que
+gerou os cinco ramos do `OnDrop`** — o acoplamento é sintoma, não doença.
+
+Decisão (2026-07-25): overload por payload agora, drag não-destrutivo depois como tarefa
+própria com validação no Editor. Ver Etapa 4b.
+
+#### ETAPA 4a — SellBox adota a `ContainerView`
+- [x] status — feito e **verificado no Editor em 2026-07-25**. `SellBox.cs` 1174 → 1141 linhas.
+  **Inventory NÃO migrado**, ver 4a-bis abaixo.
+- risco: médio
+- arquivos: `Core/SellBox.cs`
+
+Sumiram: `CreateSellBoxSlotUI`, `UpdateSlot`, `UpdateAllSlots` e a lista `sellBoxSlotUIs`.
+`ForceUpdateAllUI` virou `view.Refresh()` + total + sprite. Mesmo padrão do comedouro: view
+criada em runtime, `Configure` + `Bind`, zero wiring de cena.
+
+Mesma divisão do comedouro, pelo mesmo motivo: `UpdateTotalValueDisplay`/`UpdateBoxSprite`
+continuam assinados direto no container porque precisam rodar **sem** slot UI — o
+`SellAllItemsAutomatically` esvazia a caixa durante o sono, com o painel fechado.
+
+Efeito colateral bom: o antigo `UpdateSlot` tinha guarda `activeInHierarchy` e por isso não
+atualizava nada com o painel fechado — era exatamente o que o `ForceUpdateAllUI` existia para
+contornar. A view não tem essa guarda.
+
+#### ETAPA 4a-bis — Inventory adota a `ContainerView`
+- [x] parte 1: `SlotGroup` na `ContainerView` — feito 2026-07-25, **8 testes**
+- [x] parte 2: migrar o `Inventory` — feito e **verificado em Play Mode 2026-07-26**, **9 testes**
+- risco: alto
+
+**Resultado da parte 2 (2026-07-26).** `Inventory.cs` 1147 → 1056 linhas. Sumiram `SetupUI`
+(o corpo inteiro), `CreateSlotUI`, o caminho legado de adoção de slots da cena, a criação
+preguiçosa dentro do `ToggleInventory`, e os laços de criar/destruir prefab de
+`UpgradeInventorySize` e `SetInventorySize`. A lista `slotUIs` deixou de existir: os ~35 usos
+viraram `view.GetSlotUI(i)` / `view.IndexOf(slot)` / `view.SetGroupActive(...)`, e `IndexOfSlot`
+virou a única porta de entrada (os seis call sites que faziam `slotUIs.IndexOf` na mão agora
+passam por ela).
+
+O tracking da hotbar saiu do `UpdateSlot` para um `TrackHotbarItem` próprio, alimentado pelo
+callback `configureSlot` do `Bind` — assim ele sobrevive a um rebuild sem depender da ordem de
+construção da UI.
+
+Confirmado no Editor antes de apagar: `hotbarParent` e `storageParent` estão ambos ligados no
+`Bunny`, com zero filhos pré-existentes, então o caminho legado era realmente inalcançável.
+`slotParent` foi **mantido** — está deprecado para o `Inventory`, mas `InventorySpacingFix` e
+`InventorySetupHelper` ainda o leem.
+
+**Dois bugs da `ContainerView` que só apareceram aqui**, porque o `Inventory` é o primeiro
+container que muda de tamanho (SellBox e comedouro são fixos e constroem uma vez só):
+
+1. **Slots órfãos a cada resize.** `Destroy` é adiado até o fim do frame, então os slots antigos
+   continuavam filhos enquanto o `Rebuild` instanciava os novos. Crescer o inventário de 45 uma
+   vez deixava **81 filhos** num parent que deveria ter 45 — 36 órfãos, duplicados por nome e
+   desconhecidos da view, que renderizam por cima dos slots vivos se o resize acontecer com o
+   painel aberto. Corrigido desparenteando antes de destruir.
+
+2. **Rebuild fechava o grid aberto.** Slots recriados voltavam no `startActive` do grupo
+   (`false` para storage), então crescer o inventário com ele aberto apagava o grid até o
+   jogador alternar duas vezes. A view agora lembra a visibilidade corrente por grupo e a
+   restaura no `Rebuild` — responsabilidade da view, não de cada dono.
+
+**Nota de método:** o primeiro diagnóstico do bug 1 foi um falso negativo meu. Medir os filhos
+no mesmo frame do resize conta os objetos condenados junto com os novos; medir depois de eu já
+ter restaurado o tamanho mascarava o acúmulo. Só medindo **na chamada seguinte**, com o tamanho
+ainda crescido, o vazamento aparece de forma estável.
+
+**Limite honesto dos 9 testes novos (`ContainerViewRebuildTests`):** os de visibilidade pegam o
+bug 2 de verdade — verificado revertendo o fix e vendo-os ficar vermelhos. Os de vazamento
+**não podem** pegar o bug 1: em EditMode o código usa `DestroyImmediate`, os filhos somem na
+hora e as contagens dão certo mesmo com o fix revertido. Ficam como guarda do invariante; o
+bug 1 é coberto pela verificação em Play Mode registrada aqui.
+
+**Verificado em Play Mode:** 45 slots em 2 grupos (9 hotbar visíveis + 36 storage ocultos),
+nomes e índices corretos, `OwnerView` ligado (o router resolve o inventário pela view agora, não
+mais pelo fallback), toggle abre/fecha, seleção, refill da hotbar, save/load com item em slot de
+storage, as sete rotas de transferência, e resize aberto/fechado sem órfãos. Console sem erros.
+
+O `Inventory` não cabia na `ContainerView` por três motivos legítimos: dois parents com ranges
+diferentes (hotbar 0-8 em `hotbarParent`, storage no `storageParent`), slots de storage nascem
+desativados, e um caminho legado que **adota** slots já presentes na cena em vez de instanciar.
+
+**Parte 1 (feita):** a view agora entende grupos.
+`SlotGroup { parent, startIndex, count, startActive, namePrefix }`, com `count: 0` significando
+"daqui até o fim". `Configure(prefab, params SlotGroup[])` para o caso multi-parent e
+`SetGroupActive(i, bool)` para mostrar/esconder um grupo inteiro — que é como o inventário
+revelaria o storage sem o container saber nada sobre visibilidade. A lista interna passou a ser
+indexada pelo índice **do container**, não pela ordem de criação, então um container espalhado
+por vários parents ainda responde `GetSlotUI(i)` corretamente.
+
+Isso já vale sozinho: a bancada de craft precisa exatamente disso (entrada e saída em parents
+diferentes, um container só).
+
+**Parte 2 (adiada de propósito):** a migração em si toca **~35 pontos** do `Inventory.cs` —
+`SetupUI`, `CreateSlotUI`, `SelectSlot` (2×), `UpdateSlot`, `UpdateAllSlots`, `SplitStack`,
+`UseItem`, `ClearSlotForDrag`, `RestoreSlotFromDrag`, `IndexOfSlot`, `ToggleInventory` (que
+ainda cria slots preguiçosamente), `LoadData` e `SetInventorySize` (que destrói e apara a
+lista).
+
+Não fiz às cegas, e a razão é a mesma que guiou o plano inteiro: o retorno aqui é o menor de
+todos — sobra só a última cópia da **construção** de slots, enquanto a duplicação que
+importava, a de **transferência**, já saiu na 4b — e o risco é o maior, porque é o inventário
+do jogador logo depois de uma cirurgia em drag/drop que ainda nem foi mergeada.
+
+**Receita para fazer com o Unity aberto** (é meia hora com feedback imediato):
+1. `view.Configure(slotPrefab, new SlotGroup(hotbarParent, 0, hotbarSize, true, "HotbarSlot"),
+   new SlotGroup(storageParent, hotbarSize, 0, false, "StorageSlot"))` e `Bind(container)`.
+2. Trocar os ~35 usos de `slotUIs` por `view.GetSlotUI(i)` / `view.IndexOf(slot)` /
+   `view.ForEachSlot(...)`.
+3. `ToggleInventory` vira `view.SetGroupActive(1, isInventoryOpen)` — e a criação preguiçosa
+   de slots some, porque a view já constrói tudo no `Bind`.
+4. Apagar o caminho legado de `SetupUI` (adoção de slots da cena): na `SampleScene`
+   `hotbarParent` e `storageParent` estão ligados, então ele nunca roda — e é a única cena com
+   um `Inventory`.
+5. `SetInventorySize` passa a confiar no `OnSizeChanged`, que a view já escuta e responde com
+   `Rebuild()`.
+
+#### ETAPA 4b — Unificar o `OnDrop`
+- [x] status — feito e **verificado no Editor em 2026-07-25**: roteiro manual de drag/drop
+  passou inteiro, incluindo as duas mudanças de comportamento deliberadas.
+- risco: **alto**
+- arquivos: novo `Inventory/SlotTransferRouter.cs`, `Inventory/InventorySlot.cs`,
+  `Inventory/Inventory.cs`, `Inventory/ContainerView.cs`, `Core/SellBox.cs`,
+  `Animals/FeedingTrough.cs`
+
+**O overload por payload não foi necessário.** A decisão aprovada era adicionar uma entrada
+no serviço que recebesse o `ItemStack` arrastado. Ao implementar, apareceu algo mais simples:
+**restaurar antes de transferir**. O router devolve o item arrastado ao slot de origem e só
+então chama o serviço — a partir daí todo caso vira um movimento container-a-container normal,
+com a atomicidade e as policies que já existem. Restauração e movimento acontecem no mesmo
+frame, nada renderiza no meio. Zero API nova.
+
+**Resultado no `OnDrop`:** 71 → 12 linhas, sem citar nenhum container concreto e sem o
+`FindFirstObjectByType<SellBox>()` que rodava a cada drop.
+
+Deletados: `SellBox.HandleSlotDrop`, `HandleSellBoxInternalMove`,
+`HandleSellBoxToInventoryDrop` (149 linhas) e `Inventory.HandleSlotDrop` (65 linhas).
+`SellBox.cs` 1141 → 998, `Inventory.cs` 1200 → 1135.
+
+**Modo trough removido.** `isTroughMode`/`troughContainer`/`IsTroughMode`/`EnableTroughMode`
+existiam só para o `OnDrop` saber rotear. Com o `OwnerView`, um slot não precisa mais de um
+"modo" por tipo de container — que era exatamente o acoplamento que essa etapa atacava.
+
+**Duas mudanças de comportamento deliberadas** (as duas precisam de confirmação no Editor):
+
+1. **Drop em slot do SellBox agora respeita o slot alvo.** O `HandleSlotDrop` antigo calculava
+   `toIndex` e ignorava, sempre usando primeiro-encaixe. Manter isso exigiria um ramo especial
+   "SellBox usa primeiro-encaixe, inventário usa slot exato" — justamente o tipo de ramo que a
+   etapa remove. Mais previsível e é o que qualquer jogo do gênero faz.
+
+2. **Não dá mais para soltar item de container no chão.** Slots donos de uma `ContainerView`
+   nunca abrem mão do item no `BeginDrag`, então soltar fora da UI e gerar um `GroundItem`
+   **duplicaria** o item — ele continuaria no container. O comedouro já se protegia disso; a
+   regra agora vale para todo slot de container, o que fecha o mesmo buraco no SellBox.
+
+**Não testado automaticamente.** O router depende de `InventorySlot`, que é MonoBehaviour com
+`Canvas`/`Image` e não instancia limpo em EditMode. A lógica de transferência por baixo tem 38
+testes; o roteamento em si precisa do Editor.
+
+**Roteiro de verificação — executado em Play Mode, 2026-07-26. Tudo verde, console sem erros.**
+
+Conduzido por `execute_code` no Editor em vez de arrastes de mouse simulados: o mesmo caminho
+de código (`ItemTransferService` + as policies reais dos containers da cena), porém
+determinístico e com estado inspecionável antes/depois.
+
+| Caso | Resultado |
+|---|---|
+| inventário→inventário, slot vazio | `Moved` qty=5, origem esvazia |
+| empilhar mesmo item | `Moved` qty=3 → 5+3=8 |
+| trocar dois itens diferentes | `Swapped`, Apple↔Carrot |
+| empilhar com sobra | `Partial` qty=2 → destino 99, origem fica 3 |
+| inventário→SellBox / SellBox→inventário | `Moved` nos dois sentidos |
+| inventário→comedouro / comedouro→inventário | `Moved` nos dois sentidos |
+| item não-vendável → SellBox | `Rejected`, item **permanece** na origem |
+| item não-vendável via **swap** | `Rejected` — a rota que antes vazava |
+| auto-refill da hotbar ao consumir | recarrega do storage, total preservado |
+| dormir e vender (painel fechado) | 10 Apple × 8 × 0.8 = 64; dinheiro 143→207, caixa esvazia |
+| sprite do comedouro (painel fechado) | `_0` vazio → `_1` parcial → `_2` cheio → `_0` |
+
+Confirmado de passagem: a cena tem **exatamente um** `Inventory` (45 slots, no `Bunny`), um
+SellBox e um comedouro — o órfão do §6.6 segue deletado. As views carregam as policies certas
+(`SellBoxPolicy`, `FeedingTroughPolicy`).
+
+**Não verificável com conteúdo real:** os 26 itens do `ItemDatabase` têm todos
+`canBeSold = true`, então a rejeição foi exercitada com um `Item` sintético. O feedback
+*visual* vermelho não foi coberto — a rejeição está confirmada na camada de dados.
+
+**Não coberto por serem gesto de mouse:** arrastar para fora do painel (volta pro container) e
+arrastar para fora do inventário (cai no chão). São as duas mudanças de comportamento
+deliberadas da 4b e continuam pendentes de um teste com as mãos.
+
+---
+
+- risco: **alto** — é a etapa perigosa
+- depende de: Etapa 3
+- arquivos: `Core/SellBox.cs`, `Inventory/Inventory.cs`, `Inventory/InventorySlot.cs`,
+  `Inventory/SlotSellBoxAdapter.cs`
+
+Só aqui o `OnDrop` perde a cadeia de `if` e o `FindFirstObjectByType<SellBox>()`: o slot
+pergunta à própria `ContainerView` quem é o dono e delega ao `ItemTransferService`.
+
+Sobra em cada classe:
+- **SellBox** (~350 linhas): multiplicador, `CalculateTotalValue`, sprite dinâmico da caixa,
+  `SellAllItemsAutomatically` no sono, `IInteractable`/`IUIWindow`.
+- **Inventory** (~500 linhas): hotbar, seleção, input actions, `UseItem`, sort/filtro,
+  auto-refill.
+
+**Atenção — `CLAUDE.md` documenta 4 correções de bug em interação de SellBox.** Não mexer em
+`CursorController`, `InteractionManager` nem nos caminhos de tecla E / clique nesta etapa.
+O escopo aqui é exclusivamente drag/drop e construção de slots.
+
+**Feito quando:** roteiro manual no Editor — arrastar item→SellBox, SellBox→inventário,
+mover dentro do SellBox, item não-vendável rejeitado com feedback vermelho, dormir e vender,
+E e clique esquerdo abrindo a caixa, ESC.
+
+---
+
+### ETAPA 5 — Unificar persistência (`saveVersion` 1 → 2)
+- [x] status — feito 2026-07-25, **15 testes**. **Verificado em Play Mode 2026-07-26.**
+- risco: médio
+
+**Verificação (2026-07-26).** Ciclo salvar → apagar tudo → carregar, com itens em slots
+**não-contíguos** de propósito (sell[2], sell[5], trough[4]), para que compactação passasse
+a falhar em vez de parecer sucesso. Os três voltaram no **índice exato**, e sell[0]/trough[0]
+continuaram vazios — é a prova do ponto 3 acima (o loader antigo usava `AddItem` e realocava).
+
+No arquivo em disco: `"saveVersion": 2`, `containerData` gravado como **lista** (não dicionário
+— o bug de corrupção de Jun/26), índices esparsos explícitos, e **zero** ocorrências das chaves
+legadas `sellbox_*` / `feedingtrough_*`. O `ContainerID` do SellBox saiu
+`SellBox_SellingBox`, confirmando o ponto 1. A migração V1→V2 rodou de verdade no boot
+(`dropped 1 legacy container key(s)` no console) — primeiro uso real do dispatch da TASK-004.
+
+`ContainerPersistence.Save/Load` + `GameData.containerData` (uma `List` de
+`ContainerSaveData`, **não** um `Dictionary` — `JsonUtility` não serializa dicionário, que foi
+exatamente o bug de corrupção de save de Jun/26). SellBox e comedouro perderam os laços
+slot-a-slot; cada um virou duas linhas.
+
+`CURRENT_SAVE_VERSION` foi para **2** e o `MigrateV1ToV2` é o **primeiro uso real** do
+dispatch de migração criado na TASK-004, que nunca tinha rodado.
+
+Três detalhes que apareceram na implementação:
+
+1. **O `ContainerID` do SellBox era `"SellBox"` fixo** — não único por instância. Como o ID é
+   a chave do save, duas caixas na cena colidiriam. Passou a ser `$"SellBox_{gameObject.name}"`,
+   igual ao comedouro já fazia.
+2. **`GameData.saveVersion` nascia em 1.** Um save novo seria carimbado v1 e passaria pela
+   migração (com warning) a cada load. Agora nasce em `CURRENT_SAVE_VERSION`.
+3. **O loader antigo do comedouro usava `AddItem`**, então os itens voltavam onde coubesse, não
+   no slot de onde saíram. O formato compartilhado restaura o índice exato.
+
+`ContainerPersistence.Load` devolve `false` quando não há dado salvo, e o chamador **não** deve
+limpar o container nesse caso — é o que acontece em jogo novo e em save v1 migrado.
+
+**Perda consciente confirmada:** conteúdo de SellBox e comedouro em saves v1. O resto do save
+sobrevive; a migração só remove as chaves órfãs para não ficarem parecendo dado vivo.
+- depende de: Etapa 4
+- arquivos: `Inventory/ContainerPersistence.cs` (novo), `Core/GameData.cs`,
+  `Core/SaveManager.cs`, os três containers
+
+Um caminho só, usando `InventoryContainer.GetSaveData()`, indexado por `ContainerID`.
+Elimina as chaves `sellbox_*` e `feedingtrough_*` escritas à mão.
+
+Como saves antigos podem quebrar (decisão travada): bumpar `CURRENT_SAVE_VERSION` para 2 e
+implementar `MigrateV1ToV2` limpando as chaves órfãs, em vez de tentar convertê-las.
+**É o primeiro uso real do dispatch de migração criado na TASK-004** — que até hoje nunca
+rodou. Vale um teste que exercite o caminho v1→v2 de ponta a ponta.
+
+**Perda consciente:** conteúdo de SellBox e comedouro em saves v1 (inclusive de quem jogou a
+demo WebGL). O resto do save sobrevive. Anunciar no changelog.
+
+---
+
+## 4. Riscos
+
+| Risco | Mitigação |
+|---|---|
+| SellBox é a superfície com mais bugs históricos | Etapa 4 isolada e por último; trough validado antes; escopo restrito a drag/drop |
+| Nada é compilado fora do Unity | Cada etapa termina com um commit e uma abertura no Editor; etapas 0–2 são C# puro e cobertas por testes |
+| `ContainerView` errada só aparece no SellBox | Por isso o trough vem antes — abstração validada no container barato |
+| Wiring de cena por etapa | `ContainerView` reaproveita `slotParent`/`slotPrefab` já existentes; nenhuma referência nova além do componente |
+| Cozinha/loja mudarem tudo de novo | A policy já nasce por slot (`SlotRole`) e as lojas ficam explicitamente fora do transfer service |
+
+## 5. Achados da Etapa 0
+
+Três comportamentos do `InventoryContainer` que os testes documentaram e que **mudam o desenho
+das etapas seguintes**. Nenhum foi corrigido — corrigir é decisão separada, com risco próprio.
+
+### 6.1 `AddItem` e `RemoveItem` não são atômicos
+`AddItem(item, 61)` num container com capacidade 60 adiciona os 60 **e** retorna `false`.
+`RemoveItem(item, 10)` com 3 em estoque remove os 3 **e** retorna `false`.
+
+Quem tratar o `bool` como "nada aconteceu" duplica ou perde item. O `SellBox.HandleSlotDrop`
+hoje escapa disso por acidente, porque chama `CanAdd` antes e calcula `GetAvailableSpace` no
+caminho parcial. O `ItemTransferService` (Etapa 1) **precisa** fazer o mesmo de forma
+explícita: consultar `CanAdd`, decidir a quantidade, e só então mover.
+
+Testes: `AddItem_PartialFit_StillAddsWhatFits`,
+`RemoveItem_MoreThanAvailable_StillRemovesWhatItCould`.
+
+### 6.2 `GetSlot` devolve a referência viva, não uma cópia
+Diferente de `GetAllItems` (que clona), `GetSlot` entrega o `ItemStack` interno. Dá para
+mutar o container sem passar por `SetSlot` — e portanto **sem disparar `OnSlotChanged`**,
+deixando a UI dessincronizada.
+
+Isso importa direto para a Etapa 3: a `ContainerView` vai depender de `OnSlotChanged` para
+todo refresh. Qualquer código que hoje mute via `GetSlot` vira um bug visual silencioso. Vale
+um grep por `GetSlot(` com atribuição antes de começar a Etapa 3.
+
+Teste: `GetSlot_ReturnsLiveReference_NotACopy`.
+
+### 6.3 `SetMaxSlots` destrói itens ao encolher, sem aviso
+O método conta os itens que vai perder numa variável local `lostItems`
+(`InventoryContainer.cs:325-332`) e **nunca a usa** — restou de um `Debug.LogWarning` removido.
+Sem retorno, sem aviso, sem realocação.
+
+`Inventory.SetInventorySize` e `UpgradeInventorySize` são os chamadores. Como só crescem hoje,
+não há bug em produção — mas um baú com tamanho configurável (caso de uso confirmado) pisa
+nisso na primeira vez que alguém reduzir o tamanho.
+
+Teste: `SetMaxSlots_Shrinking_SilentlyDestroysItemsInRemovedSlots`.
+
+### 6.4 Auditoria de mutação via `GetSlot` — resultado: limpa (Etapa 3)
+
+Antes de construir a `ContainerView` (que faz todo o refresh via `OnSlotChanged`), varri o
+projeto atrás de código que escreva pela referência viva do §6.2. **Nenhum caso.** Todos os
+call sites ou só leem, ou clonam antes de mutar e devolvem por `SetSlot`. A view pode confiar
+no evento.
+
+Regra a manter: **todo código novo que escreva num container passa por `SetSlot`.** Mutar o
+retorno do `GetSlot` não dispara evento e deixa a UI desatualizada sem erro nenhum.
+
+### 6.5 Bug encontrado de raspão: auto-refill da hotbar nunca dispara ao consumir
+
+`Inventory.UseItem` (`Inventory.cs:540-570`) chama `CheckHotbarAutoRefill(slotIndex)` na
+linha 562, **antes** do `container.SetSlot(slotIndex, updatedStack)` da linha 566. O
+`CheckHotbarAutoRefill` começa com `if (!currentStack.IsEmpty) return;` lendo o container —
+que nesse instante ainda tem o stack antigo com quantidade 1. Ou seja: ao consumir o último
+item de um slot da hotbar, o refill sempre sai na primeira linha.
+
+O caminho do `HandleSlotDrop` funciona, porque lá o `CheckHotbarAutoRefill` é chamado depois
+dos `SetSlot`. Correção provável: mover a chamada para depois do `SetSlot` na linha 566.
+
+**Não corrigido** — é bug de gameplay, não do refactor, e a Etapa 4 mexe justamente nesse
+arquivo. Melhor como commit próprio, com teste, para não se misturar ao refactor.
+
+**Corrigido em `632f0c1`… e o fix estava errado. Corrigido de verdade em 2026-07-26.**
+Ao rodar a suíte no Editor antes de verificar as Etapas 4b/5, os **10 testes de
+`InventoryHotbarRefillTests` falhavam** — 9 com `NullReferenceException`, e nunca tinham
+rodado verdes: o commit `632f0c1` foi feito sem executá-los no Editor. Duas causas
+independentes, ambas reais:
+
+1. **O teste nunca inicializava o `Inventory`.** `AddComponent` **não** dispara `Awake` em
+   Edit Mode (só em Play Mode), então `container` ficava null e o primeiro acesso lançava.
+   O `SetUp` agora chama `InitializeInventory` por reflection — mesmo trade-off do
+   `InstallTestItemDatabase` da Etapa 0: o alcance fica contido no teste em vez de abrir
+   API só-para-teste na produção.
+
+2. **O fix de `632f0c1` se auto-anulava.** Ele fez duas mudanças que se cancelam: tirou o
+   tracking da hotbar de dentro da guarda de UI do `UpdateSlot` (passou a rodar sempre) **e**
+   moveu o `CheckHotbarAutoRefill` para depois do `SetSlot`. Só que o `SetSlot` dispara
+   `OnSlotChanged` → `UpdateSlot`, que — vendo o slot já vazio — zera
+   `lastHotbarItems[slotIndex]`. O refill rodava logo em seguida, lia o tracking recém-apagado,
+   caía no `refillItem == null` e desistia. O bug do §6.5 continuou vivo, só que por outro
+   caminho.
+
+   Correção: `CheckHotbarAutoRefill(int slotIndex, Item knownLastItem = null)`. Quem esvazia o
+   slot (o `UseItemAt`) passa o item explicitamente; quem não esvaziou (o caminho de drag) deixa
+   null e segue usando o tracking. Reproduzido e confirmado fora dos testes via `execute_code`
+   antes e depois do fix.
+
+**743/743 testes EditMode verdes** após a correção.
+
+### 6.6 ✅ RESOLVIDO: existiam DOIS componentes `Inventory` ativos na SampleScene
+
+Encontrado ao preparar a Etapa 4a. Bug de cena, não de código.
+**Corrigido em 2026-07-25**: o GameObject `InventoryManager` foi deletado pelo Editor
+(−58 linhas na `SampleScene.unity`). Sobrou um único `Inventory`, no `Bunny`.
+
+| GameObject | `inventorySize` | Referências | Estado |
+|---|---|---|---|
+| `Bunny` (jogador) | 45 | todas ligadas (`slotParent`, `slotPrefab`, `hotbarParent`, `storageParent`) | o real |
+| `InventoryManager` | 36 | **todas nulas** | órfão |
+
+Ambos com `m_Enabled: 1`, em GameObjects ativos. O `InventoryManager` tem só um `Transform` e
+esse componente — nada mais. Nenhum outro objeto da cena referencia ele (as únicas ocorrências
+dos seus fileIDs são a própria lista de componentes e a raiz da hierarquia).
+
+**Por que é grave:**
+
+1. **Corrupção de save dependente de ordem.** `Inventory.SaveData` escreve em
+   `gameData.inventoryData` — um único campo compartilhado do `GameData`, não indexado por
+   objeto. Os dois estão registrados no `SaveManager`. Quem salvar por último vence; no load,
+   os dois leem o mesmo dado. O órfão (36 slots, vazio) pode sobrescrever o inventário real
+   (45 slots) — ou o contrário, conforme a ordem de registro.
+
+2. **13 call sites em 11 arquivos** usam `FindFirstObjectByType<Inventory>()` — entre eles
+   `SellBox`, `ConsumableBattleUI`, `TeamAssemblerUI`, `SeedShopUI`, `GiftSelectionUI`,
+   `InventorySlot` (fallback). Cada um pode pegar qualquer um dos dois, sem determinismo.
+   Se pegarem o órfão, itens vão para um container fantasma sem UI.
+
+**Correção sugerida:** deletar o GameObject `InventoryManager` da SampleScene pelo Editor
+(um clique, e é o objeto todo — não sobra nada útil nele). Fazer isso editando YAML na mão
+seria arriscado sem necessidade.
+
+**Também descoberto:** `inventorySize` real é **45**, não 36. `CLAUDE.md` e
+`SOWUR_SHIELD_STATUS.md` dizem "36 slots (9 hotbar + 27 storage)" — o certo é 9 + 36.
+
+~~**Bloqueia a Etapa 4a-bis.**~~ Desbloqueado — a Etapa 4a-bis agora depende só do desenho de
+`SlotGroup` na `ContainerView`.
+
+---
+
+## 6. Continuação (fora deste plano)
+
+- **Etapa 6** — migrar `ShopUI` / `AnimalMarketUI` / `BuildingShopUI` para a `ContainerView`
+  (só exibição de estoque; compra continua por botão).
+- Baú e bancada de craft passam a ser conteúdo, não arquitetura: uma policy + wiring de cena.
+- `SellBox` ainda recarrega `GameBalance` via `Resources.Load` a cada acesso a
+  `sellMultiplier` (`SellBox.cs:68`) — cache trivial, não bundle nesta sequência.

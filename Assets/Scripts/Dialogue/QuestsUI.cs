@@ -88,8 +88,23 @@ public class QuestsUI : MonoBehaviour, IUIWindow
 
         // Upgrade the builder's flat-color window to the shared sprite kit.
         // Tab buttons are left alone — ShowTab drives them via Button.colors tint.
-        SowurShield.UI.UIThemeStyler.StylePanel(questsPanel, theme);
-        SowurShield.UI.UIThemeStyler.StyleButton(closeButton, theme, SowurShield.UI.UIThemeStyler.ButtonSmallPath);
+        UIThemeStyler.StylePanel(questsPanel, theme);
+        UIThemeStyler.StyleButton(closeButton, theme, UIThemeStyler.ButtonSmallPath);
+
+        // StylePanel just swapped the builder's cream background for the wood sprite, which
+        // inverts what the panel-level text needs. QuestsUIBuilder painted the heading and both
+        // empty-state labels textDark to suit that cream: on wood they measure 1.68 / 2.44 / 3.23
+        // (dark / mid / light), i.e. invisible on the darkest tone and failing on all three.
+        //
+        // Cream for the same reason StylePanelTitle uses it rather than gold — the tone under a
+        // panel sprite isn't fixed, and cream holds across the range (7.60 / 5.24 / 3.96) where
+        // gold drops to 3.01 on woodLight.
+        //
+        // The quest rows are deliberately left alone: their prefabs carry their own white
+        // backing, so their dark text is already reading 5.78–7.36 against the row, not the wood.
+        UIThemeStyler.StylePanelTitle(questsPanel, theme);
+        UIThemeStyler.TintText(activeEmptyText, theme != null ? theme.backgroundCream : Color.white);
+        UIThemeStyler.TintText(completedEmptyText, theme != null ? theme.backgroundCream : Color.white);
 
         if (questsPanel != null) questsPanel.SetActive(false);
 

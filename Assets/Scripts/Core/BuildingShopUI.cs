@@ -198,9 +198,18 @@ public class BuildingShopUI : MonoBehaviour, IUIWindow
         FarmBuildingData[] allBuildings = Resources.LoadAll<FarmBuildingData>("Buildings");
         if (buildingListContainer == null || buildingRowPrefab == null) return;
 
+        // Loaded once rather than per row — LoadTheme goes to Resources.
+        UITheme rowTheme = UIThemeStyler.LoadTheme();
+
         foreach (FarmBuildingData data in allBuildings)
         {
             GameObject rowGO = Instantiate(buildingRowPrefab, buildingListContainer);
+
+            // The prefab's own colours predate the theme (0.15 grey row, flat green button),
+            // which read as a different app on top of the cream panel. Styled here because the
+            // prefab is Editor-owned and this is the only place rows are created.
+            UIThemeStyler.StyleListRow(rowGO, rowTheme);
+
             BuildingRow row = rowGO.GetComponent<BuildingRow>();
 
             if (row == null)

@@ -156,7 +156,12 @@ public class ConsumableBattleUI : MonoBehaviour
         listPanel.anchorMax = new Vector2(0, 0);
         listPanel.pivot = new Vector2(0, 0);
         listPanel.anchoredPosition = new Vector2(20, 70);
-        listPanel.sizeDelta = new Vector2(220, 0);
+        // 300, not the original 220: the padding above spends 72 of the width on the sprite's
+        // frame, and a row label spends another 16 on its own margin. At 220 that left 132 for
+        // text, and "RareFish x2 (+10 PV)" needs 171 — it wrapped to a second line and pushed
+        // out past the panel's bottom border. 300 leaves 212, enough headroom for longer item
+        // names than the two currently in the game.
+        listPanel.sizeDelta = new Vector2(300, 0);
 
         Color panelTint = theme != null ? theme.woodDark : new Color(0.1f, 0.1f, 0.15f);
         Image panelBg = panelObj.AddComponent<Image>();
@@ -173,7 +178,14 @@ public class ConsumableBattleUI : MonoBehaviour
         }
 
         VerticalLayoutGroup vlg = panelObj.AddComponent<VerticalLayoutGroup>();
-        vlg.padding = new RectOffset(8, 8, 8, 8);
+        // Padding must clear panel_wood_generic's 9-slice border (32 units per side), not just
+        // sit inside the RectTransform. With the old 8 the rows were laid out across the wood
+        // frame itself, and because ContentSizeFitter sizes the panel to the content, the sliced
+        // centre never got enough height to appear: at two rows the panel was 84 units tall
+        // against 64 units of top+bottom border, leaving a 20-unit cream sliver that read on
+        // screen as a stray gold bar struck through the rows rather than as a panel.
+        // 36 = the 32 border + the 4 of breathing room the old value was going for.
+        vlg.padding = new RectOffset(36, 36, 36, 36);
         vlg.spacing = 4;
         vlg.childControlWidth = true;
         vlg.childControlHeight = false;
@@ -257,9 +269,15 @@ public class ConsumableBattleUI : MonoBehaviour
         // doesn't collapse into a sliver behind the text.
         rowRect.sizeDelta = new Vector2(0, item != null ? 32 : 60);
 
-        Color rowTint = theme != null ? theme.woodLight : new Color(0.25f, 0.25f, 0.3f);
+        // woodDark at full alpha, not woodLight at 0.9. The rows carry the cream label from
+        // CreateLabel, and panel_wood_generic is light art — a cream field, not a dark one — so a
+        // translucent light-wood row composited up to rgb(175,120,79) and the label measured a
+        // 3.98 contrast ratio on screen, under the 4.5 wanted for body text. Opaque woodDark
+        // reaches 7.59. Alpha matters as much as the tone here: letting the cream panel bleed
+        // through is what washed the row out in the first place (woodDark at 0.9 only makes 5.90).
+        Color rowTint = theme != null ? theme.woodDark : new Color(0.15f, 0.15f, 0.2f);
         Image rowImage = rowObj.AddComponent<Image>();
-        rowImage.color = item != null ? new Color(rowTint.r, rowTint.g, rowTint.b, 0.9f) : new Color(0f, 0f, 0f, 0f);
+        rowImage.color = item != null ? new Color(rowTint.r, rowTint.g, rowTint.b, 1f) : new Color(0f, 0f, 0f, 0f);
 
         TextMeshProUGUI rowLabel = CreateLabel(rowObj.transform, label);
         rowLabel.fontSize = 16;

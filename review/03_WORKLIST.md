@@ -754,12 +754,25 @@ Behaviour fix found along the way: `SellBox.OpenSellBox()` duplicated the whole 
 `OpenWindow()` inline, firing `OnSellBoxToggled` twice per open (no subscribers today, so no
 visible symptom). It now delegates.
 
-**New follow-up task needed** (from TASK-011/012 session): the repo has no `.gitattributes`
-and `core.autocrlf` is unset, so ~2800 files differ from the index by line endings alone on any
-non-Windows checkout (CI, WSL, containers). Every `git diff` there is a full-file rewrite. Worth
-adding a `.gitattributes` with `* text=auto` plus `*.unity`/`*.prefab`/`*.asset -text` and doing
-a one-shot `git add --renormalize .` — deliberately NOT bundled into this cleanup since it
-touches every file in the repo.
+**Follow-up from the TASK-011/012 session — DONE Jul/26.** The repo had no `.gitattributes`, so
+tracked text files differed from the index by line endings alone on any non-Windows checkout
+(CI, WSL, containers) and every `git diff` there was a full-file rewrite.
+
+The original note was wrong about the scale, and the correction is the interesting part: it
+predicted ~2800 files differing by line endings, but `git add --renormalize .` staged **nothing**.
+Every tracked file already stored LF, because `core.autocrlf` was **`true`** locally rather than
+unset as claimed. ~4200 text files (2342 `.meta`, 697 `.asset`, 303 `.cs`, 280 `.anim`, 130
+`.prefab`, 40 `.unity`) are now *governed* by explicit rules, but none needed rewriting. The value
+delivered is therefore not a cleanup — it is removing the dependency on one machine's local git
+config, which is what would have broken a Linux/CI/WSL checkout.
+
+The fix also diverged from the sketch above in one way worth recording: the Unity YAML types are
+`text eol=lf`, **not** `-text`. Marking them binary would have stopped the churn but also killed
+line diffs and merges on scenes and prefabs. Unity writes LF on every platform anyway, so
+pinning `eol=lf` removes the CRLF round-trip while keeping them diffable. Plus `.sh`/`.py` at
+`eol=lf` (they run on Linux in Actions) and `merge=binary` on `.unity`/`.prefab` so a bad
+auto-merge fails loudly. Landed as `.gitattributes` + a separate one-shot
+`git add --renormalize .`, kept apart since the latter touches nearly every file.
 
 All tasks are designed to be independently resumable — see `00_README.md` for the execution
 protocol.

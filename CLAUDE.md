@@ -52,7 +52,8 @@ Assets/Scripts/
 - Cursor: green=interactable object, yellow=tool usable, white=none
 
 ### Inventory System
-- `Inventory.cs`: 36 slots (9 hotbar + 27 storage)
+- `Inventory.cs`: 45 slots (9 hotbar + 36 storage) — the value serialized on the `Bunny`
+  Inventory in SampleScene; the class default of 36 is not what the game runs
 - `InventorySlot.cs`: drag/drop, animations, visual feedback
 - `ItemStack.cs`: stacking with max sizes
 - Items are ScriptableObjects; looked up via `ItemDatabase.GetItem(itemName)` — names must match exactly

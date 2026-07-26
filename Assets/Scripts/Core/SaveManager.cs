@@ -453,7 +453,7 @@ namespace SowurShield.Core
             {
                 switch (data.saveVersion)
                 {
-                    // case 1: MigrateV1ToV2(data); break; // example for the future
+                    case 1: MigrateV1ToV2(data); break;
                     default:
                         break; // no-op for versions with no transformation needed
                 }
@@ -465,6 +465,54 @@ namespace SowurShield.Core
                 Debug.LogWarning($"[SaveManager] Migrated save from v{fromVersion} to v{data.saveVersion}");
 
             return data;
+        }
+
+        /// <summary>
+        /// v1 → v2: SellBox and FeedingTrough contents moved from loose worldStrings/
+        /// worldCounters keys into GameData.containerData (Etapa 5 of the container refactor).
+        ///
+        /// The contents are deliberately NOT converted — that was agreed when the refactor was
+        /// scoped, since carrying the old format forward would have meant keeping a parser for a
+        /// layout nothing writes any more. A v1 save therefore loads with its SellBox and feeding
+        /// troughs empty; everything else in the save is untouched.
+        ///
+        /// What this does do is strip the orphan keys, so they do not sit in every future save
+        /// forever looking like live data.
+        /// </summary>
+        private void MigrateV1ToV2(GameData data)
+        {
+            if (data?.worldData == null) return;
+
+            int removed = 0;
+            removed += RemoveKeysWithPrefix(data.worldData.worldStrings, "sellbox_");
+            removed += RemoveKeysWithPrefix(data.worldData.worldCounters, "sellbox_");
+            removed += RemoveKeysWithPrefix(data.worldData.worldStrings, "feedingtrough_");
+            removed += RemoveKeysWithPrefix(data.worldData.worldCounters, "feedingtrough_");
+
+            if (data.containerData == null)
+                data.containerData = new ContainerCollectionData();
+
+            if (removed > 0)
+                Debug.LogWarning(
+                    $"[SaveManager] v1→v2: dropped {removed} legacy container key(s). " +
+                    "SellBox and feeding trough contents from this save are not carried over.");
+        }
+
+        /// <summary>Removes every key starting with the prefix. Returns how many were removed.</summary>
+        private static int RemoveKeysWithPrefix<TValue>(
+            SerializableDictionary<string, TValue> dictionary, string prefix)
+        {
+            if (dictionary == null) return 0;
+
+            var doomed = new List<string>();
+            foreach (var key in dictionary.Keys)
+                if (key != null && key.StartsWith(prefix))
+                    doomed.Add(key);
+
+            foreach (string key in doomed)
+                dictionary.Remove(key);
+
+            return doomed.Count;
         }
 
         // ============================================================================

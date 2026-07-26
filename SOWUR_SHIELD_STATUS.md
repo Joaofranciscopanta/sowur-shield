@@ -16,7 +16,8 @@
 | [CLAUDE.md](CLAUDE.md) | Dev conventions, Unity setup requirements, bug-fix history, namespace rules |
 | [review/01_ARCHITECTURE.md](review/01_ARCHITECTURE.md) | Deep architecture map (code-review ground truth, 2026-06-12) |
 | [review/02_FINDINGS.md](review/02_FINDINGS.md) | Code-quality findings with file:line citations |
-| [review/03_WORKLIST.md](review/03_WORKLIST.md) | Atomic task backlog (2 tasks remaining + follow-ups) |
+| [review/03_WORKLIST.md](review/03_WORKLIST.md) | Atomic task backlog (14/14 done Jul/25) |
+| [review/04_CONTAINER_REFACTOR_PLAN.md](review/04_CONTAINER_REFACTOR_PLAN.md) | Inventory/SellBox/trough container architecture — **Etapas 0–5 done + verified Jul/26**; Etapa 6 (lojas) registrada como continuação |
 | [review/PROGRESS.md](review/PROGRESS.md) | Log of completed review tasks |
 | [UI_ART_PLACEHOLDERS.md](UI_ART_PLACEHOLDERS.md) | UI elements still needing custom art + generation prompts |
 | [AI_Sprite_Prompts.md](AI_Sprite_Prompts.md) | Sprite-generation prompts matching the project art style |
@@ -67,7 +68,7 @@
 - DualGridTilemap: 16-tile rule-based rendering
 
 ### Economy
-- Inventory: 36 slots (9 hotbar + 27 storage), drag/drop, stacking, tooltips.
+- Inventory: 45 slots (9 hotbar + 36 storage), drag/drop, stacking, tooltips.
   Storage grid opens over a themed wood window panel (`storagePanelBackground`, Jul/2)
 - SellBox: auto-sell on sleep (80% via `GameBalance.sellMultiplier`), movement lock while open
 - Shops: `ShopData`/`ShopNPC`/`ShopUI` with relationship discount (0.2%/pt, max 20%), limited
@@ -168,13 +169,80 @@
   `QuestsUI` (panel + close button only — tabs stay on ShowTab's Button.colors tint),
   `BattleResultsUI` (uses the previously-unused `panel_victory`/`panel_defeat` sprites)
 - `AnimalMarketUI` skipped intentionally — its builder already applies the theme at build time
+  (`AnimalMarketUIBuilder` reads `CozyUITheme` and bakes flat palette tints into the scene
+  objects; the UI class itself has no `UIThemeStyler` call and no theme field, so nothing is
+  re-applied at runtime — sprite-kit art is absent here, unlike the panels above)
+
+**Verified in Play Mode (Jul/26)** — pause menu + building shop. Three contrast bugs found and
+fixed; every colour decision was measured (WCAG ratio), not eyeballed:
+- **Pause menu title was invisible** — "Game Menu" kept the scene's old brown on the panel
+  sprite's dark border: a **1.06** contrast ratio. New `UIThemeStyler.StylePanelTitle` recolours
+  headings that have no serialized field, found by name so no Editor wiring is needed. Cream,
+  not the gold used elsewhere: a heading can land on any wood tone, and gold only clears the
+  bar on the darkest (3.01 on woodLight vs cream's 3.96/5.24/7.59 across the range).
+- **Building shop rows ignored the theme** — a hardcoded 0.15 grey row with a flat green button
+  on a cream panel. New `UIThemeStyler.StyleListRow`, applied at row instantiation since the
+  prefab is Editor-owned. Row labels flip dark to match the new light background.
+- **`BuildingRow`'s state colours were tuned for light-on-dark** — green/red/grey scored
+  **1.88 / 3.01 / 3.11** against the new tan row, all under the 4.5 wanted for body text (the
+  green "affordable" was nearly unreadable). Deepened to 4.62 / 6.12 / 4.46, same meanings.
+  The buy button's tint was split off: it multiplies the gold sprite, so it stays a near-white
+  dim rather than a deep hue that would just look dirty.
+
+**`BattleResultsUI` verified in CombatScene (Jul/26)** — two more bugs, one of them not a
+colour problem at all:
+- **The victory title was hidden behind the battle HUD.** `BattleResultsCanvas` and
+  `BattleStatusCanvas` both sat at sortingOrder 10, so which drew on top was arbitrary — and
+  the HUD's `TurnOrderPanel` (y 936–996) covered the "Victory!" heading (y 930–1030) exactly.
+  The results screen genuinely looked like it had no title. Now set from code to 150: above
+  `BattleHudOverlay`/`ConsumableBattleUI` (100), below the achievement toast (200).
+- **Both panels' text was tuned for a dark background they don't have.** `panel_victory` /
+  `panel_defeat` are light art, but the title got gold and the body cream: **1.20** and
+  **1.03** contrast — invisible. Body text and the victory heading are now dark (8.10 on the
+  gold ribbon, 12.48 on the cream field).
+- The defeat heading needed the **opposite** treatment: its ribbon is red, where nothing dark
+  works (textDark only reaches 2.40). Cream, at 5.32. The ribbon already carries the "defeat"
+  colour.
 
 **Remaining**:
-- [ ] Visual verification of the combat Items button/panel in a live battle (code compiled
-  clean; not yet seen on screen — needs editor-focused play session)
-- [ ] Visual verification of the Jul/11 runtime theming above (shops, pause menu, quests,
-  victory/defeat) in an editor play session
+- [ ] Visual verification of the combat Items button/panel in a live battle — `ConsumableBattleUI`
+  self-spawns in CombatScene, but the panel only populates mid-battle with real units
+- [ ] `ShopUI` unverified — NPC-driven, not present in either scene at rest
+- [ ] `BattleResultsUI` buttons are anchored to the **screen corners** (anchor 0,0 and 1,0 at
+  y 0–30), so all four sit clipped at the bottom edge instead of inside the panel. Scene-only
+  layout — no code touches it — so it needs a RectTransform fix in the Editor: anchor to
+  (0.5, 0.5), roughly x ±110, y −260, which lands them under the stats block
+- [ ] `QuestsUI` visual check still owed — it's absent from SampleScene (built on demand by the
+  `QuestsUIBuilder` editor window), so it has never been seen running. Code audited instead
+  (Jul/26); see the theming-audit note below
+- [ ] Building shop's "Farm Buildings" title sits on the panel sprite's wide wood border rather
+  than the cream field — legible, but a RectTransform nudge in the Editor, not a code fix
+- [ ] Settings panel's sliders/dropdown/checkbox still use stock Unity visuals
 - [ ] Stamina bar has no icon (no energy icon exists in the sprite kit yet)
+- [ ] Quest **completed**-tab rows: the prefab's white backing is alpha **0.3**, so its dark text
+  reads 3.67 against a woodDark panel — under 4.5 for body text (the active rows use 0.5 and are
+  fine at 5.78–7.36). The alpha is authored into `QuestCompletedRow.prefab` by `QuestsUIBuilder`,
+  not applied at runtime, so it's a builder/prefab edit rather than a `UIThemeStyler` fix
+
+**Theming audit (Jul/26)** — every claim in this section re-checked against the code, because the
+list had accumulated two contradictory notes about `QuestsUI`:
+- **Retracted: the "`QuestsUI` contains no `ApplyTheme` call at all" claim was false.**
+  `Scripts/Dialogue/QuestsUI.cs:91-92` calls `StylePanel` + `StyleButton` in `Awake`, added
+  Jul/19 in `c2f247e` — six days *before* the Jul/26 note that denied it. The Jul/11 note (panel
+  + close button only, tabs left on `ShowTab`'s `Button.colors` tint) was the accurate one all
+  along. The error looks like a grep for the *method name* `ApplyTheme`, which `QuestsUI` genuinely
+  lacks because it inlines the calls in `Awake` instead of wrapping them — a reminder to grep for
+  `UIThemeStyler` rather than the helper method when auditing this.
+- Confirmed accurate: `ShopUI` (`ShopUI.cs:117-130`), `BuildingShopUI` (`:145-157`, rows `:202-211`),
+  `GameMenuUI` (`:126-162`), `BattleResultsUI` (`:158-184`) all call `UIThemeStyler` as described.
+- **Real gap found and fixed in `QuestsUI`.** `StylePanel` replaces the builder's cream background
+  with the wood sprite, but the panel's own text was authored `textDark` to suit that cream —
+  leaving the "Quests" heading and both empty-state labels at **1.68 / 2.44 / 3.23** on
+  wood dark/mid/light: failing on all three, invisible on the darkest. Now cream via
+  `StylePanelTitle` + `TintText` (**7.60 / 5.24 / 3.96**), cream over gold for the established
+  reason — the wood tone under a panel sprite isn't fixed, and gold falls to 3.01 on woodLight.
+  The quest rows were deliberately left alone: they carry their own white backing, so their dark
+  text is already measured against the row, not the wood.
 
 ---
 
@@ -182,7 +250,8 @@
 
 **From the code review** ([review/03_WORKLIST.md](review/03_WORKLIST.md)): **all 14 tasks done**
 as of Jul/25 — TASK-011, TASK-012 and both outstanding follow-ups closed in one sweep. New
-follow-up logged there: add a `.gitattributes` and renormalize line endings (see Known Tech Debt).
+follow-up logged there — add a `.gitattributes` and renormalize line endings — **done Jul/26**
+(see Known Tech Debt).
 
 **Art gaps**:
 - Duck and Sparrow use chicken-baby placeholder sprites (`Assets/Resources/Animals/duck.asset`,
@@ -229,16 +298,30 @@ Inventory into CombatScene or reading from `SaveManager`/`GameData` (deferred)
 ## Known Tech Debt
 
 See [review/02_FINDINGS.md](review/02_FINDINGS.md) for the full diagnostic. Headlines:
-- God classes: `SellBox` 1174, `Inventory` ~1178, `MainMenuUI` 1036, `Animal` 1048,
-  `InventorySlot` 907 lines. `MainMenuUI` and `Animal` were trimmed Jul/25 (TASK-011/012);
-  `SellBox` and `Inventory` are now the worst two and have no extraction task yet
+- God classes, after the Jul/25–26 sweeps: `Inventory` 1056, `MainMenuUI` 1036, `Animal` 1048,
+  `SellBox` 998, `InventorySlot` 844. `SellBox` lost 176 lines, `Inventory` 91 and
+  `InventorySlot` 63 to the container refactor
+  ([review/04_CONTAINER_REFACTOR_PLAN.md](review/04_CONTAINER_REFACTOR_PLAN.md)), which also
+  gave every container one shared transfer path instead of four hand-written copies, and one
+  shared slot-building path (`ContainerView`) instead of three
 - ~~`UIManager` has two coexisting window systems~~ — **fixed Jul/25**: the legacy
   `OpenPanel`/`ClosePanel` system is gone (`UIManager` 321 → 212 lines) and the `IUIWindow`
   stack is the single source of truth. `IsAnyPanelOpen()` callers moved to `IsAnyWindowOpen()`
 - `SellBox` re-loads `GameBalance` via `Resources.Load` on every `sellMultiplier` access
-- **No `.gitattributes` and `core.autocrlf` unset** — ~2800 files read as fully modified on any
-  non-Windows checkout (CI, WSL, containers), making diffs there unreviewable. Fix is
-  `* text=auto` + `-text` for `.unity`/`.prefab`/`.asset`, then `git add --renormalize .`
+- ~~**No `.gitattributes`**~~ — **fixed Jul/26**: `* text=auto` plus `eol=lf` on the Unity YAML
+  types (`.unity`/`.prefab`/`.asset`/`.meta`/`.anim`/…). `.sh`/`.py` pinned `eol=lf` because
+  `.github/scripts/*.sh` run on Linux in Actions; `.unity`/`.prefab` get `merge=binary` so a bad
+  auto-merge fails loudly instead of silently corrupting a scene.
+  **The old entry was wrong about the scale.** It predicted ~2800 files needing renormalization;
+  the real number is **zero** — `git add --renormalize .` staged nothing, because every tracked
+  file already stored LF (`core.autocrlf` was **`true`** locally, not unset as claimed). ~4200
+  files are *governed* by the new rules, but none needed rewriting. The `.gitattributes` still
+  earns its place by pinning that behaviour in the repo instead of leaving it dependent on one
+  machine's local git config — which is what would have broken a Linux/CI checkout.
+  Caveat for whoever reads this next: marking generated files `binary` is the wrong tool here.
+  Tried it for `*.private.0` and it made Git store the working tree's CRLF verbatim, baking
+  Windows endings into the repo (fixed in `ace4328`). The local symptom all of this cures is a
+  file showing as modified with a completely empty diff
 
 **Working well**: namespace convention (100%), combat pipeline, status-effect tests,
 GameBalance centralization (~80%), save scaffolding, animal husbandry tests.

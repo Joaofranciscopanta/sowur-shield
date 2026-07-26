@@ -87,6 +87,7 @@ public class BattleResultsUI : MonoBehaviour
         }
         Instance = this;
 
+        EnsureDrawsAboveBattleHud();
         ApplyTheme();
 
         // Hide all panels initially
@@ -98,6 +99,30 @@ public class BattleResultsUI : MonoBehaviour
 
         SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
     }
+
+    /// <summary>
+    /// Put the results screen above the in-battle HUD.
+    ///
+    /// The scene gives this canvas sortingOrder 10 — the same as BattleStatusCanvas, so which
+    /// one wins is arbitrary. In practice the HUD drew on top and its TurnOrderPanel (y 936-996)
+    /// covered the "Victory!" title (y 930-1030) completely, making the results screen look
+    /// like it had no heading at all.
+    ///
+    /// Set from code rather than the Inspector so it holds in every scene that hosts this
+    /// canvas. 150 sits above BattleHudOverlay and ConsumableBattleUI (both 100) and below the
+    /// achievement toast (200), which should still be able to appear over the results.
+    /// </summary>
+    private void EnsureDrawsAboveBattleHud()
+    {
+        Canvas canvas = GetComponent<Canvas>();
+        if (canvas == null) return;
+
+        canvas.overrideSorting = true;
+        canvas.sortingOrder = ResultsSortingOrder;
+    }
+
+    private const int ResultsSortingOrder = 150;
+
 
     private void OnDestroy()
     {
@@ -142,11 +167,21 @@ public class BattleResultsUI : MonoBehaviour
 
         if (theme != null)
         {
-            UIThemeStyler.TintText(victoryTitleText, theme.highlightGold);
-            UIThemeStyler.TintText(victoryStatsText, theme.backgroundCream);
-            UIThemeStyler.TintText(victoryRewardsText, theme.backgroundCream);
-            UIThemeStyler.TintText(defeatTitleText, theme.negative);
-            UIThemeStyler.TintText(defeatStatsText, theme.backgroundCream);
+            // Dark text, because panel_victory/panel_defeat are LIGHT art — a gold banner over
+            // a cream field. The gold title and cream body these panels used to get were picked
+            // for a dark panel and measured 1.20 and 1.03 contrast here, i.e. invisible; the
+            // title only became noticeable at all once the canvas stopped being covered by the
+            // battle HUD. Dark reads at 8.10 on the banner and 12.48 on the cream field.
+            UIThemeStyler.TintText(victoryTitleText, theme.textDark);
+            UIThemeStyler.TintText(victoryStatsText, theme.textDark);
+            UIThemeStyler.TintText(victoryRewardsText, theme.textDark);
+            UIThemeStyler.TintText(defeatStatsText, theme.textDark);
+
+            // The defeat heading goes the OTHER way — cream, not dark. The two panels do not
+            // share a ribbon: victory's is gold (dark text reads at 8.10) while defeat's is a
+            // deep red where nothing dark works — textDark manages only 2.40 and a deep red
+            // 1.54. Cream reaches 5.32, and the ribbon itself already carries the "defeat" red.
+            UIThemeStyler.TintText(defeatTitleText, theme.backgroundCream);
         }
     }
 

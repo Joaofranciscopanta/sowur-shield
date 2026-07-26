@@ -19799,63 +19799,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1328069288}
   m_CullTransparentMesh: 1
---- !u!1 &1329076874
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1329076875}
-  - component: {fileID: 1329076876}
-  m_Layer: 0
-  m_Name: InventoryManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1329076875
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1329076874}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1703771085}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1329076876
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1329076874}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe0e906e9ac544448a8f21bd45332d07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inventorySize: 36
-  hotbarSize: 9
-  slotParent: {fileID: 0}
-  slotPrefab: {fileID: 0}
-  tooltip: {fileID: 0}
-  hotbarParent: {fileID: 0}
-  storageParent: {fileID: 0}
-  storagePanelBackground: {fileID: 0}
-  inventoryToggleAction: {fileID: 0}
-  hotbarActions: []
-  pickupSound: {fileID: 0}
-  dropSound: {fileID: 0}
-  useSound: {fileID: 0}
 --- !u!1 &1352810280
 GameObject:
   m_ObjectHideFlags: 0
@@ -25431,7 +25374,6 @@ Transform:
   - {fileID: 736672754}
   - {fileID: 1489281021}
   - {fileID: 1976966067}
-  - {fileID: 1329076875}
   - {fileID: 2135538201}
   - {fileID: 1054705961}
   m_Father: {fileID: 0}
