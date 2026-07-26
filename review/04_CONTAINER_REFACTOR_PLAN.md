@@ -557,6 +557,33 @@ dos `SetSlot`. Correção provável: mover a chamada para depois do `SetSlot` na
 **Não corrigido** — é bug de gameplay, não do refactor, e a Etapa 4 mexe justamente nesse
 arquivo. Melhor como commit próprio, com teste, para não se misturar ao refactor.
 
+**Corrigido em `632f0c1`… e o fix estava errado. Corrigido de verdade em 2026-07-26.**
+Ao rodar a suíte no Editor antes de verificar as Etapas 4b/5, os **10 testes de
+`InventoryHotbarRefillTests` falhavam** — 9 com `NullReferenceException`, e nunca tinham
+rodado verdes: o commit `632f0c1` foi feito sem executá-los no Editor. Duas causas
+independentes, ambas reais:
+
+1. **O teste nunca inicializava o `Inventory`.** `AddComponent` **não** dispara `Awake` em
+   Edit Mode (só em Play Mode), então `container` ficava null e o primeiro acesso lançava.
+   O `SetUp` agora chama `InitializeInventory` por reflection — mesmo trade-off do
+   `InstallTestItemDatabase` da Etapa 0: o alcance fica contido no teste em vez de abrir
+   API só-para-teste na produção.
+
+2. **O fix de `632f0c1` se auto-anulava.** Ele fez duas mudanças que se cancelam: tirou o
+   tracking da hotbar de dentro da guarda de UI do `UpdateSlot` (passou a rodar sempre) **e**
+   moveu o `CheckHotbarAutoRefill` para depois do `SetSlot`. Só que o `SetSlot` dispara
+   `OnSlotChanged` → `UpdateSlot`, que — vendo o slot já vazio — zera
+   `lastHotbarItems[slotIndex]`. O refill rodava logo em seguida, lia o tracking recém-apagado,
+   caía no `refillItem == null` e desistia. O bug do §6.5 continuou vivo, só que por outro
+   caminho.
+
+   Correção: `CheckHotbarAutoRefill(int slotIndex, Item knownLastItem = null)`. Quem esvazia o
+   slot (o `UseItemAt`) passa o item explicitamente; quem não esvaziou (o caminho de drag) deixa
+   null e segue usando o tracking. Reproduzido e confirmado fora dos testes via `execute_code`
+   antes e depois do fix.
+
+**743/743 testes EditMode verdes** após a correção.
+
 ### 6.6 ✅ RESOLVIDO: existiam DOIS componentes `Inventory` ativos na SampleScene
 
 Encontrado ao preparar a Etapa 4a. Bug de cena, não de código.

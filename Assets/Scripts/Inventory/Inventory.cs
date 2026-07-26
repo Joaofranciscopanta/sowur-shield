@@ -511,8 +511,12 @@ public class Inventory : MonoBehaviour, ISaveable
         // always saw the pre-consumption stack and returned immediately — hotbar auto-refill
         // never fired on the consume path (it worked on the drag path, where the call already
         // came after the writes).
+        //
+        // usedItem has to be handed over explicitly: the SetSlot above already fired
+        // OnSlotChanged -> UpdateSlot, which wiped lastHotbarItems[slotIndex] on the way past.
+        // Reading the tracking here would always find null and skip the refill.
         if (updatedStack.IsEmpty && slotIndex < hotbarSize)
-            CheckHotbarAutoRefill(slotIndex);
+            CheckHotbarAutoRefill(slotIndex, usedItem);
 
         UpdateSlot(slotIndex);
         PlaySound(useSound);
@@ -576,7 +580,14 @@ public class Inventory : MonoBehaviour, ISaveable
     /// Check if a hotbar slot needs auto-refill and perform it if needed
     /// Called when a hotbar slot empties (from consumption or drag/drop)
     /// </summary>
-    private void CheckHotbarAutoRefill(int slotIndex)
+    /// <param name="knownLastItem">
+    /// What the slot held immediately before it was emptied, when the caller already knows it.
+    /// Writing the emptied stack through SetSlot fires OnSlotChanged -> UpdateSlot, which clears
+    /// lastHotbarItems for that slot — so a caller that empties the slot first (UseItemAt) must
+    /// pass the item in, otherwise the tracking it would have read is already gone. Callers that
+    /// did not empty the slot themselves (the drag path) leave this null and use the tracking.
+    /// </param>
+    private void CheckHotbarAutoRefill(int slotIndex, Item knownLastItem = null)
     {
         // Only refill hotbar slots
         if (slotIndex < 0 || slotIndex >= hotbarSize) return;
@@ -587,7 +598,7 @@ public class Inventory : MonoBehaviour, ISaveable
         if (!currentStack.IsEmpty) return;
 
         // Get the last item that was in this slot
-        Item refillItem = lastHotbarItems[slotIndex];
+        Item refillItem = knownLastItem ?? lastHotbarItems[slotIndex];
         if (refillItem == null) return;
 
         // Search main inventory (slots hotbarSize to end) for matching item

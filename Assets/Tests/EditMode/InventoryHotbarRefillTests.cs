@@ -1,3 +1,4 @@
+using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
 using SowurShield.Inventory;
@@ -10,8 +11,13 @@ using SowurShield.Inventory;
 /// BEFORE writing the decremented stack back, so the refill's "is this slot empty now?" guard
 /// always saw the old stack and bailed out (see review/04_CONTAINER_REFACTOR_PLAN.md §6.5).
 ///
-/// Inventory is a MonoBehaviour, but Awake only builds the container and the tracking array —
-/// no scene, canvas or input needed — so it can be exercised directly here.
+/// Inventory is a MonoBehaviour, but its initialisation only builds the container and the
+/// tracking array — no scene, canvas or input needed — so it can be exercised directly here.
+///
+/// AddComponent does NOT run Awake in Edit Mode (only Play Mode does), so the container would
+/// stay null and every call would throw. InitializeInventory is invoked explicitly through
+/// reflection instead. Same trade-off as InventoryContainerTests' InstallTestItemDatabase:
+/// the reach-around is contained in the test rather than widening production API for it.
 /// </summary>
 public class InventoryHotbarRefillTests
 {
@@ -30,7 +36,23 @@ public class InventoryHotbarRefillTests
         carrot = MakeItem("Carrot", consumable: false);
 
         host = new GameObject("InventoryHost");
-        inventory = host.AddComponent<Inventory>();   // Awake builds the container
+        inventory = host.AddComponent<Inventory>();
+        InitializeInventory(inventory);
+    }
+
+    /// <summary>
+    /// Run what Awake would have run. Edit Mode never calls Awake on AddComponent, so without
+    /// this the backing container is null and the very first container access throws.
+    /// </summary>
+    private static void InitializeInventory(Inventory target)
+    {
+        var init = typeof(Inventory).GetMethod("InitializeInventory",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+
+        Assert.IsNotNull(init,
+            "Inventory.InitializeInventory is gone or renamed — this suite needs it to build the container.");
+
+        init.Invoke(target, null);
     }
 
     [TearDown]
