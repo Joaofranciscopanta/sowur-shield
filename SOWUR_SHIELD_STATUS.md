@@ -309,13 +309,19 @@ See [review/02_FINDINGS.md](review/02_FINDINGS.md) for the full diagnostic. Head
   stack is the single source of truth. `IsAnyPanelOpen()` callers moved to `IsAnyWindowOpen()`
 - `SellBox` re-loads `GameBalance` via `Resources.Load` on every `sellMultiplier` access
 - ~~**No `.gitattributes`**~~ — **fixed Jul/26**: `* text=auto` plus `eol=lf` on the Unity YAML
-  types (`.unity`/`.prefab`/`.asset`/`.meta`/`.anim`/…), followed by `git add --renormalize .`.
-  Two notes correcting the old entry: the count is ~4200 tracked text files, not ~2800, and
-  `core.autocrlf` was **`true`** locally, not unset. `.sh`/`.py` are pinned `eol=lf` because
+  types (`.unity`/`.prefab`/`.asset`/`.meta`/`.anim`/…). `.sh`/`.py` pinned `eol=lf` because
   `.github/scripts/*.sh` run on Linux in Actions; `.unity`/`.prefab` get `merge=binary` so a bad
-  auto-merge fails loudly instead of silently corrupting a scene. The visible local symptom this
-  cures: files showing as modified with a completely empty diff (Unity writes LF, the working
-  tree gets CRLF back)
+  auto-merge fails loudly instead of silently corrupting a scene.
+  **The old entry was wrong about the scale.** It predicted ~2800 files needing renormalization;
+  the real number is **zero** — `git add --renormalize .` staged nothing, because every tracked
+  file already stored LF (`core.autocrlf` was **`true`** locally, not unset as claimed). ~4200
+  files are *governed* by the new rules, but none needed rewriting. The `.gitattributes` still
+  earns its place by pinning that behaviour in the repo instead of leaving it dependent on one
+  machine's local git config — which is what would have broken a Linux/CI checkout.
+  Caveat for whoever reads this next: marking generated files `binary` is the wrong tool here.
+  Tried it for `*.private.0` and it made Git store the working tree's CRLF verbatim, baking
+  Windows endings into the repo (fixed in `ace4328`). The local symptom all of this cures is a
+  file showing as modified with a completely empty diff
 
 **Working well**: namespace convention (100%), combat pipeline, status-effect tests,
 GameBalance centralization (~80%), save scaffolding, animal husbandry tests.

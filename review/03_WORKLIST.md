@@ -758,9 +758,13 @@ visible symptom). It now delegates.
 tracked text files differed from the index by line endings alone on any non-Windows checkout
 (CI, WSL, containers) and every `git diff` there was a full-file rewrite.
 
-Two details of the original note were wrong and are corrected here: the count is ~4200 tracked
-text files (2342 `.meta`, 697 `.asset`, 303 `.cs`, 280 `.anim`, 130 `.prefab`, 40 `.unity`), not
-~2800, and `core.autocrlf` was **`true`** locally rather than unset.
+The original note was wrong about the scale, and the correction is the interesting part: it
+predicted ~2800 files differing by line endings, but `git add --renormalize .` staged **nothing**.
+Every tracked file already stored LF, because `core.autocrlf` was **`true`** locally rather than
+unset as claimed. ~4200 text files (2342 `.meta`, 697 `.asset`, 303 `.cs`, 280 `.anim`, 130
+`.prefab`, 40 `.unity`) are now *governed* by explicit rules, but none needed rewriting. The value
+delivered is therefore not a cleanup — it is removing the dependency on one machine's local git
+config, which is what would have broken a Linux/CI/WSL checkout.
 
 The fix also diverged from the sketch above in one way worth recording: the Unity YAML types are
 `text eol=lf`, **not** `-text`. Marking them binary would have stopped the churn but also killed
