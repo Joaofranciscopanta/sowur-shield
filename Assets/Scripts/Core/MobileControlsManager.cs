@@ -62,7 +62,7 @@ namespace SowurShield.Core
             if (controlsRoot == null)
                 return;
 
-            bool panelOpen = UIManager.Instance != null && UIManager.Instance.IsAnyPanelOpen();
+            bool panelOpen = UIManager.Instance != null && UIManager.Instance.IsAnyWindowOpen();
 
             if (panelOpen && controlsRoot.activeSelf)
             {

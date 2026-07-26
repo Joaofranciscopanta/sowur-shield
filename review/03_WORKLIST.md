@@ -476,7 +476,12 @@
 ---
 
 ## TASK-011 — Extract AnimalIllness logic from Animal.cs into a focused component
-- [ ] status
+- [x] status — done 2026-07-25. `AnimalIllness.cs` (plain C# class) now owns NeglectDays/IsIll/
+  UpdateNeglect/Cure/RestoreState; `Animal.cs` delegates and keeps `Animal.IsIll` public (so
+  `CombatTeamSpawner.cs`'s illness-penalty read is unaffected) and the same save keys
+  (`{prefix}_isIll` / `{prefix}_neglectDays`). Note: the assumption below that
+  `AnimalHusbandryTests.cs` covers illness was wrong — a project-wide grep found ZERO illness
+  tests, so `Assets/Tests/EditMode/AnimalIllnessTests.cs` (17 tests) was added with the extraction.
 - priority: Important
 - system: animals
 - files: `Assets/Scripts/Animals/Animal.cs` (975 lines; illness logic around lines 900-917 per
@@ -571,7 +576,13 @@
 ---
 
 ## TASK-012 — Extract SaveSlot UI logic from MainMenuUI.cs into MainMenuSaveSlotController
-- [ ] status
+- [x] status — done 2026-07-25. `Assets/Scripts/UI Systems/MainMenuSaveSlotController.cs`
+  (`SowurShield.UI`) owns the picker panel, list, title and back button and raises
+  `OnSlotChosen(slot, mode)` / `OnBackRequested` / `OnSlotDeleted`; MainMenuUI keeps the
+  load-vs-new-game decision. `MainMenuUI.cs` 1150 → 1036 lines. The LocalizedString title fields
+  stayed on MainMenuUI (resolved title is passed into `Open()`) so `field_map.json` auto-wiring
+  is untouched. Editor wiring was applied directly in `MainMenu.unity` (new component on
+  MainMenuCanvas with the five references moved over) — **still worth confirming in the Editor**.
 - priority: Important
 - system: UI
 - files: `Assets/Scripts/MainMenuUI.cs` (1019 lines), new
@@ -708,29 +719,47 @@
 
 **14 tasks generated.**
 
-**Done**: TASK-002 (descope decision), TASK-003 (N/A, descoped), TASK-004 (save migration
-dispatch), TASK-005 (QuestManager cached refs), TASK-006 (investigated, documented,
-follow-up needed), TASK-007 (DialogueCondition tests), TASK-008 (DialogueEffect tests),
+**Done**: all 14. TASK-002 (descope decision), TASK-003 (N/A, descoped), TASK-004 (save migration
+dispatch), TASK-005 (QuestManager cached refs), TASK-006 (investigated → legacy system removed
+2026-07-25), TASK-007 (DialogueCondition tests), TASK-008 (DialogueEffect tests),
 TASK-009 (dead SellBox branch removed), TASK-010 (CLAUDE.md folder table fixed),
+TASK-011 (AnimalIllness extracted), TASK-012 (MainMenuSaveSlotController extracted),
 TASK-013 (test asmdefs verified).
 
 **Remaining — Critical**: none. TASK-001 confirmed 2026-07-01.
 
-**Remaining — Important (2 tasks)**: TASK-011, TASK-012.
+**Remaining — Important**: none. TASK-011 and TASK-012 both done 2026-07-25.
 
-**New follow-up task needed** (from TASK-001 verification): remove/downgrade the verbose
-Debug.LogWarning/LogError diagnostic instrumentation in `CombatTeamSpawner.cs` and
-`EnemySpawner.cs` left over from the original spawn-pipeline bug investigation — in particular
-`CombatTeamSpawner.OnDestroy()` logs via `Debug.LogError` for ordinary scene-transition teardown,
-which is misleading and would trip any test/CI check that asserts a clean console.
+**Follow-up from TASK-001 — RESOLVED (verified 2026-07-25, no work needed)**: the verbose
+diagnostic instrumentation in `CombatTeamSpawner.cs` / `EnemySpawner.cs` had already been
+stripped on 2026-07-01. Every remaining `Debug.Log` in both files is either a real error path
+(null GridManager, failed `PlaceUnitAt`, caught exception) or gated behind `showDebugLogs`;
+the misleading `OnDestroy()` `LogError` is gone.
 
 **Remaining — Polish**: none.
 
-**New follow-up task needed** (from TASK-006 investigation): manual Unity Editor check of
-whether `PlayerMove.cs:169`'s `TryInteract()` E-key gate is already blocked while SellBox
-is open via `DisableMovement()` independent of `UIManager.IsAnyPanelOpen()` — determines
-whether the legacy `OpenPanel`/`ClosePanel`/`CloseAllPanels`/`IsAnyPanelOpen`/
-`currentlyOpenPanel`/`allUIPanels` machinery in `UIManager.cs` can be safely removed.
+**Follow-up from TASK-006 — RESOLVED (done 2026-07-25)**: the legacy panel system was removed
+from `UIManager.cs` (−118 lines). Investigation found `SellBox` was its ONLY writer — and
+SellBox already implements `IUIWindow` and calls `TryOpenWindow` first — so
+`IsAnyPanelOpen()` in practice only ever meant "the SellBox is open". Its three readers
+(`PlayerMove.cs`, `UIInput.cs`, `MobileControlsManager.cs`) were migrated to
+`IsAnyWindowOpen()`, which is strictly broader and more correct (17 classes implement
+`IUIWindow`). Deleted: `allUIPanels`, `currentlyOpenPanel`, the three panel SerializeFields,
+`InitializeUIPanels`, `OpenPanel`, `ClosePanel`, `CloseAllPanels`, `CloseCurrentPanel`,
+`IsAnyPanelOpen`, `GetCurrentPanel`, `RegisterPanel`, `UnregisterPanel`.
+Side fix: `UIManager.LogDebug()` was an empty `if (enableDebugLogs) { }` block, so all ~15 of
+its call sites logged nothing — restored as a real opt-in log, defaulted OFF (and flipped to 0
+on the UIManager instance in `SampleScene.unity`, which had it serialized as 1).
+Behaviour fix found along the way: `SellBox.OpenSellBox()` duplicated the whole of
+`OpenWindow()` inline, firing `OnSellBoxToggled` twice per open (no subscribers today, so no
+visible symptom). It now delegates.
+
+**New follow-up task needed** (from TASK-011/012 session): the repo has no `.gitattributes`
+and `core.autocrlf` is unset, so ~2800 files differ from the index by line endings alone on any
+non-Windows checkout (CI, WSL, containers). Every `git diff` there is a full-file rewrite. Worth
+adding a `.gitattributes` with `* text=auto` plus `*.unity`/`*.prefab`/`*.asset -text` and doing
+a one-shot `git add --renormalize .` — deliberately NOT bundled into this cleanup since it
+touches every file in the repo.
 
 All tasks are designed to be independently resumable — see `00_README.md` for the execution
 protocol.

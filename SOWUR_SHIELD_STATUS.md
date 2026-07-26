@@ -1,6 +1,7 @@
 # Sowur Shield — Project Status
 
-> Last updated: 2026-07-11
+> Last updated: 2026-07-25 (tech-debt sweep; the Jul/12–19 animation & scene work is tracked in
+> `ANIMACAO_STATUS.md` and not yet folded in here)
 > Branch: `main`
 > This is the **single source of truth for project state**. It supersedes ROADMAP.md,
 > GAME_DEVELOPMENT_PLAN.md, COMBAT_PIPELINE_STATUS.md, DEVELOPMENT_LOG.md, COMBAT_SETUP_GUIDE.md
@@ -40,8 +41,8 @@
 | **UI polish pass** | 🔨 In progress | HUD/inventory done; combat consumable UI needs visual check |
 | World/village map expansion | 💤 Deferred | Design decided (see Deferred section) |
 
-**Project size**: 4 scenes, ~155 scripts (100% namespace-compliant `SowurShield.<System>`),
-413+ test methods in 16+ test files, 3 asmdefs + tests.
+**Project size**: 4 scenes, ~157 scripts (100% namespace-compliant `SowurShield.<System>`),
+430+ test methods in 17+ test files, 3 asmdefs + tests.
 
 ---
 
@@ -179,11 +180,9 @@
 
 ## Backlog
 
-**From the code review** ([review/03_WORKLIST.md](review/03_WORKLIST.md)):
-- TASK-011 — Extract `AnimalIllness` from `Animal.cs` (975 lines, 2nd-largest script)
-- TASK-012 — Extract save-slot picker from `MainMenuUI.cs` (1019 lines, largest)
-- Follow-up — Remove legacy `OpenPanel`/`ClosePanel` system from `UIManager` (needs one manual
-  Editor check first, documented in PROGRESS.md)
+**From the code review** ([review/03_WORKLIST.md](review/03_WORKLIST.md)): **all 14 tasks done**
+as of Jul/25 — TASK-011, TASK-012 and both outstanding follow-ups closed in one sweep. New
+follow-up logged there: add a `.gitattributes` and renormalize line endings (see Known Tech Debt).
 
 **Art gaps**:
 - Duck and Sparrow use chicken-baby placeholder sprites (`Assets/Resources/Animals/duck.asset`,
@@ -230,10 +229,16 @@ Inventory into CombatScene or reading from `SaveManager`/`GameData` (deferred)
 ## Known Tech Debt
 
 See [review/02_FINDINGS.md](review/02_FINDINGS.md) for the full diagnostic. Headlines:
-- God classes: `MainMenuUI` 1019, `SellBox` 1123, `Inventory` ~1150, `InventorySlot` 907,
-  `Animal` 975 lines (TASK-011/012 target the worst two)
-- `UIManager` still has two coexisting window systems (legacy `OpenPanel` + `IUIWindow` stack)
+- God classes: `SellBox` 1174, `Inventory` ~1178, `MainMenuUI` 1036, `Animal` 1048,
+  `InventorySlot` 907 lines. `MainMenuUI` and `Animal` were trimmed Jul/25 (TASK-011/012);
+  `SellBox` and `Inventory` are now the worst two and have no extraction task yet
+- ~~`UIManager` has two coexisting window systems~~ — **fixed Jul/25**: the legacy
+  `OpenPanel`/`ClosePanel` system is gone (`UIManager` 321 → 212 lines) and the `IUIWindow`
+  stack is the single source of truth. `IsAnyPanelOpen()` callers moved to `IsAnyWindowOpen()`
 - `SellBox` re-loads `GameBalance` via `Resources.Load` on every `sellMultiplier` access
+- **No `.gitattributes` and `core.autocrlf` unset** — ~2800 files read as fully modified on any
+  non-Windows checkout (CI, WSL, containers), making diffs there unreviewable. Fix is
+  `* text=auto` + `-text` for `.unity`/`.prefab`/`.asset`, then `git add --renormalize .`
 
 **Working well**: namespace convention (100%), combat pipeline, status-effect tests,
 GameBalance centralization (~80%), save scaffolding, animal husbandry tests.

@@ -167,7 +167,7 @@ animator.SetBool("isRunning", isSprinting && moveInput != Vector2.zero);
         }
 
         // Don't interact if UI is active or if mouse is over UI
-        if (UIManager.Instance != null && UIManager.Instance.IsAnyPanelOpen())
+        if (UIManager.Instance != null && UIManager.Instance.IsAnyWindowOpen())
         {
             // Check if mouse is over UI element
             if (UnityEngine.EventSystems.EventSystem.current != null &&

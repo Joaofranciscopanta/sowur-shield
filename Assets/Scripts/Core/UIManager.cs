@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
-using SowurShield.Inventory;
 
 namespace SowurShield.Core
 {
@@ -9,22 +8,18 @@ namespace SowurShield.Core
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
-    
-    [Header("UI Panels")]
-    public GameObject inventoryPanel;
-    public GameObject sellBoxPanel;
-    public GameObject gameMenuPanel;
-    
-    private List<GameObject> allUIPanels = new List<GameObject>();
-    private GameObject currentlyOpenPanel;
 
     [Header("Window Management")]
-    [SerializeField] private bool enableDebugLogs = true;
+    [Tooltip("Logs every window open/close/block to the console. Off by default — turn on when debugging UI stacking.")]
+    [SerializeField] private bool enableDebugLogs = false;
 
-    // New window management system
+    // Window management system. The legacy parallel panel system
+    // (allUIPanels/currentlyOpenPanel/OpenPanel/ClosePanel/IsAnyPanelOpen) was removed —
+    // SellBox was its only writer and it already implements IUIWindow, so the stack below
+    // is now the single source of truth for "what UI is open".
     private List<IUIWindow> registeredWindows = new List<IUIWindow>();
     private Stack<IUIWindow> openWindowStack = new Stack<IUIWindow>();
-    
+
     private void Awake()
     {
         // Singleton pattern
@@ -35,97 +30,6 @@ public class UIManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        
-        InitializeUIPanels();
-    }
-    
-    private void InitializeUIPanels()
-    {
-        // Add all UI panels to the list
-        if (inventoryPanel != null) allUIPanels.Add(inventoryPanel);
-        if (sellBoxPanel != null) allUIPanels.Add(sellBoxPanel);
-        if (gameMenuPanel != null) allUIPanels.Add(gameMenuPanel);
-        
-        // Auto-find panels if not assigned
-        if (inventoryPanel == null)
-        {
-            var inventory = FindFirstObjectByType<SowurShield.Inventory.Inventory>();
-            if (inventory != null)
-            {
-                // Try to find inventory UI panel
-                inventoryPanel = inventory.transform.Find("InventoryPanel")?.gameObject;
-                if (inventoryPanel != null) allUIPanels.Add(inventoryPanel);
-            }
-        }
-    }
-    
-    public void OpenPanel(GameObject panel)
-    {
-        if (panel == null) return;
-        
-        // Close all other panels first
-        CloseAllPanels();
-        
-        // Open the requested panel
-        panel.SetActive(true);
-        currentlyOpenPanel = panel;
-        
-        // Ensure cursor is visible for UI interaction
-        EnsureCursorVisible();
-        
-
-    }
-    
-    public void ClosePanel(GameObject panel)
-    {
-        if (panel == null) return;
-        
-        panel.SetActive(false);
-        
-        if (currentlyOpenPanel == panel)
-            currentlyOpenPanel = null;
-            
-
-    }
-    
-    public void CloseAllPanels()
-    {
-        foreach (GameObject panel in allUIPanels)
-        {
-            if (panel != null && panel.activeInHierarchy)
-            {
-                panel.SetActive(false);
-            }
-        }
-        currentlyOpenPanel = null;
-
-    }
-    
-    public void CloseCurrentPanel()
-    {
-        if (currentlyOpenPanel != null)
-        {
-            ClosePanel(currentlyOpenPanel);
-        }
-    }
-    
-    public bool IsAnyPanelOpen()
-    {
-        return currentlyOpenPanel != null;
-    }
-    
-    public GameObject GetCurrentPanel()
-    {
-        return currentlyOpenPanel;
-    }
-    
-    // Add a panel to be managed
-    public void RegisterPanel(GameObject panel)
-    {
-        if (panel != null && !allUIPanels.Contains(panel))
-        {
-            allUIPanels.Add(panel);
-        }
     }
 
     /// <summary>
@@ -170,16 +74,7 @@ public class UIManager : MonoBehaviour
             LogDebug($"Unregistered window: {window.WindowName}");
         }
     }
-    
-    // Remove a panel from management
-    public void UnregisterPanel(GameObject panel)
-    {
-        if (panel != null && allUIPanels.Contains(panel))
-        {
-            allUIPanels.Remove(panel);
-        }
-    }
-    
+
     private void EnsureCursorVisible()
     {
         // Force cursor to be visible and unlocked for UI interaction
@@ -306,16 +201,15 @@ public class UIManager : MonoBehaviour
             var window = openWindowStack.Pop();
             window.CloseWindow();
         }
-
-        // Also close legacy panels for compatibility
-        CloseAllPanels();
     }
 
     private void LogDebug(string message)
     {
+        // The body used to be an empty if-block left behind when the logs were stripped, so the
+        // ~15 LogDebug call sites in this class did nothing at all. Restored as a real (opt-in)
+        // log so window-stack issues are debuggable again — off by default to keep the console clean.
         if (enableDebugLogs)
-        {
-        }
+            Debug.Log($"[UIManager] {message}");
     }
 }
 

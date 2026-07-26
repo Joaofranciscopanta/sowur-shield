@@ -460,3 +460,76 @@
   repo, and `SOWUR_SHIELD_STATUS.md` already declares itself their successor in its
   header. The consolidation this task asked for had already happened in an earlier
   session without the worklist checkbox being updated.
+- 2026-07-25: Tech-debt sweep — TASK-011, TASK-012 and both outstanding follow-ups closed;
+  worklist is now fully done. Branch `feature/tech-debt-cleanup`.
+  - **Follow-up from TASK-001 (combat log spam): no work needed.** Re-read
+    `CombatTeamSpawner.cs` and `EnemySpawner.cs` — the diagnostic instrumentation was already
+    stripped on 2026-07-01. All 26 remaining `Debug.*` calls are real error paths or gated
+    behind `showDebugLogs`; the misleading `OnDestroy()` `LogError` no longer exists.
+  - **TASK-011 — AnimalIllness extracted.** New `Assets/Scripts/Animals/AnimalIllness.cs`
+    (plain C# class, `SowurShield.Animals`): `NeglectDays`, `IsIll`,
+    `UpdateNeglect(wasCaredForToday, thresholdDays)`, `Cure()`, `RestoreState()`. The threshold
+    is a per-call parameter, not constructor state, because `CombatTeamSpawner` assigns
+    `Animal.animalData` by reflection AFTER `AddComponent<Animal>()` — a captured threshold
+    would be read before the data exists. `Animal.cs` (1055 → 1048 lines) keeps
+    `public bool IsIll => illness.IsIll` so `CombatTeamSpawner.cs`'s illness-penalty read is
+    untouched, and `SaveData`/`LoadData` still use the same `{prefix}_isIll` /
+    `{prefix}_neglectDays` keys (each still restored independently, falling back to the current
+    value when a key is absent). Cure keeps the inventory/ItemDatabase transaction in `Animal`
+    and only calls `illness.Cure()` after the medicine is actually consumed.
+    **The worklist's premise was wrong**: it assumed `AnimalHusbandryTests.cs` had illness
+    coverage to validate the extraction. A project-wide grep for `IsIll|illness|neglect` across
+    `Assets/Tests` returned nothing — there were zero illness tests. Added
+    `Assets/Tests/EditMode/AnimalIllnessTests.cs` (17 tests) covering accumulation, threshold
+    crossing, care resetting the streak, illness surviving care until cured, cure/relapse,
+    RestoreState round-trip and the threshold<=0 misconfiguration.
+  - **TASK-012 — save-slot picker extracted.** New
+    `Assets/Scripts/UI Systems/MainMenuSaveSlotController.cs` (`SowurShield.UI`) owns
+    `slotPickerPanel`/`slotListParent`/`saveSlotButtonPrefab`/`backButton`/`titleText`, builds
+    the rows and raises `OnSlotChosen(slotName, mode)`, `OnBackRequested`, `OnSlotDeleted`.
+    `MainMenuUI` keeps the load-vs-new-game decision and subscribes in `SetupUI()` /
+    unsubscribes in `OnDestroy()`. `MainMenuUI.cs`: 1150 → 1036 lines.
+    Two deliberate choices: (a) the `LocalizedString` title fields stayed on `MainMenuUI` and
+    the *resolved* string is passed into `Open(mode, title)`, so `field_map.json` auto-wiring
+    needs no changes; (b) `ReadSlotInfosFromDisk()` became `public static` on the controller
+    (plus a `GetSlotInfos()` that prefers `SaveManager` when alive), which also removed the
+    duplicated SaveManager-vs-disk branch from `GetMostRecentSlotFromDisk()` and
+    `CheckSaveFileAvailability()`.
+    **Editor wiring was applied, not deferred**: `MainMenu.unity` now has the component on
+    `MainMenuCanvas` (fileID 1865434790) with the five references moved off `MainMenuUI`, and
+    `MainMenuUI.saveSlotController` points at it. `MainMenuUI` also auto-finds the controller
+    if the reference is ever lost, and warns if none exists. Still worth one Editor pass:
+    New Game → pick slot, Continue, Load → pick slot, and Back.
+  - **Follow-up from TASK-006 — legacy UIManager panel system removed.** `UIManager.cs`
+    321 → 212 lines. Investigation: `SellBox` was the only writer of `currentlyOpenPanel`, and
+    it already implements `IUIWindow` and goes through `TryOpenWindow` first — so
+    `IsAnyPanelOpen()` only ever meant "SellBox is open". Its three readers (`PlayerMove.cs:170`,
+    `UIInput.cs:80`, `MobileControlsManager.cs:65`) were migrated to `IsAnyWindowOpen()`, which
+    covers all 17 `IUIWindow` implementers — strictly broader, no coverage lost.
+    Removed: `allUIPanels`, `currentlyOpenPanel`, the `inventoryPanel`/`sellBoxPanel`/
+    `gameMenuPanel` SerializeFields, `InitializeUIPanels()`, `OpenPanel`, `ClosePanel`,
+    `CloseAllPanels`, `CloseCurrentPanel`, `IsAnyPanelOpen`, `GetCurrentPanel`, `RegisterPanel`,
+    `UnregisterPanel`, and the `CloseAllPanels()` tail of `ForceCloseAllWindows()`.
+    Two things surfaced while doing it:
+      1. `UIManager.LogDebug()` was `if (enableDebugLogs) { }` — an empty block left behind when
+         the logs were stripped, so ~15 call sites logged nothing. Restored as a real opt-in
+         `Debug.Log`, defaulted to false, and the UIManager instance in `SampleScene.unity`
+         (which had `enableDebugLogs: 1` serialized) was flipped to 0 so nothing starts spamming.
+      2. `SellBox.OpenSellBox()` re-did all of `OpenWindow()`'s work inline *and* called the
+         legacy `OpenPanel()`, firing `OnSellBoxToggled` twice per open. Harmless today (the
+         event has no subscribers) but a trap for whoever subscribes first. It now delegates to
+         `TryOpenWindow` (or, with no UIManager, `CloseOtherUIWindows()` + `OpenWindow()`).
+  - Files changed: `Assets/Scripts/Animals/Animal.cs`, `Assets/Scripts/Animals/AnimalIllness.cs`
+    (new), `Assets/Tests/EditMode/AnimalIllnessTests.cs` (new),
+    `Assets/Scripts/UI Systems/MainMenuSaveSlotController.cs` (new),
+    `Assets/Scripts/Core/MainMenuUI.cs`, `Assets/Scripts/Core/UIManager.cs`,
+    `Assets/Scripts/Core/SellBox.cs`, `Assets/Scripts/Core/PlayerMove.cs`,
+    `Assets/Scripts/Core/UIInput.cs`, `Assets/Scripts/Core/MobileControlsManager.cs`,
+    `Assets/Scenes/MainMenu.unity`, `Assets/Scenes/SampleScene.unity`.
+  - **Not verified in this session**: nothing was compiled or run — no Unity and no .NET
+    toolchain was available. Braces balance and every removed symbol was grepped project-wide,
+    but the first Editor open is still the real compile check.
+  - **Repo hygiene finding**: no `.gitattributes` + unset `core.autocrlf` means ~2800 files
+    show as fully modified on any non-Windows checkout. All git work in this session had to run
+    with `-c core.autocrlf=true` to produce reviewable diffs. Logged as a new follow-up in
+    03_WORKLIST.md; deliberately not fixed here since renormalizing touches every file.
