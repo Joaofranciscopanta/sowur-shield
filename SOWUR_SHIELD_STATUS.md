@@ -169,6 +169,9 @@
   `QuestsUI` (panel + close button only — tabs stay on ShowTab's Button.colors tint),
   `BattleResultsUI` (uses the previously-unused `panel_victory`/`panel_defeat` sprites)
 - `AnimalMarketUI` skipped intentionally — its builder already applies the theme at build time
+  (`AnimalMarketUIBuilder` reads `CozyUITheme` and bakes flat palette tints into the scene
+  objects; the UI class itself has no `UIThemeStyler` call and no theme field, so nothing is
+  re-applied at runtime — sprite-kit art is absent here, unlike the panels above)
 
 **Verified in Play Mode (Jul/26)** — pause menu + building shop. Three contrast bugs found and
 fixed; every colour decision was measured (WCAG ratio), not eyeballed:
@@ -209,14 +212,37 @@ colour problem at all:
   y 0–30), so all four sit clipped at the bottom edge instead of inside the panel. Scene-only
   layout — no code touches it — so it needs a RectTransform fix in the Editor: anchor to
   (0.5, 0.5), roughly x ±110, y −260, which lands them under the stats block
-- [ ] `QuestsUI` — **the Jul/11 note above is wrong about it**: `Scripts/Dialogue/QuestsUI.cs`
-  contains no `ApplyTheme` call at all, so the "panel + close button" theming claimed there was
-  never applied. It's also absent from SampleScene (built on demand by the `QuestsUIBuilder`
-  editor window), which is likely how it went unnoticed. Theme it or drop the claim
+- [ ] `QuestsUI` visual check still owed — it's absent from SampleScene (built on demand by the
+  `QuestsUIBuilder` editor window), so it has never been seen running. Code audited instead
+  (Jul/26); see the theming-audit note below
 - [ ] Building shop's "Farm Buildings" title sits on the panel sprite's wide wood border rather
   than the cream field — legible, but a RectTransform nudge in the Editor, not a code fix
 - [ ] Settings panel's sliders/dropdown/checkbox still use stock Unity visuals
 - [ ] Stamina bar has no icon (no energy icon exists in the sprite kit yet)
+- [ ] Quest **completed**-tab rows: the prefab's white backing is alpha **0.3**, so its dark text
+  reads 3.67 against a woodDark panel — under 4.5 for body text (the active rows use 0.5 and are
+  fine at 5.78–7.36). The alpha is authored into `QuestCompletedRow.prefab` by `QuestsUIBuilder`,
+  not applied at runtime, so it's a builder/prefab edit rather than a `UIThemeStyler` fix
+
+**Theming audit (Jul/26)** — every claim in this section re-checked against the code, because the
+list had accumulated two contradictory notes about `QuestsUI`:
+- **Retracted: the "`QuestsUI` contains no `ApplyTheme` call at all" claim was false.**
+  `Scripts/Dialogue/QuestsUI.cs:91-92` calls `StylePanel` + `StyleButton` in `Awake`, added
+  Jul/19 in `c2f247e` — six days *before* the Jul/26 note that denied it. The Jul/11 note (panel
+  + close button only, tabs left on `ShowTab`'s `Button.colors` tint) was the accurate one all
+  along. The error looks like a grep for the *method name* `ApplyTheme`, which `QuestsUI` genuinely
+  lacks because it inlines the calls in `Awake` instead of wrapping them — a reminder to grep for
+  `UIThemeStyler` rather than the helper method when auditing this.
+- Confirmed accurate: `ShopUI` (`ShopUI.cs:117-130`), `BuildingShopUI` (`:145-157`, rows `:202-211`),
+  `GameMenuUI` (`:126-162`), `BattleResultsUI` (`:158-184`) all call `UIThemeStyler` as described.
+- **Real gap found and fixed in `QuestsUI`.** `StylePanel` replaces the builder's cream background
+  with the wood sprite, but the panel's own text was authored `textDark` to suit that cream —
+  leaving the "Quests" heading and both empty-state labels at **1.68 / 2.44 / 3.23** on
+  wood dark/mid/light: failing on all three, invisible on the darkest. Now cream via
+  `StylePanelTitle` + `TintText` (**7.60 / 5.24 / 3.96**), cream over gold for the established
+  reason — the wood tone under a panel sprite isn't fixed, and gold falls to 3.01 on woodLight.
+  The quest rows were deliberately left alone: they carry their own white backing, so their dark
+  text is already measured against the row, not the wood.
 
 ---
 
@@ -224,7 +250,8 @@ colour problem at all:
 
 **From the code review** ([review/03_WORKLIST.md](review/03_WORKLIST.md)): **all 14 tasks done**
 as of Jul/25 — TASK-011, TASK-012 and both outstanding follow-ups closed in one sweep. New
-follow-up logged there: add a `.gitattributes` and renormalize line endings (see Known Tech Debt).
+follow-up logged there — add a `.gitattributes` and renormalize line endings — **done Jul/26**
+(see Known Tech Debt).
 
 **Art gaps**:
 - Duck and Sparrow use chicken-baby placeholder sprites (`Assets/Resources/Animals/duck.asset`,
@@ -281,9 +308,14 @@ See [review/02_FINDINGS.md](review/02_FINDINGS.md) for the full diagnostic. Head
   `OpenPanel`/`ClosePanel` system is gone (`UIManager` 321 → 212 lines) and the `IUIWindow`
   stack is the single source of truth. `IsAnyPanelOpen()` callers moved to `IsAnyWindowOpen()`
 - `SellBox` re-loads `GameBalance` via `Resources.Load` on every `sellMultiplier` access
-- **No `.gitattributes` and `core.autocrlf` unset** — ~2800 files read as fully modified on any
-  non-Windows checkout (CI, WSL, containers), making diffs there unreviewable. Fix is
-  `* text=auto` + `-text` for `.unity`/`.prefab`/`.asset`, then `git add --renormalize .`
+- ~~**No `.gitattributes`**~~ — **fixed Jul/26**: `* text=auto` plus `eol=lf` on the Unity YAML
+  types (`.unity`/`.prefab`/`.asset`/`.meta`/`.anim`/…), followed by `git add --renormalize .`.
+  Two notes correcting the old entry: the count is ~4200 tracked text files, not ~2800, and
+  `core.autocrlf` was **`true`** locally, not unset. `.sh`/`.py` are pinned `eol=lf` because
+  `.github/scripts/*.sh` run on Linux in Actions; `.unity`/`.prefab` get `merge=binary` so a bad
+  auto-merge fails loudly instead of silently corrupting a scene. The visible local symptom this
+  cures: files showing as modified with a completely empty diff (Unity writes LF, the working
+  tree gets CRLF back)
 
 **Working well**: namespace convention (100%), combat pipeline, status-effect tests,
 GameBalance centralization (~80%), save scaffolding, animal husbandry tests.
