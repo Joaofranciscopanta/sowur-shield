@@ -408,11 +408,37 @@ existiam só para o `OnDrop` saber rotear. Com o `OwnerView`, um slot não preci
 `Canvas`/`Image` e não instancia limpo em EditMode. A lógica de transferência por baixo tem 38
 testes; o roteamento em si precisa do Editor.
 
-**Roteiro de verificação (pendente):** inventário→inventário (mover, empilhar com sobra,
-trocar dois itens diferentes), inventário→SellBox, SellBox→inventário, mover dentro do SellBox,
-item não-vendável rejeitado com feedback vermelho, inventário→comedouro, comedouro→inventário,
-arrastar para fora do painel (volta pro container, **não** cai no chão), arrastar para fora do
-inventário (cai no chão, como antes), auto-refill da hotbar após arrastar, dormir e vender.
+**Roteiro de verificação — executado em Play Mode, 2026-07-26. Tudo verde, console sem erros.**
+
+Conduzido por `execute_code` no Editor em vez de arrastes de mouse simulados: o mesmo caminho
+de código (`ItemTransferService` + as policies reais dos containers da cena), porém
+determinístico e com estado inspecionável antes/depois.
+
+| Caso | Resultado |
+|---|---|
+| inventário→inventário, slot vazio | `Moved` qty=5, origem esvazia |
+| empilhar mesmo item | `Moved` qty=3 → 5+3=8 |
+| trocar dois itens diferentes | `Swapped`, Apple↔Carrot |
+| empilhar com sobra | `Partial` qty=2 → destino 99, origem fica 3 |
+| inventário→SellBox / SellBox→inventário | `Moved` nos dois sentidos |
+| inventário→comedouro / comedouro→inventário | `Moved` nos dois sentidos |
+| item não-vendável → SellBox | `Rejected`, item **permanece** na origem |
+| item não-vendável via **swap** | `Rejected` — a rota que antes vazava |
+| auto-refill da hotbar ao consumir | recarrega do storage, total preservado |
+| dormir e vender (painel fechado) | 10 Apple × 8 × 0.8 = 64; dinheiro 143→207, caixa esvazia |
+| sprite do comedouro (painel fechado) | `_0` vazio → `_1` parcial → `_2` cheio → `_0` |
+
+Confirmado de passagem: a cena tem **exatamente um** `Inventory` (45 slots, no `Bunny`), um
+SellBox e um comedouro — o órfão do §6.6 segue deletado. As views carregam as policies certas
+(`SellBoxPolicy`, `FeedingTroughPolicy`).
+
+**Não verificável com conteúdo real:** os 26 itens do `ItemDatabase` têm todos
+`canBeSold = true`, então a rejeição foi exercitada com um `Item` sintético. O feedback
+*visual* vermelho não foi coberto — a rejeição está confirmada na camada de dados.
+
+**Não coberto por serem gesto de mouse:** arrastar para fora do painel (volta pro container) e
+arrastar para fora do inventário (cai no chão). São as duas mudanças de comportamento
+deliberadas da 4b e continuam pendentes de um teste com as mãos.
 
 ---
 
@@ -441,8 +467,19 @@ E e clique esquerdo abrindo a caixa, ESC.
 ---
 
 ### ETAPA 5 — Unificar persistência (`saveVersion` 1 → 2)
-- [x] status — feito 2026-07-25, **15 testes**. Pendente de verificação no Editor.
+- [x] status — feito 2026-07-25, **15 testes**. **Verificado em Play Mode 2026-07-26.**
 - risco: médio
+
+**Verificação (2026-07-26).** Ciclo salvar → apagar tudo → carregar, com itens em slots
+**não-contíguos** de propósito (sell[2], sell[5], trough[4]), para que compactação passasse
+a falhar em vez de parecer sucesso. Os três voltaram no **índice exato**, e sell[0]/trough[0]
+continuaram vazios — é a prova do ponto 3 acima (o loader antigo usava `AddItem` e realocava).
+
+No arquivo em disco: `"saveVersion": 2`, `containerData` gravado como **lista** (não dicionário
+— o bug de corrupção de Jun/26), índices esparsos explícitos, e **zero** ocorrências das chaves
+legadas `sellbox_*` / `feedingtrough_*`. O `ContainerID` do SellBox saiu
+`SellBox_SellingBox`, confirmando o ponto 1. A migração V1→V2 rodou de verdade no boot
+(`dropped 1 legacy container key(s)` no console) — primeiro uso real do dispatch da TASK-004.
 
 `ContainerPersistence.Save/Load` + `GameData.containerData` (uma `List` de
 `ContainerSaveData`, **não** um `Dictionary` — `JsonUtility` não serializa dicionário, que foi
