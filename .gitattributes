@@ -50,9 +50,11 @@
 *.a         binary
 *.pdf       binary
 
-# Unity's private setting snapshots are generated; treat as binary to keep them out
-# of the renormalize churn and out of diffs.
-*.private.0 binary
+# Unity's private setting snapshots. These are plain YAML/text despite the extension, so they
+# get eol=lf like the assets they mirror. NOT binary: marking them binary makes Git store the
+# working tree's CRLF verbatim, which bakes Windows line endings into the repo and causes exactly
+# the drift this file exists to remove.
+*.private.0 text eol=lf
 
 # Large Unity YAML files merge badly by line; flag the highest-conflict ones so a
 # bad auto-merge fails loudly instead of silently corrupting a scene.
