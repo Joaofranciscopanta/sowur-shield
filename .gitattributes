@@ -1,0 +1,60 @@
+# Normalize line endings so a checkout on Linux/WSL/CI does not read thousands of
+# files as fully modified. Without this, Git guesses per file and ~4200 text files
+# (2342 .meta, 697 .asset, 303 .cs, 280 .anim, 130 .prefab, 40 .unity) drift.
+
+# Default: let Git decide what is text, store LF in the repo, check out native.
+* text=auto
+
+# Unity YAML assets. Kept as text so merges and diffs work, but Unity itself always
+# writes LF on every platform, so declaring it explicitly stops the CRLF round-trip
+# that made these files show up as modified with an empty diff.
+*.unity     text eol=lf
+*.prefab    text eol=lf
+*.asset     text eol=lf
+*.meta      text eol=lf
+*.anim      text eol=lf
+*.controller text eol=lf
+*.mat       text eol=lf
+*.physicsMaterial2D text eol=lf
+*.asmdef    text eol=lf
+*.shadergraph text eol=lf
+*.inputactions text eol=lf
+
+# Source and docs: LF in the repo, native in the working tree.
+*.cs        text diff=csharp
+*.shader    text
+*.cginc     text
+*.json      text
+*.md        text
+*.xml       text
+*.yml       text
+*.txt       text
+
+# Must stay LF regardless of platform: these run on Linux in GitHub Actions.
+*.sh        text eol=lf
+*.py        text eol=lf
+
+# Binary — never touch, never diff.
+*.png       binary
+*.jpg       binary
+*.gif       binary
+*.psd       binary
+*.aseprite  binary
+*.ttf       binary
+*.mp3       binary
+*.wav       binary
+*.bundle    binary
+*.unitypackage binary
+*.dll       binary
+*.so        binary
+*.a         binary
+*.pdf       binary
+
+# Unity's private setting snapshots are generated; treat as binary to keep them out
+# of the renormalize churn and out of diffs.
+*.private.0 binary
+
+# Large Unity YAML files merge badly by line; flag the highest-conflict ones so a
+# bad auto-merge fails loudly instead of silently corrupting a scene.
+*.unity     merge=binary
+*.prefab    merge=binary
