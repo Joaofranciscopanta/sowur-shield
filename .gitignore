@@ -67,6 +67,12 @@ crashlytics-build.properties
 # Packed Addressables
 [Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
 
+# Addressables link.xml — regenerated (and deleted) by Unity on build/settings changes, so
+# tracking it means it flip-flops between untracked and deleted in every session. Removed from
+# version control in 203efe9; ignored here so it stops looking like new work.
+[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/link.xml
+[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/link.xml.meta
+
 # Temporary auto-generated Android Assets
 [Aa]ssets/[Ss]treamingAssets/aa.meta
 [Aa]ssets/[Ss]treamingAssets/aa/*
