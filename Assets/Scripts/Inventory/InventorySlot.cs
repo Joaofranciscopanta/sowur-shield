@@ -75,10 +75,18 @@ namespace SowurShield.Inventory
         private SlotDragHandler dragHandler;
         private SlotSellBoxAdapter sellBoxAdapter;
 
-        // Trough mode
-        private bool isTroughMode = false;
-        internal InventoryContainer troughContainer = null;
-        public bool IsTroughMode => isTroughMode;
+        // Trough mode was removed in Etapa 4b. A slot no longer needs a per-container "mode" to
+        // be routed correctly — OwnerView below identifies its container, whatever type it is.
+
+        /// <summary>
+        /// The ContainerView that built this slot, or null for player-inventory slots (which are
+        /// still built by Inventory itself). SlotTransferRouter uses this to resolve which
+        /// container a slot belongs to without knowing any concrete container type.
+        /// </summary>
+        public ContainerView OwnerView { get; internal set; }
+
+        /// <summary>The player Inventory this slot belongs to, when it is not owned by a view.</summary>
+        public SowurShield.Inventory.Inventory InventoryManager => inventoryManager;
 
         // ============================================================================
         // PROPERTIES
@@ -601,12 +609,6 @@ namespace SowurShield.Inventory
             }
         }
 
-        public void EnableTroughMode(InventoryContainer container)
-        {
-            isTroughMode = true;
-            troughContainer = container;
-        }
-
         public void UpdateSellBoxDisplay()
         {
             if (sellBoxAdapter != null)
@@ -807,101 +809,36 @@ namespace SowurShield.Inventory
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if (dragHandler != null)
-            {
-                if (isTroughMode && troughContainer != null)
-                {
-                    ItemStack dragged = dragHandler.DraggedItemStack;
-                    if (!dragged.IsEmpty)
-                    {
-                        if (dragHandler.wasDroppedOnSlot)
-                        {
-                            // Successfully dropped on a slot — remove from trough now
-                            troughContainer.RemoveItem(dragged.item, dragged.quantity);
-                        }
-                        else
-                        {
-                            // Dropped on empty space — restore to trough, don't drop on ground
-                            dragHandler.MarkDragSuccessful();
-                            SetItemStack(itemStack); // Refresh visual
-                        }
-                    }
-                }
+            if (dragHandler == null) return;
 
-                dragHandler.EndDrag(eventData, isSellBoxMode, this);
+            // Slots owned by a ContainerView (SellBox, feeding trough) never gave up their item
+            // at BeginDrag — it is still in their container. Dropping one on empty ground must
+            // therefore restore it rather than spawn a GroundItem, or the item would exist in
+            // both places. The trough already worked this way; the rule now covers every
+            // container-owned slot, which also closes that duplication hole on the SellBox.
+            //
+            // Removing the item from the source container is no longer done here: the router
+            // does it through ItemTransferService when the drop lands on a slot.
+            if (OwnerView != null && !dragHandler.wasDroppedOnSlot && !dragHandler.DraggedItemStack.IsEmpty)
+            {
+                dragHandler.MarkDragSuccessful();
+                SetItemStack(itemStack); // refresh visual from the container-backed stack
             }
+
+            dragHandler.EndDrag(eventData, isSellBoxMode, this);
         }
 
         public void OnDrop(PointerEventData eventData)
         {
             InventorySlot draggedSlot = eventData.pointerDrag?.GetComponent<InventorySlot>();
-            if (draggedSlot != null && draggedSlot != this && draggedSlot.dragHandler != null)
-            {
-                draggedSlot.dragHandler.wasDroppedOnSlot = true;
+            if (draggedSlot == null || draggedSlot == this || draggedSlot.dragHandler == null)
+                return;
 
-                SellBox sellBox = FindFirstObjectByType<SellBox>();
+            draggedSlot.dragHandler.wasDroppedOnSlot = true;
 
-                // Check if dragging FROM SellBox TO inventory
-                if (draggedSlot.isSellBoxMode && !isSellBoxMode && sellBox != null && sellBox.IsOpen)
-                {
-                    sellBox.HandleSellBoxToInventoryDrop(draggedSlot, this);
-                    return;
-                }
-
-                // Check if this is a SellBox-to-SellBox move
-                if (draggedSlot.isSellBoxMode && isSellBoxMode && sellBox != null && sellBox.IsOpen)
-                {
-                    sellBox.HandleSellBoxInternalMove(draggedSlot, this);
-                    return;
-                }
-
-                // Check if this is a drop TO SellBox slot
-                if (isSellBoxMode && sellBox != null && sellBox.IsOpen)
-                {
-                    sellBox.HandleSlotDrop(draggedSlot, this);
-                    return;
-                }
-
-                // Check if dragging FROM trough TO inventory
-                if (draggedSlot.IsTroughMode && !isTroughMode)
-                {
-                    ItemStack dragged = draggedSlot.GetDraggedItem();
-                    if (!dragged.IsEmpty && inventoryManager != null)
-                    {
-                        bool added = inventoryManager.AddItem(dragged.item, dragged.quantity);
-                        if (added)
-                        {
-                            draggedSlot.MarkDragSuccessful();
-                            // OnEndDrag will handle removing from trough container
-                        }
-                        // If inventory full, OnEndDrag will restore to trough since wasDroppedOnSlot=true but MarkDragSuccessful was not called
-                    }
-                    return;
-                }
-
-                // Check if this is a drop TO FeedingTrough slot
-                if (isTroughMode && troughContainer != null)
-                {
-                    ItemStack dragged = draggedSlot.GetDraggedItem();
-                    if (!dragged.IsEmpty)
-                    {
-                        bool added = troughContainer.AddItem(dragged.item, dragged.quantity);
-                        if (added)
-                        {
-                            draggedSlot.MarkDragSuccessful();
-                            SowurShield.Inventory.Inventory inv = FindFirstObjectByType<SowurShield.Inventory.Inventory>();
-                            if (inv != null) inv.EndDragOperation();
-                        }
-                    }
-                    return;
-                }
-
-                // Default to regular inventory handling
-                if (inventoryManager != null)
-                {
-                    inventoryManager.HandleSlotDrop(draggedSlot, this);
-                }
-            }
+            // One path for every container. This used to be a five-branch if-else naming SellBox
+            // and the trough, plus a FindFirstObjectByType<SellBox>() on every single drop.
+            SlotTransferRouter.Route(draggedSlot, this);
         }
     }
 } // namespace SowurShield.Inventory

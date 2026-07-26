@@ -89,7 +89,12 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
     public List<ItemBoxSprite> itemBoxSprites = new List<ItemBoxSprite>();
 
     private InventoryContainer container;
-    private List<InventorySlot> sellBoxSlotUIs = new List<InventorySlot>();
+
+    // Slot UI is owned by ContainerView (Etapa 4a of review/04_CONTAINER_REFACTOR_PLAN.md).
+    // Added at runtime rather than wired in the Inspector, so this migration needs no scene
+    // changes — SellBox already holds sellBoxSlotParent/sellBoxSlotPrefab and hands them over.
+    private ContainerView view;
+    private SowurShield.Inventory.Policies.SellBoxPolicy policy;
     private bool isSellBoxOpen = false;
     private PlayerStats playerStats;
     private SowurShield.Inventory.Inventory playerInventory;
@@ -180,6 +185,9 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         UnregisterFromInteractionManager();
         UnregisterFromUIManager();
         SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+
+        if (container != null)
+            container.OnSlotChanged -= HandleContainerChanged;
 
         if (SaveManager.Instance != null)
             SaveManager.Instance.UnregisterSaveable(this);
@@ -357,46 +365,37 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         // Create container
         container = new InventoryContainer(boxInventorySize, "SellBox");
 
-        // Subscribe to container events for automatic UI updates
-        container.OnSlotChanged += (index, stack) =>
-        {
-            UpdateSlot(index);
-            UpdateTotalValueDisplay();
-            UpdateBoxSprite();
-        };
+        // canBeSold used to be checked inline in HandleSlotDrop, so it only guarded that one
+        // path. As a policy the transfer service applies it to every route into the box.
+        policy = new SowurShield.Inventory.Policies.SellBoxPolicy(
+            onAccepted: (_, __) => PlaySound(itemPlaceSound));
+
+        // Slot UI belongs to the view. These two reactions are SellBox's own business, and stay
+        // wired straight to the container because they must also run with no slot UI present —
+        // SellAllItemsAutomatically empties the box during sleep, while the panel is closed.
+        container.OnSlotChanged += HandleContainerChanged;
+    }
+
+    /// <summary>Reacts to the container changing. The slot UI is the view's job; this is ours.</summary>
+    private void HandleContainerChanged(int index, ItemStack stack)
+    {
+        UpdateTotalValueDisplay();
+        UpdateBoxSprite();
     }
 
     private void SetupUI()
     {
-        sellBoxSlotUIs.Clear();
-
         if (sellBoxSlotParent != null && sellBoxSlotPrefab != null)
         {
-            for (int i = 0; i < boxInventorySize; i++)
-            {
-                CreateSellBoxSlotUI(i);
-            }
+            if (view == null)
+                view = gameObject.AddComponent<ContainerView>();
+
+            view.Configure(sellBoxSlotParent, sellBoxSlotPrefab, "SellBoxSlot");
+            view.Bind(container, policy, (slotUI, _) => slotUI.EnableSellBoxMode(sellMultiplier));
         }
 
         if (sellBoxTitleText != null)
             sellBoxTitleText.text = titleText.SafeGetLocalizedString();
-
-        UpdateAllSlots();
-    }
-
-    private void CreateSellBoxSlotUI(int index)
-    {
-        GameObject slotObj = Instantiate(sellBoxSlotPrefab, sellBoxSlotParent);
-        slotObj.name = $"SellBoxSlot_{index}";
-
-        InventorySlot slotUI = slotObj.GetComponent<InventorySlot>();
-        if (slotUI != null)
-        {
-            sellBoxSlotUIs.Add(slotUI);
-            slotUI.SetSlotIndex(index);
-            slotUI.SetItemStack(container.GetSlot(index));
-            slotUI.EnableSellBoxMode(sellMultiplier);
-        }
     }
 
     public void Interact()
@@ -525,10 +524,9 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         if (!success && (item == null || !item.canBeSold))
         {
             // Show rejection feedback on all slots
-            foreach (var slotUI in sellBoxSlotUIs)
+            if (view != null)
             {
-                if (slotUI != null)
-                    StartCoroutine(ShowRejectFeedbackOnSlot(slotUI));
+                view.ForEachSlot((slotUI, _) => StartCoroutine(ShowRejectFeedbackOnSlot(slotUI)));
             }
             return false;
         }
@@ -545,8 +543,9 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
                 ItemStack stack = container.GetSlot(i);
                 if (!stack.IsEmpty && stack.item == item)
                 {
-                    if (i < sellBoxSlotUIs.Count && sellBoxSlotUIs[i] != null)
-                        StartCoroutine(ShowAcceptFeedbackOnSlot(sellBoxSlotUIs[i]));
+                    InventorySlot slotUI = view != null ? view.GetSlotUI(i) : null;
+                    if (slotUI != null)
+                        StartCoroutine(ShowAcceptFeedbackOnSlot(slotUI));
                 }
             }
         }
@@ -604,157 +603,9 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         return container.GetSlot(slotIndex);
     }
 
-    public void HandleSlotDrop(InventorySlot fromSlot, InventorySlot toSlot)
-    {
-        int toIndex = sellBoxSlotUIs.IndexOf(toSlot);
-        if (toIndex < 0 || toIndex >= boxInventorySize)
-        {
-            return;
-        }
+    // HandleSlotDrop / HandleSellBoxInternalMove / HandleSellBoxToInventoryDrop were deleted
+    // in Etapa 4b: every drop now goes through SlotTransferRouter -> ItemTransferService.
 
-        ItemStack fromItemStack = fromSlot.GetDraggedItem();
-        if (fromItemStack == null || fromItemStack.IsEmpty)
-        {
-            return;
-        }
-
-        // Check if item can be sold
-        if (!fromItemStack.item.canBeSold)
-        {
-            StartCoroutine(ShowRejectFeedbackOnSlot(toSlot));
-            return;
-        }
-
-        // Try to add the item to the sell box
-        int quantityToMove = fromItemStack.quantity;
-        bool canAddAll = CanAdd(fromItemStack.item, quantityToMove);
-
-        if (canAddAll)
-        {
-            // Add all items to sell box (without showing feedback in AddItem)
-            bool success = AddItemSilent(fromItemStack.item, quantityToMove);
-            if (success)
-            {
-                // Consume the dragged item (it's already stored in draggedItemStack)
-                fromSlot.ConsumeDraggedItem();
-                PlaySound(itemPlaceSound);
-
-                // Show accept feedback only once
-                StartCoroutine(ShowAcceptFeedbackOnSlot(toSlot));
-            }
-        }
-        else
-        {
-            // Try to add as much as possible
-            int spaceAvailable = GetAvailableSpace(fromItemStack.item);
-            if (spaceAvailable > 0)
-            {
-                bool success = AddItemSilent(fromItemStack.item, spaceAvailable);
-                if (success)
-                {
-                    fromSlot.ConsumeDraggedItem();
-                    PlaySound(itemPlaceSound);
-                    StartCoroutine(ShowAcceptFeedbackOnSlot(toSlot));
-                }
-            }
-            else
-            {
-                StartCoroutine(ShowRejectFeedbackOnSlot(toSlot));
-            }
-        }
-
-        // Single update at the end
-        UpdateTotalValueDisplay();
-    }
-
-    /// <summary>
-    /// Handles moving items within the SellBox (slot to slot rearrangement)
-    /// </summary>
-    public void HandleSellBoxInternalMove(InventorySlot fromSlot, InventorySlot toSlot)
-    {
-        int fromIndex = sellBoxSlotUIs.IndexOf(fromSlot);
-        int toIndex = sellBoxSlotUIs.IndexOf(toSlot);
-
-        if (fromIndex < 0 || fromIndex >= boxInventorySize || toIndex < 0 || toIndex >= boxInventorySize)
-        {
-            return;
-        }
-
-        // Get stacks
-        ItemStack fromStack = container.GetSlot(fromIndex);
-        ItemStack toStack = container.GetSlot(toIndex);
-
-        // Swap the items
-        container.SetSlot(fromIndex, toStack);
-        container.SetSlot(toIndex, fromStack);
-
-        // Consume the dragged item since the move succeeded
-        fromSlot.ConsumeDraggedItem();
-
-        // Update both slot UIs
-        UpdateSlot(fromIndex);
-        UpdateSlot(toIndex);
-
-        // Single total value update (no duplication)
-        UpdateTotalValueDisplay();
-
-        // No green feedback for internal moves - just a subtle sound
-        PlaySound(itemPlaceSound);
-    }
-
-    public void HandleSellBoxToInventoryDrop(InventorySlot fromSlot, InventorySlot toSlot)
-    {
-        // Find the from slot index in sellBox
-        int fromIndex = sellBoxSlotUIs.IndexOf(fromSlot);
-        if (fromIndex < 0 || fromIndex >= boxInventorySize)
-        {
-            return;
-        }
-
-        // Get the dragged item from the fromSlot (SellBox slot)
-        ItemStack sellBoxItemStack = fromSlot.GetDraggedItem();
-        if (sellBoxItemStack == null || sellBoxItemStack.IsEmpty)
-        {
-            return;
-        }
-
-        // Store item info before any modifications
-        Item itemToMove = sellBoxItemStack.item;
-        int quantityToMove = sellBoxItemStack.quantity;
-
-        if (itemToMove == null)
-        {
-            return;
-        }
-
-        if (playerInventory == null)
-        {
-            return;
-        }
-
-        // Check if inventory can accept the item
-        bool canAdd = playerInventory.CanAdd(itemToMove, quantityToMove);
-
-        if (canAdd)
-        {
-            // Add to inventory
-            bool success = playerInventory.Add(itemToMove, quantityToMove);
-            if (success)
-            {
-                // Remove from sellbox inventory
-                RemoveFromSlot(fromIndex, quantityToMove);
-
-                // Consume the dragged item
-                fromSlot.ConsumeDraggedItem();
-
-                // Mark the slot as processed to prevent double-processing
-                if (fromSlot != null)
-                {
-                    fromSlot.wasDroppedOnSlot = true; // Ensure this is set
-                }
-            }
-        }
-    }
 
     /// <summary>
     /// Automatically sells all items in the box (called during sleep)
@@ -784,7 +635,7 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
 
                     itemsSold.Add(stack.Clone());
                     container.SetSlot(i, new ItemStack());
-                    UpdateSlot(i);
+                    // SetSlot fires OnSlotChanged; the view refreshes even with the panel closed.
                 }
             }
         }
@@ -845,40 +696,14 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         }
     }
 
-    private void UpdateSlot(int index)
-    {
-        if (index >= 0 && index < sellBoxSlotUIs.Count && sellBoxSlotUIs[index] != null)
-        {
-            // Only update UI if the slot GameObject is active
-            if (sellBoxSlotUIs[index].gameObject.activeInHierarchy)
-            {
-                sellBoxSlotUIs[index].SetItemStack(container.GetSlot(index));
-            }
-        }
-    }
-
-    private void UpdateAllSlots()
-    {
-        for (int i = 0; i < Mathf.Min(container.MaxSlots, sellBoxSlotUIs.Count); i++)
-        {
-            UpdateSlot(i);
-        }
-    }
-
     /// <summary>
     /// Force updates all UI elements regardless of active state checks
     /// Used after automatic selling when UI was inactive
     /// </summary>
     private void ForceUpdateAllUI()
     {
-        // Force update all slots without active checks
-        for (int i = 0; i < Mathf.Min(container.MaxSlots, sellBoxSlotUIs.Count); i++)
-        {
-            if (i >= 0 && i < sellBoxSlotUIs.Count && sellBoxSlotUIs[i] != null)
-            {
-                sellBoxSlotUIs[i].SetItemStack(container.GetSlot(i));
-            }
-        }
+        if (view != null)
+            view.Refresh();
 
         // Force update total value display
         if (totalValueText != null)
@@ -902,8 +727,9 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
             return true;
 
         // Check if any slot UI is active
-        foreach (var slot in sellBoxSlotUIs)
+        for (int i = 0; view != null && i < view.SlotCount; i++)
         {
+            InventorySlot slot = view.GetSlotUI(i);
             if (slot != null && slot.gameObject.activeInHierarchy)
                 return true;
         }
@@ -976,19 +802,16 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
     public void ValidateAndFixState()
     {
         // Ensure all slots are properly configured
-        for (int i = 0; i < sellBoxSlotUIs.Count && i < boxInventorySize; i++)
+        if (view != null)
         {
-            if (sellBoxSlotUIs[i] != null)
+            view.ForEachSlot((slotUI, i) =>
             {
-                // Force correct SellBox mode
-                sellBoxSlotUIs[i].EnableSellBoxMode(sellMultiplier);
+                if (i >= boxInventorySize) return;
 
-                // Ensure slot data matches internal inventory
-                sellBoxSlotUIs[i].SetItemStack(container.GetSlot(i));
-
-                // Force UI update
-                sellBoxSlotUIs[i].UpdateSellBoxDisplay();
-            }
+                slotUI.EnableSellBoxMode(sellMultiplier);
+                slotUI.SetItemStack(container.GetSlot(i));
+                slotUI.UpdateSellBoxDisplay();
+            });
         }
 
         // Force total value recalculation
