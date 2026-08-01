@@ -4,6 +4,58 @@
 > behavior) and **Quirks** (surprising-but-intended or environment-specific behavior worth
 > knowing before debugging "ghosts").
 
+## [OPEN] `TeamAssemblerUISetup` caches `.transform` before adding a `RectTransform`
+
+**Not yet fixed** — found 2026-08-01 while fixing the same bug in `RelationshipUI`, but left
+alone because it sits in the combat pipeline and was outside the reported problem.
+
+**The trap:** `new GameObject("X")` starts with a plain `Transform`. Adding a `RectTransform`
+**replaces** it, destroying the original. Any reference cached from `.transform` before that
+call is therefore a *destroyed* object, while the GameObject itself is perfectly alive.
+
+```csharp
+GameObject panelObj = new GameObject("AssemblerPanel");
+assemblerPanel = panelObj.transform;              // <-- captures the plain Transform
+RectTransform rect = panelObj.AddComponent<RectTransform>();  // <-- destroys it
+```
+
+**Why it is nasty:** the field reads as null to Unity's overloaded `==`, so a guard like
+`if (panel == null) return;` silently swallows everything downstream. That is exactly how the
+codex opened with an empty body and no console error.
+
+**Occurrences:** `TeamAssemblerUISetup.cs:102`, `:131`, `:151`, `:172` (AssemblerPanel,
+AnimalSelectionPanel, GridPanel, InfoPanel).
+
+**Fix:** construct with the component — `new GameObject("X", typeof(RectTransform))` — and
+cache the reference *after*. Worth grepping for `= .*\.transform;` followed by
+`AddComponent<RectTransform>` on the same object.
+
+---
+
+## [FIXED 2026-08-01] Dialogue opened with no text and could only be closed with Esc
+
+**Symptom:** talking to any NPC showed the speaker's name but left the body on its editor
+placeholder ("Dialogue text will appear here..."). Nothing advanced the conversation, so Esc
+was the only way out. The HUD (money, day, season) was blank at the same time.
+
+**Root cause:** `LocalizationManager` only exists in the MainMenu scene, and
+`DialogueTreeUI.ProcessNodeCoroutine` waits on `LocalizationManager.AreTablesReady` before
+writing a line. Entering Play Mode directly in SampleScene left that flag false forever, so
+the coroutine parked on an unbounded `WaitUntil` before the text was ever set. **This is the
+documented "blank localized labels" quirk, but its effect on dialogue was worse than cosmetic**
+— it looked like an input-binding bug, which is how it was reported.
+
+**Fix:** `LocalizationManager` bootstraps itself via `RuntimeInitializeOnLoadMethod`
+(`AfterSceneLoad`, so a scene that provides one still wins). Two guards were added so this
+class of failure cannot be silent again: the wait is bounded at 5s with a warning, and a line
+that resolves empty clears the text and logs rather than leaving stale words on screen.
+
+**Unrelated note found while testing:** dialogue advances with **Z**, left-click or gamepad A —
+not Space or E. `continueButton` is unassigned in SampleScene, so there is no clickable
+button either. That is long-standing, not a regression.
+
+---
+
 ## [FIXED 2026-08-01] No animal could ever be cured — the Medicine item did not exist
 
 **Symptom:** none visible. Trying to cure an ill animal did nothing at all; the only trace was
