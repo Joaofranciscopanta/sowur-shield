@@ -13592,8 +13592,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  combatMusic: {fileID: 0}
-  menuMusic: {fileID: 0}
+  combatMusic: {fileID: 8300000, guid: 640d3ad1dcdc8714cbe64b56b4bbb6e2, type: 3}
+  menuMusic: {fileID: 8300000, guid: 2fd2d1b88ab551c4aa2a5c8d49a74ecb, type: 3}
   musicSource: {fileID: 909871598}
 --- !u!4 &909871597
 Transform:

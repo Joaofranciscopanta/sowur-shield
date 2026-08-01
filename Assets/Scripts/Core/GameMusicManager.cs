@@ -113,10 +113,20 @@ public class GameMusicManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// What the music is playing *for*, tracked explicitly rather than inferred from the clip.
+    /// The same AudioClip can legitimately be assigned to more than one slot (menuMusic and
+    /// gameplayMusic are the same track today), so comparing musicSource.clip against
+    /// combatMusic/menuMusic mistook farm music for menu music and silently cancelled the
+    /// seasonal crossfade.
+    /// </summary>
+    private enum MusicContext { Farm, Combat, Menu }
+    private MusicContext currentContext = MusicContext.Farm;
+
     private void OnSeasonChanged(string newSeason)
     {
         // Only crossfade if we're playing farm music (not combat/menu)
-        if (musicSource == null || combatMusic == musicSource.clip || menuMusic == musicSource.clip)
+        if (musicSource == null || currentContext != MusicContext.Farm)
             return;
         PlayFarmMusic();
     }
@@ -126,6 +136,7 @@ public class GameMusicManager : MonoBehaviour
     /// </summary>
     public void PlayFarmMusic()
     {
+        currentContext = MusicContext.Farm;
         AudioClip track = GetCurrentSeasonTrack();
         if (track != null)
             PlayMusic(track, fadeInDuration);
@@ -416,7 +427,10 @@ public class GameMusicManager : MonoBehaviour
     public void OnEnterCombat()
     {
         if (combatMusic != null)
+        {
+            currentContext = MusicContext.Combat;
             PlayMusic(combatMusic, fadeInDuration);
+        }
     }
 
     /// <summary>
@@ -432,6 +446,7 @@ public class GameMusicManager : MonoBehaviour
     /// </summary>
     public void OnEnterMainMenu()
     {
+        currentContext = MusicContext.Menu;
         if (menuMusic != null)
             PlayMusic(menuMusic, fadeInDuration);
         else
