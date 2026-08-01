@@ -115,10 +115,35 @@ sprite-kit pass the other panels got on Jul/26–Aug/1. It needs:
 ## Suggested order
 
 1. Clamped-event fix — **done**
-2. Gift preferences (§1) + codex display of them (§4)
-3. Daily-conversation affinity (§2)
-4. Visual pass (§5)
-5. Mechanical unlocks (§3) — content-heavy, needs shop/quest assets that partly do not exist yet
+2. Gift preferences (§1) + codex display of them (§4) — **done 2026-08-01** (`60a445f`)
+3. Daily-conversation affinity (§2) — **done 2026-08-01** (`60a445f`)
+4. Visual pass (§5) — **partly done**: tier ticks on the affinity bar and dimmed locked rows
+   landed with the above. The sprite-kit pass (wood panel, gold heading) is **still open** —
+   `RelationshipUI` remains on flat theme colours
+5. Mechanical unlocks (§3) — **not started**; content-heavy, needs shop/quest assets that
+   partly do not exist yet
+
+### What shipped in `60a445f`
+
+- Multipliers 2.5x / 1.5x / 1x / −1x, with Neutral pinned at exactly 1x by test so existing
+  gift content is not silently rebalanced
+- Preferences matched on `itemName`, never `GetDisplayName()` — the latter is localized, and
+  matching on it would break every preference the moment the player switched language
+- Discovery record: the codex shows what the player *learned*, and `GetDiscoveredReaction`
+  deliberately has no fallback to the real answer
+- Locked lore tiers rendered dimmed with their requirement, plus a "Codex (2/4)" count
+- `TierThresholds` is now the single source for both the labels and the bar ticks
+- **Giftable items 2 → 16 of 28.** The gift panel was nearly empty before this; it was the
+  quiet reason the whole system felt inert
+
+### Testing note worth keeping
+
+`GiftPreferenceTests` initially passed against a *deliberately broken* `GetDiscoveredReaction`,
+because a bare test NPC has a null `conversationMemory` and the method returned before reaching
+the bug. The fixture now builds a real `ConversationMemory`, bypassing `Awake` (which calls
+`DontDestroyOnLoad` and throws outside Play Mode). Re-breaking the method after that fix did
+produce a red test. **A green test against known-broken code is a broken test**, and the only
+way to notice is to break the code on purpose.
 
 ## Content still needed regardless
 

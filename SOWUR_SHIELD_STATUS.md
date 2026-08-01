@@ -43,7 +43,7 @@
 | World/village map expansion | 💤 Deferred | Design decided (see Deferred section) |
 
 **Project size**: 4 scenes, ~157 scripts (100% namespace-compliant `SowurShield.<System>`),
-**766 tests across 46 files** — 732 EditMode (44 files) + 34 PlayMode (2 files); all passing as
+**780 tests across 47 files** — 746 EditMode (45 files) + 34 PlayMode (2 files); all passing as
 of Aug/1. 3 asmdefs + 2 test asmdefs.
 
 > `Assets/Tests/EditMode/RegressionAug2026Tests.cs` (8 tests) exists because every bug fixed on
@@ -108,6 +108,13 @@ of Aug/1. 3 asmdefs + 2 test asmdefs.
   portraits; all 6 ConditionType/EffectType variants wired to real game systems
 - `ConversationMemory` (singleton, `ISaveable`): relationships (-100..100), quest statuses,
   custom variables — auto-saves every 30s
+- **Gift preferences (Aug/1)**: per-NPC loved/liked/disliked lists at 2.5x/1.5x/−1x, unlisted
+  items at exactly 1x. Tastes are *discovered* by gifting and listed in the codex; the panel
+  never pre-reveals them. Locked lore tiers show as dimmed rows with their requirement.
+  First conversation per NPC per day grants +1 affinity (`lastTalkDay`).
+  Design and open items: [docs/RELATIONSHIP_DESIGN.md](docs/RELATIONSHIP_DESIGN.md)
+- **The system's real limit is content, not code**: 1 NPC exists (Maren). Giftable items went
+  2 → 16 of 28 on Aug/1, which was the quiet reason the gift panel looked broken
 - `QuestManager` (singleton, `ISaveable`): objectives (CollectItem/TalkToNPC/HarvestCrop/
   CompleteBattle/Custom), rewards, `NotifyObjective()` auto-advance hooks live in
   Inventory/Conversation/Crop/Stage code. Quest assets in `Resources/Quests/`
