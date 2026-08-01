@@ -4,6 +4,53 @@
 > behavior) and **Quirks** (surprising-but-intended or environment-specific behavior worth
 > knowing before debugging "ghosts").
 
+## [FIXED 2026-08-01] MissingComponentException on every combat spawn
+
+**Symptom:** Each unit spawned into a battle logged
+`MissingComponentException: There is no 'Animator' attached to the "chicken" game object`.
+Long assumed to be the missing-AnimatorControllers art gap; it was not.
+
+**Root cause:** `CombatUnit.cs:152` used
+`GetComponent<Animator>() ?? gameObject.AddComponent<Animator>()`. A missing Unity component
+returns a **"fake null"** — a live C# object whose native side is gone — which `??` sees as
+non-null, so `AddComponent` never ran and the next line wrote to a component that did not
+exist. `??` and `?.` do not respect Unity's null operator overload; `== null` does.
+
+**Second layer, only reachable once the first was fixed:** units then got their Animator and
+every hit logged `Parameter 'Hash NNN' does not exist` for Hurt/Attack/Crit. The 25 animal
+controllers are *farm* controllers (`IsWalking`/`IsIdle`/`IsEating` over Idle/Walk/Eat, built
+for `AnimalAI`) and never had the combat triggers. Added Attack/Hurt/Die/Crit/Poison/Weakness/
+Idle as Triggers to all 25, leaving the farm parameters and the 20 player/NPC/enemy controllers
+untouched.
+
+**Scope:** this makes the triggers safe to fire and clears the error spam. It does **not** make
+anything animate — the project has zero combat animation clips (all 289 are Idle/Walk/Eat plus
+player/NPC/tree/egg). Real attack/hurt/death animation still needs art.
+
+---
+
+## [FIXED 2026-08-01] Two "Apple" items in circulation at once
+
+**Symptom:** `[ItemDatabase] Skipped 2 item(s) with duplicate names` on every boot.
+
+**Root cause:** `ItemDatabase` keys on `item.itemName`, not the asset name, and silently drops
+whichever asset loses the race — so the winner depended on `Resources` load order. Two assets
+claimed `"Apple"` and **disagreed**: `baseValue` 8 vs 1, `itemType` Food vs Generic,
+`giftAffinityValue` 0 vs 10, different icons. Both were live: `GetItem("Apple")` returned the
+value-8 asset while both ground-pickup prefabs referenced the value-1 one, so picking an apple
+up and looking one up by name gave different items. A different load order in a build could
+have flipped which the rest of the game saw.
+
+**Fix:** kept `FarmingData/Crops/AppleInventoryItem.asset` (baseValue 8, what `GetItem` already
+returned, so behaviour is unchanged), repointed both ground prefabs to it, confirmed no
+references to the other GUID remained, then deleted it. `FishingRod`'s duplicate pair was
+identical field-for-field; removed the unreferenced one.
+
+**Worth checking if new items are added:** the collision key is `itemName`, which is invisible
+in the Project window — two assets with different filenames can still collide.
+
+---
+
 ## [FIXED 2026-07-05] Purchased animals vanish on returning from combat
 
 **Symptom:** An animal bought from AnimalMarketUI disappears the moment the player returns
