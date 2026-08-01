@@ -151,6 +151,14 @@ MonoBehaviour:
     m_Key: item.WateringCan.name
     m_Metadata:
       m_Items: []
+  - m_Id: 14866686669479936
+    m_Key: item.Rabbit Fur.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14866686686257152
+    m_Key: item.Medicine.name
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

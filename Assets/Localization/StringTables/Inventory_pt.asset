@@ -154,6 +154,14 @@ MonoBehaviour:
     m_Localized: Regador
     m_Metadata:
       m_Items: []
+  - m_Id: 14866686669479936
+    m_Localized: Pelo de Coelho
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14866686686257152
+    m_Localized: Remedio
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

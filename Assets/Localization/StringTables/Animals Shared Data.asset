@@ -195,6 +195,10 @@ MonoBehaviour:
     m_Key: animal.Sparrow.name
     m_Metadata:
       m_Items: []
+  - m_Id: 14866686203912192
+    m_Key: animal.Rabbit.name
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -200,6 +200,10 @@ MonoBehaviour:
     m_Localized: "Gorri\xF3n"
     m_Metadata:
       m_Items: []
+  - m_Id: 14866686203912192
+    m_Localized: Conejo
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
