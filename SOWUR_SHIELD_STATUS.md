@@ -299,8 +299,15 @@ follow-up logged there — add a `.gitattributes` and renormalize line endings �
 - Duck and Sparrow use chicken-baby placeholder sprites (`Assets/Resources/Animals/duck.asset`,
   `Sparrow.asset` point at `Chicken_Baby*.png`)
 - Stamina/energy icon; see [UI_ART_PLACEHOLDERS.md](UI_ART_PLACEHOLDERS.md) for the full list
-- AnimatorControllers with Crit/Poison/Weakness/Hurt/Attack/Die states don't exist yet for any
-  animal/enemy — combat animation triggers are currently no-ops
+- **Combat animation clips** — no animal has attack/hurt/death art. Checked Aug/1: all 289
+  AnimationClips in the project are Idle/Walk/Eat (plus player, NPC, tree, egg-hatch); not one
+  is combat. This is the real gap and it needs art.
+  **Correcting the old entry here**, which claimed AnimatorControllers "don't exist yet for any
+  animal/enemy": **25 of 27 `AnimalData` assets have a controller**. Only `duck` and `Sparrow`
+  are null — the same two on placeholder sprites. The controllers are farm controllers
+  (`IsWalking`/`IsIdle`/`IsEating`); the combat trigger parameters were added Aug/1 (`7623020`)
+  so `CombatUnit`'s `SetTrigger` calls are safe, but they drive no states yet — firing them is
+  a no-op until clips exist
 
 **Feature ideas discussed (not started)**:
 - Cooking/crafting; NPC romance/marriage; full 3-Passive combat system (PRD); farm land
@@ -371,6 +378,12 @@ See [review/02_FINDINGS.md](review/02_FINDINGS.md) for the full diagnostic. Head
   Windows endings into the repo (fixed in `ace4328`). The local symptom all of this cures is a
   file showing as modified with a completely empty diff
 
+- **`??` and `?.` are unsafe on Unity objects.** `GetComponent<T>() ?? AddComponent<T>()` reads
+  correctly and is silently broken: a missing component returns Unity's "fake null" (a live C#
+  object with a destroyed native side), which `??` treats as non-null, so the fallback never
+  runs. This threw a `MissingComponentException` on every combat spawn until Aug/1 (`7623020`).
+  Use an explicit `== null`, which Unity's operator overload handles. Only one occurrence
+  existed; worth re-grepping `\?\?` near `GetComponent` if this pattern reappears.
 - **`UIThemeStyler.StylePanelTitle` hardcodes cream, which makes it a trap.** It forces every
   heading it finds to `backgroundCream` — correct for a heading on wood, silently wrong for one
   on a cream field, and it re-applies on every `Awake`, so a scene-authored colour looks right
