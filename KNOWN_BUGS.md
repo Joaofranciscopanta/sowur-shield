@@ -4,6 +4,47 @@
 > behavior) and **Quirks** (surprising-but-intended or environment-specific behavior worth
 > knowing before debugging "ghosts").
 
+## [FIXED 2026-08-01] No animal could ever be cured — the Medicine item did not exist
+
+**Symptom:** none visible. Trying to cure an ill animal did nothing at all; the only trace was
+`[Animal] Cure item 'Medicine' not found in ItemDatabase.` in the console, and only at the
+moment of the attempt.
+
+**Root cause:** all 28 `AnimalData` assets set `illnessCureItemName: Medicine`
+(`AnimalData.cs:123` also defaults to it), and **no `Medicine` item existed anywhere in the
+project**. `Animal.CureIllness` (`Animal.cs:1000`) resolves it via `ItemDatabase.GetItem`, gets
+null, logs a warning and returns before touching the inventory. An animal that fell ill after 3
+neglect days was stuck: -50% combat stats and no production, permanently, with no in-game way
+out.
+
+**Why nothing caught it:** the animal→item link is a **string** resolved at runtime. A missing
+target is not a compile error, not a broken reference in the Inspector, and not a failing test —
+`Resources.LoadAll` simply never returns it. Created `Medicine.asset`; the class of bug is now
+covered by `ContentAssetIntegrityTests.cs`, which walks every `AnimalData` and asserts its cure,
+food and produce names all resolve.
+
+**Note:** `Medicine` is `isConsumable=false` on purpose. `CureIllness` removes it via
+`inventory.RemoveItem` regardless of the flag, and marking it consumable would list it in the
+combat items panel, where using it does nothing.
+
+---
+
+## [FIXED 2026-08-01] Rabbit was a documented animal with no asset
+
+**Symptom:** none — the Rabbit simply could not be placed or bought, so it read as "not built
+yet" rather than as a bug.
+
+**Root cause:** `Rabbit.asset` and `RabbitFur.asset` are created by
+`Tools > Sowur Shield > Create Animal Assets` (`AnimalCreatorTool.cs`), which had apparently
+never been run, while the docs listed Rabbit as one of the four implemented animals. Created
+both plus the `RabbitFur_GroundItem` prefab its production spawns, using the tool's own values.
+
+**Still placeholder:** `Rabbit.idleSprite` is null (needs art), as are the Medicine/RabbitFur
+icons. `activeSkill` is `FeatherShield` as a stopgap — every existing `AnimalSkill` is avian or
+venom-themed, so a rabbit-appropriate skill is a content decision nobody has made.
+
+---
+
 ## [FIXED 2026-08-01] MissingComponentException on every combat spawn
 
 **Symptom:** Each unit spawned into a battle logged

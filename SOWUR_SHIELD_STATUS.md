@@ -43,13 +43,18 @@
 | World/village map expansion | 💤 Deferred | Design decided (see Deferred section) |
 
 **Project size**: 4 scenes, ~157 scripts (100% namespace-compliant `SowurShield.<System>`),
-**760 tests across 45 files** — 726 EditMode (43 files) + 34 PlayMode (2 files); all passing as
+**766 tests across 46 files** — 732 EditMode (44 files) + 34 PlayMode (2 files); all passing as
 of Aug/1. 3 asmdefs + 2 test asmdefs.
 
 > `Assets/Tests/EditMode/RegressionAug2026Tests.cs` (8 tests) exists because every bug fixed on
 > Aug/1 shipped **silently** — no console error, and the 718-test suite caught none of them.
 > Each test there was verified by re-introducing the bug and watching it fail, not just by
 > passing. Worth extending the same way when the next silent bug turns up.
+
+> `Assets/Tests/EditMode/ContentAssetIntegrityTests.cs` (6 tests) does the same job for the
+> **string-keyed links between assets** — `AnimalData` names an item, `ItemDatabase` resolves it
+> by name, and a miss produces only a `LogWarning` at the moment a player triggers it. That is
+> how the Medicine bug below survived: nothing at edit or build time inspects these links.
 
 > The 34 PlayMode tests had **never executed as PlayMode tests**: their asmdef was marked
 > Editor-only, which excludes it from a PlayMode run, so that runner reported 0 total while the
@@ -329,8 +334,14 @@ follow-up logged there — add a `.gitattributes` and renormalize line endings �
   `EnemyData` (`Cave Bat.png` → `CaveBat`), so those 20 were pure wiring and are now done.
   Mountain/Volcano files are named `Enemy 19 — Snow Wolf`, `Enemy 25 — Fire Slime`, … and match
   **no** `EnemyData`: `FrostDrake`, `IronGolem`, `Hellhound`, `ThunderEagle` and the other 10
-  have no sheet of their own. Someone has to decide which sheet belongs to which enemy (or
-  rename the assets to match the art) — no generation needed either way.
+  have no sheet of their own.
+  **Correcting the earlier "no generation needed either way" claim (checked Aug/1):** there are
+  only **12** sheets across Mountain/Volcano for **14** `EnemyData`, and most are not a rename
+  away — `Harpy`, `ThunderEagle`, `RockHound`, `ArmoredBear` and `Hellhound` have no plausible
+  match among `Snow Wolf`, `Mountain Bandit`, `Ice Elemental`, `Stone Yeti` and the rest. Three
+  pair up cleanly (`Mountain Titan`→`MountainKing`, `Lord of Ashes`→`InfernoDragon`, and one of
+  `Frost Golem`→`IronGolem`/`FrostDrake`). The rest is a **content gap needing art**, which
+  matters because AI generation is unconfigured (see the note above).
   Until then those 14 render as grey spheres via `CombatUnit.CreateSphereVisual()`.
   Caveat: `EnemyData.sprite` takes a single `Sprite` while the sheets import as `Multiple`, so
   Unity will never auto-assign these — each needs the `_0` slice picked explicitly.
@@ -372,8 +383,13 @@ element, so they read as "has skills" while `GetReadySkill()` returned that null
 AnimatorControllers exist for 25 of 27 animals; the missing piece is combat *clips*
 **World Map**: WorldMap Canvas + `WorldMapUIController` in farm scene; one `WorldMapBiomePanel`
 per biome wired to controller; `WorldMap` ref on `WorldMapTriggerZone`
-**Animals**: sprites for `Rabbit.asset`/`RabbitFur.asset`; GroundItem prefabs (RabbitFur,
-DuckEgg, Feather) in `Resources/Prefabs/GroundItems/`; `AnimalInfoUI` rename panel wiring
+**Animals**: ~~GroundItem prefabs (RabbitFur, DuckEgg, Feather)~~ — **DuckEgg and Feather already
+existed**; `RabbitFur_GroundItem` created Aug/1 and linked to `Rabbit.groundItemPrefab`.
+~~`Rabbit.asset`/`RabbitFur.asset`~~ **created Aug/1** — they had never existed at all (see
+KNOWN_BUGS.md), which also surfaced that **`Medicine` was missing project-wide**, leaving all 28
+animals permanently incurable. Still open: **sprites** for Rabbit (`idleSprite` null) and icons
+for Medicine/RabbitFur; a rabbit-appropriate `AnimalSkill` (currently `FeatherShield` as a
+stopgap); `AnimalInfoUI` rename panel wiring
 **Buildings/Shop/Tutorial**: ~~`Resources/Buildings/Barn.asset`+`Greenhouse.asset`~~ **created
 Aug/1** — they were genuinely missing while `AnimalZone`/`SoilBlockInteractable` already
 consumed `HasBarn`/`HasGreenhouse`, so neither effect could fire. Localized in en/pt/es.
