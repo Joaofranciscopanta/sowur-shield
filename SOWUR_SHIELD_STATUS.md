@@ -313,11 +313,17 @@ per biome wired to controller; `WorldMap` ref on `WorldMapTriggerZone`
 DuckEgg, Feather) in `Resources/Prefabs/GroundItems/`; `AnimalInfoUI` rename panel wiring
 **Buildings/Shop/Tutorial**: `Resources/Buildings/Barn.asset`+`Greenhouse.asset` if missing;
 row prefabs for `BuildingShopUI`/`ShopUI`; `Resources/Quests/` populated
-**Audio**: `seasonalFarmTracks[4]`/`combatMusic`/`menuMusic` on `GameMusicManager`; SFX clips;
-`OnEnterCombat()` wired from `SceneTransitionManager`
+**Audio**: ~~`combatMusic`/`menuMusic` on `GameMusicManager`~~ **done Aug/1** (`11f93e6`) —
+the clips were never missing, only unassigned; see KNOWN_BUGS.md for the `MusicContext` bug
+that filling them in exposed. `seasonalFarmTracks[4]` intentionally left null (falls back to
+`gameplayMusic`; only 3 OST tracks exist). Still open: SFX clips, and `OnEnterCombat()` is
+driven by `SceneManager.sceneLoaded` rather than the never-instantiated `SceneTransitionManager`
 **Combat consumables known limitation**: player `Inventory` only exists in SampleScene, so
 `ConsumableBattleUI.RefreshList()` shows "no inventory" during battle — fix requires persisting
-Inventory into CombatScene or reading from `SaveManager`/`GameData` (deferred)
+Inventory into CombatScene or reading from `SaveManager`/`GameData` (deferred).
+Note when testing: the project's only two consumables are `Fish` and `RareFish`
+(`isConsumable=true`); Carrot/Cabbage/Tomato are crops, so seeding those shows the empty-state
+row and looks like a broken panel
 
 ---
 

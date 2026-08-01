@@ -88,11 +88,20 @@ directly and calls `OnStartGame()`/`OnEnterCombat()` for SampleScene/CombatScene
 (MainMenu is intentionally left alone — `MainMenuManager` already plays its own menu music and
 explicitly stops `GameMusicManager`'s track to avoid overlap).
 
-**Still needed (pre-existing content gap, not part of this fix):** `combatMusic` (and
-`menuMusic`) `AudioClip` fields on the `GameMusicManager` Inspector are unassigned, so even
-though `OnEnterCombat()` now fires at the right time, there's no clip to switch to yet
-(confirmed by assigning a throwaway test clip at runtime — the switch mechanism works). See
-SOWUR_SHIELD_STATUS.md's Audio wiring checklist.
+**Closed 2026-08-01** — and the "content gap" framing was wrong. The clips were never missing:
+`Assets/Audio/Music/` already held three OST tracks. Only the Inspector assignments were absent.
+`combatMusic` → `OST-Chud Battle`, `menuMusic` → `OST-Whispers of the Wandering`.
+`seasonalFarmTracks[0..3]` stay null on purpose — `GetCurrentSeasonTrack()` falls back to
+`gameplayMusic`, and there is no fourth track to assign.
+
+**A latent bug surfaced when those fields were filled in.** `OnSeasonChanged` decided "am I
+playing farm music?" by comparing `musicSource.clip` against `combatMusic`/`menuMusic`. With
+`menuMusic` and `gameplayMusic` set to the same track, that comparison matched on the farm and
+returned early, **silently cancelling the seasonal crossfade** — no console error, the music
+just never changed with the season. Replaced with an explicit `MusicContext`
+(Farm/Combat/Menu) set by `PlayFarmMusic`/`OnEnterCombat`/`OnEnterMainMenu`. Verified in Play
+Mode across all four transitions, and confirmed by direct comparison that the old logic would
+have bailed on this assignment while the new one does not.
 
 ---
 
