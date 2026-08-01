@@ -184,14 +184,18 @@ public class WorldMapUIController : MonoBehaviour, IUIWindow
     [Tooltip("Template StageButton (e.g. StageButton_SunnyFields) cloned for every stage when no biome panels are configured. If left empty, the controller will search its own children for a StageButton on Awake.")]
     [SerializeField] private StageButton flatLayoutTemplate;
 
+    // The defaults below were measured against the real map on 2026-08-01, not guessed. The
+    // map area is 1890x1080 and the grid is 5 biomes x 5 stages, so the old 140x60 cells with
+    // 20px gaps packed everything into the top-left ~800x400 and overlapped every label.
+
     [Tooltip("Pixel size (width, height) of each generated stage button in the flat layout.")]
-    [SerializeField] private Vector2 flatButtonCellSize = new Vector2(140f, 60f);
+    [SerializeField] private Vector2 flatButtonCellSize = new Vector2(300f, 110f);
 
     [Tooltip("Horizontal/vertical spacing between generated stage buttons.")]
-    [SerializeField] private Vector2 flatButtonSpacing = new Vector2(20f, 20f);
+    [SerializeField] private Vector2 flatButtonSpacing = new Vector2(50f, 40f);
 
     [Tooltip("Top-left starting offset (relative to the template's parent) for the generated grid.")]
-    [SerializeField] private Vector2 flatLayoutOrigin = new Vector2(40f, -40f);
+    [SerializeField] private Vector2 flatLayoutOrigin = new Vector2(70f, -70f);
 
     private const string GeneratedButtonPrefix = "StageButton_Generated_";
 
@@ -290,7 +294,29 @@ public class WorldMapUIController : MonoBehaviour, IUIWindow
         // Update the button's label (TextMeshProUGUI child) to the stage name.
         TMPro.TextMeshProUGUI label = buttonGO.GetComponentInChildren<TMPro.TextMeshProUGUI>(true);
         if (label != null)
+        {
             label.text = stage.GetDisplayName();
+
+            // Stage names vary wildly in length once localized — "Lava Fields" next to
+            // "Passagem do Gigante de Pedra" — and the template ships with a fixed 24pt font
+            // set to Overflow, so the long ones spilled out of their button and over their
+            // neighbours. Auto-sizing plus wrapping keeps every label inside its own cell.
+            label.enableAutoSizing = true;
+            label.fontSizeMin = 12f;
+            label.fontSizeMax = 22f;
+            label.textWrappingMode = TMPro.TextWrappingModes.Normal;
+            label.overflowMode = TMPro.TextOverflowModes.Truncate;
+            label.alignment = TMPro.TextAlignmentOptions.Center;
+            label.margin = new Vector4(8f, 4f, 8f, 4f);
+
+            // The label must fill its button, or auto-sizing measures against whatever size
+            // the template happened to have.
+            var labelRect = label.rectTransform;
+            labelRect.anchorMin = Vector2.zero;
+            labelRect.anchorMax = Vector2.one;
+            labelRect.offsetMin = Vector2.zero;
+            labelRect.offsetMax = Vector2.zero;
+        }
     }
 
     /// <summary>

@@ -246,18 +246,20 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         panel.anchorMax = new Vector2(0.5f, 0.5f);
         panel.pivot    = new Vector2(0.5f, 0.5f);
         panel.anchoredPosition = Vector2.zero;
-        // 600, not the original 520: the frame art eats 80px of width that the old value
-        // did not account for, which would squeeze the info column instead of the border.
-        panel.sizeDelta = new Vector2(600, 0); // height driven by fitter
+        // 680: the frame eats ~144px of width (72 per side), so this leaves ~536px of usable
+        // content — close to the 520 the layout was originally authored against.
+        panel.sizeDelta = new Vector2(680, 0); // height driven by fitter
 
         // Cozy sprite kit, same treatment the other panels got Jul/26–Aug/1.
         UIThemeStyler.StylePanel(panelObj, theme);
 
         var rootVlg = panelObj.AddComponent<VerticalLayoutGroup>();
-        // The wood panel art carries a painted frame roughly 40px thick per side at this
-        // panel's width. The 9-slice border field is NOT the usable inset — content laid out
-        // against the old 12px padding lands on the frame. See SOWUR_SHIELD_STATUS.md.
-        rootVlg.padding = new RectOffset(40, 40, 36, 36);
+        // Measured against the render, not the sprite metadata: panel_wood_generic's painted
+        // frame covers roughly an eighth of the panel's width per side, so a 600px-wide panel
+        // needs ~72px of horizontal inset. The texture is not read-enabled (kit import
+        // settings), so this cannot be sampled in code — it was read off a screenshot.
+        // The 9-slice border field (32px) is NOT the usable inset. See SOWUR_SHIELD_STATUS.md.
+        rootVlg.padding = new RectOffset(72, 72, 52, 52);
         rootVlg.spacing = 0;
         rootVlg.childControlWidth  = true;
         rootVlg.childControlHeight = true;

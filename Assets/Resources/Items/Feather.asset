@@ -23,7 +23,7 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   description: A soft, colorful feather
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 1538971aa5df1fe47b773f359938d371, type: 3}
   itemType: 0
   rarity: 0
   isStackable: 1

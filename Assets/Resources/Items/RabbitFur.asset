@@ -23,7 +23,7 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   description: Soft fur harvested from a happy rabbit. Used in crafting.
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 624f075bdcffc67408432ce0f2b51f1b, type: 3}
   itemType: 0
   rarity: 0
   isStackable: 1

@@ -97,12 +97,17 @@ public class TeamAssemblerUISetup : MonoBehaviour
         Transform assemblerPanel = transform.Find("AssemblerPanel");
         if (assemblerPanel == null)
         {
-            GameObject panelObj = new GameObject("AssemblerPanel");
+            // Constructed with the RectTransform rather than adding one afterwards: a fresh
+            // GameObject starts with a plain Transform, and AddComponent<RectTransform>
+            // REPLACES it, destroying the original. Caching `.transform` before that swap
+            // leaves the field holding a destroyed object while the GameObject stays alive —
+            // and Unity's `== null` reports it as null, so guards silently swallow everything
+            // downstream. That exact bug blanked the relationship codex on 2026-08-01.
+            GameObject panelObj = new GameObject("AssemblerPanel", typeof(RectTransform));
             panelObj.transform.SetParent(transform, false);
-            assemblerPanel = panelObj.transform;
 
-            // Add components
-            RectTransform rect = panelObj.AddComponent<RectTransform>();
+            RectTransform rect = panelObj.GetComponent<RectTransform>();
+            assemblerPanel = rect;
             Image img = panelObj.AddComponent<Image>();
             img.color = new Color(0.1f, 0.1f, 0.1f, 0.95f);
 
@@ -126,11 +131,11 @@ public class TeamAssemblerUISetup : MonoBehaviour
         Transform animalSelectionPanel = assemblerPanel.Find("AnimalSelectionPanel");
         if (animalSelectionPanel == null)
         {
-            GameObject panelObj = new GameObject("AnimalSelectionPanel");
+            GameObject panelObj = new GameObject("AnimalSelectionPanel", typeof(RectTransform));
             panelObj.transform.SetParent(assemblerPanel, false);
-            animalSelectionPanel = panelObj.transform;
 
-            RectTransform rect = panelObj.AddComponent<RectTransform>();
+            RectTransform rect = panelObj.GetComponent<RectTransform>();
+            animalSelectionPanel = rect;
             Image img = panelObj.AddComponent<Image>();
             img.color = new Color(0.2f, 0.2f, 0.2f, 1f);
 
@@ -146,11 +151,11 @@ public class TeamAssemblerUISetup : MonoBehaviour
         Transform gridPanel = assemblerPanel.Find("GridPanel");
         if (gridPanel == null)
         {
-            GameObject panelObj = new GameObject("GridPanel");
+            GameObject panelObj = new GameObject("GridPanel", typeof(RectTransform));
             panelObj.transform.SetParent(assemblerPanel, false);
-            gridPanel = panelObj.transform;
 
-            RectTransform rect = panelObj.AddComponent<RectTransform>();
+            RectTransform rect = panelObj.GetComponent<RectTransform>();
+            gridPanel = rect;
             Image img = panelObj.AddComponent<Image>();
             img.color = new Color(0.15f, 0.15f, 0.15f, 1f);
 
@@ -167,11 +172,11 @@ public class TeamAssemblerUISetup : MonoBehaviour
         Transform infoPanel = assemblerPanel.Find("InfoPanel");
         if (infoPanel == null)
         {
-            GameObject panelObj = new GameObject("InfoPanel");
+            GameObject panelObj = new GameObject("InfoPanel", typeof(RectTransform));
             panelObj.transform.SetParent(assemblerPanel, false);
-            infoPanel = panelObj.transform;
 
-            RectTransform rect = panelObj.AddComponent<RectTransform>();
+            RectTransform rect = panelObj.GetComponent<RectTransform>();
+            infoPanel = rect;
             Image img = panelObj.AddComponent<Image>();
             img.color = new Color(0.2f, 0.2f, 0.2f, 1f);
 

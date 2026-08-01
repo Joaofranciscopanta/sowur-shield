@@ -23,7 +23,7 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   description: A fresh duck egg, slightly larger than a chicken egg
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 53c956cc67ac7cf48a2ceaf8e83561bf, type: 3}
   itemType: 0
   rarity: 0
   isStackable: 1
