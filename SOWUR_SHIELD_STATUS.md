@@ -349,14 +349,18 @@ follow-up logged there — add a `.gitattributes` and renormalize line endings �
 Manual Editor-setup items still outstanding (verify against current scenes before working —
 some may have been completed as side effects):
 
-**Combat**: assign `AnimalSkill` SOs to `AnimalData.activeSkill`/`EnemyData.skills`; create and
-assign AnimatorControllers per animal/enemy
+**Combat**: ~~assign `AnimalSkill` SOs to `AnimalData.activeSkill`~~ **done Aug/1** — 22 of 27
+assigned by species (eggs excluded, they don't fight); verified landing Poison/Weakness on
+enemies in a live auto-battle. `EnemyData.skills` still unassigned. AnimatorControllers exist
+for 25 of 27 animals — see the corrected Art gaps note; the missing piece is combat *clips*
 **World Map**: WorldMap Canvas + `WorldMapUIController` in farm scene; one `WorldMapBiomePanel`
 per biome wired to controller; `WorldMap` ref on `WorldMapTriggerZone`
 **Animals**: sprites for `Rabbit.asset`/`RabbitFur.asset`; GroundItem prefabs (RabbitFur,
 DuckEgg, Feather) in `Resources/Prefabs/GroundItems/`; `AnimalInfoUI` rename panel wiring
-**Buildings/Shop/Tutorial**: `Resources/Buildings/Barn.asset`+`Greenhouse.asset` if missing;
-row prefabs for `BuildingShopUI`/`ShopUI`; `Resources/Quests/` populated
+**Buildings/Shop/Tutorial**: ~~`Resources/Buildings/Barn.asset`+`Greenhouse.asset`~~ **created
+Aug/1** — they were genuinely missing while `AnimalZone`/`SoilBlockInteractable` already
+consumed `HasBarn`/`HasGreenhouse`, so neither effect could fire. Localized in en/pt/es.
+Still open: row prefabs for `ShopUI`; `Resources/Quests/` has 4 quests
 **Audio**: ~~`combatMusic`/`menuMusic` on `GameMusicManager`~~ **done Aug/1** (`11f93e6`) —
 the clips were never missing, only unassigned; see KNOWN_BUGS.md for the `MusicContext` bug
 that filling them in exposed. `seasonalFarmTracks[4]` intentionally left null (falls back to
