@@ -22867,6 +22867,18 @@ MonoBehaviour:
     body: Maren carries a mysterious seed found in her father's coat pocket the day
       he died. She never knew what plant it was - she never had the courage to plant
       it, afraid of losing the last thing she has of him.
+  lovedGifts:
+  - MysterySeed
+  - Pumpkin
+  likedGifts:
+  - Carrot
+  - Tomato
+  - Cabbage
+  - Radish
+  dislikedGifts:
+  - Rabbit Fur
+  - Feather
+  dailyTalkAffinity: 1
   interactionSound: {fileID: 0}
   audioSource: {fileID: 0}
 --- !u!70 &1585185861
@@ -36580,6 +36592,50 @@ PrefabInstance:
     - target: {fileID: 4120043978955368178, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
       propertyPath: m_TagString
       value: NPC
+      objectReference: {fileID: 0}
+    - target: {fileID: 5675994767610517675, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
+      propertyPath: likedGifts.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5675994767610517675, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
+      propertyPath: lovedGifts.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5675994767610517675, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
+      propertyPath: dislikedGifts.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5675994767610517675, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
+      propertyPath: 'likedGifts.Array.data[0]'
+      value: Carrot
+      objectReference: {fileID: 0}
+    - target: {fileID: 5675994767610517675, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
+      propertyPath: 'likedGifts.Array.data[1]'
+      value: Tomato
+      objectReference: {fileID: 0}
+    - target: {fileID: 5675994767610517675, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
+      propertyPath: 'likedGifts.Array.data[2]'
+      value: Cabbage
+      objectReference: {fileID: 0}
+    - target: {fileID: 5675994767610517675, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
+      propertyPath: 'likedGifts.Array.data[3]'
+      value: Radish
+      objectReference: {fileID: 0}
+    - target: {fileID: 5675994767610517675, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
+      propertyPath: 'lovedGifts.Array.data[0]'
+      value: MysterySeed
+      objectReference: {fileID: 0}
+    - target: {fileID: 5675994767610517675, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
+      propertyPath: 'lovedGifts.Array.data[1]'
+      value: Pumpkin
+      objectReference: {fileID: 0}
+    - target: {fileID: 5675994767610517675, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
+      propertyPath: 'dislikedGifts.Array.data[0]'
+      value: Rabbit Fur
+      objectReference: {fileID: 0}
+    - target: {fileID: 5675994767610517675, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
+      propertyPath: 'dislikedGifts.Array.data[1]'
+      value: Feather
       objectReference: {fileID: 0}
     - target: {fileID: 7867704933647568189, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
       propertyPath: m_LocalRotation.w

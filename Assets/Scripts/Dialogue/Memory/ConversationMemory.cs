@@ -14,6 +14,7 @@ public class ConversationMemory : MonoBehaviour, ISaveable
     private const string QUEST_PREFIX   = "quest_";   // quest status → worldStrings
     private const string VAR_PREFIX     = "dlgvar_";  // custom variable → worldStrings
     private const string GIFT_PREFIX    = "lastgift_"; // last gift day per NPC → worldCounters (int day)
+    private const string TALK_PREFIX    = "lasttalk_"; // last talk day per NPC → worldCounters (int day)
 
     [Header("Save Settings")]
     [SerializeField] private string saveFileName = "ConversationData";
@@ -262,6 +263,27 @@ public class ConversationMemory : MonoBehaviour, ISaveable
     }
 
     /// <summary>
+    /// Awards a small affinity bonus for the first conversation with this NPC today, and
+    /// returns true if it was granted. Rewards simply visiting, which otherwise gives nothing:
+    /// before this, affinity moved only through dialogue effects and quest rewards.
+    /// </summary>
+    public bool TryAwardDailyTalk(string npcId, float amount)
+    {
+        if (conversationData == null || string.IsNullOrEmpty(npcId)) return false;
+
+        int currentDay = GameTimeController.instance != null
+            ? GameTimeController.instance.currentDay
+            : 0;
+
+        if (conversationData.lastTalkDay.TryGetValue(npcId, out int lastDay) && lastDay == currentDay)
+            return false;
+
+        conversationData.lastTalkDay[npcId] = currentDay;
+        ModifyRelationship(npcId, amount); // calls MarkDataChanged
+        return true;
+    }
+
+    /// <summary>
     /// Sets quest status
     /// </summary>
     public void SetQuestStatus(string questId, string status)
@@ -439,6 +461,10 @@ public class ConversationMemory : MonoBehaviour, ISaveable
         // ── Last gift day per NPC ─────────────────────────────────────────────
         foreach (var kv in conversationData.lastGiftDay)
             counters[GIFT_PREFIX + kv.Key] = kv.Value;
+
+        // ── Last talk day per NPC ─────────────────────────────────────────────
+        foreach (var kv in conversationData.lastTalkDay)
+            counters[TALK_PREFIX + kv.Key] = kv.Value;
     }
 
     /// <summary>
@@ -504,6 +530,11 @@ public class ConversationMemory : MonoBehaviour, ISaveable
             {
                 string npcId = kv.Key.Substring(GIFT_PREFIX.Length);
                 conversationData.lastGiftDay[npcId] = kv.Value;
+            }
+            else if (kv.Key.StartsWith(TALK_PREFIX))
+            {
+                string npcId = kv.Key.Substring(TALK_PREFIX.Length);
+                conversationData.lastTalkDay[npcId] = kv.Value;
             }
         }
 

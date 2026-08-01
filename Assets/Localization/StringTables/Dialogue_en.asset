@@ -433,6 +433,30 @@ MonoBehaviour:
     m_Localized: General Store
     m_Metadata:
       m_Items: []
+  - m_Id: 14872607319646208
+    m_Localized: (Loves)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949376
+    m_Localized: (Likes)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949377
+    m_Localized: (Dislikes)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949378
+    m_Localized: 'Requires: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949379
+    m_Localized: Tastes discovered ({0}/{1})
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949380
+    m_Localized: You haven't learned what they like yet.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

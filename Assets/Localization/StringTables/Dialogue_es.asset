@@ -438,6 +438,30 @@ MonoBehaviour:
     m_Localized: Tienda General
     m_Metadata:
       m_Items: []
+  - m_Id: 14872607319646208
+    m_Localized: (Le encanta)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949376
+    m_Localized: (Le gusta)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949377
+    m_Localized: (No le gusta)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949378
+    m_Localized: 'Requiere: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949379
+    m_Localized: Gustos descubiertos ({0}/{1})
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949380
+    m_Localized: Aun no sabes que le gusta.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -391,6 +391,30 @@ MonoBehaviour:
     m_Key: shop.general_store.title
     m_Metadata:
       m_Items: []
+  - m_Id: 14872607319646208
+    m_Key: dialogue.gift.marker_loved
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949376
+    m_Key: dialogue.gift.marker_liked
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949377
+    m_Key: dialogue.gift.marker_disliked
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949378
+    m_Key: dialogue.relationship.locked_tier
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949379
+    m_Key: dialogue.relationship.tastes_header
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949380
+    m_Key: dialogue.relationship.no_tastes_known
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

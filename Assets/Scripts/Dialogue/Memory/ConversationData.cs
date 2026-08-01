@@ -25,6 +25,11 @@ namespace SowurShield.Dialogue
         [Header("Gifts")]
         public SerializableDictionary<string, int> lastGiftDay = new SerializableDictionary<string, int>();
 
+        [Header("Conversations")]
+        // Last in-game day the player talked to each NPC, so the first conversation of a day
+        // can award affinity exactly once.
+        public SerializableDictionary<string, int> lastTalkDay = new SerializableDictionary<string, int>();
+
         [Header("Quest Status")]
         public SerializableDictionary<string, string> questStatuses = new SerializableDictionary<string, string>();
 

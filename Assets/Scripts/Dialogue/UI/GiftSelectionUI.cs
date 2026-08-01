@@ -34,6 +34,9 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
     [SerializeField] private LocalizedString itemRowText; // table "Dialogue", key "dialogue.gift.item_row"
     [SerializeField] private LocalizedString giveButtonText; // table "Dialogue", key "dialogue.gift.give"
     [SerializeField] private LocalizedString noInventoryFoundText; // table "Dialogue", key "dialogue.gift.no_inventory_found"
+    [SerializeField] private LocalizedString lovedMarkerText; // table "Dialogue", key "dialogue.gift.marker_loved"
+    [SerializeField] private LocalizedString likedMarkerText; // table "Dialogue", key "dialogue.gift.marker_liked"
+    [SerializeField] private LocalizedString dislikedMarkerText; // table "Dialogue", key "dialogue.gift.marker_disliked"
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
@@ -57,6 +60,9 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
         itemRowText = new LocalizedString("Dialogue", "dialogue.gift.item_row");
         giveButtonText = new LocalizedString("Dialogue", "dialogue.gift.give");
         noInventoryFoundText = new LocalizedString("Dialogue", "dialogue.gift.no_inventory_found");
+        lovedMarkerText = new LocalizedString("Dialogue", "dialogue.gift.marker_loved");
+        likedMarkerText = new LocalizedString("Dialogue", "dialogue.gift.marker_liked");
+        dislikedMarkerText = new LocalizedString("Dialogue", "dialogue.gift.marker_disliked");
     }
 
     private bool _buildSucceeded = false;
@@ -280,7 +286,37 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
         foreach (ItemStack stack in giftableItems)
         {
             itemRowText.Arguments = new object[] { stack.item.GetDisplayName(), stack.quantity, stack.item.giftAffinityValue };
-            CreateRow(itemRowText.SafeGetLocalizedString(), stack.item, 1);
+            string label = itemRowText.SafeGetLocalizedString();
+
+            // Append a taste marker only for reactions the player has already discovered by
+            // gifting the item before. Showing it for undiscovered items would remove the
+            // reason to experiment.
+            var discovered = targetNpc != null ? targetNpc.GetDiscoveredReaction(stack.item.itemName) : null;
+            if (discovered.HasValue && discovered.Value != GiftReaction.Neutral)
+                label += "  " + GetReactionMarker(discovered.Value);
+
+            CreateRow(label, stack.item, 1);
+        }
+    }
+
+    /// <summary>
+    /// A short coloured tag for a discovered taste. Uses rich text rather than a separate
+    /// label so it flows with the row text at any row width — this list is built at runtime,
+    /// and extra child RectTransforms here are exactly where the project's 0-width-anchor bug
+    /// has bitten before.
+    /// </summary>
+    private string GetReactionMarker(GiftReaction reaction)
+    {
+        switch (reaction)
+        {
+            case GiftReaction.Loved:
+                return $"<color=#{ColorUtility.ToHtmlStringRGB(theme != null ? theme.highlightGold : new Color(0.96f, 0.83f, 0.37f))}>{lovedMarkerText.SafeGetLocalizedString()}</color>";
+            case GiftReaction.Liked:
+                return $"<color=#{ColorUtility.ToHtmlStringRGB(theme != null ? theme.positive : new Color(0.35f, 0.65f, 0.35f))}>{likedMarkerText.SafeGetLocalizedString()}</color>";
+            case GiftReaction.Disliked:
+                return $"<color=#{ColorUtility.ToHtmlStringRGB(theme != null ? theme.negative : new Color(0.75f, 0.3f, 0.3f))}>{dislikedMarkerText.SafeGetLocalizedString()}</color>";
+            default:
+                return string.Empty;
         }
     }
 
@@ -338,7 +374,9 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
         if (!inventory.RemoveItem(item, 1))
             return;
 
-        targetNpc.ReceiveGift(item.giftAffinityValue);
+        // Item overload, not the bare float: it applies this NPC's taste and records the
+        // discovery for the codex.
+        targetNpc.ReceiveGift(item);
 
         // Signal that a gift reaction dialogue should trigger on next interaction
         var memory = ConversationMemory.Instance;

@@ -46,6 +46,14 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
     [SerializeField] private LocalizedString hostileText; // table "Dialogue", key "dialogue.relationship.hostile"
     [SerializeField] private LocalizedString closeButtonText; // table "Dialogue", key "dialogue.gift.close" (shared "Close" label)
     [SerializeField] private LocalizedString codexHeaderText; // table "Dialogue", key "dialogue.relationship.codex_header"
+    [SerializeField] private LocalizedString lockedTierText; // table "Dialogue", key "dialogue.relationship.locked_tier"
+    [SerializeField] private LocalizedString tastesHeaderText; // table "Dialogue", key "dialogue.relationship.tastes_header"
+    [SerializeField] private LocalizedString noTastesKnownText; // table "Dialogue", key "dialogue.relationship.no_tastes_known"
+    // Gift-taste markers. Separate from the relationship-tier labels above (belovedText etc.):
+    // those describe the overall bond, these describe one item's reception.
+    [SerializeField] private LocalizedString lovedGiftText; // table "Dialogue", key "dialogue.gift.marker_loved"
+    [SerializeField] private LocalizedString likedText; // table "Dialogue", key "dialogue.gift.marker_liked"
+    [SerializeField] private LocalizedString dislikedText; // table "Dialogue", key "dialogue.gift.marker_disliked"
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Bootstrap()
@@ -73,6 +81,12 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         hostileText = new LocalizedString("Dialogue", "dialogue.relationship.hostile");
         closeButtonText = new LocalizedString("Dialogue", "dialogue.gift.close");
         codexHeaderText = new LocalizedString("Dialogue", "dialogue.relationship.codex_header");
+        lockedTierText = new LocalizedString("Dialogue", "dialogue.relationship.locked_tier");
+        tastesHeaderText = new LocalizedString("Dialogue", "dialogue.relationship.tastes_header");
+        noTastesKnownText = new LocalizedString("Dialogue", "dialogue.relationship.no_tastes_known");
+        lovedGiftText = new LocalizedString("Dialogue", "dialogue.gift.marker_loved");
+        likedText = new LocalizedString("Dialogue", "dialogue.gift.marker_liked");
+        dislikedText = new LocalizedString("Dialogue", "dialogue.gift.marker_disliked");
     }
 
     private bool _buildSucceeded = false;
@@ -290,6 +304,24 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         relationshipFillImage.fillMethod = Image.FillMethod.Horizontal;
         relationshipFillImage.fillAmount = 0.5f;
 
+        // Tier ticks. The bar spans -100..100, so a threshold at t sits at (t + 100) / 200.
+        // Without these the bar shows a quantity but not progress toward anything.
+        foreach (float threshold in TierThresholds)
+        {
+            var tick = new GameObject("Tick");
+            tick.transform.SetParent(barBg.transform, false);
+            var tickRT = tick.AddComponent<RectTransform>();
+            float x = (threshold + 100f) / 200f;
+            tickRT.anchorMin = new Vector2(x, 0f);
+            tickRT.anchorMax = new Vector2(x, 1f);
+            tickRT.pivot     = new Vector2(0.5f, 0.5f);
+            tickRT.sizeDelta = new Vector2(2f, 0f);
+            tickRT.anchoredPosition = Vector2.zero;
+            var tickImg = tick.AddComponent<Image>();
+            tickImg.color = new Color(0f, 0f, 0f, 0.35f);
+            tickImg.raycastTarget = false;
+        }
+
         relationshipValueText = CreateLabel(infoObj.transform, "0 / 100"); // placeholder, replaced by RefreshPanel via scoreText
         relationshipValueText.fontSize  = 13;
         relationshipValueText.alignment = TextAlignmentOptions.TopLeft;
@@ -424,44 +456,168 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         for (int i = loreContainer.childCount - 1; i >= 0; i--)
             Destroy(loreContainer.GetChild(i).gameObject);
 
-        var entries = targetNpc?.GetUnlockedLore();
-        if (entries == null || entries.Length == 0)
+        if (targetNpc == null)
         {
             if (loreTitleHeader != null) loreTitleHeader.gameObject.SetActive(false);
             return;
         }
 
-        if (loreTitleHeader != null) loreTitleHeader.gameObject.SetActive(true);
+        var entries = targetNpc.GetUnlockedLore();
+        var locked   = targetNpc.GetLockedLore();
+        int total    = targetNpc.GetTotalLoreCount();
+
+        if (total == 0)
+        {
+            if (loreTitleHeader != null) loreTitleHeader.gameObject.SetActive(false);
+            return;
+        }
+
+        if (loreTitleHeader != null)
+        {
+            loreTitleHeader.gameObject.SetActive(true);
+            // "Codex (2/4)" — the count is what tells the player there is more to find.
+            loreTitleHeader.text = $"{codexHeaderText.SafeGetLocalizedString()} ({entries.Length}/{total})";
+        }
 
         foreach (var entry in entries)
-        {
-            // Title
-            if (!string.IsNullOrEmpty(entry.title))
-            {
-                var titleObj = new GameObject("LoreTitle");
-                titleObj.transform.SetParent(loreContainer, false);
-                var titleTmp = titleObj.AddComponent<TextMeshProUGUI>();
-                titleTmp.text = entry.title;
-                titleTmp.fontSize = 12;
-                titleTmp.fontStyle = FontStyles.Bold;
-                titleTmp.color = theme != null ? theme.highlightGold : new Color(0.9f, 0.8f, 0.5f);
-                titleTmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
-                titleObj.AddComponent<LayoutElement>().preferredHeight = 16;
-            }
+            CreateLoreRow(entry, false);
 
-            // Body
-            var bodyObj = new GameObject("LoreBody");
-            bodyObj.transform.SetParent(loreContainer, false);
-            var bodyTmp = bodyObj.AddComponent<TextMeshProUGUI>();
-            bodyTmp.text = entry.body;
-            bodyTmp.fontSize = 11;
-            bodyTmp.color = theme != null ? theme.backgroundCream : new Color(0.8f, 0.8f, 0.8f);
-            bodyTmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
-            var bodyLE = bodyObj.AddComponent<LayoutElement>();
-            bodyLE.preferredHeight = 32;
-            bodyLE.flexibleHeight = 1;
-        }
+        foreach (var entry in locked)
+            CreateLoreRow(entry, true);
+
+        RefreshDiscoveredTastes();
     }
+
+    /// <summary>
+    /// Builds one lore row. Locked rows show the requirement instead of the body, so the
+    /// player can see both that more exists and what it costs.
+    /// </summary>
+    private void CreateLoreRow(NpcLoreEntry entry, bool isLocked)
+    {
+        Color gold  = theme != null ? theme.highlightGold : new Color(0.9f, 0.8f, 0.5f);
+        Color cream = theme != null ? theme.backgroundCream : new Color(0.8f, 0.8f, 0.8f);
+
+        // Locked rows are dimmed rather than recoloured. On woodDark, cream sits near 7.6:1;
+        // dropping it to 55% alpha keeps it legible while reading as clearly inactive.
+        // A separate grey would have to be re-measured against every wood tone the panel
+        // sprite can sit on (the trap documented in SOWUR_SHIELD_STATUS.md).
+        const float lockedAlpha = 0.55f;
+
+        if (!string.IsNullOrEmpty(entry.title))
+        {
+            var titleObj = new GameObject(isLocked ? "LoreTitleLocked" : "LoreTitle");
+            titleObj.transform.SetParent(loreContainer, false);
+            var titleTmp = titleObj.AddComponent<TextMeshProUGUI>();
+            titleTmp.text = isLocked ? $"🔒 {entry.title}" : entry.title;
+            titleTmp.fontSize = 12;
+            titleTmp.fontStyle = FontStyles.Bold;
+            titleTmp.color = isLocked ? new Color(gold.r, gold.g, gold.b, lockedAlpha) : gold;
+            titleTmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
+            titleObj.AddComponent<LayoutElement>().preferredHeight = 16;
+        }
+
+        var bodyObj = new GameObject(isLocked ? "LoreBodyLocked" : "LoreBody");
+        bodyObj.transform.SetParent(loreContainer, false);
+        var bodyTmp = bodyObj.AddComponent<TextMeshProUGUI>();
+
+        if (isLocked)
+        {
+            // Show the tier name rather than the raw number: "Requires: Close Friend" reads
+            // as a goal, "Requires: 40" reads as a debug value.
+            lockedTierText.Arguments = new object[] { GetRelationshipLabel(entry.requiredRelationship) };
+            bodyTmp.text = lockedTierText.SafeGetLocalizedString();
+            bodyTmp.fontStyle = FontStyles.Italic;
+            bodyTmp.color = new Color(cream.r, cream.g, cream.b, lockedAlpha);
+        }
+        else
+        {
+            bodyTmp.text = entry.body;
+            bodyTmp.color = cream;
+        }
+
+        bodyTmp.fontSize = 11;
+        bodyTmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
+        var bodyLE = bodyObj.AddComponent<LayoutElement>();
+        bodyLE.preferredHeight = isLocked ? 16 : 32;
+        bodyLE.flexibleHeight = 1;
+    }
+
+    /// <summary>
+    /// Lists the gift tastes the player has actually discovered, as an "N/M" line plus one row
+    /// per known preference. This is what makes the preference system legible — without it the
+    /// multipliers are invisible and the player has no way to record what they learned.
+    /// </summary>
+    private void RefreshDiscoveredTastes()
+    {
+        string[] allPreferred = targetNpc.GetAllPreferredItemNames();
+        if (allPreferred.Length == 0) return;
+
+        var known = new System.Collections.Generic.List<string>();
+        foreach (string itemName in allPreferred)
+        {
+            var reaction = targetNpc.GetDiscoveredReaction(itemName);
+            if (!reaction.HasValue) continue;
+
+            var item = SowurShield.Inventory.ItemDatabase.GetItem(itemName);
+            string display = item != null ? item.GetDisplayName() : itemName;
+            known.Add($"{GetReactionMarkup(reaction.Value)} {display}");
+        }
+
+        var headerObj = new GameObject("TastesHeader");
+        headerObj.transform.SetParent(loreContainer, false);
+        var headerTmp = headerObj.AddComponent<TextMeshProUGUI>();
+        tastesHeaderText.Arguments = new object[] { known.Count, allPreferred.Length };
+        headerTmp.text = tastesHeaderText.SafeGetLocalizedString();
+        headerTmp.fontSize = 12;
+        headerTmp.fontStyle = FontStyles.Bold;
+        headerTmp.color = theme != null ? theme.highlightGold : new Color(0.9f, 0.8f, 0.5f);
+        headerTmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
+        headerObj.AddComponent<LayoutElement>().preferredHeight = 18;
+
+        var bodyObj = new GameObject("TastesBody");
+        bodyObj.transform.SetParent(loreContainer, false);
+        var bodyTmp = bodyObj.AddComponent<TextMeshProUGUI>();
+        bodyTmp.text = known.Count > 0
+            ? string.Join("\n", known)
+            : noTastesKnownText.SafeGetLocalizedString();
+        bodyTmp.fontSize = 11;
+        bodyTmp.color = theme != null ? theme.backgroundCream : new Color(0.8f, 0.8f, 0.8f);
+        bodyTmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
+        var bodyLE = bodyObj.AddComponent<LayoutElement>();
+        bodyLE.preferredHeight = Mathf.Max(16, known.Count * 14);
+        bodyLE.flexibleHeight = 1;
+    }
+
+    private string GetReactionMarkup(GiftReaction reaction)
+    {
+        Color c;
+        string label;
+        switch (reaction)
+        {
+            case GiftReaction.Loved:
+                c = theme != null ? theme.highlightGold : new Color(0.96f, 0.83f, 0.37f);
+                label = lovedGiftText.SafeGetLocalizedString();
+                break;
+            case GiftReaction.Liked:
+                c = theme != null ? theme.positive : new Color(0.5f, 0.78f, 0.5f);
+                label = likedText.SafeGetLocalizedString();
+                break;
+            case GiftReaction.Disliked:
+                c = theme != null ? theme.negative : new Color(0.9f, 0.45f, 0.45f);
+                label = dislikedText.SafeGetLocalizedString();
+                break;
+            default:
+                return string.Empty;
+        }
+        return $"<color=#{ColorUtility.ToHtmlStringRGB(c)}>{label}</color>";
+    }
+
+    /// <summary>
+    /// The affinity thresholds where the relationship label changes. Single source of truth:
+    /// both <see cref="GetRelationshipLabel"/> and the bar's tier ticks read this, so a tier
+    /// cannot be renumbered in one place and left stale in the other.
+    /// </summary>
+    private static readonly float[] TierThresholds = { -40f, -10f, 10f, 40f, 75f };
 
     /// <summary>
     /// Maps a relationship level (-100..100) to a descriptive label.
