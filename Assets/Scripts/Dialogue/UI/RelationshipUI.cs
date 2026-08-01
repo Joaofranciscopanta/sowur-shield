@@ -219,12 +219,18 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         panel.anchorMax = new Vector2(0.5f, 0.5f);
         panel.pivot    = new Vector2(0.5f, 0.5f);
         panel.anchoredPosition = Vector2.zero;
-        panel.sizeDelta = new Vector2(520, 0); // height driven by fitter
+        // 600, not the original 520: the frame art eats 80px of width that the old value
+        // did not account for, which would squeeze the info column instead of the border.
+        panel.sizeDelta = new Vector2(600, 0); // height driven by fitter
 
-        panelObj.AddComponent<Image>().color = new Color(backgroundDark.r, backgroundDark.g, backgroundDark.b, 0.95f);
+        // Cozy sprite kit, same treatment the other panels got Jul/26–Aug/1.
+        UIThemeStyler.StylePanel(panelObj, theme);
 
         var rootVlg = panelObj.AddComponent<VerticalLayoutGroup>();
-        rootVlg.padding = new RectOffset(12, 12, 12, 12);
+        // The wood panel art carries a painted frame roughly 40px thick per side at this
+        // panel's width. The 9-slice border field is NOT the usable inset — content laid out
+        // against the old 12px padding lands on the frame. See SOWUR_SHIELD_STATUS.md.
+        rootVlg.padding = new RectOffset(40, 40, 36, 36);
         rootVlg.spacing = 0;
         rootVlg.childControlWidth  = true;
         rootVlg.childControlHeight = true;
@@ -256,6 +262,26 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         portraitImage.color = theme != null ? theme.woodLight : new Color(0.25f, 0.25f, 0.28f, 1f);
         portraitImage.preserveAspect = true;
 
+        // Decorative frame over the portrait, matching the minimap's treatment. Added as a
+        // child overlay rather than replacing the portrait Image, so RefreshPanel can keep
+        // swapping the sprite underneath without touching the frame. Non-raycast so it never
+        // eats clicks meant for the panel.
+        Sprite frameSprite = Resources.Load<Sprite>("Sprites/UI/Frames/frame_decorative_border");
+        if (frameSprite != null)
+        {
+            var frameObj = new GameObject("PortraitFrame");
+            frameObj.transform.SetParent(portraitObj.transform, false);
+            var frameRT = frameObj.AddComponent<RectTransform>();
+            frameRT.anchorMin = Vector2.zero;
+            frameRT.anchorMax = Vector2.one;
+            frameRT.offsetMin = new Vector2(-6f, -6f);
+            frameRT.offsetMax = new Vector2(6f, 6f);
+            var frameImg = frameObj.AddComponent<Image>();
+            frameImg.sprite = frameSprite;
+            frameImg.type = Image.Type.Sliced;
+            frameImg.raycastTarget = false;
+        }
+
         // Info column (name, bio, bar, value)
         GameObject infoObj = new GameObject("Info");
         infoObj.transform.SetParent(rowObj.transform, false);
@@ -272,6 +298,9 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         nameText.fontSize  = 22;
         nameText.fontStyle = FontStyles.Bold;
         nameText.alignment = TextAlignmentOptions.TopLeft;
+        // Gold on the wood panel: the NPC's name is the panel's heading and should read as
+        // one. Cream is kept for the body text below, where gold would be lower contrast.
+        nameText.color = theme != null ? theme.highlightGold : new Color(0.96f, 0.83f, 0.37f);
         SetPreferredHeight(nameText, 30);
 
         bioText = CreateLabel(infoObj.transform, noInfoText.SafeGetLocalizedString());
@@ -356,8 +385,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         // ── Row 3: Close button ──
         GameObject closeButtonObj = new GameObject("CloseButton");
         closeButtonObj.transform.SetParent(panelObj.transform, false);
-        closeButtonObj.AddComponent<LayoutElement>().preferredHeight = 36;
-        closeButtonObj.AddComponent<Image>().color = theme != null ? theme.woodDark : new Color(0.3f, 0.2f, 0.2f, 0.9f);
+        closeButtonObj.AddComponent<LayoutElement>().preferredHeight = 44;
 
         Button closeButton = closeButtonObj.AddComponent<Button>();
         closeButton.onClick.AddListener(OnCloseButtonClicked);
@@ -365,6 +393,10 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         closeLabelRef = CreateLabel(closeButtonObj.transform, closeButtonText.SafeGetLocalizedString());
         closeLabelRef.alignment = TextAlignmentOptions.Center;
         closeLabelRef.fontSize  = 15;
+
+        // StyleButton applies the gold sprite and darkens the label for it — it must run
+        // after the label exists, since it looks the TMP text up as a child.
+        UIThemeStyler.StyleButton(closeButton, theme);
 
         panelObj.SetActive(false);
     }
