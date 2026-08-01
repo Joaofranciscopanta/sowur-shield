@@ -42,8 +42,8 @@
 | **UI polish pass** | 🔨 In progress | Combat results, quests, building shop + consumables verified Aug/1; `ShopUI` + settings widgets left |
 | World/village map expansion | 💤 Deferred | Design decided (see Deferred section) |
 
-**Project size**: 4 scenes, ~157 scripts (100% namespace-compliant `SowurShield.<System>`),
-**780 tests across 47 files** — 746 EditMode (45 files) + 34 PlayMode (2 files); all passing as
+**Project size**: 4 scenes, ~159 scripts (100% namespace-compliant `SowurShield.<System>`),
+**787 tests across 48 files** — 753 EditMode (46 files) + 34 PlayMode (2 files); all passing as
 of Aug/1. 3 asmdefs + 2 test asmdefs.
 
 > `Assets/Tests/EditMode/RegressionAug2026Tests.cs` (8 tests) exists because every bug fixed on
@@ -113,8 +113,18 @@ of Aug/1. 3 asmdefs + 2 test asmdefs.
   never pre-reveals them. Locked lore tiers show as dimmed rows with their requirement.
   First conversation per NPC per day grants +1 affinity (`lastTalkDay`).
   Design and open items: [docs/RELATIONSHIP_DESIGN.md](docs/RELATIONSHIP_DESIGN.md)
-- **The system's real limit is content, not code**: 1 NPC exists (Maren). Giftable items went
-  2 → 16 of 28 on Aug/1, which was the quiet reason the gift panel looked broken
+- **Village populated Aug/1**: **9 NPCs** (Maren + 8 placeholder villagers via
+  `Tools > NPC > Populate Village`). All eight share one procedurally drawn placeholder sprite;
+  the *data* is real — 4 codex tiers each, gift preferences, a working dialogue tree.
+  Giftable items went 2 → 16 of 28, which was the quiet reason the gift panel looked broken.
+  **Still placeholder and needing art**: villager sprites (all identical), NPC portraits (the
+  codex shows a flat wood rectangle without one)
+- **`TalkToNPC` quest objectives take the `conversationId`, not the `npcId`**
+  (`ConversationMemory.cs:163`). The two look interchangeable; targeting the npcId produces an
+  objective that never advances, with no error. Pinned by `QuestAndNpcIntegrityTests`
+- **`LocalizedString` built in code must carry the shared-entry id**, not just table+key names.
+  A name-only reference keeps `KeyId 0` and resolves to nothing at runtime — every villager
+  opened an empty speech bubble until this was fixed in `VillagerDialogueFactory`
 - `QuestManager` (singleton, `ISaveable`): objectives (CollectItem/TalkToNPC/HarvestCrop/
   CompleteBattle/Custom), rewards, `NotifyObjective()` auto-advance hooks live in
   Inventory/Conversation/Crop/Stage code. Quest assets in `Resources/Quests/`

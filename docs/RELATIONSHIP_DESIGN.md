@@ -117,9 +117,12 @@ sprite-kit pass the other panels got on Jul/26–Aug/1. It needs:
 1. Clamped-event fix — **done**
 2. Gift preferences (§1) + codex display of them (§4) — **done 2026-08-01** (`60a445f`)
 3. Daily-conversation affinity (§2) — **done 2026-08-01** (`60a445f`)
-4. Visual pass (§5) — **partly done**: tier ticks on the affinity bar and dimmed locked rows
-   landed with the above. The sprite-kit pass (wood panel, gold heading) is **still open** —
-   `RelationshipUI` remains on flat theme colours
+4. Visual pass (§5) — **done 2026-08-01** (`af66b87`): wood panel sprite, gold NPC name, framed
+   portrait, themed close button, plus the tier ticks and dimmed locked rows from the earlier
+   commit. Padding went 12px → 40/36 and the panel 520 → 600 wide: the frame art is ~40px per
+   side at this width, and the old padding laid content on the border.
+   **Not yet verified in Play Mode with a screenshot** — the layout numbers are reasoned from
+   the frame thickness, not measured against a render
 5. Mechanical unlocks (§3) — **not started**; content-heavy, needs shop/quest assets that
    partly do not exist yet
 
@@ -145,9 +148,22 @@ the bug. The fixture now builds a real `ConversationMemory`, bypassing `Awake` (
 produce a red test. **A green test against known-broken code is a broken test**, and the only
 way to notice is to break the code on purpose.
 
-## Content still needed regardless
+## Content status (updated 2026-08-01)
 
-- **More NPCs.** One is not a relationship system. This is the single highest-impact item and
-  it is authoring work, not code.
-- **More giftable items.** 26 of 28 items have `giftAffinityValue = 0`, including every crop.
-- Portraits and bios for any NPC added.
+- ~~**More NPCs.** One is not a relationship system.~~ **Done**: 9 NPCs now, via
+  `Tools > NPC > Populate Village (Placeholders)`. Adding another means adding one entry to the
+  table in `VillagerPopulationTool.BuildCast()` and re-running it — it is idempotent.
+- ~~**More giftable items.**~~ **Done**: 16 of 28 items are giftable.
+- **Portraits are still missing for every NPC**, including Maren. `RelationshipUI` falls back to
+  a flat wood rectangle, so all nine codex entries show the same blank portrait. This is the
+  most visible remaining gap and it needs art.
+- **Villager sprites are all identical** by design of the placeholder pass — eight villagers
+  render as the same 32×32 figure.
+
+## Known limitation of the placeholder cast
+
+Each villager has one dialogue tree with two lines (greeting → farewell). That is enough to
+exercise the dialogue UI, the injected gift/relationship choices and the daily-talk award, but
+it is not enough for the relationship *tiers* to feel different: Maren is still the only NPC
+whose dialogue changes with affinity (she has Friend/Beloved/Seasonal trees). Giving the
+villagers tier-specific trees is the natural next content step.
