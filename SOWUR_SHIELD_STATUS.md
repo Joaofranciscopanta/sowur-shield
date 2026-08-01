@@ -43,8 +43,13 @@
 | World/village map expansion | 💤 Deferred | Design decided (see Deferred section) |
 
 **Project size**: 4 scenes, ~157 scripts (100% namespace-compliant `SowurShield.<System>`),
-**752 tests across 44 files** — 718 EditMode (42 files) + 34 PlayMode (2 files); all passing as
+**760 tests across 45 files** — 726 EditMode (43 files) + 34 PlayMode (2 files); all passing as
 of Aug/1. 3 asmdefs + 2 test asmdefs.
+
+> `Assets/Tests/EditMode/RegressionAug2026Tests.cs` (8 tests) exists because every bug fixed on
+> Aug/1 shipped **silently** — no console error, and the 718-test suite caught none of them.
+> Each test there was verified by re-introducing the bug and watching it fail, not just by
+> passing. Worth extending the same way when the next silent bug turns up.
 
 > The 34 PlayMode tests had **never executed as PlayMode tests**: their asmdef was marked
 > Editor-only, which excludes it from a PlayMode run, so that runner reported 0 total while the
