@@ -39,7 +39,7 @@
 | Achievements | ✅ Complete | 8 achievements |
 | Audio / Tutorial | ✅ Complete | Needs Editor asset wiring |
 | WebGL demo | ✅ Live (Build #15) | https://joaofranciscopanta.github.io/sowur-shield/ |
-| **UI polish pass** | 🔨 In progress | HUD/inventory done; combat consumable UI needs visual check |
+| **UI polish pass** | 🔨 In progress | Combat results, quests, building shop + consumables verified Aug/1; `ShopUI` + settings widgets left |
 | World/village map expansion | 💤 Deferred | Design decided (see Deferred section) |
 
 **Project size**: 4 scenes, ~157 scripts (100% namespace-compliant `SowurShield.<System>`),
@@ -205,24 +205,50 @@ colour problem at all:
   colour.
 
 **Remaining**:
-- [ ] Visual verification of the combat Items button/panel in a live battle — `ConsumableBattleUI`
-  self-spawns in CombatScene, but the panel only populates mid-battle with real units
 - [ ] `ShopUI` unverified — NPC-driven, not present in either scene at rest
-- [ ] `BattleResultsUI` buttons are anchored to the **screen corners** (anchor 0,0 and 1,0 at
-  y 0–30), so all four sit clipped at the bottom edge instead of inside the panel. Scene-only
-  layout — no code touches it — so it needs a RectTransform fix in the Editor: anchor to
-  (0.5, 0.5), roughly x ±110, y −260, which lands them under the stats block
-- [ ] `QuestsUI` visual check still owed — it's absent from SampleScene (built on demand by the
-  `QuestsUIBuilder` editor window), so it has never been seen running. Code audited instead
-  (Jul/26); see the theming-audit note below
-- [ ] Building shop's "Farm Buildings" title sits on the panel sprite's wide wood border rather
-  than the cream field — legible, but a RectTransform nudge in the Editor, not a code fix
 - [ ] Settings panel's sliders/dropdown/checkbox still use stock Unity visuals
 - [ ] Stamina bar has no icon (no energy icon exists in the sprite kit yet)
-- [ ] Quest **completed**-tab rows: the prefab's white backing is alpha **0.3**, so its dark text
-  reads 3.67 against a woodDark panel — under 4.5 for body text (the active rows use 0.5 and are
-  fine at 5.78–7.36). The alpha is authored into `QuestCompletedRow.prefab` by `QuestsUIBuilder`,
-  not applied at runtime, so it's a builder/prefab edit rather than a `UIThemeStyler` fix
+
+**Done (Aug/1, branch `feature/ui-layout-fixes-combat-quests-shop`, commit `82f4505`)** — five
+items above closed, each verified in Play Mode with a screenshot rather than by reading code.
+The common root cause: these layouts were authored when the panels were plain rects, and the
+cozy sprite kit later gave them a painted frame roughly **90px** thick on every side. The
+9-slice `border` field (32px) is *not* the usable inset — measure against the Viewport or the
+render, not the sprite metadata.
+- **`BattleResultsUI` buttons** — fixed, but *not* with the values this file previously
+  suggested. Both panels are full-screen (1920×1080) with no smaller sprite child, so the
+  proposed y −260 would have crowded the stats block (which spans y −210…+110). Used y −300,
+  x ±170. The buttons also had to grow **160×30 → 300×70**: at the old size the "To Farm" label
+  rendered clipped as "to Farm". Titles moved to y −148 so they sit on the ribbon instead of
+  under the battle HUD.
+- **Building shop title** — moved to y −165 (inside the cream field, not merely nudged within
+  the border) and recoloured. `ApplyTheme` was tinting `playerGoldText` `highlightGold`, which
+  reads **~1.4** on cream; both header labels are now `textDark` (**~12.1**). Two knock-on fixes
+  the old note didn't anticipate: the list had to move down or it covered the relocated header,
+  and its `VerticalLayoutGroup` lacked `childControlWidth`, so rows ignored `flexibleWidth` and
+  stayed 600px wide inside a 1038px panel.
+- **`QuestsUI`** — seen running for the first time. **Retracted: the claim that it is "absent
+  from SampleScene" was false** — `QuestsCanvas` is in the scene and opens fine; no builder
+  invocation was needed. Title, tabs and both tab panels all sat outside the frame, and the two
+  tabs were ~400px apart. Fixed, and see the layout bug below.
+- **Quest completed-row alpha** — 0.3 → 0.5 in both `QuestsUIBuilder` and the prefab on disk
+  (the builder only runs on demand, so the prefab needed the same edit).
+- **Combat Items panel** — verified populated, which required a battle with live enemies plus
+  `Fish`/`RareFish` (the project's *only* two consumables — Carrot/Cabbage/Tomato are crops with
+  `isConsumable=false`, so seeding those shows the empty-state row and looks like a bug).
+
+**New bug found and fixed while verifying: 0-width rows from point anchors.** A fresh
+`RectTransform` defaults to anchors `(0.5, 0.5)`, where `sizeDelta.x = 0` means a literal
+0-wide rect — no `childControlWidth` on the parent can rescue it, because the layout group
+writes `sizeDelta`, which stays 0. This bit two places independently:
+`QuestObjectiveLine` (objective counters wrapped one character per line) and
+`ConsumableBattleUI.CreateRow` (rows measured 0 → now 720px). Both now anchor `(0,1)-(1,1)`.
+Worth grepping for `new Vector2(0,` on a `sizeDelta` next to a runtime-created RectTransform.
+
+**Testing note:** entering Play Mode directly in SampleScene or CombatScene leaves every
+localized label blank — the documented `SafeGetLocalizedString` quirk (tables preload during
+MainMenu). Quest titles, building names and item rows all render empty this way. Confirm
+against the HUD money/day text before treating a blank label as a UI bug.
 
 **Theming audit (Jul/26)** — every claim in this section re-checked against the code, because the
 list had accumulated two contradictory notes about `QuestsUI`:
@@ -322,6 +348,13 @@ See [review/02_FINDINGS.md](review/02_FINDINGS.md) for the full diagnostic. Head
   Tried it for `*.private.0` and it made Git store the working tree's CRLF verbatim, baking
   Windows endings into the repo (fixed in `ace4328`). The local symptom all of this cures is a
   file showing as modified with a completely empty diff
+
+- **Runtime-built UI keeps re-inventing the same two layout bugs.** Code that builds UI at
+  runtime (`ConsumableBattleUI.CreateRow`, `QuestsUIBuilder`) has now twice shipped a
+  `RectTransform` left on default point anchors with `sizeDelta.x = 0`, and twice shipped a
+  `VerticalLayoutGroup` with `childForceExpandWidth` but no `childControlWidth` (which does
+  nothing on its own). Both were fixed Aug/1; a small shared helper for "stretch this new
+  RectTransform across its parent" would stop the third occurrence.
 
 **Working well**: namespace convention (100%), combat pipeline, status-effect tests,
 GameBalance centralization (~80%), save scaffolding, animal husbandry tests.
