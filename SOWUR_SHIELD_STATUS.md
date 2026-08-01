@@ -117,8 +117,10 @@ of Aug/1. 3 asmdefs + 2 test asmdefs.
   `Tools > NPC > Populate Village`). All eight share one procedurally drawn placeholder sprite;
   the *data* is real — 4 codex tiers each, gift preferences, a working dialogue tree.
   Giftable items went 2 → 16 of 28, which was the quiet reason the gift panel looked broken.
-  **Still placeholder and needing art**: villager sprites (all identical), NPC portraits (the
-  codex shows a flat wood rectangle without one)
+  **Portraits done Aug/1**: 8 procedural placeholder portraits with distinct hair/clothing
+  colours, so NPCs without a portrait went 8 → 0. **Item icons done Aug/1** too (5 → 0).
+  **Still placeholder and needing real art**: villager world sprites (all eight identical) and
+  the portraits themselves, which are recognisable-but-crude geometry
 - **`TalkToNPC` quest objectives take the `conversationId`, not the `npcId`**
   (`ConversationMemory.cs:163`). The two look interchangeable; targeting the npcId produces an
   objective that never advances, with no error. Pinned by `QuestAndNpcIntegrityTests`
@@ -398,8 +400,13 @@ The enemy side was not merely unassigned: six assets had a skills list holding a
 element, so they read as "has skills" while `GetReadySkill()` returned that null — measured at
 0/10 with the use-chance forced to 1.0. `GetReadySkill()` now skips null entries (`1e70281`).
 AnimatorControllers exist for 25 of 27 animals; the missing piece is combat *clips*
-**World Map**: WorldMap Canvas + `WorldMapUIController` in farm scene; one `WorldMapBiomePanel`
-per biome wired to controller; `WorldMap` ref on `WorldMapTriggerZone`
+**World Map**: ~~WorldMap Canvas + `WorldMapUIController` in farm scene~~ — **both were already
+in SampleScene**; this checklist item was stale. `WorldMapTriggerZone` is wired too.
+**Retracted (Aug/1): the claim that an empty `biomePanels` list makes stages unreachable was
+false** — `RefreshFlatStageButtons()` generates a button for every stage when no panels are
+configured, and all 25 were always reachable. The real defect was that fallback's *layout*
+(140×60 cells in an 1890×1080 map, every label overlapping); fixed Aug/1 with measured values
+plus auto-sizing labels. Per-biome panels remain a **visual upgrade, not a blocker**
 **Animals**: ~~GroundItem prefabs (RabbitFur, DuckEgg, Feather)~~ — **DuckEgg and Feather already
 existed**; `RabbitFur_GroundItem` created Aug/1 and linked to `Rabbit.groundItemPrefab`.
 ~~`Rabbit.asset`/`RabbitFur.asset`~~ **created Aug/1** — they had never existed at all (see

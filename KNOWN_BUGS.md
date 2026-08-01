@@ -4,10 +4,10 @@
 > behavior) and **Quirks** (surprising-but-intended or environment-specific behavior worth
 > knowing before debugging "ghosts").
 
-## [OPEN] `TeamAssemblerUISetup` caches `.transform` before adding a `RectTransform`
+## [FIXED 2026-08-01] `TeamAssemblerUISetup` cached `.transform` before adding a `RectTransform`
 
-**Not yet fixed** — found 2026-08-01 while fixing the same bug in `RelationshipUI`, but left
-alone because it sits in the combat pipeline and was outside the reported problem.
+**Fixed** the same day it was logged — all four occurrences now construct with
+`new GameObject(name, typeof(RectTransform))` and cache the reference afterwards.
 
 **The trap:** `new GameObject("X")` starts with a plain `Transform`. Adding a `RectTransform`
 **replaces** it, destroying the original. Any reference cached from `.transform` before that
