@@ -158,9 +158,33 @@ public class GameMenuUI : MonoBehaviour
             // Headings with no serialized field of their own. "Game Menu" kept the scene's old
             // brown on the panel sprite's dark top border — a 1.06 contrast ratio, invisible.
             UIThemeStyler.StylePanelTitle(mainMenuPanel, theme);
-            UIThemeStyler.StylePanelTitle(settingsPanel, theme);
             UIThemeStyler.StylePanelTitle(saveInfoPanel, theme);
+
+            // Settings is deliberately excluded: its heading was moved down off the frame and
+            // onto the panel sprite's cream field (Aug/1), where cream is invisible (~1.1) and
+            // textDark reads ~12.1. StylePanelTitle unconditionally forces cream, so calling it
+            // here would silently undo the scene's colour on every Awake.
+            UIThemeStyler.TintText(GetSettingsHeading(), theme.textDark);
         }
+    }
+
+    /// <summary>
+    /// The settings panel's heading, found by name because it has no serialized field.
+    /// Mirrors how <see cref="UIThemeStyler.StylePanelTitle"/> locates headings, but returns
+    /// the label so the caller picks the colour — settings needs dark, not the cream that
+    /// StylePanelTitle hardcodes for headings sitting on wood.
+    /// </summary>
+    private TextMeshProUGUI GetSettingsHeading()
+    {
+        if (settingsPanel == null) return null;
+
+        foreach (TextMeshProUGUI text in settingsPanel.GetComponentsInChildren<TextMeshProUGUI>(true))
+        {
+            if (text.GetComponentInParent<Button>() != null) continue;
+            if (text.gameObject.name.IndexOf("Title", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                return text;
+        }
+        return null;
     }
 
     private void OnDestroy()
