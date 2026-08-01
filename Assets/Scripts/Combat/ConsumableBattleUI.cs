@@ -265,6 +265,10 @@ public class ConsumableBattleUI : MonoBehaviour
         rowObj.transform.SetParent(listPanel, false);
 
         RectTransform rowRect = rowObj.AddComponent<RectTransform>();
+        // Stretch across the list: a fresh RectTransform defaults to point anchors, where a
+        // sizeDelta.x of 0 is a literal 0-wide rect and the label wraps one character per line.
+        rowRect.anchorMin = new Vector2(0f, 1f);
+        rowRect.anchorMax = new Vector2(1f, 1f);
         // Empty-state messages wrap onto 2-3 lines — give them room so the panel
         // doesn't collapse into a sliver behind the text.
         rowRect.sizeDelta = new Vector2(0, item != null ? 32 : 60);

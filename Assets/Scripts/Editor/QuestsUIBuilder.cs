@@ -166,6 +166,10 @@ public class QuestsUIBuilder : EditorWindow
         // Objective line sub-prefab (just a single TMP text, instantiated dynamically per objective)
         var lineGO = new GameObject("QuestObjectiveLine");
         var lineRT = lineGO.AddComponent<RectTransform>();
+        // Stretch horizontally: with the default point anchors a 0 sizeDelta.x is a literal
+        // 0-wide rect, and the objective text wraps one character per line.
+        lineRT.anchorMin = new Vector2(0f, 1f);
+        lineRT.anchorMax = new Vector2(1f, 1f);
         lineRT.sizeDelta = new Vector2(0, 22);
         var lineTMP = lineGO.AddComponent<TextMeshProUGUI>();
         lineTMP.fontSize = 13;
@@ -229,7 +233,11 @@ public class QuestsUIBuilder : EditorWindow
         objRT.offsetMax = new Vector2(-12, 0);
         var objVLG = objContainerGO.AddComponent<VerticalLayoutGroup>();
         objVLG.spacing = 2;
+        // childControlWidth is required for the lines' flexibleWidth to be honoured; without it
+        // the objective line keeps its authored 0 width and wraps one character per line.
+        objVLG.childControlWidth = true;
         objVLG.childForceExpandWidth = true;
+        objVLG.childControlHeight = true;
         objVLG.childForceExpandHeight = false;
 
         var rowComponent = rowGO.AddComponent<QuestActiveRow>();
@@ -262,7 +270,7 @@ public class QuestsUIBuilder : EditorWindow
         var rowGO = new GameObject("QuestCompletedRow");
         var rowRT = rowGO.AddComponent<RectTransform>();
         rowRT.sizeDelta = new Vector2(700, 80);
-        rowGO.AddComponent<Image>().color = new Color(1f, 1f, 1f, 0.3f);
+        rowGO.AddComponent<Image>().color = new Color(1f, 1f, 1f, 0.5f);
         var rowLE = rowGO.AddComponent<LayoutElement>();
         rowLE.preferredHeight = 80;
         rowLE.minWidth = 400;
