@@ -319,6 +319,16 @@ follow-up logged there — add a `.gitattributes` and renormalize line endings �
 - Duck and Sparrow use chicken-baby placeholder sprites (`Assets/Resources/Animals/duck.asset`,
   `Sparrow.asset` point at `Chicken_Baby*.png`). Note these are also the only two `AnimalData`
   assets with a null `animatorController` — the same two gaps travel together
+- **Enemy sprites: 20 of 34 wired (Aug/1), 14 blocked on a naming mismatch — not on art.**
+  `Assets/Art/Enemies/` holds 32 sheets. Meadow/Forest/Cave files are named after their
+  `EnemyData` (`Cave Bat.png` → `CaveBat`), so those 20 were pure wiring and are now done.
+  Mountain/Volcano files are named `Enemy 19 — Snow Wolf`, `Enemy 25 — Fire Slime`, … and match
+  **no** `EnemyData`: `FrostDrake`, `IronGolem`, `Hellhound`, `ThunderEagle` and the other 10
+  have no sheet of their own. Someone has to decide which sheet belongs to which enemy (or
+  rename the assets to match the art) — no generation needed either way.
+  Until then those 14 render as grey spheres via `CombatUnit.CreateSphereVisual()`.
+  Caveat: `EnemyData.sprite` takes a single `Sprite` while the sheets import as `Multiple`, so
+  Unity will never auto-assign these — each needs the `_0` slice picked explicitly.
 - Stamina/energy icon; see [UI_ART_PLACEHOLDERS.md](UI_ART_PLACEHOLDERS.md) for the full list
 - **Combat animation clips** — no animal has attack/hurt/death art. Checked Aug/1: all 289
   AnimationClips in the project are Idle/Walk/Eat (plus player, NPC, tree, egg-hatch); not one
@@ -349,10 +359,12 @@ follow-up logged there — add a `.gitattributes` and renormalize line endings �
 Manual Editor-setup items still outstanding (verify against current scenes before working —
 some may have been completed as side effects):
 
-**Combat**: ~~assign `AnimalSkill` SOs to `AnimalData.activeSkill`~~ **done Aug/1** — 22 of 27
-assigned by species (eggs excluded, they don't fight); verified landing Poison/Weakness on
-enemies in a live auto-battle. `EnemyData.skills` still unassigned. AnimatorControllers exist
-for 25 of 27 animals — see the corrected Art gaps note; the missing piece is combat *clips*
+**Combat**: ~~assign `AnimalSkill` SOs to `AnimalData.activeSkill`/`EnemyData.skills`~~
+**done Aug/1** — 22 of 27 animals (eggs excluded, they don't fight) and **all 34 enemies**.
+The enemy side was not merely unassigned: six assets had a skills list holding a single **null**
+element, so they read as "has skills" while `GetReadySkill()` returned that null — measured at
+0/10 with the use-chance forced to 1.0. `GetReadySkill()` now skips null entries (`1e70281`).
+AnimatorControllers exist for 25 of 27 animals; the missing piece is combat *clips*
 **World Map**: WorldMap Canvas + `WorldMapUIController` in farm scene; one `WorldMapBiomePanel`
 per biome wired to controller; `WorldMap` ref on `WorldMapTriggerZone`
 **Animals**: sprites for `Rabbit.asset`/`RabbitFur.asset`; GroundItem prefabs (RabbitFur,
