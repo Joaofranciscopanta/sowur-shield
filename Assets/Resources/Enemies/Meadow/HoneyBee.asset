@@ -36,7 +36,8 @@ MonoBehaviour:
   defenseScaling: 1.08
   aiBehavior: Aggressive
   targetPriority: Weakest
-  skills: []
+  skills:
+  - {fileID: 11400000, guid: cc248ce795574493a11bb16967f8f025, type: 2}
   skillUseChance: 0.3
   baseAccuracy: 0.95
   attackRange: 0
@@ -46,3 +47,6 @@ MonoBehaviour:
   element: None
   immunities: []
   weaknesses: []
+  references:
+    version: 2
+    RefIds: []

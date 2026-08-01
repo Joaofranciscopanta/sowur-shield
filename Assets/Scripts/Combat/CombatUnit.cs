@@ -709,7 +709,17 @@ public class CombatUnit : MonoBehaviour
         {
             if (enemySkills == null || enemySkills.Count == 0) return null;
             if (UnityEngine.Random.value > enemySkillUseChance) return null;
-            return enemySkills[UnityEngine.Random.Range(0, enemySkills.Count)];
+
+            // Pick only from entries that are actually populated. A List<AnimalSkill> with an
+            // empty element serialises as a null entry, and picking it made the enemy silently
+            // skip its skill forever — indistinguishable from having no skills at all.
+            AnimalSkill picked = enemySkills[UnityEngine.Random.Range(0, enemySkills.Count)];
+            if (picked != null) return picked;
+
+            for (int i = 0; i < enemySkills.Count; i++)
+                if (enemySkills[i] != null) return enemySkills[i];
+
+            return null;
         }
     }
 

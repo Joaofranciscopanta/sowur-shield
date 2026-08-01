@@ -328,8 +328,10 @@ public class BattleResultsUI : MonoBehaviour
     private string GetBattleStatsText(int survivingPlayers, int survivingEnemies)
     {
         statsText_Localized.Arguments = new object[] { totalTurns, survivingPlayers, survivingEnemies };
+        // One stat per line, mirroring the localized entry. The old single-line fallback needed
+        // 493px in a 480px rect, so the last value wrapped onto its own line on its own.
         return Or(statsText_Localized.SafeGetLocalizedString(),
-            $"Turns: {totalTurns}   Allies left: {survivingPlayers}   Enemies left: {survivingEnemies}");
+            $"<b>Battle Statistics</b>\n\nTurns: {totalTurns}\nYour Survivors: {survivingPlayers}\nEnemy Survivors: {survivingEnemies}");
     }
 
     /// <summary>
