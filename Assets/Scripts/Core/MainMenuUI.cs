@@ -933,9 +933,20 @@ public class MainMenuUI : MonoBehaviour
             continueButton.interactable = hasSave;
 #endif
 
+            // Theme colours, not Color.white/gray: this label sits on the gold button_primary
+            // art, where white measures a 1.47 contrast ratio (every sibling button on the same
+            // sprite reads 8.74 with textDark). This runs after the theme pass, so a colour set
+            // in the scene would be overwritten here — it has to be right in code.
             var buttonText = continueButton.GetComponentInChildren<TextMeshProUGUI>();
             if (buttonText != null)
-                buttonText.color = hasSave ? Color.white : Color.gray;
+            {
+                UITheme theme = UIThemeStyler.LoadTheme();
+                Color enabledColour  = theme != null ? theme.textDark : new Color(0.196f, 0.196f, 0.196f);
+                // Disabled still needs to read as disabled without vanishing: mid-wood on gold
+                // is 3.98, clearly dimmer than 9.73 but not near-invisible the way gray (2.71) was.
+                Color disabledColour = theme != null ? theme.woodMid : new Color(0.35f, 0.28f, 0.20f);
+                buttonText.color = hasSave ? enabledColour : disabledColour;
+            }
         }
     }
     
