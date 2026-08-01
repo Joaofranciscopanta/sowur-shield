@@ -200,13 +200,14 @@ public class ConversationMemory : MonoBehaviour, ISaveable
     public void SetRelationship(string npcId, float level)
     {
         if (conversationData == null) return;
-        
-        float oldLevel = conversationData.GetRelationshipLevel(npcId);
+
         conversationData.SetRelationshipLevel(npcId, level);
         MarkDataChanged();
-        
-        OnRelationshipChanged?.Invoke(npcId, level);
-        
+
+        // Report what was actually stored, not what was requested. SetRelationshipLevel
+        // clamps to -100..100, so a gift that would push affinity to 110 stores 100 —
+        // announcing the raw 110 would let a listener unlock a tier the save never reached.
+        OnRelationshipChanged?.Invoke(npcId, conversationData.GetRelationshipLevel(npcId));
     }
     
     /// <summary>
