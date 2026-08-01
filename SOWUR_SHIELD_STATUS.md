@@ -205,7 +205,11 @@ colour problem at all:
   colour.
 
 **Remaining**:
-- [ ] Stamina bar has no icon (no energy icon exists in the sprite kit yet)
+- [x] ~~Stamina bar has no icon~~ **done Aug/1** — drew `icon_stamina_bolt.png` procedurally
+  (gold bolt, dark outline, theme palette, kit import settings). Fixing it exposed that the bar
+  itself had no room for an icon (backing flush to the screen top, icon rendered off-screen at
+  x −16) and that its fill was white-on-light, reading as empty even at full energy; both fixed,
+  and the drag handle hidden since it is a read-only stat bar
 - [ ] **`ShopUI` is blocked on content, not on verification.** Checked Aug/1: there is no
   `ShopUI` in any scene, no `ShopNPC` placed, **and zero `ShopData` assets anywhere** — and
   unlike `QuestsUI`, no builder exists to create one (`Tools > Sowur Shield` has builders for
@@ -296,8 +300,18 @@ follow-up logged there — add a `.gitattributes` and renormalize line endings �
 (see Known Tech Debt).
 
 **Art gaps**:
+
+> **AI image generation is unavailable in this project as configured** (checked Aug/1). The MCP
+> `generate_image` tool exposes two providers, `fal` and `openrouter`, and both report
+> `configured: false` — no API key in the editor's secure store, and no `MCPFORUNITY_FAL_API_KEY`
+> / `MCPFORUNITY_OPENROUTER_API_KEY` in the environment. Add a key via
+> *MCP for Unity → Asset Generation* before planning any work that assumes generated art.
+> Simple geometric assets can still be drawn procedurally (that is how the stamina bolt was
+> made); sprite sheets and animation frames cannot.
+
 - Duck and Sparrow use chicken-baby placeholder sprites (`Assets/Resources/Animals/duck.asset`,
-  `Sparrow.asset` point at `Chicken_Baby*.png`)
+  `Sparrow.asset` point at `Chicken_Baby*.png`). Note these are also the only two `AnimalData`
+  assets with a null `animatorController` — the same two gaps travel together
 - Stamina/energy icon; see [UI_ART_PLACEHOLDERS.md](UI_ART_PLACEHOLDERS.md) for the full list
 - **Combat animation clips** — no animal has attack/hurt/death art. Checked Aug/1: all 289
   AnimationClips in the project are Idle/Walk/Eat (plus player, NPC, tree, egg-hatch); not one
