@@ -205,9 +205,25 @@ colour problem at all:
   colour.
 
 **Remaining**:
-- [ ] `ShopUI` unverified — NPC-driven, not present in either scene at rest
-- [ ] Settings panel's sliders/dropdown/checkbox still use stock Unity visuals
 - [ ] Stamina bar has no icon (no energy icon exists in the sprite kit yet)
+- [ ] **`ShopUI` is blocked on content, not on verification.** Checked Aug/1: there is no
+  `ShopUI` in any scene, no `ShopNPC` placed, **and zero `ShopData` assets anywhere** — and
+  unlike `QuestsUI`, no builder exists to create one (`Tools > Sowur Shield` has builders for
+  the animal market, building shop, quests and language UI, but not this). Nothing can be seen
+  running until a `ShopData` exists, so this is a content task, not a UI-polish one
+
+**Also done (Aug/1, same branch)**:
+- **Settings panel themed** (`67ba609`) — sliders/dropdowns/toggle were stock Unity visuals.
+  Panel grown 496×488 → 536×638 because the content genuinely did not fit (buttons landed on
+  the bottom frame at every smaller size). Tracks `woodMid` (~3.6 on cream, over the 3.0
+  non-text bar), fills gold, handles `woodDark`; labels lifted above their track instead of
+  across it. **The heading needed a code fix, not a scene fix**: `ApplyTheme` called
+  `StylePanelTitle(settingsPanel)`, which unconditionally forces cream — right for a heading on
+  wood, wrong once this one moved onto the cream field (cream ~1.1 vs `textDark` ~12.1). It
+  silently repainted the scene's colour on every `Awake`, so the panel looked fine until opened
+  through the real `OpenMenu` flow. Now uses a `GetSettingsHeading()` lookup; `mainMenuPanel`
+  and `saveInfoPanel` keep `StylePanelTitle` and their cream headings.
+- **Audio wiring** (`11f93e6`) — see the Audio line in the wiring checklist below.
 
 **Done (Aug/1, branch `feature/ui-layout-fixes-combat-quests-shop`, commit `82f4505`)** — five
 items above closed, each verified in Play Mode with a screenshot rather than by reading code.
@@ -355,6 +371,11 @@ See [review/02_FINDINGS.md](review/02_FINDINGS.md) for the full diagnostic. Head
   Windows endings into the repo (fixed in `ace4328`). The local symptom all of this cures is a
   file showing as modified with a completely empty diff
 
+- **`UIThemeStyler.StylePanelTitle` hardcodes cream, which makes it a trap.** It forces every
+  heading it finds to `backgroundCream` — correct for a heading on wood, silently wrong for one
+  on a cream field, and it re-applies on every `Awake`, so a scene-authored colour looks right
+  in the Editor and gets repainted at runtime. Bit the settings panel Aug/1. If a heading needs
+  a different colour, look it up and `TintText` it rather than extending this method.
 - **Runtime-built UI keeps re-inventing the same two layout bugs.** Code that builds UI at
   runtime (`ConsumableBattleUI.CreateRow`, `QuestsUIBuilder`) has now twice shipped a
   `RectTransform` left on default point anchors with `sizeDelta.x = 0`, and twice shipped a
