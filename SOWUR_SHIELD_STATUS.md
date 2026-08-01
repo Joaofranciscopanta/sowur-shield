@@ -43,7 +43,12 @@
 | World/village map expansion | 💤 Deferred | Design decided (see Deferred section) |
 
 **Project size**: 4 scenes, ~157 scripts (100% namespace-compliant `SowurShield.<System>`),
-430+ test methods in 17+ test files, 3 asmdefs + tests.
+**786 tests across 44 files** — 752 EditMode (42 files) + 34 PlayMode (2 files); all passing as
+of Aug/1. 3 asmdefs + 2 test asmdefs.
+
+> The "430+ test methods" figure this line used to carry was an undercount, and the 34 PlayMode
+> tests had **never executed once**: their asmdef was marked Editor-only, which excludes it from
+> a PlayMode run, so the runner silently reported 0 total. Fixed Aug/1 (`f11008f`).
 
 ---
 
