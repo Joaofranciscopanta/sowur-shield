@@ -168,9 +168,17 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         if (npc == null)
             return;
 
-        if (!_buildSucceeded)
+        // `panel == null` catches a destroyed panel as well as one never built: this component
+        // is DontDestroyOnLoad but the UI it builds is not re-parented, so a scene change (or
+        // entering Play Mode after the objects were torn down) leaves _buildSucceeded true
+        // while every child reference is a destroyed Unity object. Reading one then throws
+        // MissingReferenceException from inside RefreshLore, which surfaced as a codex that
+        // opened with an empty body. Uses `== null`, not `?.`/`??`, which do not respect
+        // Unity's fake-null.
+        if (!_buildSucceeded || panel == null || loreContainer == null)
         {
             gameObject.SetActive(true);
+            _buildSucceeded = false;
             TryBuildUI();
             if (!_buildSucceeded)
                 return;
@@ -190,12 +198,31 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
 
     private void BuildUI()
     {
-        Canvas canvas = gameObject.AddComponent<Canvas>();
+        // Reuse the components on a rebuild rather than stacking duplicates. AddComponent on an
+        // object that already has a Canvas silently produces a second one.
+        Canvas canvas = GetComponent<Canvas>();
+        if (canvas == null) canvas = gameObject.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.sortingOrder = 51;
 
-        gameObject.AddComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        gameObject.AddComponent<GraphicRaycaster>();
+        var scaler = GetComponent<CanvasScaler>();
+        if (scaler == null) scaler = gameObject.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        // Without an explicit reference resolution the scaler defaults to 800x600, so a
+        // 579px-tall panel was drawn 1388px tall on a 1080p screen and ran off both edges.
+        // 1920x1080 matches the four popup canvases standardised on Jul/1.
+        scaler.referenceResolution = new Vector2(1920f, 1080f);
+        scaler.matchWidthOrHeight = 0.5f;
+
+        if (GetComponent<GraphicRaycaster>() == null) gameObject.AddComponent<GraphicRaycaster>();
+
+        // DestroyImmediate, not Destroy: Destroy is deferred to end of frame, so the old panel
+        // would still be a child while BuildCodexPanel runs, and — worse — the *old* panel's
+        // subobjects stay alive long enough that the freshly assigned fields get overwritten by
+        // nothing while the stale ones are torn down a frame later. That left loreContainer
+        // pointing at a destroyed Transform while a live LoreContainer sat in the hierarchy,
+        // and RefreshLore's `if (loreContainer == null) return;` swallowed every codex row.
+        if (panel != null) DestroyImmediate(panel.gameObject);
 
         BuildCodexPanel();
     }
@@ -257,6 +284,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         portraitObj.transform.SetParent(rowObj.transform, false);
         var portLE = portraitObj.AddComponent<LayoutElement>();
         portLE.preferredWidth  = 150;
+        portLE.minWidth        = 150; // preferred alone still compresses under a tight row
         portLE.flexibleWidth   = 0;
         portraitImage = portraitObj.AddComponent<Image>();
         portraitImage.color = theme != null ? theme.woodLight : new Color(0.25f, 0.25f, 0.28f, 1f);
@@ -370,9 +398,26 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         SetPreferredHeight(loreTitleHeader, 20);
         loreTitleHeader.gameObject.SetActive(false);
 
-        GameObject loreContainerObj = new GameObject("LoreContainer");
+        // RectTransform first, and only then cache the reference. `new GameObject()` starts
+        // with a plain Transform; adding a RectTransform *replaces* it and destroys the
+        // original. Caching before that swap left this field holding a destroyed Transform
+        // while a perfectly live LoreContainer sat in the hierarchy — RefreshLore's null check
+        // then swallowed every codex row with no error at all.
+        GameObject loreContainerObj = new GameObject("LoreContainer", typeof(RectTransform));
         loreContainerObj.transform.SetParent(panelObj.transform, false);
-        loreContainer = loreContainerObj.transform;
+
+        // A GameObject built with AddComponent<RectTransform> starts on point anchors with
+        // sizeDelta 0. The parent VerticalLayoutGroup drives width, but the ContentSizeFitter
+        // below only grows height once children report a preferred size — and with no
+        // LayoutElement of its own this container measured (520, 0), so every codex row was
+        // laid out into a zero-height rect and nothing appeared. Same family of bug as the
+        // 0-width rows fixed on Aug/1.
+        var loreRT = loreContainerObj.GetComponent<RectTransform>();
+        loreRT.anchorMin = new Vector2(0f, 1f);
+        loreRT.anchorMax = new Vector2(1f, 1f);
+        loreRT.pivot     = new Vector2(0.5f, 1f);
+
+        loreContainer = loreRT;
 
         var loreVlg = loreContainerObj.AddComponent<VerticalLayoutGroup>();
         loreVlg.spacing = 4;
@@ -415,7 +460,17 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         TextMeshProUGUI tmp = obj.AddComponent<TextMeshProUGUI>();
         tmp.text = text;
         tmp.fontSize = 18;
-        tmp.color = theme != null ? theme.backgroundCream : Color.white;
+        // Dark by default: this panel's sprite has a cream interior, so cream text (the old
+        // default, chosen when the background was a flat woodDark fill) was invisible on it.
+        // Callers that sit on the wood border — the NPC name, the close button — override.
+        tmp.color = theme != null ? theme.textDark : Color.black;
+
+        // Every label gets a LayoutElement, sized from the text unless a caller overrides it
+        // via SetPreferredHeight. Without one, a stretch-anchored label inside a
+        // VerticalLayoutGroup reports no preferred height and the group hands it the whole
+        // panel — which is exactly what the "Codex" heading did, covering the entire window.
+        var layoutElement = obj.AddComponent<LayoutElement>();
+        layoutElement.preferredHeight = 20f;
 
         return tmp;
     }
@@ -426,7 +481,11 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
     /// </summary>
     private void SetPreferredHeight(TextMeshProUGUI label, float height)
     {
-        LayoutElement layoutElement = label.gameObject.AddComponent<LayoutElement>();
+        // Reuses the LayoutElement CreateLabel already added — a second one on the same object
+        // is ignored by Unity's layout system, so adding rather than reusing would silently
+        // leave the default height in effect.
+        LayoutElement layoutElement = label.GetComponent<LayoutElement>();
+        if (layoutElement == null) layoutElement = label.gameObject.AddComponent<LayoutElement>();
         layoutElement.preferredHeight = height;
     }
 
@@ -482,7 +541,15 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
 
     private void RefreshLore()
     {
-        if (loreContainer == null) return;
+        // A destroyed container means the panel was rebuilt and this field went stale. Silently
+        // returning here is what made the codex open with an empty body and no error at all, so
+        // say something rather than nothing.
+        if (loreContainer == null)
+        {
+            Debug.LogWarning("[RelationshipUI] loreContainer is missing — the codex body cannot " +
+                             "be populated. The panel was likely rebuilt without refreshing this field.");
+            return;
+        }
 
         // Clear previous entries
         for (int i = loreContainer.childCount - 1; i >= 0; i--)
@@ -526,13 +593,15 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
     /// </summary>
     private void CreateLoreRow(NpcLoreEntry entry, bool isLocked)
     {
+        // panel_wood_generic has a LIGHT (cream) interior, not a dark one — the wood is only
+        // the border. Cream body text on it measured ~1.1 and was invisible; the same mistake
+        // BattleResultsUI made on its light panels Jul/26. Body text is textDark (~12:1 on the
+        // cream field) and headings keep gold, which still clears the bar for large bold text.
         Color gold  = theme != null ? theme.highlightGold : new Color(0.9f, 0.8f, 0.5f);
-        Color cream = theme != null ? theme.backgroundCream : new Color(0.8f, 0.8f, 0.8f);
+        Color body  = theme != null ? theme.textDark : new Color(0.18f, 0.16f, 0.15f);
 
-        // Locked rows are dimmed rather than recoloured. On woodDark, cream sits near 7.6:1;
-        // dropping it to 55% alpha keeps it legible while reading as clearly inactive.
-        // A separate grey would have to be re-measured against every wood tone the panel
-        // sprite can sit on (the trap documented in SOWUR_SHIELD_STATUS.md).
+        // Locked rows are dimmed rather than recoloured, so they read as inactive without
+        // needing a second colour measured against the same background.
         const float lockedAlpha = 0.55f;
 
         if (!string.IsNullOrEmpty(entry.title))
@@ -559,12 +628,12 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
             lockedTierText.Arguments = new object[] { GetRelationshipLabel(entry.requiredRelationship) };
             bodyTmp.text = lockedTierText.SafeGetLocalizedString();
             bodyTmp.fontStyle = FontStyles.Italic;
-            bodyTmp.color = new Color(cream.r, cream.g, cream.b, lockedAlpha);
+            bodyTmp.color = new Color(body.r, body.g, body.b, lockedAlpha);
         }
         else
         {
             bodyTmp.text = entry.body;
-            bodyTmp.color = cream;
+            bodyTmp.color = body;
         }
 
         bodyTmp.fontSize = 11;
@@ -613,7 +682,8 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
             ? string.Join("\n", known)
             : noTastesKnownText.SafeGetLocalizedString();
         bodyTmp.fontSize = 11;
-        bodyTmp.color = theme != null ? theme.backgroundCream : new Color(0.8f, 0.8f, 0.8f);
+        // Dark, like the lore bodies: the panel's interior is cream, not wood.
+        bodyTmp.color = theme != null ? theme.textDark : new Color(0.18f, 0.16f, 0.15f);
         bodyTmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
         var bodyLE = bodyObj.AddComponent<LayoutElement>();
         bodyLE.preferredHeight = Mathf.Max(16, known.Count * 14);

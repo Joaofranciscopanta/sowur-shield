@@ -135,9 +135,13 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
         if (npc == null || !npc.CanGiftToday())
             return;
 
-        if (!_buildSucceeded)
+        // Same destroyed-reference guard as RelationshipUI: this component survives scene
+        // changes but the UI it builds does not, leaving _buildSucceeded true beside a
+        // destroyed listPanel. Reading it throws MissingReferenceException.
+        if (!_buildSucceeded || listPanel == null)
         {
             gameObject.SetActive(true);
+            _buildSucceeded = false;
             TryBuildUI();
             if (!_buildSucceeded)
                 return;

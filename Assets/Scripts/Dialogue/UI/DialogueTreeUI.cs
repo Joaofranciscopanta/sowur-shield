@@ -300,12 +300,44 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
 
         // String tables load asynchronously — wait rather than show an empty box if the
         // player opens dialogue in the brief window before LocalizationManager finishes preloading.
+        //
+        // Bounded: this used to be an unbounded WaitUntil, and when the flag never flipped the
+        // coroutine parked here forever with the speaker name shown and the body never written.
+        // Proceeding after the timeout degrades to a possibly-empty line, which the block below
+        // reports — far better than a dialogue box that ignores every key but Esc.
         if (!LocalizationManager.AreTablesReady)
-            yield return new WaitUntil(() => LocalizationManager.AreTablesReady);
+        {
+            float waitedSeconds = 0f;
+            const float MaxWaitSeconds = 5f;
+            while (!LocalizationManager.AreTablesReady && waitedSeconds < MaxWaitSeconds)
+            {
+                waitedSeconds += Time.unscaledDeltaTime;
+                yield return null;
+            }
+
+            if (!LocalizationManager.AreTablesReady)
+            {
+                Debug.LogWarning("[DialogueTreeUI] String tables were not ready after " +
+                                 $"{MaxWaitSeconds}s — continuing anyway. Text may be missing. " +
+                                 "Is LocalizationManager present/bootstrapped?");
+            }
+        }
 
         // Show dialogue text with typewriter effect
         string resolvedDialogueText = node.dialogueText.SafeGetLocalizedString();
-        if (!string.IsNullOrEmpty(resolvedDialogueText))
+
+        // An unresolvable line must not leave the previous node's text (or the editor
+        // placeholder) on screen: that reads as a frozen dialogue box that only Esc closes.
+        // Clearing and logging makes the missing entry visible instead of silent.
+        if (string.IsNullOrEmpty(resolvedDialogueText))
+        {
+            Debug.LogWarning($"[DialogueTreeUI] Node '{node.nodeId}' resolved to an empty string " +
+                             $"(table '{node.dialogueText.TableReference.TableCollectionName}', " +
+                             $"key id {node.dialogueText.TableEntryReference.KeyId}). " +
+                             "Check the entry exists in the string table.");
+            if (dialogueText != null) dialogueText.text = string.Empty;
+        }
+        else
         {
             isTyping = true;
             canContinue = false;

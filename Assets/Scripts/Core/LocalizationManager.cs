@@ -26,6 +26,29 @@ namespace SowurShield.Core
         // own load is in flight. Preload every table up front so reads are never empty.
         public static bool AreTablesReady { get; private set; }
 
+        /// <summary>
+        /// Creates the manager if no scene provides one. It normally lives in MainMenu, so
+        /// entering Play Mode directly in SampleScene or CombatScene left AreTablesReady false
+        /// forever — and DialogueTreeUI waits on that flag before writing any line, so dialogue
+        /// opened with the speaker name filled in and the body stuck on its editor placeholder,
+        /// escapable only with Esc. Statics also survive a domain reload with stale values, so
+        /// they are reset here rather than trusted.
+        /// </summary>
+        // AfterSceneLoad, not BeforeSceneLoad: the check below has to see the scene's own
+        // manager (MainMenu has one), and before scene load there is nothing to find, which
+        // would spawn a duplicate on every boot.
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void Bootstrap()
+        {
+            AreTablesReady = false;
+
+            if (FindFirstObjectByType<LocalizationManager>(FindObjectsInactive.Include) != null)
+                return;
+
+            var go = new GameObject("LocalizationManager (auto)");
+            go.AddComponent<LocalizationManager>();
+        }
+
         private void Awake()
         {
             if (Instance == null)
