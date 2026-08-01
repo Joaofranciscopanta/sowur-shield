@@ -146,10 +146,17 @@ public class CombatUnit : MonoBehaviour
         // Set display name
         unitName = animal.GetDisplayName();
 
-        // Setup animator from AnimalData if available
+        // Setup animator from AnimalData if available.
+        // Note: `??` cannot be used to fall back to AddComponent here. A missing component comes
+        // back as Unity's "fake null" — a live C# object whose native side is gone — which `??`
+        // sees as non-null, so AddComponent never ran and the next line wrote to a component
+        // that did not exist (MissingComponentException on every spawn). Compare with == null,
+        // which Unity's operator overload handles correctly.
         if (animal.AnimalData?.animatorController != null)
         {
-            unitAnimator = gameObject.GetComponent<Animator>() ?? gameObject.AddComponent<Animator>();
+            unitAnimator = gameObject.GetComponent<Animator>();
+            if (unitAnimator == null)
+                unitAnimator = gameObject.AddComponent<Animator>();
             unitAnimator.runtimeAnimatorController = animal.AnimalData.animatorController;
         }
 
