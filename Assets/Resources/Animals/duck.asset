@@ -22,9 +22,9 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  animalType:
+  animalType: 
   animalFamily: Anatidae
-  animalClass:
+  animalClass: 
   idleSprite: {fileID: 3805131861176811647, guid: cd85b77fce8de69418b644ba975c1d18, type: 3}
   animatorController: {fileID: 0}
   moveSpeed: 1.5
@@ -63,8 +63,8 @@ MonoBehaviour:
     seasonalSpeedMod: 1
     activeSkillId: 
     passiveSkillIds: []
-  combatClass: DPS
   attackRange: 0
+  combatClass: DPS
   pettingStatBonus: 0.01
   feedingStatBonus: 0.02
   productionQualityBonus: 0.05
@@ -74,7 +74,13 @@ MonoBehaviour:
   seasonalSpeedBonus: 1.15
   canStack: 1
   maxStackSize: 3
-  activeSkill: {fileID: 11400000, guid: c6115bd0ce604542ab70825f9f53e37c, type: 3}
+  activeSkill: {fileID: 11400000, guid: c6115bd0ce604542ab70825f9f53e37c, type: 2}
   availablePassiveSkills: []
+  illnessThresholdDays: 3
+  illnessCureItemName: Medicine
+  illnessStatPenalty: 0.5
   canDoChores: 0
   choreType: 
+  references:
+    version: 2
+    RefIds: []

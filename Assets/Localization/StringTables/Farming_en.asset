@@ -183,6 +183,30 @@ MonoBehaviour:
     m_Localized: Tomato
     m_Metadata:
       m_Items: []
+  - m_Id: 14854387275653120
+    m_Localized: Barn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401856
+    m_Localized: A sturdy barn with room for twice as many animals.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401857
+    m_Localized: Doubles animal zone capacity
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401858
+    m_Localized: Greenhouse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401859
+    m_Localized: A glass house that keeps the soil warm all year round.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401860
+    m_Localized: Crops grow in any season
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

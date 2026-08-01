@@ -11,18 +11,18 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a98ad4689e6eaa3448f4580edde09440, type: 3}
   m_Name: cow
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   animalName: Cow
   displayName:
     m_TableReference:
-      m_TableCollectionName:
+      m_TableCollectionName: 
     m_TableEntryReference:
       m_KeyId: 0
-      m_Key:
+      m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  animalType:
+  animalType: 
   animalFamily: Bovidae
   animalClass: Mammal
   idleSprite: {fileID: -4507601661114316402, guid: d1075b8b782910e42a8a5d9e18d14a9d, type: 3}
@@ -63,10 +63,10 @@ MonoBehaviour:
     seasonalAttackMod: 1
     seasonalDefenseMod: 1
     seasonalSpeedMod: 1
-    activeSkillId:
+    activeSkillId: 
     passiveSkillIds: []
-  combatClass: Tank
   attackRange: 1
+  combatClass: Tank
   pettingStatBonus: 0.01
   feedingStatBonus: 0.02
   productionQualityBonus: 0
@@ -76,7 +76,13 @@ MonoBehaviour:
   seasonalSpeedBonus: 1.05
   canStack: 0
   maxStackSize: 1
-  activeSkill: {fileID: 0}
+  activeSkill: {fileID: 11400000, guid: c72cec53128947f399cb09192715ed5d, type: 2}
   availablePassiveSkills: []
+  illnessThresholdDays: 3
+  illnessCureItemName: Medicine
+  illnessStatPenalty: 0.5
   canDoChores: 0
-  choreType:
+  choreType: 
+  references:
+    version: 2
+    RefIds: []

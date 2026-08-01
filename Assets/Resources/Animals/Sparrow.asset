@@ -22,9 +22,9 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  animalType:
+  animalType: 
   animalFamily: Passeridae
-  animalClass:
+  animalClass: 
   idleSprite: {fileID: 6473862597497381058, guid: ac39ffc75b41d524a85dadf0f4be0ca7, type: 3}
   animatorController: {fileID: 0}
   moveSpeed: 1.5
@@ -63,8 +63,8 @@ MonoBehaviour:
     seasonalSpeedMod: 1
     activeSkillId: 
     passiveSkillIds: []
-  combatClass: Support
   attackRange: 0
+  combatClass: Support
   pettingStatBonus: 0.01
   feedingStatBonus: 0.02
   productionQualityBonus: 0.05
@@ -74,8 +74,14 @@ MonoBehaviour:
   seasonalSpeedBonus: 1.15
   canStack: 1
   maxStackSize: 3
-  activeSkill: {fileID: 11400000, guid: c2593e3c62bc425291dc5ecb4dbd64a0, type: 3}
+  activeSkill: {fileID: 11400000, guid: a56c34e8252d4097a0e894fb7e7962dc, type: 2}
   availablePassiveSkills:
   - {fileID: 11400000, guid: 348fa49dca3848bf898f45650926483c, type: 3}
+  illnessThresholdDays: 3
+  illnessCureItemName: Medicine
+  illnessStatPenalty: 0.5
   canDoChores: 0
   choreType: 
+  references:
+    version: 2
+    RefIds: []

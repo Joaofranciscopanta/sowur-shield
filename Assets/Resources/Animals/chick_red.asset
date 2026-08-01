@@ -65,8 +65,8 @@ MonoBehaviour:
     seasonalSpeedMod: 1
     activeSkillId: 
     passiveSkillIds: []
-  combatClass: DPS
   attackRange: 1
+  combatClass: DPS
   pettingStatBonus: 0.01
   feedingStatBonus: 0.02
   productionQualityBonus: 0
@@ -76,7 +76,13 @@ MonoBehaviour:
   seasonalSpeedBonus: 1.1
   canStack: 0
   maxStackSize: 1
-  activeSkill: {fileID: 0}
+  activeSkill: {fileID: 11400000, guid: a56c34e8252d4097a0e894fb7e7962dc, type: 2}
   availablePassiveSkills: []
+  illnessThresholdDays: 3
+  illnessCureItemName: Medicine
+  illnessStatPenalty: 0.5
   canDoChores: 0
   choreType: 
+  references:
+    version: 2
+    RefIds: []
