@@ -144,7 +144,12 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.sortingOrder = 50;
 
-        gameObject.AddComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        // referenceResolution defaults to 800x600 — without setting it, ScaleWithScreenSize
+        // draws this panel ~1.8x oversized on a 1080p screen.
+        var seedScaler = gameObject.AddComponent<CanvasScaler>();
+        seedScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        seedScaler.referenceResolution = new Vector2(1920f, 1080f);
+        seedScaler.matchWidthOrHeight = 0.5f;
         gameObject.AddComponent<GraphicRaycaster>();
 
         GameObject panelObj = new GameObject("SeedShopPanel");
@@ -312,6 +317,9 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
             var buyLabel = CreateLabel(buyObj.transform, buyButtonText.SafeGetLocalizedString());
             buyLabel.fontSize = 14;
             buyLabel.alignment = TextAlignmentOptions.Center;
+            // theme.positive is a light mint green (#81C784): cream text on it measures 1.8:1.
+            // Dark text reads ~9:1 on the same fill.
+            buyLabel.color = theme != null ? theme.textDark : Color.black;
         }
     }
 

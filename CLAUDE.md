@@ -165,7 +165,8 @@ Assets/Scripts/
 - Interfaces: IInteractable, IUIWindow (all UI windows), ISaveable
 - UI windows: register with UIManager, open via `TryOpenWindow(this)`, close via `TryCloseWindow(this)`
 - Player movement disabled via `FindObjectOfType<PlayerMove>()?.DisableMovement()`
-- Assembly defs: `SowurShield.Runtime.asmdef` (all gameplay), `SowurShield.Tests.PlayMode.asmdef` (`includePlatforms: ["Editor"]`), `Assets/Scripts/Dialogue/Editor/SowurShield.Dialogue.Editor.asmdef` (`includePlatforms: ["Editor"]`)
+- Assembly defs: `SowurShield.Runtime.asmdef` (all gameplay), `SowurShield.Tests.EditMode.asmdef` and `SowurShield.Tests.PlayMode.asmdef`, `Assets/Scripts/Dialogue/Editor/SowurShield.Dialogue.Editor.asmdef` (`includePlatforms: ["Editor"]`)
+- **The PlayMode test asmdef must NOT set `includePlatforms: ["Editor"]`** — that was in place until 2026-08-01 and meant the PlayMode runner found **zero** tests, so all 34 of them silently never ran. (An Editor-only assembly is excluded from a PlayMode run.) It also forced a `UnityEditor.TestRunner` reference, which PlayMode tests do not need. Editor-only is correct for `Dialogue.Editor` and `Tests.EditMode`, not for this one.
 
 ### Namespace Convention (v0.5+, MANDATORY)
 

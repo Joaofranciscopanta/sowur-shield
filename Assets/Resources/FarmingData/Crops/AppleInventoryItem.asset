@@ -38,3 +38,7 @@ MonoBehaviour:
   isConsumable: 0
   baseValue: 8
   canBeSold: 1
+  giftAffinityValue: 8
+  references:
+    version: 2
+    RefIds: []

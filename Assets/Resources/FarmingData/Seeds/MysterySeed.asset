@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2df1b3057e07cad45a9e4bdcec3840e0, type: 3}
   m_Name: MysterySeed
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   itemName: MysterySeed
   displayName:
     m_TableReference:
@@ -22,8 +22,9 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  description: A mysterious seed. Plant it to find out what grows — only crops you've already harvested before can sprout.
-  icon: {fileID: 0}
+  description: "A mysterious seed. Plant it to find out what grows \u2014 only crops
+    you've already harvested before can sprout."
+  icon: {fileID: 21300000, guid: 6225c7e3432921849b5f428eddc024f8, type: 3}
   itemType: 4
   rarity: 1
   isStackable: 1
@@ -36,3 +37,7 @@ MonoBehaviour:
   isConsumable: 0
   baseValue: 15
   canBeSold: 1
+  giftAffinityValue: 18
+  references:
+    version: 2
+    RefIds: []

@@ -133,8 +133,8 @@ MonoBehaviour:
   m_Spacing: 2
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
@@ -598,7 +598,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 52b28cd5d52d4e5b8ce31b51879334a9, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Dialogue.QuestActiveRow
   titleText: {fileID: 5058280274858494788}
   descriptionText: {fileID: 3286872169355177235}

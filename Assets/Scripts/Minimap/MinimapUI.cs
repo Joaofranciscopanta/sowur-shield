@@ -512,6 +512,7 @@ public class MinimapUI : MonoBehaviour
     {
         if (enableDebugLogs)
         {
+            Debug.Log($"[MinimapUI] {message}", this);
         }
     }
     #endif

@@ -185,6 +185,30 @@ MonoBehaviour:
     m_Localized: Tomate
     m_Metadata:
       m_Items: []
+  - m_Id: 14854387275653120
+    m_Localized: Celeiro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401856
+    m_Localized: "Um celeiro robusto com espa\xE7o para o dobro dos animais."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401857
+    m_Localized: Duplica a capacidade da zona de animais
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401858
+    m_Localized: Estufa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401859
+    m_Localized: "Uma casa de vidro que mant\xE9m a terra quente todo o ano."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401860
+    m_Localized: "As culturas crescem em qualquer esta\xE7\xE3o"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

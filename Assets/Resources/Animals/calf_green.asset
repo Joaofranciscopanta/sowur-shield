@@ -27,7 +27,7 @@ MonoBehaviour:
   animalClass: Mammal
   idleSprite: {fileID: -7065451923493759011, guid: 938d1e582d95e104e99bfb5858d2ffe3, type: 3}
   animatorController: {fileID: 9100000, guid: 5b390753a7ae449ebfa87e6482ed7cda, type: 2}
-  moveSpeed: 1.0
+  moveSpeed: 1
   wanderRadius: 3
   minIdleTime: 2
   maxIdleTime: 5
@@ -65,8 +65,8 @@ MonoBehaviour:
     seasonalSpeedMod: 1
     activeSkillId: 
     passiveSkillIds: []
-  combatClass: Tank
   attackRange: 1
+  combatClass: Tank
   pettingStatBonus: 0.01
   feedingStatBonus: 0.02
   productionQualityBonus: 0
@@ -76,7 +76,13 @@ MonoBehaviour:
   seasonalSpeedBonus: 1.1
   canStack: 0
   maxStackSize: 1
-  activeSkill: {fileID: 0}
+  activeSkill: {fileID: 11400000, guid: cc248ce795574493a11bb16967f8f025, type: 2}
   availablePassiveSkills: []
+  illnessThresholdDays: 3
+  illnessCureItemName: Medicine
+  illnessStatPenalty: 0.5
   canDoChores: 0
   choreType: 
+  references:
+    version: 2
+    RefIds: []

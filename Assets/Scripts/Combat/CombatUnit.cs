@@ -146,10 +146,17 @@ public class CombatUnit : MonoBehaviour
         // Set display name
         unitName = animal.GetDisplayName();
 
-        // Setup animator from AnimalData if available
+        // Setup animator from AnimalData if available.
+        // Note: `??` cannot be used to fall back to AddComponent here. A missing component comes
+        // back as Unity's "fake null" — a live C# object whose native side is gone — which `??`
+        // sees as non-null, so AddComponent never ran and the next line wrote to a component
+        // that did not exist (MissingComponentException on every spawn). Compare with == null,
+        // which Unity's operator overload handles correctly.
         if (animal.AnimalData?.animatorController != null)
         {
-            unitAnimator = gameObject.GetComponent<Animator>() ?? gameObject.AddComponent<Animator>();
+            unitAnimator = gameObject.GetComponent<Animator>();
+            if (unitAnimator == null)
+                unitAnimator = gameObject.AddComponent<Animator>();
             unitAnimator.runtimeAnimatorController = animal.AnimalData.animatorController;
         }
 
@@ -702,7 +709,17 @@ public class CombatUnit : MonoBehaviour
         {
             if (enemySkills == null || enemySkills.Count == 0) return null;
             if (UnityEngine.Random.value > enemySkillUseChance) return null;
-            return enemySkills[UnityEngine.Random.Range(0, enemySkills.Count)];
+
+            // Pick only from entries that are actually populated. A List<AnimalSkill> with an
+            // empty element serialises as a null entry, and picking it made the enemy silently
+            // skip its skill forever — indistinguishable from having no skills at all.
+            AnimalSkill picked = enemySkills[UnityEngine.Random.Range(0, enemySkills.Count)];
+            if (picked != null) return picked;
+
+            for (int i = 0; i < enemySkills.Count; i++)
+                if (enemySkills[i] != null) return enemySkills[i];
+
+            return null;
         }
     }
 

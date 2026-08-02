@@ -10,19 +10,34 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2df1b3057e07cad45a9e4bdcec3840e0, type: 3}
-  m_Name: Apple
+  m_Name: RabbitFur
   m_EditorClassIdentifier: 
-  itemName: Apple
+  itemName: Rabbit Fur
   displayName:
     m_TableReference:
       m_TableCollectionName: Inventory
     m_TableEntryReference:
       m_KeyId: 0
-      m_Key: item.Apple.name
+      m_Key: item.Rabbit Fur.name
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  itemDesc: Generic Item
-  icon: {fileID: 444988327002669956, guid: 9de6d2c51fda61546822d52ca6cb64e3, type: 3}
+  description: Soft fur harvested from a happy rabbit. Used in crafting.
+  icon: {fileID: 21300000, guid: 624f075bdcffc67408432ce0f2b51f1b, type: 3}
+  itemType: 0
+  rarity: 0
   isStackable: 1
-  giftAffinityValue: 10
+  maxStackSize: 99
+  itemTags:
+  - fur
+  toolLevel: 0
+  durability: -1
+  energyRestore: 0
+  healthRestore: 0
+  isConsumable: 0
+  baseValue: 5
+  canBeSold: 1
+  giftAffinityValue: 14
+  references:
+    version: 2
+    RefIds: []

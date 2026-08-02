@@ -124,6 +124,8 @@ public class AnimalMarketUI : MonoBehaviour, IUIWindow, ISaveable
         if (closeButton != null) closeButton.onClick.AddListener(CloseMarket);
         if (buyTabButton != null) buyTabButton.onClick.AddListener(ShowBuyTab);
         if (sellTabButton != null) sellTabButton.onClick.AddListener(ShowSellTab);
+
+        FixLightBackgroundTextContrast();
         if (confirmYesButton != null) confirmYesButton.onClick.AddListener(OnConfirmSell);
         if (confirmNoButton != null) confirmNoButton.onClick.AddListener(HideConfirmation);
 
@@ -194,6 +196,28 @@ public class AnimalMarketUI : MonoBehaviour, IUIWindow, ISaveable
     // =========================================================================
     // Tabs
     // =========================================================================
+
+    /// <summary>
+    /// AnimalMarketUIBuilder bakes this panel's palette in at build time, and it painted white
+    /// tab labels and a gold gold-counter onto light backgrounds — measured 1.5:1 on the gold
+    /// tab, 1.3:1 on the tan one and 1.1:1 for the gold counter on cream. All three were
+    /// effectively invisible. Corrected at runtime because the builder only runs on demand and
+    /// the scene objects it produced are what ship.
+    /// </summary>
+    private void FixLightBackgroundTextContrast()
+    {
+        var theme = Resources.Load<SowurShield.UI.UITheme>("UI/CozyUITheme");
+        Color dark = theme != null ? theme.textDark : new Color(0.176f, 0.165f, 0.149f);
+
+        if (playerGoldText != null) playerGoldText.color = dark;
+
+        foreach (var button in new[] { buyTabButton, sellTabButton })
+        {
+            if (button == null) continue;
+            var label = button.GetComponentInChildren<TextMeshProUGUI>(true);
+            if (label != null) label.color = dark;
+        }
+    }
 
     private void ShowBuyTab()
     {

@@ -3,19 +3,18 @@
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
         "SowurShield.Runtime",
         "Unity.Localization"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": false,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }

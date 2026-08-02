@@ -22,9 +22,9 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  animalType:
+  animalType: 
   animalFamily: Galliformes
-  animalClass:
+  animalClass: 
   idleSprite: {fileID: -7787217817404136488, guid: a96363599a2dc62458a1bbc653ae6bbc, type: 3}
   animatorController: {fileID: 9100000, guid: 974e497802ca749021c67d5cce2c65f5, type: 2}
   moveSpeed: 1.5
@@ -65,8 +65,8 @@ MonoBehaviour:
     seasonalSpeedMod: 1
     activeSkillId: 
     passiveSkillIds: []
-  combatClass: DPS
   attackRange: 1
+  combatClass: DPS
   pettingStatBonus: 0.01
   feedingStatBonus: 0.02
   productionQualityBonus: 0.05
@@ -76,8 +76,14 @@ MonoBehaviour:
   seasonalSpeedBonus: 1.15
   canStack: 1
   maxStackSize: 3
-  activeSkill: {fileID: 11400000, guid: a56c34e8252d4097a0e894fb7e7962dc, type: 3}
+  activeSkill: {fileID: 11400000, guid: c2593e3c62bc425291dc5ecb4dbd64a0, type: 2}
   availablePassiveSkills:
-  - {fileID: 11400000, guid: ce55dc8105744f88a8110459ff669c20, type: 3}
+  - {fileID: 0}
+  illnessThresholdDays: 3
+  illnessCureItemName: Medicine
+  illnessStatPenalty: 0.5
   canDoChores: 0
   choreType: 
+  references:
+    version: 2
+    RefIds: []

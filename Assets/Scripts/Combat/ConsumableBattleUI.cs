@@ -107,7 +107,12 @@ public class ConsumableBattleUI : MonoBehaviour
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.sortingOrder = 100;
 
-        gameObject.AddComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        // referenceResolution defaults to 800x600 — without setting it, ScaleWithScreenSize
+        // draws this panel ~1.8x oversized on a 1080p screen. Matches BattleHudOverlay.
+        var battleScaler = gameObject.AddComponent<CanvasScaler>();
+        battleScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        battleScaler.referenceResolution = new Vector2(1920f, 1080f);
+        battleScaler.matchWidthOrHeight = 0.5f;
         gameObject.AddComponent<GraphicRaycaster>();
 
         // Toggle button (bottom-left corner)
@@ -265,6 +270,10 @@ public class ConsumableBattleUI : MonoBehaviour
         rowObj.transform.SetParent(listPanel, false);
 
         RectTransform rowRect = rowObj.AddComponent<RectTransform>();
+        // Stretch across the list: a fresh RectTransform defaults to point anchors, where a
+        // sizeDelta.x of 0 is a literal 0-wide rect and the label wraps one character per line.
+        rowRect.anchorMin = new Vector2(0f, 1f);
+        rowRect.anchorMax = new Vector2(1f, 1f);
         // Empty-state messages wrap onto 2-3 lines — give them room so the panel
         // doesn't collapse into a sliver behind the text.
         rowRect.sizeDelta = new Vector2(0, item != null ? 32 : 60);

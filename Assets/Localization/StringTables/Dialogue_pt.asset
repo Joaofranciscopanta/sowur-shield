@@ -437,6 +437,149 @@ MonoBehaviour:
     m_Localized: Loja Geral
     m_Metadata:
       m_Items: []
+  - m_Id: 14872607319646208
+    m_Localized: (Adora)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949376
+    m_Localized: (Gosta)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949377
+    m_Localized: (Nao gosta)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949378
+    m_Localized: 'Requer: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949379
+    m_Localized: Gostos descobertos ({0}/{1})
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949380
+    m_Localized: Voce ainda nao descobriu do que ela gosta.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879358790131712
+    m_Localized: "Ol\xE1. \xC9 bom ver um rosto amigo por aqui."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879358857240576
+    m_Localized: "Se cuida por a\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879359981314048
+    m_Localized: "Ol\xE1. \xC9 bom ver um rosto amigo por aqui."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879359981314049
+    m_Localized: "Se cuida por a\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879360451076096
+    m_Localized: "Ol\xE1. \xC9 bom ver um rosto amigo por aqui."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879360451076097
+    m_Localized: "Se cuida por a\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879360912449536
+    m_Localized: "Ol\xE1. \xC9 bom ver um rosto amigo por aqui."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879360912449537
+    m_Localized: "Se cuida por a\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879361361240064
+    m_Localized: "Ol\xE1. \xC9 bom ver um rosto amigo por aqui."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879361361240065
+    m_Localized: "Se cuida por a\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879361814224896
+    m_Localized: "Ol\xE1. \xC9 bom ver um rosto amigo por aqui."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879361814224897
+    m_Localized: "Se cuida por a\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879362267209728
+    m_Localized: "Ol\xE1. \xC9 bom ver um rosto amigo por aqui."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879362267209729
+    m_Localized: "Se cuida por a\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879362728583168
+    m_Localized: "Ol\xE1. \xC9 bom ver um rosto amigo por aqui."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879362728583169
+    m_Localized: "Se cuida por a\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977384628224
+    m_Localized: Conhecer a Aldeia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977422376960
+    m_Localized: Novo no vale? Va se apresentar. Aqui as pessoas lembram de quem
+      fez questao de dizer ola.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977422376961
+    m_Localized: "Fale com Tom\xE1s"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977422376962
+    m_Localized: Fale com Isabela
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977422376963
+    m_Localized: Fale com Bento
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977640480768
+    m_Localized: A Despensa de Isabela
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977640480769
+    m_Localized: A despensa de Isabela esta baixa antes da leva de paes. Ela precisa
+      de ovos e leite.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977640480770
+    m_Localized: Colete 3 Ovos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977640480771
+    m_Localized: Colete 2 Leites
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977829224448
+    m_Localized: O Remedio de Clara
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977829224449
+    m_Localized: Clara esta sem ingredientes e o rebanho de alguem adoeceu. Leve
+      o que ela precisa.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977829224450
+    m_Localized: Colete 2 Repolhos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977829224451
+    m_Localized: Colete 2 Rabanetes
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

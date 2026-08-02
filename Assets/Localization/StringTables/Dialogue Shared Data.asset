@@ -391,6 +391,146 @@ MonoBehaviour:
     m_Key: shop.general_store.title
     m_Metadata:
       m_Items: []
+  - m_Id: 14872607319646208
+    m_Key: dialogue.gift.marker_loved
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949376
+    m_Key: dialogue.gift.marker_liked
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949377
+    m_Key: dialogue.gift.marker_disliked
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949378
+    m_Key: dialogue.relationship.locked_tier
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949379
+    m_Key: dialogue.relationship.tastes_header
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949380
+    m_Key: dialogue.relationship.no_tastes_known
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879358790131712
+    m_Key: dialogue.tomas.default.start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879358857240576
+    m_Key: dialogue.tomas.default.bye
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879359981314048
+    m_Key: dialogue.isabela.default.start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879359981314049
+    m_Key: dialogue.isabela.default.bye
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879360451076096
+    m_Key: dialogue.joana.default.start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879360451076097
+    m_Key: dialogue.joana.default.bye
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879360912449536
+    m_Key: dialogue.elias.default.start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879360912449537
+    m_Key: dialogue.elias.default.bye
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879361361240064
+    m_Key: dialogue.clara.default.start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879361361240065
+    m_Key: dialogue.clara.default.bye
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879361814224896
+    m_Key: dialogue.rui.default.start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879361814224897
+    m_Key: dialogue.rui.default.bye
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879362267209728
+    m_Key: dialogue.nara.default.start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879362267209729
+    m_Key: dialogue.nara.default.bye
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879362728583168
+    m_Key: dialogue.bento.default.start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879362728583169
+    m_Key: dialogue.bento.default.bye
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977384628224
+    m_Key: quest.meet_the_village.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977422376960
+    m_Key: quest.meet_the_village.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977422376961
+    m_Key: quest.meet_the_village.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977422376962
+    m_Key: quest.meet_the_village.objective1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977422376963
+    m_Key: quest.meet_the_village.objective2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977640480768
+    m_Key: quest.isabela_pantry.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977640480769
+    m_Key: quest.isabela_pantry.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977640480770
+    m_Key: quest.isabela_pantry.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977640480771
+    m_Key: quest.isabela_pantry.objective1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977829224448
+    m_Key: quest.clara_remedy.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977829224449
+    m_Key: quest.clara_remedy.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977829224450
+    m_Key: quest.clara_remedy.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977829224451
+    m_Key: quest.clara_remedy.objective1
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

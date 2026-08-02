@@ -184,6 +184,30 @@ MonoBehaviour:
     m_Localized: Tomate
     m_Metadata:
       m_Items: []
+  - m_Id: 14854387275653120
+    m_Localized: Granero
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401856
+    m_Localized: Un granero robusto con espacio para el doble de animales.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401857
+    m_Localized: Duplica la capacidad de la zona de animales
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401858
+    m_Localized: Invernadero
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401859
+    m_Localized: "Una casa de cristal que mantiene la tierra c\xE1lida todo el a\xF1o."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401860
+    m_Localized: "Los cultivos crecen en cualquier estaci\xF3n"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

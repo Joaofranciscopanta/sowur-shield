@@ -24,7 +24,7 @@ MonoBehaviour:
     m_LocalVariables: []
   enemyType: 1
   description: 
-  sprite: {fileID: 0}
+  sprite: {fileID: -6248616121818220643, guid: 8c575e4dd4ee966458fc29d9a3d26739, type: 3}
   animatorController: {fileID: 0}
   spriteScale: 1
   baseHealth: 80
@@ -36,7 +36,8 @@ MonoBehaviour:
   defenseScaling: 1.08
   aiBehavior: Support
   targetPriority: Weakest
-  skills: []
+  skills:
+  - {fileID: 11400000, guid: a56c34e8252d4097a0e894fb7e7962dc, type: 2}
   skillUseChance: 0.3
   baseAccuracy: 0.92
   attackRange: 0
@@ -46,3 +47,6 @@ MonoBehaviour:
   element: None
   immunities: []
   weaknesses: []
+  references:
+    version: 2
+    RefIds: []

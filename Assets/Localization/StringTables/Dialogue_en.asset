@@ -433,6 +433,149 @@ MonoBehaviour:
     m_Localized: General Store
     m_Metadata:
       m_Items: []
+  - m_Id: 14872607319646208
+    m_Localized: (Loves)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949376
+    m_Localized: (Likes)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949377
+    m_Localized: (Dislikes)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949378
+    m_Localized: 'Requires: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949379
+    m_Localized: Tastes discovered ({0}/{1})
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949380
+    m_Localized: You haven't learned what they like yet.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879358790131712
+    m_Localized: Hello there. Good to see a friendly face around here.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879358857240576
+    m_Localized: Take care out there.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879359981314048
+    m_Localized: Hello there. Good to see a friendly face around here.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879359981314049
+    m_Localized: Take care out there.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879360451076096
+    m_Localized: Hello there. Good to see a friendly face around here.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879360451076097
+    m_Localized: Take care out there.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879360912449536
+    m_Localized: Hello there. Good to see a friendly face around here.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879360912449537
+    m_Localized: Take care out there.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879361361240064
+    m_Localized: Hello there. Good to see a friendly face around here.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879361361240065
+    m_Localized: Take care out there.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879361814224896
+    m_Localized: Hello there. Good to see a friendly face around here.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879361814224897
+    m_Localized: Take care out there.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879362267209728
+    m_Localized: Hello there. Good to see a friendly face around here.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879362267209729
+    m_Localized: Take care out there.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879362728583168
+    m_Localized: Hello there. Good to see a friendly face around here.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879362728583169
+    m_Localized: Take care out there.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977384628224
+    m_Localized: Meet the Village
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977422376960
+    m_Localized: New in the valley? Go say hello. People here remember who bothered
+      to introduce themselves.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977422376961
+    m_Localized: "Talk to Tom\xE1s"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977422376962
+    m_Localized: Talk to Isabela
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977422376963
+    m_Localized: Talk to Bento
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977640480768
+    m_Localized: Isabela's Pantry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977640480769
+    m_Localized: Isabela's stores are running low before the baking rush. She needs
+      eggs and milk.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977640480770
+    m_Localized: Collect 3 Eggs
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977640480771
+    m_Localized: Collect 2 Milk
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977829224448
+    m_Localized: Clara's Remedy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977829224449
+    m_Localized: Clara is short on ingredients and someone's livestock is ill. Bring
+      what she needs.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977829224450
+    m_Localized: Collect 2 Cabbage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977829224451
+    m_Localized: Collect 2 Radish
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

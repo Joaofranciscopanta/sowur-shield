@@ -42,6 +42,17 @@ namespace SowurShield.Dialogue
         [Tooltip("Lore entries revealed progressively in the Relationship codex as affinity grows.")]
         [SerializeField] private NpcLoreEntry[] loreEntries = new NpcLoreEntry[0];
 
+        [Header("Gift Preferences")]
+        [Tooltip("Item names this NPC loves. Worth 2.5x their base gift value.")]
+        [SerializeField] private string[] lovedGifts = new string[0];
+        [Tooltip("Item names this NPC likes. Worth 1.5x their base gift value.")]
+        [SerializeField] private string[] likedGifts = new string[0];
+        [Tooltip("Item names this NPC dislikes. Costs affinity instead of granting it (-1x).")]
+        [SerializeField] private string[] dislikedGifts = new string[0];
+
+        [Tooltip("Affinity granted for the first conversation with this NPC each day. 0 disables it.")]
+        [SerializeField] private float dailyTalkAffinity = 1f;
+
         [Header("Audio")]
         [SerializeField] private AudioClip interactionSound;
         [SerializeField] private AudioSource audioSource;
@@ -299,11 +310,108 @@ namespace SowurShield.Dialogue
         /// <summary>
         /// Gives a gift to this NPC: applies the relationship change via ConversationMemory
         /// and records today as the last gift day (one gift per NPC per in-game day).
+        ///
+        /// Prefer the <see cref="Item"/> overload, which applies this NPC's taste. This one
+        /// takes a bare value and cannot know what was given, so it always applies 1x.
         /// </summary>
         public void ReceiveGift(float affinityValue)
         {
             conversationMemory?.GiveGift(npcId, affinityValue);
         }
+
+        /// <summary>
+        /// Gives a specific item as a gift, scaling its <see cref="Item.giftAffinityValue"/>
+        /// by this NPC's taste for it. Returns the reaction so the caller can show it.
+        /// </summary>
+        public GiftReaction ReceiveGift(SowurShield.Inventory.Item item)
+        {
+            if (item == null) return GiftReaction.Neutral;
+
+            GiftReaction reaction = GetReactionTo(item);
+            float finalValue = item.giftAffinityValue * GetMultiplierFor(reaction);
+
+            conversationMemory?.GiveGift(npcId, finalValue);
+            RememberTasteDiscovered(item, reaction);
+
+            return reaction;
+        }
+
+        /// <summary>
+        /// How this NPC feels about an item, without giving it.
+        /// Used by the gift UI to preview, and by the codex to list discovered tastes.
+        /// </summary>
+        public GiftReaction GetReactionTo(SowurShield.Inventory.Item item)
+        {
+            if (item == null) return GiftReaction.Neutral;
+
+            // Matched on itemName (the stable internal ID), never the display name, which is
+            // localized and would make preferences break in Portuguese and Spanish.
+            string key = item.itemName;
+
+            if (System.Array.IndexOf(lovedGifts, key) >= 0)    return GiftReaction.Loved;
+            if (System.Array.IndexOf(likedGifts, key) >= 0)    return GiftReaction.Liked;
+            if (System.Array.IndexOf(dislikedGifts, key) >= 0) return GiftReaction.Disliked;
+
+            return GiftReaction.Neutral;
+        }
+
+        /// <summary>
+        /// Affinity multiplier per reaction tier. Neutral is 1x so that every item authored
+        /// before preferences existed keeps behaving exactly as it did.
+        /// </summary>
+        public static float GetMultiplierFor(GiftReaction reaction)
+        {
+            switch (reaction)
+            {
+                case GiftReaction.Loved:    return 2.5f;
+                case GiftReaction.Liked:    return 1.5f;
+                case GiftReaction.Disliked: return -1f;
+                default:                    return 1f;
+            }
+        }
+
+        /// <summary>
+        /// Records that the player has learned this NPC's taste for an item, so the codex can
+        /// list it. Only non-neutral reactions are worth remembering — "Maren doesn't care
+        /// about this" is not a discovery.
+        /// </summary>
+        private void RememberTasteDiscovered(SowurShield.Inventory.Item item, GiftReaction reaction)
+        {
+            if (reaction == GiftReaction.Neutral || conversationMemory == null) return;
+
+            conversationMemory.SetVariable(TasteKey(npcId, item.itemName), reaction.ToString());
+        }
+
+        /// <summary>
+        /// The reaction the player has already discovered for this item, or null if they have
+        /// never given it to this NPC. Deliberately does not fall back to
+        /// <see cref="GetReactionTo"/> — the codex must show what was *learned*, not the answer.
+        /// </summary>
+        public GiftReaction? GetDiscoveredReaction(string itemName)
+        {
+            if (conversationMemory == null || string.IsNullOrEmpty(itemName)) return null;
+
+            string stored = conversationMemory.GetVariable(TasteKey(npcId, itemName));
+            if (string.IsNullOrEmpty(stored)) return null;
+
+            GiftReaction parsed;
+            return System.Enum.TryParse(stored, out parsed) ? parsed : (GiftReaction?)null;
+        }
+
+        /// <summary>
+        /// Every item name this NPC has an opinion about, whether or not the player knows yet.
+        /// The codex uses this to size the "N of M tastes discovered" progress line.
+        /// </summary>
+        public string[] GetAllPreferredItemNames()
+        {
+            var all = new List<string>();
+            all.AddRange(lovedGifts);
+            all.AddRange(likedGifts);
+            all.AddRange(dislikedGifts);
+            return all.ToArray();
+        }
+
+        private static string TasteKey(string npc, string itemName) => $"taste_{npc}_{itemName}";
 
         /// <summary>
         /// Portrait sprite for this NPC, used by RelationshipUI. Falls back to the
@@ -345,6 +453,11 @@ namespace SowurShield.Dialogue
             // Update state
             isDialogueActive = true;
             lastInteractionTime = Time.time;
+
+            // First conversation of the day is worth a little affinity. Awarded here rather
+            // than on dialogue *completion* so that it cannot be farmed by re-opening and
+            // closing the same conversation — TryAwardDailyTalk is itself idempotent per day.
+            conversationMemory?.TryAwardDailyTalk(npcId, dailyTalkAffinity);
 
             // Hide interaction prompt
             if (interactionPrompt != null)
@@ -551,6 +664,29 @@ namespace SowurShield.Dialogue
             return unlocked.ToArray();
         }
 
+        /// <summary>
+        /// Lore entries the player has not reached yet, sorted by requirement. The codex shows
+        /// these as locked rows: a codex that visibly has more to reveal is the point of a
+        /// codex, whereas hiding them makes a partly-filled one look finished.
+        /// </summary>
+        public NpcLoreEntry[] GetLockedLore()
+        {
+            float level = GetRelationshipLevel();
+            var locked = new List<NpcLoreEntry>();
+            foreach (var entry in loreEntries)
+            {
+                if (level < entry.requiredRelationship)
+                    locked.Add(entry);
+            }
+            locked.Sort((a, b) => a.requiredRelationship.CompareTo(b.requiredRelationship));
+            return locked.ToArray();
+        }
+
+        /// <summary>
+        /// Total number of lore entries authored for this NPC, unlocked or not.
+        /// </summary>
+        public int GetTotalLoreCount() => loreEntries != null ? loreEntries.Length : 0;
+
         // Methods for InteractionManager
         public string GetInteractionPrompt() => $"Talk to {npcDisplayName}";
 
@@ -621,6 +757,18 @@ namespace SowurShield.Dialogue
             cooldownBetweenInteractions = Mathf.Max(0f, cooldownBetweenInteractions);
         }
     }
+    /// <summary>
+    /// How an NPC feels about a gifted item. Order matters for display: worst to best is
+    /// Disliked → Neutral → Liked → Loved.
+    /// </summary>
+    public enum GiftReaction
+    {
+        Disliked,
+        Neutral,
+        Liked,
+        Loved
+    }
+
     /// <summary>
     /// A single codex entry revealed when the player reaches <see cref="requiredRelationship"/>.
     /// </summary>

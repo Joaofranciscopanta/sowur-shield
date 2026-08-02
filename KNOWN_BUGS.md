@@ -4,6 +4,146 @@
 > behavior) and **Quirks** (surprising-but-intended or environment-specific behavior worth
 > knowing before debugging "ghosts").
 
+## [FIXED 2026-08-01] `TeamAssemblerUISetup` cached `.transform` before adding a `RectTransform`
+
+**Fixed** the same day it was logged — all four occurrences now construct with
+`new GameObject(name, typeof(RectTransform))` and cache the reference afterwards.
+
+**The trap:** `new GameObject("X")` starts with a plain `Transform`. Adding a `RectTransform`
+**replaces** it, destroying the original. Any reference cached from `.transform` before that
+call is therefore a *destroyed* object, while the GameObject itself is perfectly alive.
+
+```csharp
+GameObject panelObj = new GameObject("AssemblerPanel");
+assemblerPanel = panelObj.transform;              // <-- captures the plain Transform
+RectTransform rect = panelObj.AddComponent<RectTransform>();  // <-- destroys it
+```
+
+**Why it is nasty:** the field reads as null to Unity's overloaded `==`, so a guard like
+`if (panel == null) return;` silently swallows everything downstream. That is exactly how the
+codex opened with an empty body and no console error.
+
+**Occurrences:** `TeamAssemblerUISetup.cs:102`, `:131`, `:151`, `:172` (AssemblerPanel,
+AnimalSelectionPanel, GridPanel, InfoPanel).
+
+**Fix:** construct with the component — `new GameObject("X", typeof(RectTransform))` — and
+cache the reference *after*. Worth grepping for `= .*\.transform;` followed by
+`AddComponent<RectTransform>` on the same object.
+
+---
+
+## [FIXED 2026-08-01] Dialogue opened with no text and could only be closed with Esc
+
+**Symptom:** talking to any NPC showed the speaker's name but left the body on its editor
+placeholder ("Dialogue text will appear here..."). Nothing advanced the conversation, so Esc
+was the only way out. The HUD (money, day, season) was blank at the same time.
+
+**Root cause:** `LocalizationManager` only exists in the MainMenu scene, and
+`DialogueTreeUI.ProcessNodeCoroutine` waits on `LocalizationManager.AreTablesReady` before
+writing a line. Entering Play Mode directly in SampleScene left that flag false forever, so
+the coroutine parked on an unbounded `WaitUntil` before the text was ever set. **This is the
+documented "blank localized labels" quirk, but its effect on dialogue was worse than cosmetic**
+— it looked like an input-binding bug, which is how it was reported.
+
+**Fix:** `LocalizationManager` bootstraps itself via `RuntimeInitializeOnLoadMethod`
+(`AfterSceneLoad`, so a scene that provides one still wins). Two guards were added so this
+class of failure cannot be silent again: the wait is bounded at 5s with a warning, and a line
+that resolves empty clears the text and logs rather than leaving stale words on screen.
+
+**Unrelated note found while testing:** dialogue advances with **Z**, left-click or gamepad A —
+not Space or E. `continueButton` is unassigned in SampleScene, so there is no clickable
+button either. That is long-standing, not a regression.
+
+---
+
+## [FIXED 2026-08-01] No animal could ever be cured — the Medicine item did not exist
+
+**Symptom:** none visible. Trying to cure an ill animal did nothing at all; the only trace was
+`[Animal] Cure item 'Medicine' not found in ItemDatabase.` in the console, and only at the
+moment of the attempt.
+
+**Root cause:** all 28 `AnimalData` assets set `illnessCureItemName: Medicine`
+(`AnimalData.cs:123` also defaults to it), and **no `Medicine` item existed anywhere in the
+project**. `Animal.CureIllness` (`Animal.cs:1000`) resolves it via `ItemDatabase.GetItem`, gets
+null, logs a warning and returns before touching the inventory. An animal that fell ill after 3
+neglect days was stuck: -50% combat stats and no production, permanently, with no in-game way
+out.
+
+**Why nothing caught it:** the animal→item link is a **string** resolved at runtime. A missing
+target is not a compile error, not a broken reference in the Inspector, and not a failing test —
+`Resources.LoadAll` simply never returns it. Created `Medicine.asset`; the class of bug is now
+covered by `ContentAssetIntegrityTests.cs`, which walks every `AnimalData` and asserts its cure,
+food and produce names all resolve.
+
+**Note:** `Medicine` is `isConsumable=false` on purpose. `CureIllness` removes it via
+`inventory.RemoveItem` regardless of the flag, and marking it consumable would list it in the
+combat items panel, where using it does nothing.
+
+---
+
+## [FIXED 2026-08-01] Rabbit was a documented animal with no asset
+
+**Symptom:** none — the Rabbit simply could not be placed or bought, so it read as "not built
+yet" rather than as a bug.
+
+**Root cause:** `Rabbit.asset` and `RabbitFur.asset` are created by
+`Tools > Sowur Shield > Create Animal Assets` (`AnimalCreatorTool.cs`), which had apparently
+never been run, while the docs listed Rabbit as one of the four implemented animals. Created
+both plus the `RabbitFur_GroundItem` prefab its production spawns, using the tool's own values.
+
+**Still placeholder:** `Rabbit.idleSprite` is null (needs art), as are the Medicine/RabbitFur
+icons. `activeSkill` is `FeatherShield` as a stopgap — every existing `AnimalSkill` is avian or
+venom-themed, so a rabbit-appropriate skill is a content decision nobody has made.
+
+---
+
+## [FIXED 2026-08-01] MissingComponentException on every combat spawn
+
+**Symptom:** Each unit spawned into a battle logged
+`MissingComponentException: There is no 'Animator' attached to the "chicken" game object`.
+Long assumed to be the missing-AnimatorControllers art gap; it was not.
+
+**Root cause:** `CombatUnit.cs:152` used
+`GetComponent<Animator>() ?? gameObject.AddComponent<Animator>()`. A missing Unity component
+returns a **"fake null"** — a live C# object whose native side is gone — which `??` sees as
+non-null, so `AddComponent` never ran and the next line wrote to a component that did not
+exist. `??` and `?.` do not respect Unity's null operator overload; `== null` does.
+
+**Second layer, only reachable once the first was fixed:** units then got their Animator and
+every hit logged `Parameter 'Hash NNN' does not exist` for Hurt/Attack/Crit. The 25 animal
+controllers are *farm* controllers (`IsWalking`/`IsIdle`/`IsEating` over Idle/Walk/Eat, built
+for `AnimalAI`) and never had the combat triggers. Added Attack/Hurt/Die/Crit/Poison/Weakness/
+Idle as Triggers to all 25, leaving the farm parameters and the 20 player/NPC/enemy controllers
+untouched.
+
+**Scope:** this makes the triggers safe to fire and clears the error spam. It does **not** make
+anything animate — the project has zero combat animation clips (all 289 are Idle/Walk/Eat plus
+player/NPC/tree/egg). Real attack/hurt/death animation still needs art.
+
+---
+
+## [FIXED 2026-08-01] Two "Apple" items in circulation at once
+
+**Symptom:** `[ItemDatabase] Skipped 2 item(s) with duplicate names` on every boot.
+
+**Root cause:** `ItemDatabase` keys on `item.itemName`, not the asset name, and silently drops
+whichever asset loses the race — so the winner depended on `Resources` load order. Two assets
+claimed `"Apple"` and **disagreed**: `baseValue` 8 vs 1, `itemType` Food vs Generic,
+`giftAffinityValue` 0 vs 10, different icons. Both were live: `GetItem("Apple")` returned the
+value-8 asset while both ground-pickup prefabs referenced the value-1 one, so picking an apple
+up and looking one up by name gave different items. A different load order in a build could
+have flipped which the rest of the game saw.
+
+**Fix:** kept `FarmingData/Crops/AppleInventoryItem.asset` (baseValue 8, what `GetItem` already
+returned, so behaviour is unchanged), repointed both ground prefabs to it, confirmed no
+references to the other GUID remained, then deleted it. `FishingRod`'s duplicate pair was
+identical field-for-field; removed the unreferenced one.
+
+**Worth checking if new items are added:** the collision key is `itemName`, which is invisible
+in the Project window — two assets with different filenames can still collide.
+
+---
+
 ## [FIXED 2026-07-05] Purchased animals vanish on returning from combat
 
 **Symptom:** An animal bought from AnimalMarketUI disappears the moment the player returns
@@ -88,11 +228,20 @@ directly and calls `OnStartGame()`/`OnEnterCombat()` for SampleScene/CombatScene
 (MainMenu is intentionally left alone — `MainMenuManager` already plays its own menu music and
 explicitly stops `GameMusicManager`'s track to avoid overlap).
 
-**Still needed (pre-existing content gap, not part of this fix):** `combatMusic` (and
-`menuMusic`) `AudioClip` fields on the `GameMusicManager` Inspector are unassigned, so even
-though `OnEnterCombat()` now fires at the right time, there's no clip to switch to yet
-(confirmed by assigning a throwaway test clip at runtime — the switch mechanism works). See
-SOWUR_SHIELD_STATUS.md's Audio wiring checklist.
+**Closed 2026-08-01** — and the "content gap" framing was wrong. The clips were never missing:
+`Assets/Audio/Music/` already held three OST tracks. Only the Inspector assignments were absent.
+`combatMusic` → `OST-Chud Battle`, `menuMusic` → `OST-Whispers of the Wandering`.
+`seasonalFarmTracks[0..3]` stay null on purpose — `GetCurrentSeasonTrack()` falls back to
+`gameplayMusic`, and there is no fourth track to assign.
+
+**A latent bug surfaced when those fields were filled in.** `OnSeasonChanged` decided "am I
+playing farm music?" by comparing `musicSource.clip` against `combatMusic`/`menuMusic`. With
+`menuMusic` and `gameplayMusic` set to the same track, that comparison matched on the farm and
+returned early, **silently cancelling the seasonal crossfade** — no console error, the music
+just never changed with the season. Replaced with an explicit `MusicContext`
+(Farm/Combat/Menu) set by `PlayFarmMusic`/`OnEnterCombat`/`OnEnterMainMenu`. Verified in Play
+Mode across all four transitions, and confirmed by direct comparison that the old logic would
+have bailed on this assignment while the new one does not.
 
 ---
 

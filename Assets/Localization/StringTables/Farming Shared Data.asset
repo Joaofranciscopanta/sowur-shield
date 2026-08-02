@@ -179,6 +179,30 @@ MonoBehaviour:
     m_Key: crop.Tomato.name
     m_Metadata:
       m_Items: []
+  - m_Id: 14854387275653120
+    m_Key: building.Barn.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401856
+    m_Key: building.Barn.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401857
+    m_Key: building.Barn.effect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401858
+    m_Key: building.Greenhouse.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401859
+    m_Key: building.Greenhouse.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14854387313401860
+    m_Key: building.Greenhouse.effect
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

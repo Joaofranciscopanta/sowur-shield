@@ -199,6 +199,106 @@ MonoBehaviour:
     m_Localized: Pardal
     m_Metadata:
       m_Items: []
+  - m_Id: 14866686203912192
+    m_Localized: Coelho
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035422277632
+    m_Localized: Bezerro (Marrom)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552320
+    m_Localized: Bezerro (Verde)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552321
+    m_Localized: Bezerro (Claro)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552322
+    m_Localized: Bezerro (Rosa)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552323
+    m_Localized: Bezerro (Roxo)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552324
+    m_Localized: Pintinho (Azul)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552325
+    m_Localized: Pintinho (Marrom)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552326
+    m_Localized: Pintinho
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552327
+    m_Localized: Pintinho (Verde)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552328
+    m_Localized: Pintinho (Vermelho)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552329
+    m_Localized: Galinha (Marrom)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552330
+    m_Localized: Galinha
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552331
+    m_Localized: Galinha (Verde)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552332
+    m_Localized: Galinha (Vermelho)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552333
+    m_Localized: Vaca (Verde)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552334
+    m_Localized: Vaca (Claro)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552335
+    m_Localized: Vaca (Rosa)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552336
+    m_Localized: Vaca (Roxo)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552337
+    m_Localized: Ovo (Azul)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552338
+    m_Localized: Ovo (Marrom)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552339
+    m_Localized: Ovo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552340
+    m_Localized: Ovo (Verde)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552341
+    m_Localized: Ovo (Vermelho)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941095031726080
+    m_Localized: Vaca
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

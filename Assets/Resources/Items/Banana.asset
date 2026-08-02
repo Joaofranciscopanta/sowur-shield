@@ -22,7 +22,21 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  itemDesc: Potassium
+  description: A useful item
   icon: {fileID: -353589913, guid: 9de6d2c51fda61546822d52ca6cb64e3, type: 3}
+  itemType: 0
+  rarity: 0
   isStackable: 1
   maxStackSize: 99
+  itemTags: []
+  toolLevel: 0
+  durability: -1
+  energyRestore: 0
+  healthRestore: 0
+  isConsumable: 0
+  baseValue: 1
+  canBeSold: 1
+  giftAffinityValue: 8
+  references:
+    version: 2
+    RefIds: []

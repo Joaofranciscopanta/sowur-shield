@@ -152,7 +152,18 @@ public class BuildingShopUI : MonoBehaviour, IUIWindow
 
         if (theme != null)
         {
-            UIThemeStyler.TintText(playerGoldText, theme.highlightGold);
+            // The header sits on the panel sprite's cream field, not on wood: gold reads at
+            // ~1.4 against it, so both header labels take textDark (~12.1) instead.
+            // TitleText has no serialized field, so it's found by name like StylePanelTitle does.
+            UIThemeStyler.TintText(playerGoldText, theme.textDark);
+            if (buildingPanel != null)
+            {
+                foreach (TextMeshProUGUI label in buildingPanel.GetComponentsInChildren<TextMeshProUGUI>(true))
+                {
+                    if (label.name == "TitleText")
+                        UIThemeStyler.TintText(label, theme.textDark);
+                }
+            }
             UIThemeStyler.TintText(confirmNameText, theme.backgroundCream);
             UIThemeStyler.TintText(confirmCostText, theme.highlightGold);
         }

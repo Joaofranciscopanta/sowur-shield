@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0e9c8b6659066b439bbc2c841651175, type: 3}
   m_Name: 
   m_EditorClassIdentifier: SowurShield.Runtime::GroundItem
-  item: {fileID: 11400000, guid: afda97c8c6904c648b536bd135b27002, type: 2}
+  item: {fileID: 11400000, guid: 71abea2baaed0094190241521bb6f106, type: 2}
   quantity: 1
   itemPicked: 0
   enableFloating: 1

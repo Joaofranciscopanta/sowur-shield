@@ -39,11 +39,28 @@
 | Achievements | ✅ Complete | 8 achievements |
 | Audio / Tutorial | ✅ Complete | Needs Editor asset wiring |
 | WebGL demo | ✅ Live (Build #15) | https://joaofranciscopanta.github.io/sowur-shield/ |
-| **UI polish pass** | 🔨 In progress | HUD/inventory done; combat consumable UI needs visual check |
+| **UI polish pass** | 🔨 In progress | Combat results, quests, building shop + consumables verified Aug/1; `ShopUI` + settings widgets left |
 | World/village map expansion | 💤 Deferred | Design decided (see Deferred section) |
 
-**Project size**: 4 scenes, ~157 scripts (100% namespace-compliant `SowurShield.<System>`),
-430+ test methods in 17+ test files, 3 asmdefs + tests.
+**Project size**: 4 scenes, ~159 scripts (100% namespace-compliant `SowurShield.<System>`),
+**787 tests across 48 files** — 753 EditMode (46 files) + 34 PlayMode (2 files); all passing as
+of Aug/1. 3 asmdefs + 2 test asmdefs.
+
+> `Assets/Tests/EditMode/RegressionAug2026Tests.cs` (8 tests) exists because every bug fixed on
+> Aug/1 shipped **silently** — no console error, and the 718-test suite caught none of them.
+> Each test there was verified by re-introducing the bug and watching it fail, not just by
+> passing. Worth extending the same way when the next silent bug turns up.
+
+> `Assets/Tests/EditMode/ContentAssetIntegrityTests.cs` (6 tests) does the same job for the
+> **string-keyed links between assets** — `AnimalData` names an item, `ItemDatabase` resolves it
+> by name, and a miss produces only a `LogWarning` at the moment a player triggers it. That is
+> how the Medicine bug below survived: nothing at edit or build time inspects these links.
+
+> The 34 PlayMode tests had **never executed as PlayMode tests**: their asmdef was marked
+> Editor-only, which excludes it from a PlayMode run, so that runner reported 0 total while the
+> EditMode run silently swept them up. Fixed Aug/1 (`f11008f`); they now run in the right mode.
+> Note the totals therefore did not change — 752 before (718 + 34 counted as EditMode) and 752
+> after (718 + 34 counted separately). An earlier note here claiming 786 double-counted them.
 
 ---
 
@@ -91,6 +108,25 @@
   portraits; all 6 ConditionType/EffectType variants wired to real game systems
 - `ConversationMemory` (singleton, `ISaveable`): relationships (-100..100), quest statuses,
   custom variables — auto-saves every 30s
+- **Gift preferences (Aug/1)**: per-NPC loved/liked/disliked lists at 2.5x/1.5x/−1x, unlisted
+  items at exactly 1x. Tastes are *discovered* by gifting and listed in the codex; the panel
+  never pre-reveals them. Locked lore tiers show as dimmed rows with their requirement.
+  First conversation per NPC per day grants +1 affinity (`lastTalkDay`).
+  Design and open items: [docs/RELATIONSHIP_DESIGN.md](docs/RELATIONSHIP_DESIGN.md)
+- **Village populated Aug/1**: **9 NPCs** (Maren + 8 placeholder villagers via
+  `Tools > NPC > Populate Village`). All eight share one procedurally drawn placeholder sprite;
+  the *data* is real — 4 codex tiers each, gift preferences, a working dialogue tree.
+  Giftable items went 2 → 16 of 28, which was the quiet reason the gift panel looked broken.
+  **Portraits done Aug/1**: 8 procedural placeholder portraits with distinct hair/clothing
+  colours, so NPCs without a portrait went 8 → 0. **Item icons done Aug/1** too (5 → 0).
+  **Still placeholder and needing real art**: villager world sprites (all eight identical) and
+  the portraits themselves, which are recognisable-but-crude geometry
+- **`TalkToNPC` quest objectives take the `conversationId`, not the `npcId`**
+  (`ConversationMemory.cs:163`). The two look interchangeable; targeting the npcId produces an
+  objective that never advances, with no error. Pinned by `QuestAndNpcIntegrityTests`
+- **`LocalizedString` built in code must carry the shared-entry id**, not just table+key names.
+  A name-only reference keeps `KeyId 0` and resolves to nothing at runtime — every villager
+  opened an empty speech bubble until this was fixed in `VillagerDialogueFactory`
 - `QuestManager` (singleton, `ISaveable`): objectives (CollectItem/TalkToNPC/HarvestCrop/
   CompleteBattle/Custom), rewards, `NotifyObjective()` auto-advance hooks live in
   Inventory/Conversation/Crop/Stage code. Quest assets in `Resources/Quests/`
@@ -205,24 +241,70 @@ colour problem at all:
   colour.
 
 **Remaining**:
-- [ ] Visual verification of the combat Items button/panel in a live battle — `ConsumableBattleUI`
-  self-spawns in CombatScene, but the panel only populates mid-battle with real units
-- [ ] `ShopUI` unverified — NPC-driven, not present in either scene at rest
-- [ ] `BattleResultsUI` buttons are anchored to the **screen corners** (anchor 0,0 and 1,0 at
-  y 0–30), so all four sit clipped at the bottom edge instead of inside the panel. Scene-only
-  layout — no code touches it — so it needs a RectTransform fix in the Editor: anchor to
-  (0.5, 0.5), roughly x ±110, y −260, which lands them under the stats block
-- [ ] `QuestsUI` visual check still owed — it's absent from SampleScene (built on demand by the
-  `QuestsUIBuilder` editor window), so it has never been seen running. Code audited instead
-  (Jul/26); see the theming-audit note below
-- [ ] Building shop's "Farm Buildings" title sits on the panel sprite's wide wood border rather
-  than the cream field — legible, but a RectTransform nudge in the Editor, not a code fix
-- [ ] Settings panel's sliders/dropdown/checkbox still use stock Unity visuals
-- [ ] Stamina bar has no icon (no energy icon exists in the sprite kit yet)
-- [ ] Quest **completed**-tab rows: the prefab's white backing is alpha **0.3**, so its dark text
-  reads 3.67 against a woodDark panel — under 4.5 for body text (the active rows use 0.5 and are
-  fine at 5.78–7.36). The alpha is authored into `QuestCompletedRow.prefab` by `QuestsUIBuilder`,
-  not applied at runtime, so it's a builder/prefab edit rather than a `UIThemeStyler` fix
+- [x] ~~Stamina bar has no icon~~ **done Aug/1** — drew `icon_stamina_bolt.png` procedurally
+  (gold bolt, dark outline, theme palette, kit import settings). Fixing it exposed that the bar
+  itself had no room for an icon (backing flush to the screen top, icon rendered off-screen at
+  x −16) and that its fill was white-on-light, reading as empty even at full energy; both fixed,
+  and the drag handle hidden since it is a read-only stat bar
+- [ ] **`ShopUI` is blocked on content, not on verification.** Checked Aug/1: there is no
+  `ShopUI` in any scene, no `ShopNPC` placed, **and zero `ShopData` assets anywhere** — and
+  unlike `QuestsUI`, no builder exists to create one (`Tools > Sowur Shield` has builders for
+  the animal market, building shop, quests and language UI, but not this). Nothing can be seen
+  running until a `ShopData` exists, so this is a content task, not a UI-polish one
+
+**Also done (Aug/1, same branch)**:
+- **Settings panel themed** (`67ba609`) — sliders/dropdowns/toggle were stock Unity visuals.
+  Panel grown 496×488 → 536×638 because the content genuinely did not fit (buttons landed on
+  the bottom frame at every smaller size). Tracks `woodMid` (~3.6 on cream, over the 3.0
+  non-text bar), fills gold, handles `woodDark`; labels lifted above their track instead of
+  across it. **The heading needed a code fix, not a scene fix**: `ApplyTheme` called
+  `StylePanelTitle(settingsPanel)`, which unconditionally forces cream — right for a heading on
+  wood, wrong once this one moved onto the cream field (cream ~1.1 vs `textDark` ~12.1). It
+  silently repainted the scene's colour on every `Awake`, so the panel looked fine until opened
+  through the real `OpenMenu` flow. Now uses a `GetSettingsHeading()` lookup; `mainMenuPanel`
+  and `saveInfoPanel` keep `StylePanelTitle` and their cream headings.
+- **Audio wiring** (`11f93e6`) — see the Audio line in the wiring checklist below.
+
+**Done (Aug/1, branch `feature/ui-layout-fixes-combat-quests-shop`, commit `82f4505`)** — five
+items above closed, each verified in Play Mode with a screenshot rather than by reading code.
+The common root cause: these layouts were authored when the panels were plain rects, and the
+cozy sprite kit later gave them a painted frame roughly **90px** thick on every side. The
+9-slice `border` field (32px) is *not* the usable inset — measure against the Viewport or the
+render, not the sprite metadata.
+- **`BattleResultsUI` buttons** — fixed, but *not* with the values this file previously
+  suggested. Both panels are full-screen (1920×1080) with no smaller sprite child, so the
+  proposed y −260 would have crowded the stats block (which spans y −210…+110). Used y −300,
+  x ±170. The buttons also had to grow **160×30 → 300×70**: at the old size the "To Farm" label
+  rendered clipped as "to Farm". Titles moved to y −148 so they sit on the ribbon instead of
+  under the battle HUD.
+- **Building shop title** — moved to y −165 (inside the cream field, not merely nudged within
+  the border) and recoloured. `ApplyTheme` was tinting `playerGoldText` `highlightGold`, which
+  reads **~1.4** on cream; both header labels are now `textDark` (**~12.1**). Two knock-on fixes
+  the old note didn't anticipate: the list had to move down or it covered the relocated header,
+  and its `VerticalLayoutGroup` lacked `childControlWidth`, so rows ignored `flexibleWidth` and
+  stayed 600px wide inside a 1038px panel.
+- **`QuestsUI`** — seen running for the first time. **Retracted: the claim that it is "absent
+  from SampleScene" was false** — `QuestsCanvas` is in the scene and opens fine; no builder
+  invocation was needed. Title, tabs and both tab panels all sat outside the frame, and the two
+  tabs were ~400px apart. Fixed, and see the layout bug below.
+- **Quest completed-row alpha** — 0.3 → 0.5 in both `QuestsUIBuilder` and the prefab on disk
+  (the builder only runs on demand, so the prefab needed the same edit).
+- **Combat Items panel** — verified populated, which required a battle with live enemies plus
+  `Fish`/`RareFish` (the project's *only* two consumables — Carrot/Cabbage/Tomato are crops with
+  `isConsumable=false`, so seeding those shows the empty-state row and looks like a bug).
+
+**New bug found and fixed while verifying: 0-width rows from point anchors.** A fresh
+`RectTransform` defaults to anchors `(0.5, 0.5)`, where `sizeDelta.x = 0` means a literal
+0-wide rect — no `childControlWidth` on the parent can rescue it, because the layout group
+writes `sizeDelta`, which stays 0. This bit two places independently:
+`QuestObjectiveLine` (objective counters wrapped one character per line) and
+`ConsumableBattleUI.CreateRow` (rows measured 0 → now 720px). Both now anchor `(0,1)-(1,1)`.
+Worth grepping for `new Vector2(0,` on a `sizeDelta` next to a runtime-created RectTransform.
+
+**Testing note:** entering Play Mode directly in SampleScene or CombatScene leaves every
+localized label blank — the documented `SafeGetLocalizedString` quirk (tables preload during
+MainMenu). Quest titles, building names and item rows all render empty this way. Confirm
+against the HUD money/day text before treating a blank label as a UI bug.
 
 **Theming audit (Jul/26)** — every claim in this section re-checked against the code, because the
 list had accumulated two contradictory notes about `QuestsUI`:
@@ -254,11 +336,44 @@ follow-up logged there — add a `.gitattributes` and renormalize line endings �
 (see Known Tech Debt).
 
 **Art gaps**:
+
+> **AI image generation is unavailable in this project as configured** (checked Aug/1). The MCP
+> `generate_image` tool exposes two providers, `fal` and `openrouter`, and both report
+> `configured: false` — no API key in the editor's secure store, and no `MCPFORUNITY_FAL_API_KEY`
+> / `MCPFORUNITY_OPENROUTER_API_KEY` in the environment. Add a key via
+> *MCP for Unity → Asset Generation* before planning any work that assumes generated art.
+> Simple geometric assets can still be drawn procedurally (that is how the stamina bolt was
+> made); sprite sheets and animation frames cannot.
+
 - Duck and Sparrow use chicken-baby placeholder sprites (`Assets/Resources/Animals/duck.asset`,
-  `Sparrow.asset` point at `Chicken_Baby*.png`)
+  `Sparrow.asset` point at `Chicken_Baby*.png`). Note these are also the only two `AnimalData`
+  assets with a null `animatorController` — the same two gaps travel together
+- **Enemy sprites: 20 of 34 wired (Aug/1), 14 blocked on a naming mismatch — not on art.**
+  `Assets/Art/Enemies/` holds 32 sheets. Meadow/Forest/Cave files are named after their
+  `EnemyData` (`Cave Bat.png` → `CaveBat`), so those 20 were pure wiring and are now done.
+  Mountain/Volcano files are named `Enemy 19 — Snow Wolf`, `Enemy 25 — Fire Slime`, … and match
+  **no** `EnemyData`: `FrostDrake`, `IronGolem`, `Hellhound`, `ThunderEagle` and the other 10
+  have no sheet of their own.
+  **Correcting the earlier "no generation needed either way" claim (checked Aug/1):** there are
+  only **12** sheets across Mountain/Volcano for **14** `EnemyData`, and most are not a rename
+  away — `Harpy`, `ThunderEagle`, `RockHound`, `ArmoredBear` and `Hellhound` have no plausible
+  match among `Snow Wolf`, `Mountain Bandit`, `Ice Elemental`, `Stone Yeti` and the rest. Three
+  pair up cleanly (`Mountain Titan`→`MountainKing`, `Lord of Ashes`→`InfernoDragon`, and one of
+  `Frost Golem`→`IronGolem`/`FrostDrake`). The rest is a **content gap needing art**, which
+  matters because AI generation is unconfigured (see the note above).
+  Until then those 14 render as grey spheres via `CombatUnit.CreateSphereVisual()`.
+  Caveat: `EnemyData.sprite` takes a single `Sprite` while the sheets import as `Multiple`, so
+  Unity will never auto-assign these — each needs the `_0` slice picked explicitly.
 - Stamina/energy icon; see [UI_ART_PLACEHOLDERS.md](UI_ART_PLACEHOLDERS.md) for the full list
-- AnimatorControllers with Crit/Poison/Weakness/Hurt/Attack/Die states don't exist yet for any
-  animal/enemy — combat animation triggers are currently no-ops
+- **Combat animation clips** — no animal has attack/hurt/death art. Checked Aug/1: all 289
+  AnimationClips in the project are Idle/Walk/Eat (plus player, NPC, tree, egg-hatch); not one
+  is combat. This is the real gap and it needs art.
+  **Correcting the old entry here**, which claimed AnimatorControllers "don't exist yet for any
+  animal/enemy": **25 of 27 `AnimalData` assets have a controller**. Only `duck` and `Sparrow`
+  are null — the same two on placeholder sprites. The controllers are farm controllers
+  (`IsWalking`/`IsIdle`/`IsEating`); the combat trigger parameters were added Aug/1 (`7623020`)
+  so `CombatUnit`'s `SetTrigger` calls are safe, but they drive no states yet — firing them is
+  a no-op until clips exist
 
 **Feature ideas discussed (not started)**:
 - Cooking/crafting; NPC romance/marriage; full 3-Passive combat system (PRD); farm land
@@ -279,19 +394,41 @@ follow-up logged there — add a `.gitattributes` and renormalize line endings �
 Manual Editor-setup items still outstanding (verify against current scenes before working —
 some may have been completed as side effects):
 
-**Combat**: assign `AnimalSkill` SOs to `AnimalData.activeSkill`/`EnemyData.skills`; create and
-assign AnimatorControllers per animal/enemy
-**World Map**: WorldMap Canvas + `WorldMapUIController` in farm scene; one `WorldMapBiomePanel`
-per biome wired to controller; `WorldMap` ref on `WorldMapTriggerZone`
-**Animals**: sprites for `Rabbit.asset`/`RabbitFur.asset`; GroundItem prefabs (RabbitFur,
-DuckEgg, Feather) in `Resources/Prefabs/GroundItems/`; `AnimalInfoUI` rename panel wiring
-**Buildings/Shop/Tutorial**: `Resources/Buildings/Barn.asset`+`Greenhouse.asset` if missing;
-row prefabs for `BuildingShopUI`/`ShopUI`; `Resources/Quests/` populated
-**Audio**: `seasonalFarmTracks[4]`/`combatMusic`/`menuMusic` on `GameMusicManager`; SFX clips;
-`OnEnterCombat()` wired from `SceneTransitionManager`
+**Combat**: ~~assign `AnimalSkill` SOs to `AnimalData.activeSkill`/`EnemyData.skills`~~
+**done Aug/1** — 22 of 27 animals (eggs excluded, they don't fight) and **all 34 enemies**.
+The enemy side was not merely unassigned: six assets had a skills list holding a single **null**
+element, so they read as "has skills" while `GetReadySkill()` returned that null — measured at
+0/10 with the use-chance forced to 1.0. `GetReadySkill()` now skips null entries (`1e70281`).
+AnimatorControllers exist for 25 of 27 animals; the missing piece is combat *clips*
+**World Map**: ~~WorldMap Canvas + `WorldMapUIController` in farm scene~~ — **both were already
+in SampleScene**; this checklist item was stale. `WorldMapTriggerZone` is wired too.
+**Retracted (Aug/1): the claim that an empty `biomePanels` list makes stages unreachable was
+false** — `RefreshFlatStageButtons()` generates a button for every stage when no panels are
+configured, and all 25 were always reachable. The real defect was that fallback's *layout*
+(140×60 cells in an 1890×1080 map, every label overlapping); fixed Aug/1 with measured values
+plus auto-sizing labels. Per-biome panels remain a **visual upgrade, not a blocker**
+**Animals**: ~~GroundItem prefabs (RabbitFur, DuckEgg, Feather)~~ — **DuckEgg and Feather already
+existed**; `RabbitFur_GroundItem` created Aug/1 and linked to `Rabbit.groundItemPrefab`.
+~~`Rabbit.asset`/`RabbitFur.asset`~~ **created Aug/1** — they had never existed at all (see
+KNOWN_BUGS.md), which also surfaced that **`Medicine` was missing project-wide**, leaving all 28
+animals permanently incurable. Still open: **sprites** for Rabbit (`idleSprite` null) and icons
+for Medicine/RabbitFur; a rabbit-appropriate `AnimalSkill` (currently `FeatherShield` as a
+stopgap); `AnimalInfoUI` rename panel wiring
+**Buildings/Shop/Tutorial**: ~~`Resources/Buildings/Barn.asset`+`Greenhouse.asset`~~ **created
+Aug/1** — they were genuinely missing while `AnimalZone`/`SoilBlockInteractable` already
+consumed `HasBarn`/`HasGreenhouse`, so neither effect could fire. Localized in en/pt/es.
+Still open: row prefabs for `ShopUI`; `Resources/Quests/` has 4 quests
+**Audio**: ~~`combatMusic`/`menuMusic` on `GameMusicManager`~~ **done Aug/1** (`11f93e6`) —
+the clips were never missing, only unassigned; see KNOWN_BUGS.md for the `MusicContext` bug
+that filling them in exposed. `seasonalFarmTracks[4]` intentionally left null (falls back to
+`gameplayMusic`; only 3 OST tracks exist). Still open: SFX clips, and `OnEnterCombat()` is
+driven by `SceneManager.sceneLoaded` rather than the never-instantiated `SceneTransitionManager`
 **Combat consumables known limitation**: player `Inventory` only exists in SampleScene, so
 `ConsumableBattleUI.RefreshList()` shows "no inventory" during battle — fix requires persisting
-Inventory into CombatScene or reading from `SaveManager`/`GameData` (deferred)
+Inventory into CombatScene or reading from `SaveManager`/`GameData` (deferred).
+Note when testing: the project's only two consumables are `Fish` and `RareFish`
+(`isConsumable=true`); Carrot/Cabbage/Tomato are crops, so seeding those shows the empty-state
+row and looks like a broken panel
 
 ---
 
@@ -322,6 +459,24 @@ See [review/02_FINDINGS.md](review/02_FINDINGS.md) for the full diagnostic. Head
   Tried it for `*.private.0` and it made Git store the working tree's CRLF verbatim, baking
   Windows endings into the repo (fixed in `ace4328`). The local symptom all of this cures is a
   file showing as modified with a completely empty diff
+
+- **`??` and `?.` are unsafe on Unity objects.** `GetComponent<T>() ?? AddComponent<T>()` reads
+  correctly and is silently broken: a missing component returns Unity's "fake null" (a live C#
+  object with a destroyed native side), which `??` treats as non-null, so the fallback never
+  runs. This threw a `MissingComponentException` on every combat spawn until Aug/1 (`7623020`).
+  Use an explicit `== null`, which Unity's operator overload handles. Only one occurrence
+  existed; worth re-grepping `\?\?` near `GetComponent` if this pattern reappears.
+- **`UIThemeStyler.StylePanelTitle` hardcodes cream, which makes it a trap.** It forces every
+  heading it finds to `backgroundCream` — correct for a heading on wood, silently wrong for one
+  on a cream field, and it re-applies on every `Awake`, so a scene-authored colour looks right
+  in the Editor and gets repainted at runtime. Bit the settings panel Aug/1. If a heading needs
+  a different colour, look it up and `TintText` it rather than extending this method.
+- **Runtime-built UI keeps re-inventing the same two layout bugs.** Code that builds UI at
+  runtime (`ConsumableBattleUI.CreateRow`, `QuestsUIBuilder`) has now twice shipped a
+  `RectTransform` left on default point anchors with `sizeDelta.x = 0`, and twice shipped a
+  `VerticalLayoutGroup` with `childForceExpandWidth` but no `childControlWidth` (which does
+  nothing on its own). Both were fixed Aug/1; a small shared helper for "stretch this new
+  RectTransform across its parent" would stop the third occurrence.
 
 **Working well**: namespace convention (100%), combat pipeline, status-effect tests,
 GameBalance centralization (~80%), save scaffolding, animal husbandry tests.

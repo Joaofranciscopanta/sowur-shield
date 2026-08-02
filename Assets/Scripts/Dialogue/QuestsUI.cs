@@ -210,18 +210,31 @@ public class QuestsUI : MonoBehaviour, IUIWindow
         Color selectedColor = theme != null ? theme.highlightGold : new Color(1f, 0.8f, 0.3f);
         Color otherColor = theme != null ? theme.backgroundTan : new Color(0.5f, 0.5f, 0.5f);
 
+        // Both tab tints are LIGHT (gold / tan), but QuestsUIBuilder paints the tab labels
+        // white — measured 1.5:1 on gold and 1.3:1 on tan, i.e. effectively invisible. The
+        // label has to be darkened alongside the tint, or the button reads as blank.
+        Color tabLabel = theme != null ? theme.textDark : Color.black;
+
         if (selectedButton != null)
         {
             var c = selectedButton.colors;
             c.normalColor = selectedColor;
             selectedButton.colors = c;
+            TintTabLabel(selectedButton, tabLabel);
         }
         if (otherButton != null)
         {
             var c = otherButton.colors;
             c.normalColor = otherColor;
             otherButton.colors = c;
+            TintTabLabel(otherButton, tabLabel);
         }
+    }
+
+    private void TintTabLabel(Button button, Color color)
+    {
+        var label = button.GetComponentInChildren<TMPro.TextMeshProUGUI>(true);
+        if (label != null) label.color = color;
     }
 
     // =========================================================================

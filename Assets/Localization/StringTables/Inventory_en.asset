@@ -154,6 +154,14 @@ MonoBehaviour:
     m_Localized: Watering Can
     m_Metadata:
       m_Items: []
+  - m_Id: 14866686669479936
+    m_Localized: Rabbit Fur
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14866686686257152
+    m_Localized: Medicine
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

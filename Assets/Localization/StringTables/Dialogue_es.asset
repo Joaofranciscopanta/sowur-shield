@@ -438,6 +438,149 @@ MonoBehaviour:
     m_Localized: Tienda General
     m_Metadata:
       m_Items: []
+  - m_Id: 14872607319646208
+    m_Localized: (Le encanta)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949376
+    m_Localized: (Le gusta)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949377
+    m_Localized: (No le gusta)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949378
+    m_Localized: 'Requiere: {0}'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949379
+    m_Localized: Gustos descubiertos ({0}/{1})
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14872607390949380
+    m_Localized: Aun no sabes que le gusta.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879358790131712
+    m_Localized: "Hola. Da gusto ver una cara amiga por aqu\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879358857240576
+    m_Localized: "Cu\xEDdate por ah\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879359981314048
+    m_Localized: "Hola. Da gusto ver una cara amiga por aqu\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879359981314049
+    m_Localized: "Cu\xEDdate por ah\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879360451076096
+    m_Localized: "Hola. Da gusto ver una cara amiga por aqu\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879360451076097
+    m_Localized: "Cu\xEDdate por ah\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879360912449536
+    m_Localized: "Hola. Da gusto ver una cara amiga por aqu\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879360912449537
+    m_Localized: "Cu\xEDdate por ah\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879361361240064
+    m_Localized: "Hola. Da gusto ver una cara amiga por aqu\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879361361240065
+    m_Localized: "Cu\xEDdate por ah\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879361814224896
+    m_Localized: "Hola. Da gusto ver una cara amiga por aqu\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879361814224897
+    m_Localized: "Cu\xEDdate por ah\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879362267209728
+    m_Localized: "Hola. Da gusto ver una cara amiga por aqu\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879362267209729
+    m_Localized: "Cu\xEDdate por ah\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879362728583168
+    m_Localized: "Hola. Da gusto ver una cara amiga por aqu\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14879362728583169
+    m_Localized: "Cu\xEDdate por ah\xED."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977384628224
+    m_Localized: Conocer la Aldea
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977422376960
+    m_Localized: Nuevo en el valle? Ve a saludar. Aqui la gente recuerda a quien
+      se presento.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977422376961
+    m_Localized: "Habla con Tom\xE1s"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977422376962
+    m_Localized: Habla con Isabela
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977422376963
+    m_Localized: Habla con Bento
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977640480768
+    m_Localized: La Despensa de Isabela
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977640480769
+    m_Localized: La despensa de Isabela esta baja antes de la hornada. Necesita huevos
+      y leche.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977640480770
+    m_Localized: Consigue 3 Huevos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977640480771
+    m_Localized: Consigue 2 Leches
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977829224448
+    m_Localized: El Remedio de Clara
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977829224449
+    m_Localized: A Clara le faltan ingredientes y el ganado de alguien enfermo. Trae
+      lo que necesita.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977829224450
+    m_Localized: Consigue 2 Coles
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14880977829224451
+    m_Localized: Consigue 2 Rabanos
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -65,8 +65,8 @@ MonoBehaviour:
     seasonalSpeedMod: 1
     activeSkillId: 
     passiveSkillIds: []
-  combatClass: Tank
   attackRange: 1
+  combatClass: Tank
   pettingStatBonus: 0.01
   feedingStatBonus: 0.02
   productionQualityBonus: 0
@@ -76,7 +76,13 @@ MonoBehaviour:
   seasonalSpeedBonus: 1.1
   canStack: 0
   maxStackSize: 1
-  activeSkill: {fileID: 0}
+  activeSkill: {fileID: 11400000, guid: c72cec53128947f399cb09192715ed5d, type: 2}
   availablePassiveSkills: []
+  illnessThresholdDays: 3
+  illnessCureItemName: Medicine
+  illnessStatPenalty: 0.5
   canDoChores: 0
   choreType: 
+  references:
+    version: 2
+    RefIds: []
