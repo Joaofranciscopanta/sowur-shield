@@ -249,6 +249,26 @@ public class BattleCommandUI : MonoBehaviour
         return button;
     }
 
+    // Captions are resolved when the panel opens, which covers the normal case. This
+    // additionally catches a language change while the panel is already on screen —
+    // possible because the battle is frozen waiting for a command.
+    private void OnLocaleChanged(UnityEngine.Localization.Locale _)
+    {
+        if (panel == null || !panel.activeSelf) return;
+        RefreshStaticLabels();
+        RefreshSkillButton();
+    }
+
+    private void OnEnable()
+    {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += OnLocaleChanged;
+    }
+
+    private void OnDisable()
+    {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= OnLocaleChanged;
+    }
+
     // ── Binding to the active TurnManager ──────────────────────────────────────
 
     private void Update()

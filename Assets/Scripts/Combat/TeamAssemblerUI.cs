@@ -247,6 +247,41 @@ public class TeamAssemblerUI : MonoBehaviour
             : localized;
     }
 
+    /// <summary>
+    /// "Available Animals" panel header. Hardcoded English in the scene file with no
+    /// LocalizeStringEvent, so it never picked up the PT/ES translations already present
+    /// in the string tables.
+    /// </summary>
+    private void RefreshAvailableAnimalsHeader()
+    {
+        if (availableAnimalsTitleText == null) return;
+
+        string localized = availableAnimalsTitleText_Localized.SafeGetLocalizedString();
+        if (!string.IsNullOrEmpty(localized))
+            availableAnimalsTitleText.text = localized;
+    }
+
+    // The neighbouring buttons each carry a LocalizeStringEvent, which re-resolves itself
+    // when the player changes language. These two captions can't use one — the mode toggle
+    // alternates between two different keys, and the header is written from code — so they
+    // subscribe to the same signal by hand. Without this they stayed frozen in whatever
+    // language was active when the panel last opened.
+    private void OnLocaleChanged(UnityEngine.Localization.Locale _)
+    {
+        RefreshCombatModeLabel();
+        RefreshAvailableAnimalsHeader();
+    }
+
+    private void OnEnable()
+    {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += OnLocaleChanged;
+    }
+
+    private void OnDisable()
+    {
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= OnLocaleChanged;
+    }
+
     private void OnDestroy()
     {
         // Clear the singleton so a reloaded scene's instance isn't rejected in Awake
@@ -298,15 +333,7 @@ public class TeamAssemblerUI : MonoBehaviour
             TeamAssemblerData.Instance.zoneDifficulty = selectedStage.difficulty;
         }
 
-        // "Available Animals" panel header — was hardcoded English text directly in the
-        // scene file with no LocalizeStringEvent, so it never picked up the PT/ES
-        // translations already present in the string tables.
-        if (availableAnimalsTitleText != null)
-        {
-            string localized = availableAnimalsTitleText_Localized.SafeGetLocalizedString();
-            if (!string.IsNullOrEmpty(localized))
-                availableAnimalsTitleText.text = localized;
-        }
+        RefreshAvailableAnimalsHeader();
 
         if (zoneNameText != null)
         {

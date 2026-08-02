@@ -163,6 +163,50 @@ MonoBehaviour:
     m_Localized: ${0}
     m_Metadata:
       m_Items: []
+  - m_Id: 15133379002097664
+    m_Localized: Nueva Partida
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367296
+    m_Localized: Continuar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367297
+    m_Localized: Cargar Partida
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367298
+    m_Localized: Ajustes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367299
+    m_Localized: Salir
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367300
+    m_Localized: Ajustes del Juego
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367301
+    m_Localized: Volumen General
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367302
+    m_Localized: "Volumen de M\xFAsica (BGM)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367303
+    m_Localized: Volumen de Efectos (SFX)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367304
+    m_Localized: Pantalla Completa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367305
+    m_Localized: Idioma
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

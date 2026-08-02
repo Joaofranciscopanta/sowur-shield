@@ -613,6 +613,34 @@ MonoBehaviour:
     m_Localized: '{0} [{1}]'
     m_Metadata:
       m_Items: []
+  - m_Id: 15133377987076096
+    m_Localized: "\xA1Victoria!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853312
+    m_Localized: Derrota...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853313
+    m_Localized: A la Granja
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853314
+    m_Localized: Reintentar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853315
+    m_Localized: Alimentar Todos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853316
+    m_Localized: "Limpiar Cuadr\xEDcula"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853317
+    m_Localized: Iniciar Batalla
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

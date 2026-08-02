@@ -162,6 +162,50 @@ MonoBehaviour:
     m_Localized: ${0}
     m_Metadata:
       m_Items: []
+  - m_Id: 15133379002097664
+    m_Localized: New Game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367296
+    m_Localized: Continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367297
+    m_Localized: Load Game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367298
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367299
+    m_Localized: Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367300
+    m_Localized: Game Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367301
+    m_Localized: Master Volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367302
+    m_Localized: Music Volume (BGM)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367303
+    m_Localized: Effects Volume (SFX)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367304
+    m_Localized: Toggle Fullscreen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367305
+    m_Localized: Language
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

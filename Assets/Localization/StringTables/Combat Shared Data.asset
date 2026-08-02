@@ -595,6 +595,34 @@ MonoBehaviour:
     m_Key: combat.command.skill_cooldown
     m_Metadata:
       m_Items: []
+  - m_Id: 15133377987076096
+    m_Key: combat.results.victory_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853312
+    m_Key: combat.results.defeat_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853313
+    m_Key: combat.results.to_farm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853314
+    m_Key: combat.results.retry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853315
+    m_Key: combat.teamassembler.feed_all
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853316
+    m_Key: combat.teamassembler.clear_grid
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853317
+    m_Key: combat.teamassembler.start_battle
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
