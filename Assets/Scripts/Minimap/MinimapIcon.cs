@@ -25,8 +25,12 @@ public class MinimapIcon : MonoBehaviour
     [SerializeField] private GameObject iconObject;
     [SerializeField] private SpriteRenderer iconRenderer;
 
+    // Editor-only: its sole reader, LogDebug, is itself inside #if UNITY_EDITOR. Leaving the
+    // field outside the guard means a player build compiles a field nothing ever reads (CS0414).
+    #if UNITY_EDITOR
     [Header("Debug")]
     [SerializeField] private bool enableDebugLogs = false;
+    #endif
 
     // State
     private Transform playerTransform;

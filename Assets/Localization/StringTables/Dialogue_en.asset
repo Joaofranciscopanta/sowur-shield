@@ -576,6 +576,602 @@ MonoBehaviour:
     m_Localized: Collect 2 Radish
     m_Metadata:
       m_Items: []
+  - m_Id: 14950889520095232
+    m_Localized: The valley's blacksmith. Says little, hammers a lot. Claims honest
+      metal never lies.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889666895872
+    m_Localized: "Who is Tom\xE1s?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889666895873
+    m_Localized: The blacksmith. Learned the trade from his grandfather and never
+      left the valley.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889671090176
+    m_Localized: The Forge
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889671090177
+    m_Localized: His forge is the oldest in the valley. The fire hasn't gone fully
+      out in forty years.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889675284480
+    m_Localized: The Hands
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889675284481
+    m_Localized: The scars on his hands record every mistake he made learning. He
+      calls them his diploma.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889679478784
+    m_Localized: The Bell
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889679478785
+    m_Localized: "Tom\xE1s cast the square's bell at twenty. Every time it rings
+      he stops what he's doing and listens."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889683673088
+    m_Localized: The oldest soul in the valley. Sits in the square and comments on
+      all that passes.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889683673089
+    m_Localized: Who is Bento?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889683673090
+    m_Localized: The oldest man here. He's watched the valley change three times
+      over.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889687867392
+    m_Localized: The Stories
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889687867393
+    m_Localized: He tells the same story different ways, and every version is a good
+      one.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889687867394
+    m_Localized: What He Saw
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889692061696
+    m_Localized: He was here when the valley nearly dried out. He says the land remembers
+      it.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889696256000
+    m_Localized: The Bench
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889696256001
+    m_Localized: The bench he sits on was built by his father. It's the last piece
+      left of the old house.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889696256002
+    m_Localized: Maren arrived in the valley after losing three harvests in a row
+      to a devastating drought. She lost everything she had planted in the eastern
+      valley, but found something different in this land - a fertility that feels
+      almost blessed. She sells seeds, but what she truly sells is hope.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450304
+    m_Localized: Who is Maren?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450305
+    m_Localized: Maren is the valley's seed merchant. She wakes before sunrise just
+      to feel the soil between her fingers - there is a magic in that first moment
+      when a seed opens.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450306
+    m_Localized: The Valley
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450307
+    m_Localized: This valley has history. People come, plant, harvest and leave.
+      Something here keeps you - the land, the rhythm of the seasons. They say a
+      druid blessed the deepest layers of the soil.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450308
+    m_Localized: The Eastern Valley Drought
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450309
+    m_Localized: Maren lost three harvests in a row to a devastating drought in the
+      eastern valley. She arrived with nothing, but found a land that welcomed her
+      differently. Her mother used to say the seed that survives winter blooms stronger.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450310
+    m_Localized: Her Father's Seed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450311
+    m_Localized: Maren carries a mysterious seed found in her father's coat pocket
+      the day he died. She never knew what plant it was - she never had the courage
+      to plant it, afraid of losing the last thing she has of him.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450312
+    m_Localized: Carpenter. Measures three times, cuts once, and grumbles at anyone
+      who does otherwise.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450313
+    m_Localized: Who is Rui?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450314
+    m_Localized: The carpenter. He built half the roofs in the valley.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450315
+    m_Localized: The Timber
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889704644608
+    m_Localized: He picks timber by knocking on it and listening. Says every tree
+      sounds different.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889708838912
+    m_Localized: The Crooked House
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889708838913
+    m_Localized: The first house he built came out crooked. It's still standing,
+      and he's still embarrassed.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889708838914
+    m_Localized: The Cradle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889713033216
+    m_Localized: He keeps a cradle he made for a child who was never born. He could
+      never bring himself to take it apart.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889717227520
+    m_Localized: Traveller. Arrived not long ago and still hasn't decided whether
+      to stay.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889717227521
+    m_Localized: Who is Nara?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889717227522
+    m_Localized: A traveller. Nobody knows exactly where she came from.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889717227523
+    m_Localized: The Road
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889721421824
+    m_Localized: She speaks of cities nobody in the valley has ever seen.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889721421825
+    m_Localized: The Reason
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889725616128
+    m_Localized: She didn't come here by chance. She's looking for someone, but won't
+      say who.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889725616129
+    m_Localized: The Decision
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889725616130
+    m_Localized: After so long on the road she's started to consider stopping. That
+      frightens her more than travelling.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810432
+    m_Localized: Baker. Wakes at four in the morning and swears the smell of bread
+      beats the taste.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810433
+    m_Localized: Who is Isabela?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810434
+    m_Localized: The valley's baker. Her oven is lit before the sun is.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810435
+    m_Localized: The Recipe
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810436
+    m_Localized: She uses her grandmother's recipe, but changed one thing and won't
+      say what.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810437
+    m_Localized: The Hard Winter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810438
+    m_Localized: One winter when flour ran short, she baked bread for the whole valley
+      from her own stores.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810439
+    m_Localized: The Notebook
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889734004736
+    m_Localized: She keeps a recipe notebook nobody has ever read. Says half of them
+      never worked.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199040
+    m_Localized: Fisherwoman. Spends more time on the river than at home, and finds
+      that perfectly normal.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199041
+    m_Localized: Who is Joana?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199042
+    m_Localized: The fisherwoman. She knows every bend of the river by the sound
+      of the water.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199043
+    m_Localized: The River
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199044
+    m_Localized: She says the river changes mood with the seasons, and that you can
+      hear it.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199045
+    m_Localized: The Fish That Got Away
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199046
+    m_Localized: She talks about an enormous fish that got away ten years ago. Nobody
+      knows if it's true.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199047
+    m_Localized: Her Father's Boat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199048
+    m_Localized: The boat she uses was her father's. She's replaced every plank,
+      but insists it's the same boat.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889742393344
+    m_Localized: Herbalist. Knows the name of every plant and the use of nearly every
+      one.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889742393345
+    m_Localized: Who is Clara?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889742393346
+    m_Localized: The herbalist. If you fall ill in the valley, hers is the door you
+      knock on.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889742393347
+    m_Localized: The Garden
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889742393348
+    m_Localized: Her garden looks like a mess, but every plant is exactly where she
+      wants it.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889746587648
+    m_Localized: The Apprentice
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889746587649
+    m_Localized: She learned from an old woman who lived in the forest and never
+      had a name, only a nickname.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889750781952
+    m_Localized: The Missing Plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889750781953
+    m_Localized: For years she's searched for a herb she saw only once as a child.
+      She isn't sure it was ever real.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889754976256
+    m_Localized: Shepherd. Talks to his sheep and insists, quite seriously, that
+      they answer.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889754976257
+    m_Localized: Who is Elias?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889754976258
+    m_Localized: The shepherd. He vanishes into the fields for days and comes back
+      as if nothing happened.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889754976259
+    m_Localized: The Flock
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889759170560
+    m_Localized: He names every animal in the flock and never mixes one up.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889759170561
+    m_Localized: The Night of the Storm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889763364864
+    m_Localized: He spent an entire night in the rain looking for a lost sheep. He
+      found it.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889763364865
+    m_Localized: The Silence
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889767559168
+    m_Localized: Elias likes the silence of the fields because, he says, it's the
+      only place he can think straight.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952847907741696
+    m_Localized: The forge keeps me honest. Metal tells you straight away when you've
+      rushed it.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952847911936000
+    m_Localized: The valley looks after its own. Slow place, but nobody's a stranger
+      for long.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952847911936001
+    m_Localized: How's the work going?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952847911936002
+    m_Localized: Tell me about the village.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952847911936003
+    m_Localized: I should get going.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952847911936004
+    m_Localized: Something else, then.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849082146816
+    m_Localized: Four in the morning, every morning. The oven doesn't care how I
+      slept.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849082146817
+    m_Localized: The valley looks after its own. Slow place, but nobody's a stranger
+      for long.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849082146818
+    m_Localized: How's the work going?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849082146819
+    m_Localized: Tell me about the village.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849082146820
+    m_Localized: I should get going.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849082146821
+    m_Localized: Something else, then.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849992310784
+    m_Localized: The river's been generous this week. Ask me again after the rains.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849992310785
+    m_Localized: The valley looks after its own. Slow place, but nobody's a stranger
+      for long.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849992310786
+    m_Localized: How's the work going?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849992310787
+    m_Localized: Tell me about the village.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849992310788
+    m_Localized: I should get going.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849992310789
+    m_Localized: Something else, then.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952850919251968
+    m_Localized: The flock's well. They complain less than people do, and they mean
+      it more.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952850919251969
+    m_Localized: The valley looks after its own. Slow place, but nobody's a stranger
+      for long.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952850919251970
+    m_Localized: How's the work going?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952850919251971
+    m_Localized: Tell me about the village.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952850919251972
+    m_Localized: I should get going.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952850919251973
+    m_Localized: Something else, then.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952851871358976
+    m_Localized: Everything growing has a use. Most people only learn that when they
+      need it.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952851871358977
+    m_Localized: The valley looks after its own. Slow place, but nobody's a stranger
+      for long.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952851871358978
+    m_Localized: How's the work going?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952851871358979
+    m_Localized: Tell me about the village.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952851871358980
+    m_Localized: I should get going.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952851871358981
+    m_Localized: Something else, then.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952852894769152
+    m_Localized: Measure three times, cut once. I've yet to regret the extra measuring.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952852894769153
+    m_Localized: The valley looks after its own. Slow place, but nobody's a stranger
+      for long.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952852894769154
+    m_Localized: How's the work going?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952852894769155
+    m_Localized: Tell me about the village.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952852894769156
+    m_Localized: I should get going.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952852894769157
+    m_Localized: Something else, then.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952853951733760
+    m_Localized: Still finding my footing here. Ask me next season and I might have
+      an answer.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952853951733761
+    m_Localized: The valley looks after its own. Slow place, but nobody's a stranger
+      for long.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952853951733762
+    m_Localized: How's the work going?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952853951733763
+    m_Localized: Tell me about the village.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952853951733764
+    m_Localized: I should get going.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952853951733765
+    m_Localized: Something else, then.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952854845120512
+    m_Localized: My work is watching, and business is good. Plenty passes through
+      this square.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952854845120513
+    m_Localized: The valley looks after its own. Slow place, but nobody's a stranger
+      for long.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952854845120514
+    m_Localized: How's the work going?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952854845120515
+    m_Localized: Tell me about the village.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952854845120516
+    m_Localized: I should get going.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952854845120517
+    m_Localized: Something else, then.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952883303473152
+    m_Localized: Let's trade.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952883710320640
+    m_Localized: "Tom\xE1s's Forge"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952883882287104
+    m_Localized: Isabela's Bakery
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952884050059264
+    m_Localized: Clara's Remedies
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952884201054208
+    m_Localized: Rui's Workshop
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

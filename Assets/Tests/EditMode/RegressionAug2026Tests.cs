@@ -1,8 +1,10 @@
 using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Reflection;
 using SowurShield.Animals;
 using SowurShield.Combat;
+using SowurShield.Core;
 using SowurShield.Inventory;
 
 namespace SowurShield.Tests
@@ -226,6 +228,134 @@ public class RegressionAug2026Tests
             "Duplicate itemName values make ItemDatabase.GetItem non-deterministic — " +
             "it keeps whichever asset Resources happens to load first:\n" +
             string.Join("\n", collisions));
+    }
+
+    // ========================================================================
+    // Late ISaveable registration (2026-08-02)
+    //
+    // GroundItem and PlayerDataManager only called RegisterSaveable in Awake().
+    // Unity's Awake/Start order between scene objects is undefined, so whenever
+    // they woke before SaveManager, registration was skipped and their
+    // SaveData/LoadData never ran: the player respawned at the scene's default
+    // position and already-collected ground items reappeared on every load.
+    //
+    // The fix has two halves and each gets a test: the Start() retry in the two
+    // components, and RegisterSaveable applying currentGameData to anything that
+    // registers after the initial load has already happened.
+    // ========================================================================
+
+    /// <summary>
+    /// A saveable that records whether LoadData was applied to it, so the test can
+    /// assert on catch-up behaviour rather than on any particular component's state.
+    /// </summary>
+    private class SpySaveable : ISaveable
+    {
+        public int LoadCallCount;
+        public GameData LastLoaded;
+
+        public void SaveData(GameData gameData) { }
+
+        public void LoadData(GameData gameData)
+        {
+            LoadCallCount++;
+            LastLoaded = gameData;
+        }
+    }
+
+    private SaveManager CreateSaveManagerPostLoad(GameData data)
+    {
+        var go = new GameObject("RegressionSaveManager");
+        Track(go);
+        var manager = go.AddComponent<SaveManager>();
+
+        // Simulate the state right after Start() finished its load decision, without
+        // touching the real save directory on disk.
+        typeof(SaveManager)
+            .GetField("currentGameData", BindingFlags.Instance | BindingFlags.NonPublic)
+            .SetValue(manager, data);
+        typeof(SaveManager)
+            .GetField("hasCompletedInitialLoad", BindingFlags.Instance | BindingFlags.NonPublic)
+            .SetValue(manager, true);
+
+        return manager;
+    }
+
+    [Test]
+    public void RegisterSaveable_AfterInitialLoad_ImmediatelyAppliesLoadedData()
+    {
+        var data = new GameData();
+        data.playerData.position = new Vector3(42f, 7f, 0f);
+
+        SaveManager manager = CreateSaveManagerPostLoad(data);
+        var spy = new SpySaveable();
+
+        manager.RegisterSaveable(spy);
+
+        Assert.AreEqual(1, spy.LoadCallCount,
+            "An object registering after the initial load must be caught up immediately. " +
+            "Without this, SaveManager.Start() (which calls LoadGame) running before the " +
+            "object's Start() means it never receives LoadData and silently keeps its " +
+            "scene defaults — the player position and ground-item bug of 2026-08-02.");
+        Assert.AreSame(data, spy.LastLoaded, "Catch-up must apply the in-memory save data.");
+    }
+
+    [Test]
+    public void RegisterSaveable_BeforeInitialLoad_DoesNotApplyData()
+    {
+        var go = new GameObject("RegressionSaveManagerPreLoad");
+        Track(go);
+        var manager = go.AddComponent<SaveManager>();
+
+        var spy = new SpySaveable();
+        manager.RegisterSaveable(spy);
+
+        Assert.AreEqual(0, spy.LoadCallCount,
+            "Before the initial load there is nothing meaningful to apply; LoadGame() " +
+            "will reach this object through the normal registered-objects pass.");
+    }
+
+    [Test]
+    public void RegisterSaveable_IsIdempotent_SoStartRetryIsSafe()
+    {
+        var data = new GameData();
+        SaveManager manager = CreateSaveManagerPostLoad(data);
+        var spy = new SpySaveable();
+
+        manager.RegisterSaveable(spy);
+        manager.RegisterSaveable(spy);
+
+        Assert.AreEqual(1, spy.LoadCallCount,
+            "The fix registers in both Awake and Start. Registering twice must not " +
+            "double-apply LoadData, or a re-registered object would reload its state " +
+            "over any change made between the two calls.");
+    }
+
+    [Test]
+    public void GroundItem_RetriesRegistrationInStart()
+    {
+        AssertHasStartRegistrationRetry(typeof(GroundItem));
+    }
+
+    [Test]
+    public void PlayerDataManager_RetriesRegistrationInStart()
+    {
+        AssertHasStartRegistrationRetry(typeof(PlayerDataManager));
+    }
+
+    /// <summary>
+    /// Both components must define Start(), which is where the registration retry lives.
+    /// Asserting on the method's existence keeps the test honest without needing to enter
+    /// Play Mode: if someone deletes Start(), the Awake-order race silently returns.
+    /// </summary>
+    private void AssertHasStartRegistrationRetry(System.Type componentType)
+    {
+        var start = componentType.GetMethod("Start",
+            BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+
+        Assert.IsNotNull(start,
+            $"{componentType.Name} must define Start() to re-attempt SaveManager " +
+            "registration. Registering only in Awake loses the race whenever this " +
+            "object wakes before SaveManager, and its save data is silently dropped.");
     }
 }
 

@@ -32,9 +32,162 @@ MonoBehaviour:
       m_FallbackState: 0
       m_WaitForCompletion: 0
       m_LocalVariables: []
-    nodeType: 0
-    choices: []
-    nextNodeId: bye
+    nodeType: 1
+    choices:
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 14952850919251970
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      nextNodeId: work
+      requirements: []
+      effects: []
+      isExitChoice: 0
+      choiceColor: {r: 1, g: 1, b: 1, a: 1}
+      editorNote: 
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 14952850919251971
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      nextNodeId: village
+      requirements: []
+      effects: []
+      isExitChoice: 0
+      choiceColor: {r: 1, g: 1, b: 1, a: 1}
+      editorNote: 
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 14952850919251972
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      nextNodeId: bye
+      requirements: []
+      effects: []
+      isExitChoice: 0
+      choiceColor: {r: 1, g: 1, b: 1, a: 1}
+      editorNote: 
+    nextNodeId: 
+    autoAdvanceDelay: 0
+    displayConditions: []
+    nodeEffects: []
+    voiceClip: {fileID: 0}
+    ambientSound: {fileID: 0}
+    editorNote: 
+    editorPosition: {x: 0, y: 0}
+  - nodeId: work
+    speakerName: Elias
+    speakerPortrait: {fileID: 0}
+    speakerEmotion: 0
+    speakerPosition: 0
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14952850919251968
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    nodeType: 1
+    choices:
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 14952850919251973
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      nextNodeId: start
+      requirements: []
+      effects: []
+      isExitChoice: 0
+      choiceColor: {r: 1, g: 1, b: 1, a: 1}
+      editorNote: 
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 14952850919251972
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      nextNodeId: bye
+      requirements: []
+      effects: []
+      isExitChoice: 0
+      choiceColor: {r: 1, g: 1, b: 1, a: 1}
+      editorNote: 
+    nextNodeId: 
+    autoAdvanceDelay: 0
+    displayConditions: []
+    nodeEffects: []
+    voiceClip: {fileID: 0}
+    ambientSound: {fileID: 0}
+    editorNote: 
+    editorPosition: {x: 0, y: 0}
+  - nodeId: village
+    speakerName: Elias
+    speakerPortrait: {fileID: 0}
+    speakerEmotion: 0
+    speakerPosition: 0
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14952850919251969
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    nodeType: 1
+    choices:
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 14952850919251973
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      nextNodeId: start
+      requirements: []
+      effects: []
+      isExitChoice: 0
+      choiceColor: {r: 1, g: 1, b: 1, a: 1}
+      editorNote: 
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 14952850919251972
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      nextNodeId: bye
+      requirements: []
+      effects: []
+      isExitChoice: 0
+      choiceColor: {r: 1, g: 1, b: 1, a: 1}
+      editorNote: 
+    nextNodeId: 
     autoAdvanceDelay: 0
     displayConditions: []
     nodeEffects: []

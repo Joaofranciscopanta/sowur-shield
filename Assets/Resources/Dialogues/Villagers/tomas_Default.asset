@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: tomas_Default
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Dialogue.DialogueTree
   conversationId: tomas_default
-  conversationDescription: "Conversa padr\xE3o de Tomas (placeholder)"
+  conversationDescription: "Conversa padr\xE3o de Tom\xE1s (placeholder)"
   startNodeId: start
   isRepeatable: 1
   saveProgressOnExit: 1
   nodes:
   - nodeId: start
-    speakerName: Tomas
+    speakerName: "Tom\xE1s"
     speakerPortrait: {fileID: 0}
     speakerEmotion: 0
     speakerPosition: 0
@@ -32,9 +32,162 @@ MonoBehaviour:
       m_FallbackState: 0
       m_WaitForCompletion: 0
       m_LocalVariables: []
-    nodeType: 0
-    choices: []
-    nextNodeId: bye
+    nodeType: 1
+    choices:
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 14952847911936001
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      nextNodeId: work
+      requirements: []
+      effects: []
+      isExitChoice: 0
+      choiceColor: {r: 1, g: 1, b: 1, a: 1}
+      editorNote: 
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 14952847911936002
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      nextNodeId: village
+      requirements: []
+      effects: []
+      isExitChoice: 0
+      choiceColor: {r: 1, g: 1, b: 1, a: 1}
+      editorNote: 
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 14952847911936003
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      nextNodeId: bye
+      requirements: []
+      effects: []
+      isExitChoice: 0
+      choiceColor: {r: 1, g: 1, b: 1, a: 1}
+      editorNote: 
+    nextNodeId: 
+    autoAdvanceDelay: 0
+    displayConditions: []
+    nodeEffects: []
+    voiceClip: {fileID: 0}
+    ambientSound: {fileID: 0}
+    editorNote: 
+    editorPosition: {x: 0, y: 0}
+  - nodeId: work
+    speakerName: "Tom\xE1s"
+    speakerPortrait: {fileID: 0}
+    speakerEmotion: 0
+    speakerPosition: 0
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14952847907741696
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    nodeType: 1
+    choices:
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 14952847911936004
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      nextNodeId: start
+      requirements: []
+      effects: []
+      isExitChoice: 0
+      choiceColor: {r: 1, g: 1, b: 1, a: 1}
+      editorNote: 
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 14952847911936003
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      nextNodeId: bye
+      requirements: []
+      effects: []
+      isExitChoice: 0
+      choiceColor: {r: 1, g: 1, b: 1, a: 1}
+      editorNote: 
+    nextNodeId: 
+    autoAdvanceDelay: 0
+    displayConditions: []
+    nodeEffects: []
+    voiceClip: {fileID: 0}
+    ambientSound: {fileID: 0}
+    editorNote: 
+    editorPosition: {x: 0, y: 0}
+  - nodeId: village
+    speakerName: "Tom\xE1s"
+    speakerPortrait: {fileID: 0}
+    speakerEmotion: 0
+    speakerPosition: 0
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14952847911936000
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    nodeType: 1
+    choices:
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 14952847911936004
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      nextNodeId: start
+      requirements: []
+      effects: []
+      isExitChoice: 0
+      choiceColor: {r: 1, g: 1, b: 1, a: 1}
+      editorNote: 
+    - choiceText:
+        m_TableReference:
+          m_TableCollectionName: Dialogue
+        m_TableEntryReference:
+          m_KeyId: 14952847911936003
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      nextNodeId: bye
+      requirements: []
+      effects: []
+      isExitChoice: 0
+      choiceColor: {r: 1, g: 1, b: 1, a: 1}
+      editorNote: 
+    nextNodeId: 
     autoAdvanceDelay: 0
     displayConditions: []
     nodeEffects: []
@@ -43,7 +196,7 @@ MonoBehaviour:
     editorNote: 
     editorPosition: {x: 0, y: 0}
   - nodeId: bye
-    speakerName: Tomas
+    speakerName: "Tom\xE1s"
     speakerPortrait: {fileID: 0}
     speakerEmotion: 0
     speakerPosition: 0

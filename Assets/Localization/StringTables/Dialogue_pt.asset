@@ -580,6 +580,599 @@ MonoBehaviour:
     m_Localized: Colete 2 Rabanetes
     m_Metadata:
       m_Items: []
+  - m_Id: 14950889520095232
+    m_Localized: "O ferreiro do vale. Fala pouco, martela muito. Diz que metal honesto
+      n\xE3o mente."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889666895872
+    m_Localized: "Quem \xE9 Tom\xE1s?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889666895873
+    m_Localized: "O ferreiro. Aprendeu o of\xEDcio com o av\xF4 e nunca saiu do vale."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889671090176
+    m_Localized: A Forja
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889671090177
+    m_Localized: "A forja dele \xE9 a mais antiga do vale. O fogo nunca apagou completamente
+      em quarenta anos."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889675284480
+    m_Localized: "As M\xE3os"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889675284481
+    m_Localized: "As cicatrizes nas m\xE3os dele contam cada erro que cometeu aprendendo.
+      Ele diz que s\xE3o o diploma dele."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889679478784
+    m_Localized: O Sino
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889679478785
+    m_Localized: "Tom\xE1s fundiu o sino da pra\xE7a quando tinha vinte anos. Toda
+      vez que toca, ele para o que est\xE1 fazendo e escuta."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889683673088
+    m_Localized: "O mais velho do vale. Senta na pra\xE7a e comenta tudo que passa."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889683673089
+    m_Localized: "Quem \xE9 Bento?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889683673090
+    m_Localized: "O mais velho daqui. Viu o vale mudar tr\xEAs vezes."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889687867392
+    m_Localized: "As Hist\xF3rias"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889687867393
+    m_Localized: "Conta a mesma hist\xF3ria de jeitos diferentes, e todas as vers\xF5es
+      s\xE3o boas."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889687867394
+    m_Localized: O Que Ele Viu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889692061696
+    m_Localized: Estava aqui quando o vale quase secou. Diz que a terra se lembra
+      disso.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889696256000
+    m_Localized: O Banco
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889696256001
+    m_Localized: "O banco onde ele senta foi feito pelo pai dele. \xC9 o \xFAltimo
+      peda\xE7o que restou da casa antiga."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889696256002
+    m_Localized: "Maren chegou ao vale depois de perder tr\xEAs colheitas seguidas
+      para uma seca devastadora. Perdeu tudo o que havia plantado no vale oriental,
+      mas encontrou algo diferente nesta terra \u2014 uma fertilidade que parece
+      quase aben\xE7oada. Ela vende sementes, mas o que vende de verdade \xE9 esperan\xE7a."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450304
+    m_Localized: "Quem \xE9 Maren?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450305
+    m_Localized: "Maren \xE9 a vendedora de sementes do vale. Acorda antes do sol
+      s\xF3 para sentir a terra entre os dedos \u2014 h\xE1 uma magia naquele primeiro
+      instante em que a semente se abre."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450306
+    m_Localized: O Vale
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450307
+    m_Localized: "Este vale tem hist\xF3ria. As pessoas chegam, plantam, colhem e
+      v\xE3o embora. Algo aqui prende \u2014 a terra, o ritmo das esta\xE7\xF5es.
+      Dizem que um druida aben\xE7oou as camadas mais fundas do solo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450308
+    m_Localized: A Seca do Vale Oriental
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450309
+    m_Localized: "Maren perdeu tr\xEAs colheitas seguidas para uma seca devastadora
+      no vale oriental. Chegou sem nada, mas encontrou uma terra que a acolheu de
+      outro jeito. A m\xE3e dela dizia que a semente que sobrevive ao inverno floresce
+      mais forte."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450310
+    m_Localized: A Semente do Pai
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450311
+    m_Localized: "Maren carrega uma semente misteriosa encontrada no bolso do casaco
+      do pai no dia em que ele morreu. Nunca soube de que planta era \u2014 nunca
+      teve coragem de plant\xE1-la, com medo de perder a \xFAltima coisa que tem
+      dele."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450312
+    m_Localized: "Carpinteiro. Mede tr\xEAs vezes, corta uma, e reclama de quem faz
+      diferente."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450313
+    m_Localized: "Quem \xE9 Rui?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450314
+    m_Localized: O carpinteiro. Construiu metade dos telhados do vale.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450315
+    m_Localized: A Madeira
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889704644608
+    m_Localized: "Ele escolhe a madeira batendo nela e ouvindo. Diz que cada \xE1rvore
+      soa diferente."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889708838912
+    m_Localized: A Casa Torta
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889708838913
+    m_Localized: "A primeira casa que construiu saiu torta. Ela ainda est\xE1 de
+      p\xE9, e ele ainda tem vergonha."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889708838914
+    m_Localized: "O Ber\xE7o"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889713033216
+    m_Localized: "Guarda um ber\xE7o que fez para um filho que n\xE3o chegou a nascer.
+      Nunca conseguiu desmontar."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889717227520
+    m_Localized: "Viajante. Chegou faz pouco tempo e ainda n\xE3o decidiu se fica."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889717227521
+    m_Localized: "Quem \xE9 Nara?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889717227522
+    m_Localized: "Uma viajante. Ningu\xE9m sabe exatamente de onde ela veio."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889717227523
+    m_Localized: A Estrada
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889721421824
+    m_Localized: "Ela fala de cidades que ningu\xE9m no vale nunca viu."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889721421825
+    m_Localized: O Motivo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889725616128
+    m_Localized: "N\xE3o veio para c\xE1 por acaso. Est\xE1 procurando algu\xE9m,
+      mas n\xE3o diz quem."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889725616129
+    m_Localized: "A Decis\xE3o"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889725616130
+    m_Localized: "Depois de tanto tempo na estrada, come\xE7ou a considerar parar.
+      Isso a assusta mais que viajar."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810432
+    m_Localized: "Padeira. Acorda \xE0s quatro da manh\xE3 e jura que o cheiro do
+      p\xE3o \xE9 melhor que o gosto."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810433
+    m_Localized: "Quem \xE9 Isabela?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810434
+    m_Localized: A padeira do vale. O forno dela acende antes do sol.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810435
+    m_Localized: A Receita
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810436
+    m_Localized: "Ela usa a receita da av\xF3, mas mudou uma coisa e n\xE3o conta
+      qual."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810437
+    m_Localized: "O Inverno Dif\xEDcil"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810438
+    m_Localized: "Num inverno em que faltou farinha, ela assou p\xE3o para o vale
+      inteiro com o que tinha guardado para si."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810439
+    m_Localized: O Caderno
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889734004736
+    m_Localized: "Guarda um caderno de receitas que ningu\xE9m nunca leu. Diz que
+      metade delas nunca deu certo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199040
+    m_Localized: Pescadora. Passa mais tempo no rio que em casa e considera isso
+      perfeitamente normal.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199041
+    m_Localized: "Quem \xE9 Joana?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199042
+    m_Localized: "A pescadora. Conhece cada curva do rio pelo som da \xE1gua."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199043
+    m_Localized: O Rio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199044
+    m_Localized: "Ela diz que o rio muda de humor com as esta\xE7\xF5es, e que d\xE1
+      para ouvir."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199045
+    m_Localized: O Peixe que Escapou
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199046
+    m_Localized: "Fala de um peixe enorme que escapou dela h\xE1 dez anos. Ningu\xE9m
+      sabe se \xE9 verdade."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199047
+    m_Localized: O Barco do Pai
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199048
+    m_Localized: "O barco que ela usa era do pai. J\xE1 trocou cada t\xE1bua, mas
+      insiste que \xE9 o mesmo barco."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889742393344
+    m_Localized: Herborista. Sabe o nome de todas as plantas e a serventia de quase
+      todas.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889742393345
+    m_Localized: "Quem \xE9 Clara?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889742393346
+    m_Localized: "A herborista. Se voc\xEA adoecer no vale, \xE9 a porta dela que
+      voc\xEA bate."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889742393347
+    m_Localized: O Jardim
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889742393348
+    m_Localized: "O jardim dela parece bagun\xE7ado, mas cada planta est\xE1 exatamente
+      onde ela quer."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889746587648
+    m_Localized: A Aprendiz
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889746587649
+    m_Localized: "Aprendeu com uma velha que morava na floresta e nunca teve nome,
+      s\xF3 apelido."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889750781952
+    m_Localized: A Planta que Falta
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889750781953
+    m_Localized: "Procura h\xE1 anos uma erva que s\xF3 viu uma vez, quando crian\xE7a.
+      N\xE3o sabe se existiu mesmo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889754976256
+    m_Localized: "Pastor. Conversa com as ovelhas e afirma, muito s\xE9rio, que elas
+      respondem."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889754976257
+    m_Localized: "Quem \xE9 Elias?"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889754976258
+    m_Localized: O pastor. Some no campo por dias e volta como se nada fosse.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889754976259
+    m_Localized: O Rebanho
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889759170560
+    m_Localized: "Ele d\xE1 nome a cada animal do rebanho e nunca confunde nenhum."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889759170561
+    m_Localized: A Noite da Tempestade
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889763364864
+    m_Localized: Passou uma noite inteira na chuva procurando uma ovelha perdida.
+      Achou.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889763364865
+    m_Localized: "O Sil\xEAncio"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889767559168
+    m_Localized: "Elias gosta do sil\xEAncio do campo porque, segundo ele, \xE9 o
+      \xFAnico lugar onde consegue pensar direito."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952847907741696
+    m_Localized: "A forja me mant\xE9m honesto. O metal avisa na hora quando voc\xEA
+      teve pressa."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952847911936000
+    m_Localized: "O vale cuida dos seus. Lugar devagar, mas ningu\xE9m fica estranho
+      por muito tempo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952847911936001
+    m_Localized: Como vai o trabalho?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952847911936002
+    m_Localized: Fale-me da vila.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952847911936003
+    m_Localized: Preciso ir andando.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952847911936004
+    m_Localized: "Outra coisa, ent\xE3o."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849082146816
+    m_Localized: "Quatro da manh\xE3, toda manh\xE3. O forno n\xE3o quer saber como
+      eu dormi."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849082146817
+    m_Localized: "O vale cuida dos seus. Lugar devagar, mas ningu\xE9m fica estranho
+      por muito tempo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849082146818
+    m_Localized: Como vai o trabalho?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849082146819
+    m_Localized: Fale-me da vila.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849082146820
+    m_Localized: Preciso ir andando.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849082146821
+    m_Localized: "Outra coisa, ent\xE3o."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849992310784
+    m_Localized: O rio andou generoso essa semana. Me pergunte de novo depois das
+      chuvas.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849992310785
+    m_Localized: "O vale cuida dos seus. Lugar devagar, mas ningu\xE9m fica estranho
+      por muito tempo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849992310786
+    m_Localized: Como vai o trabalho?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849992310787
+    m_Localized: Fale-me da vila.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849992310788
+    m_Localized: Preciso ir andando.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849992310789
+    m_Localized: "Outra coisa, ent\xE3o."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952850919251968
+    m_Localized: "O rebanho vai bem. Reclamam menos que gente, e com mais raz\xE3o."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952850919251969
+    m_Localized: "O vale cuida dos seus. Lugar devagar, mas ningu\xE9m fica estranho
+      por muito tempo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952850919251970
+    m_Localized: Como vai o trabalho?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952850919251971
+    m_Localized: Fale-me da vila.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952850919251972
+    m_Localized: Preciso ir andando.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952850919251973
+    m_Localized: "Outra coisa, ent\xE3o."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952851871358976
+    m_Localized: "Tudo que cresce tem serventia. A maioria s\xF3 descobre isso quando
+      precisa."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952851871358977
+    m_Localized: "O vale cuida dos seus. Lugar devagar, mas ningu\xE9m fica estranho
+      por muito tempo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952851871358978
+    m_Localized: Como vai o trabalho?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952851871358979
+    m_Localized: Fale-me da vila.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952851871358980
+    m_Localized: Preciso ir andando.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952851871358981
+    m_Localized: "Outra coisa, ent\xE3o."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952852894769152
+    m_Localized: "Medir tr\xEAs vezes, cortar uma. Nunca me arrependi de medir a
+      mais."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952852894769153
+    m_Localized: "O vale cuida dos seus. Lugar devagar, mas ningu\xE9m fica estranho
+      por muito tempo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952852894769154
+    m_Localized: Como vai o trabalho?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952852894769155
+    m_Localized: Fale-me da vila.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952852894769156
+    m_Localized: Preciso ir andando.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952852894769157
+    m_Localized: "Outra coisa, ent\xE3o."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952853951733760
+    m_Localized: "Ainda me achando por aqui. Me pergunte na pr\xF3xima esta\xE7\xE3o,
+      talvez eu saiba."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952853951733761
+    m_Localized: "O vale cuida dos seus. Lugar devagar, mas ningu\xE9m fica estranho
+      por muito tempo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952853951733762
+    m_Localized: Como vai o trabalho?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952853951733763
+    m_Localized: Fale-me da vila.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952853951733764
+    m_Localized: Preciso ir andando.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952853951733765
+    m_Localized: "Outra coisa, ent\xE3o."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952854845120512
+    m_Localized: "Meu trabalho \xE9 observar, e anda rendendo. Passa muita coisa
+      por esta pra\xE7a."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952854845120513
+    m_Localized: "O vale cuida dos seus. Lugar devagar, mas ningu\xE9m fica estranho
+      por muito tempo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952854845120514
+    m_Localized: Como vai o trabalho?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952854845120515
+    m_Localized: Fale-me da vila.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952854845120516
+    m_Localized: Preciso ir andando.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952854845120517
+    m_Localized: "Outra coisa, ent\xE3o."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952883303473152
+    m_Localized: Vamos negociar.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952883710320640
+    m_Localized: "Forja do Tom\xE1s"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952883882287104
+    m_Localized: Padaria da Isabela
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952884050059264
+    m_Localized: "Rem\xE9dios da Clara"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952884201054208
+    m_Localized: Oficina do Rui
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -548,7 +548,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 200, y: -48.042}
-  m_SizeDelta: {x: 360, y: 0}
+  m_SizeDelta: {x: 360, y: 40.22}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &18267931
 MonoBehaviour:
@@ -1501,6 +1501,15 @@ MonoBehaviour:
   npcId: joana
   npcDisplayName: Joana
   npcPortrait: {fileID: 21300000, guid: f77d08297be71ab40a8c67f994ede80c, type: 3}
+  npcBioLocalized:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 14950889738199040
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   npcBio: Pescadora. Passa mais tempo no rio que em casa e considera isso perfeitamente
     normal.
   availableDialogues:
@@ -1514,20 +1523,93 @@ MonoBehaviour:
   disableMovementDuringDialogue: 1
   enableGifting: 1
   enableSeedShop: 0
+  shopData: {fileID: 0}
   loreEntries:
   - requiredRelationship: 0
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889738199041
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: "Quem \xE9 Joana?"
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889738199042
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "A pescadora. Conhece cada curva do rio pelo som da \xE1gua."
   - requiredRelationship: 10
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889738199043
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: O Rio
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889738199044
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "Ela diz que o rio muda de humor com as esta\xE7\xF5es, e que d\xE1 para
       ouvir."
   - requiredRelationship: 40
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889738199045
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: O Peixe que Escapou
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889738199046
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "Fala de um peixe enorme que escapou dela h\xE1 dez anos. Ningu\xE9m sabe
       se \xE9 verdade."
   - requiredRelationship: 75
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889738199047
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: O Barco do Pai
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889738199048
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "O barco que ela usa era do pai. J\xE1 trocou cada t\xE1bua, mas insiste
       que \xE9 o mesmo barco."
   lovedGifts:
@@ -1541,6 +1623,9 @@ MonoBehaviour:
   dailyTalkAffinity: 1
   interactionSound: {fileID: 0}
   audioSource: {fileID: 0}
+  references:
+    version: 2
+    RefIds: []
 --- !u!70 &104627022
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -2270,10 +2355,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1723901092}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 70, y: -17}
+  m_SizeDelta: {x: 140, y: 34}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &147588275
 MonoBehaviour:
@@ -3100,10 +3185,10 @@ RectTransform:
   - {fileID: 581361488}
   m_Father: {fileID: 160584206}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 200, y: -297.068}
+  m_SizeDelta: {x: 360, y: 65.864}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &168436592
 MonoBehaviour:
@@ -5192,6 +5277,15 @@ MonoBehaviour:
   npcId: rui
   npcDisplayName: Rui
   npcPortrait: {fileID: 21300000, guid: 82fa96444ab9afe4097155c99c176944, type: 3}
+  npcBioLocalized:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 14950889700450312
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   npcBio: "Carpinteiro. Mede tr\xEAs vezes, corta uma, e reclama de quem faz diferente."
   availableDialogues:
   - {fileID: 11400000, guid: 91f35461049655b4f8f693323b2c2aa0, type: 2}
@@ -5204,20 +5298,93 @@ MonoBehaviour:
   disableMovementDuringDialogue: 1
   enableGifting: 1
   enableSeedShop: 0
+  shopData: {fileID: 11400000, guid: d7c918a57ca7bd34386739975cd4e4a6, type: 2}
   loreEntries:
   - requiredRelationship: 0
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889700450313
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: "Quem \xE9 Rui?"
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889700450314
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: O carpinteiro. Construiu metade dos telhados do vale.
   - requiredRelationship: 10
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889700450315
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: A Madeira
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889704644608
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "Ele escolhe a madeira batendo nela e ouvindo. Diz que cada \xE1rvore soa
       diferente."
   - requiredRelationship: 40
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889708838912
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: A Casa Torta
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889708838913
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "A primeira casa que construiu saiu torta. Ela ainda est\xE1 de p\xE9,
       e ele ainda tem vergonha."
   - requiredRelationship: 75
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889708838914
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: "O Ber\xE7o"
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889713033216
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "Guarda um ber\xE7o que fez para um filho que n\xE3o chegou a nascer. Nunca
       conseguiu desmontar."
   lovedGifts:
@@ -5231,6 +5398,9 @@ MonoBehaviour:
   dailyTalkAffinity: 1
   interactionSound: {fileID: 0}
   audioSource: {fileID: 0}
+  references:
+    version: 2
+    RefIds: []
 --- !u!70 &372578045
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -5457,6 +5627,15 @@ MonoBehaviour:
   npcId: tomas
   npcDisplayName: "Tom\xE1s"
   npcPortrait: {fileID: 21300000, guid: bbdf885e61d84944b8caed23f19ea260, type: 3}
+  npcBioLocalized:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 14950889520095232
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   npcBio: "O ferreiro do vale. Fala pouco, martela muito. Diz que metal honesto n\xE3o
     mente."
   availableDialogues:
@@ -5470,20 +5649,93 @@ MonoBehaviour:
   disableMovementDuringDialogue: 1
   enableGifting: 1
   enableSeedShop: 0
+  shopData: {fileID: 11400000, guid: 6ae688b2b68a78842ae783e4dfae53ef, type: 2}
   loreEntries:
   - requiredRelationship: 0
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889666895872
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: "Quem \xE9 Tom\xE1s?"
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889666895873
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "O ferreiro. Aprendeu o of\xEDcio com o av\xF4 e nunca saiu do vale."
   - requiredRelationship: 10
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889671090176
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: A Forja
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889671090177
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "A forja dele \xE9 a mais antiga do vale. O fogo nunca apagou completamente
       em quarenta anos."
   - requiredRelationship: 40
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889675284480
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: "As M\xE3os"
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889675284481
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "As cicatrizes nas m\xE3os dele contam cada erro que cometeu aprendendo.
       Ele diz que s\xE3o o diploma dele."
   - requiredRelationship: 75
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889679478784
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: O Sino
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889679478785
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "Tom\xE1s fundiu o sino da pra\xE7a quando tinha vinte anos. Toda vez que
       toca, ele para o que est\xE1 fazendo e escuta."
   lovedGifts:
@@ -5497,6 +5749,9 @@ MonoBehaviour:
   dailyTalkAffinity: 1
   interactionSound: {fileID: 0}
   audioSource: {fileID: 0}
+  references:
+    version: 2
+    RefIds: []
 --- !u!70 &382205512
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -6956,11 +7211,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3186371052809057053, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 3186371052809057053, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3186371052809057053, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
       propertyPath: m_LocalPosition.z
@@ -7462,7 +7717,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 200, y: -227.79398}
-  m_SizeDelta: {x: 360, y: 0}
+  m_SizeDelta: {x: 360, y: 26.82}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &507693513
 MonoBehaviour:
@@ -8681,10 +8936,10 @@ RectTransform:
   - {fileID: 1527073470}
   m_Father: {fileID: 168436591}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 204, y: -32.932}
+  m_SizeDelta: {x: 170, y: 65.864}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &581361489
 MonoBehaviour:
@@ -10515,6 +10770,15 @@ MonoBehaviour:
   npcId: clara
   npcDisplayName: Clara
   npcPortrait: {fileID: 21300000, guid: 49f4dc36b93d5044d9a208d1934a9d63, type: 3}
+  npcBioLocalized:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 14950889742393344
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   npcBio: Herborista. Sabe o nome de todas as plantas e a serventia de quase todas.
   availableDialogues:
   - {fileID: 11400000, guid: 51644b6ef8f5f4c4294517546c4c9dc0, type: 2}
@@ -10527,21 +10791,94 @@ MonoBehaviour:
   disableMovementDuringDialogue: 1
   enableGifting: 1
   enableSeedShop: 0
+  shopData: {fileID: 11400000, guid: ba45dab9dcb29f1479a8735afa597ab9, type: 2}
   loreEntries:
   - requiredRelationship: 0
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889742393345
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: "Quem \xE9 Clara?"
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889742393346
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "A herborista. Se voc\xEA adoecer no vale, \xE9 a porta dela que voc\xEA
       bate."
   - requiredRelationship: 10
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889742393347
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: O Jardim
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889742393348
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "O jardim dela parece bagun\xE7ado, mas cada planta est\xE1 exatamente
       onde ela quer."
   - requiredRelationship: 40
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889746587648
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: A Aprendiz
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889746587649
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "Aprendeu com uma velha que morava na floresta e nunca teve nome, s\xF3
       apelido."
   - requiredRelationship: 75
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889750781952
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: A Planta que Falta
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889750781953
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "Procura h\xE1 anos uma erva que s\xF3 viu uma vez, quando crian\xE7a.
       N\xE3o sabe se existiu mesmo."
   lovedGifts:
@@ -10556,6 +10893,9 @@ MonoBehaviour:
   dailyTalkAffinity: 1
   interactionSound: {fileID: 0}
   audioSource: {fileID: 0}
+  references:
+    version: 2
+    RefIds: []
 --- !u!70 &667461106
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -12795,10 +13135,10 @@ RectTransform:
   - {fileID: 42419267}
   m_Father: {fileID: 1723901092}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 152, y: -17}
+  m_SizeDelta: {x: 148, y: 34}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &810677167
 MonoBehaviour:
@@ -17124,6 +17464,15 @@ MonoBehaviour:
   npcId: bento
   npcDisplayName: Bento
   npcPortrait: {fileID: 21300000, guid: 47686aac9b783a040854c54813fce514, type: 3}
+  npcBioLocalized:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 14950889683673088
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   npcBio: "O mais velho do vale. Senta na pra\xE7a e comenta tudo que passa."
   availableDialogues:
   - {fileID: 11400000, guid: d7fe0afdaff45504d867f18dd2d105ea, type: 2}
@@ -17136,19 +17485,92 @@ MonoBehaviour:
   disableMovementDuringDialogue: 1
   enableGifting: 1
   enableSeedShop: 0
+  shopData: {fileID: 0}
   loreEntries:
   - requiredRelationship: 0
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889683673089
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: "Quem \xE9 Bento?"
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889683673090
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "O mais velho daqui. Viu o vale mudar tr\xEAs vezes."
   - requiredRelationship: 10
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889687867392
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: "As Hist\xF3rias"
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889687867393
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "Conta a mesma hist\xF3ria de jeitos diferentes, e todas as vers\xF5es
       s\xE3o boas."
   - requiredRelationship: 40
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889687867394
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: O Que Ele Viu
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889692061696
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: Estava aqui quando o vale quase secou. Diz que a terra se lembra disso.
   - requiredRelationship: 75
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889696256000
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: O Banco
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889696256001
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "O banco onde ele senta foi feito pelo pai dele. \xC9 o \xFAltimo peda\xE7o
       que restou da casa antiga."
   lovedGifts:
@@ -17163,6 +17585,9 @@ MonoBehaviour:
   dailyTalkAffinity: 1
   interactionSound: {fileID: 0}
   audioSource: {fileID: 0}
+  references:
+    version: 2
+    RefIds: []
 --- !u!70 &1118328934
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -23191,7 +23616,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 200, y: -112.425995}
-  m_SizeDelta: {x: 360, y: 0}
+  m_SizeDelta: {x: 360, y: 26.82}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1524430465
 MonoBehaviour:
@@ -23341,6 +23766,15 @@ MonoBehaviour:
   npcId: isabela
   npcDisplayName: Isabela
   npcPortrait: {fileID: 21300000, guid: a81031c64c36bde41904cf52b7031186, type: 3}
+  npcBioLocalized:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 14950889729810432
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   npcBio: "Padeira. Acorda \xE0s quatro da manh\xE3 e jura que o cheiro do p\xE3o
     \xE9 melhor que o gosto."
   availableDialogues:
@@ -23354,19 +23788,92 @@ MonoBehaviour:
   disableMovementDuringDialogue: 1
   enableGifting: 1
   enableSeedShop: 0
+  shopData: {fileID: 11400000, guid: 5980d35840475ef488c0c7050b372c1e, type: 2}
   loreEntries:
   - requiredRelationship: 0
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889729810433
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: "Quem \xE9 Isabela?"
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889729810434
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: A padeira do vale. O forno dela acende antes do sol.
   - requiredRelationship: 10
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889729810435
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: A Receita
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889729810436
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "Ela usa a receita da av\xF3, mas mudou uma coisa e n\xE3o conta qual."
   - requiredRelationship: 40
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889729810437
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: "O Inverno Dif\xEDcil"
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889729810438
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "Num inverno em que faltou farinha, ela assou p\xE3o para o vale inteiro
       com o que tinha guardado para si."
   - requiredRelationship: 75
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889729810439
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: O Caderno
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889734004736
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "Guarda um caderno de receitas que ningu\xE9m nunca leu. Diz que metade
       delas nunca deu certo."
   lovedGifts:
@@ -23381,6 +23888,9 @@ MonoBehaviour:
   dailyTalkAffinity: 1
   interactionSound: {fileID: 0}
   audioSource: {fileID: 0}
+  references:
+    version: 2
+    RefIds: []
 --- !u!70 &1526481663
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -24237,6 +24747,15 @@ MonoBehaviour:
   npcId: maren
   npcDisplayName: Maren
   npcPortrait: {fileID: -1472042890479170128, guid: 9f0e47816ac1ab242a36ee5fdd8ce891, type: 3}
+  npcBioLocalized:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 14950889696256002
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   npcBio: Maren arrived in the valley after losing three harvests in a row to a devastating
     drought. She lost everything she had planted in the eastern valley, but found
     something different in this land - a fertility that feels almost blessed. She
@@ -24256,24 +24775,97 @@ MonoBehaviour:
   disableMovementDuringDialogue: 1
   enableGifting: 1
   enableSeedShop: 1
+  shopData: {fileID: 0}
   loreEntries:
   - requiredRelationship: 0
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889700450304
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: Who is Maren?
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889700450305
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: Maren is the valley's seed merchant. She wakes before sunrise just to feel
       the soil between her fingers - there is a magic in that first moment when a
       seed opens.
   - requiredRelationship: 10
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889700450306
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: The Valley
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889700450307
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: This valley has history. People come, plant, harvest and leave. Something
       here keeps you - the land, the rhythm of the seasons. They say a druid blessed
       the deepest layers of the soil.
   - requiredRelationship: 40
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889700450308
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: The Eastern Valley Drought
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889700450309
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: Maren lost three harvests in a row to a devastating drought in the eastern
       valley. She arrived with nothing, but found a land that welcomed her differently.
       Her mother used to say the seed that survives winter blooms stronger.
   - requiredRelationship: 75
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889700450310
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: Her Father's Seed
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889700450311
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: Maren carries a mysterious seed found in her father's coat pocket the day
       he died. She never knew what plant it was - she never had the courage to plant
       it, afraid of losing the last thing she has of him.
@@ -24291,6 +24883,9 @@ MonoBehaviour:
   dailyTalkAffinity: 1
   interactionSound: {fileID: 0}
   audioSource: {fileID: 0}
+  references:
+    version: 2
+    RefIds: []
 --- !u!70 &1585185861
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -28715,6 +29310,15 @@ MonoBehaviour:
   npcId: nara
   npcDisplayName: Nara
   npcPortrait: {fileID: 21300000, guid: 9281e9bccf3a48642a91649cef738b6b, type: 3}
+  npcBioLocalized:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 14950889717227520
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   npcBio: "Viajante. Chegou faz pouco tempo e ainda n\xE3o decidiu se fica."
   availableDialogues:
   - {fileID: 11400000, guid: fc861b37ec4d7d149bf0e9368c3e8a14, type: 2}
@@ -28727,19 +29331,92 @@ MonoBehaviour:
   disableMovementDuringDialogue: 1
   enableGifting: 1
   enableSeedShop: 0
+  shopData: {fileID: 0}
   loreEntries:
   - requiredRelationship: 0
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889717227521
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: "Quem \xE9 Nara?"
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889717227522
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "Uma viajante. Ningu\xE9m sabe exatamente de onde ela veio."
   - requiredRelationship: 10
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889717227523
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: A Estrada
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889721421824
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "Ela fala de cidades que ningu\xE9m no vale nunca viu."
   - requiredRelationship: 40
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889721421825
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: O Motivo
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889725616128
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "N\xE3o veio para c\xE1 por acaso. Est\xE1 procurando algu\xE9m, mas n\xE3o
       diz quem."
   - requiredRelationship: 75
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889725616129
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: "A Decis\xE3o"
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889725616130
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "Depois de tanto tempo na estrada, come\xE7ou a considerar parar. Isso
       a assusta mais que viajar."
   lovedGifts:
@@ -28754,6 +29431,9 @@ MonoBehaviour:
   dailyTalkAffinity: 1
   interactionSound: {fileID: 0}
   audioSource: {fileID: 0}
+  references:
+    version: 2
+    RefIds: []
 --- !u!70 &1816704877
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -31365,10 +32045,10 @@ RectTransform:
   - {fileID: 327045114}
   m_Father: {fileID: 168436591}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 87, y: -32.932}
+  m_SizeDelta: {x: 32, y: 65.864}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2074861062
 MonoBehaviour:
@@ -32805,6 +33485,15 @@ MonoBehaviour:
   npcId: elias
   npcDisplayName: Elias
   npcPortrait: {fileID: 21300000, guid: a1f2a1a19e8bdc24199831ef4b08551b, type: 3}
+  npcBioLocalized:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 14950889754976256
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   npcBio: "Pastor. Conversa com as ovelhas e afirma, muito s\xE9rio, que elas respondem."
   availableDialogues:
   - {fileID: 11400000, guid: e8e05cdeadff04f4e840dbc13c643491, type: 2}
@@ -32817,18 +33506,91 @@ MonoBehaviour:
   disableMovementDuringDialogue: 1
   enableGifting: 1
   enableSeedShop: 0
+  shopData: {fileID: 0}
   loreEntries:
   - requiredRelationship: 0
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889754976257
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: "Quem \xE9 Elias?"
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889754976258
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: O pastor. Some no campo por dias e volta como se nada fosse.
   - requiredRelationship: 10
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889754976259
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: O Rebanho
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889759170560
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "Ele d\xE1 nome a cada animal do rebanho e nunca confunde nenhum."
   - requiredRelationship: 40
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889759170561
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: A Noite da Tempestade
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889763364864
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: Passou uma noite inteira na chuva procurando uma ovelha perdida. Achou.
   - requiredRelationship: 75
+    titleLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889763364865
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     title: "O Sil\xEAncio"
+    bodyLocalized:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 14950889767559168
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
     body: "Elias gosta do sil\xEAncio do campo porque, segundo ele, \xE9 o \xFAnico
       lugar onde consegue pensar direito."
   lovedGifts:
@@ -32842,6 +33604,9 @@ MonoBehaviour:
   dailyTalkAffinity: 1
   interactionSound: {fileID: 0}
   audioSource: {fileID: 0}
+  references:
+    version: 2
+    RefIds: []
 --- !u!70 &2138437088
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -32990,7 +33755,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 200, y: -170.10999}
-  m_SizeDelta: {x: 360, y: 0}
+  m_SizeDelta: {x: 360, y: 26.82}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2141346931
 MonoBehaviour:

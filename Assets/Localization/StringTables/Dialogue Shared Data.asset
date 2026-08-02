@@ -531,6 +531,542 @@ MonoBehaviour:
     m_Key: quest.clara_remedy.objective1
     m_Metadata:
       m_Items: []
+  - m_Id: 14950889520095232
+    m_Key: npc.tomas.bio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889666895872
+    m_Key: npc.tomas.lore0.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889666895873
+    m_Key: npc.tomas.lore0.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889671090176
+    m_Key: npc.tomas.lore1.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889671090177
+    m_Key: npc.tomas.lore1.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889675284480
+    m_Key: npc.tomas.lore2.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889675284481
+    m_Key: npc.tomas.lore2.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889679478784
+    m_Key: npc.tomas.lore3.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889679478785
+    m_Key: npc.tomas.lore3.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889683673088
+    m_Key: npc.bento.bio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889683673089
+    m_Key: npc.bento.lore0.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889683673090
+    m_Key: npc.bento.lore0.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889687867392
+    m_Key: npc.bento.lore1.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889687867393
+    m_Key: npc.bento.lore1.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889687867394
+    m_Key: npc.bento.lore2.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889692061696
+    m_Key: npc.bento.lore2.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889696256000
+    m_Key: npc.bento.lore3.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889696256001
+    m_Key: npc.bento.lore3.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889696256002
+    m_Key: npc.maren.bio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450304
+    m_Key: npc.maren.lore0.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450305
+    m_Key: npc.maren.lore0.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450306
+    m_Key: npc.maren.lore1.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450307
+    m_Key: npc.maren.lore1.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450308
+    m_Key: npc.maren.lore2.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450309
+    m_Key: npc.maren.lore2.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450310
+    m_Key: npc.maren.lore3.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450311
+    m_Key: npc.maren.lore3.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450312
+    m_Key: npc.rui.bio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450313
+    m_Key: npc.rui.lore0.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450314
+    m_Key: npc.rui.lore0.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889700450315
+    m_Key: npc.rui.lore1.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889704644608
+    m_Key: npc.rui.lore1.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889708838912
+    m_Key: npc.rui.lore2.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889708838913
+    m_Key: npc.rui.lore2.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889708838914
+    m_Key: npc.rui.lore3.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889713033216
+    m_Key: npc.rui.lore3.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889717227520
+    m_Key: npc.nara.bio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889717227521
+    m_Key: npc.nara.lore0.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889717227522
+    m_Key: npc.nara.lore0.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889717227523
+    m_Key: npc.nara.lore1.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889721421824
+    m_Key: npc.nara.lore1.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889721421825
+    m_Key: npc.nara.lore2.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889725616128
+    m_Key: npc.nara.lore2.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889725616129
+    m_Key: npc.nara.lore3.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889725616130
+    m_Key: npc.nara.lore3.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810432
+    m_Key: npc.isabela.bio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810433
+    m_Key: npc.isabela.lore0.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810434
+    m_Key: npc.isabela.lore0.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810435
+    m_Key: npc.isabela.lore1.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810436
+    m_Key: npc.isabela.lore1.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810437
+    m_Key: npc.isabela.lore2.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810438
+    m_Key: npc.isabela.lore2.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889729810439
+    m_Key: npc.isabela.lore3.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889734004736
+    m_Key: npc.isabela.lore3.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199040
+    m_Key: npc.joana.bio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199041
+    m_Key: npc.joana.lore0.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199042
+    m_Key: npc.joana.lore0.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199043
+    m_Key: npc.joana.lore1.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199044
+    m_Key: npc.joana.lore1.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199045
+    m_Key: npc.joana.lore2.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199046
+    m_Key: npc.joana.lore2.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199047
+    m_Key: npc.joana.lore3.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889738199048
+    m_Key: npc.joana.lore3.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889742393344
+    m_Key: npc.clara.bio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889742393345
+    m_Key: npc.clara.lore0.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889742393346
+    m_Key: npc.clara.lore0.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889742393347
+    m_Key: npc.clara.lore1.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889742393348
+    m_Key: npc.clara.lore1.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889746587648
+    m_Key: npc.clara.lore2.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889746587649
+    m_Key: npc.clara.lore2.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889750781952
+    m_Key: npc.clara.lore3.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889750781953
+    m_Key: npc.clara.lore3.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889754976256
+    m_Key: npc.elias.bio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889754976257
+    m_Key: npc.elias.lore0.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889754976258
+    m_Key: npc.elias.lore0.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889754976259
+    m_Key: npc.elias.lore1.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889759170560
+    m_Key: npc.elias.lore1.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889759170561
+    m_Key: npc.elias.lore2.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889763364864
+    m_Key: npc.elias.lore2.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889763364865
+    m_Key: npc.elias.lore3.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14950889767559168
+    m_Key: npc.elias.lore3.body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952847907741696
+    m_Key: dialogue.tomas.default.work
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952847911936000
+    m_Key: dialogue.tomas.default.village
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952847911936001
+    m_Key: dialogue.tomas.default.choice.work
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952847911936002
+    m_Key: dialogue.tomas.default.choice.village
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952847911936003
+    m_Key: dialogue.tomas.default.choice.bye
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952847911936004
+    m_Key: dialogue.tomas.default.choice.back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849082146816
+    m_Key: dialogue.isabela.default.work
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849082146817
+    m_Key: dialogue.isabela.default.village
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849082146818
+    m_Key: dialogue.isabela.default.choice.work
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849082146819
+    m_Key: dialogue.isabela.default.choice.village
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849082146820
+    m_Key: dialogue.isabela.default.choice.bye
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849082146821
+    m_Key: dialogue.isabela.default.choice.back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849992310784
+    m_Key: dialogue.joana.default.work
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849992310785
+    m_Key: dialogue.joana.default.village
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849992310786
+    m_Key: dialogue.joana.default.choice.work
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849992310787
+    m_Key: dialogue.joana.default.choice.village
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849992310788
+    m_Key: dialogue.joana.default.choice.bye
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952849992310789
+    m_Key: dialogue.joana.default.choice.back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952850919251968
+    m_Key: dialogue.elias.default.work
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952850919251969
+    m_Key: dialogue.elias.default.village
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952850919251970
+    m_Key: dialogue.elias.default.choice.work
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952850919251971
+    m_Key: dialogue.elias.default.choice.village
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952850919251972
+    m_Key: dialogue.elias.default.choice.bye
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952850919251973
+    m_Key: dialogue.elias.default.choice.back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952851871358976
+    m_Key: dialogue.clara.default.work
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952851871358977
+    m_Key: dialogue.clara.default.village
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952851871358978
+    m_Key: dialogue.clara.default.choice.work
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952851871358979
+    m_Key: dialogue.clara.default.choice.village
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952851871358980
+    m_Key: dialogue.clara.default.choice.bye
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952851871358981
+    m_Key: dialogue.clara.default.choice.back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952852894769152
+    m_Key: dialogue.rui.default.work
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952852894769153
+    m_Key: dialogue.rui.default.village
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952852894769154
+    m_Key: dialogue.rui.default.choice.work
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952852894769155
+    m_Key: dialogue.rui.default.choice.village
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952852894769156
+    m_Key: dialogue.rui.default.choice.bye
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952852894769157
+    m_Key: dialogue.rui.default.choice.back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952853951733760
+    m_Key: dialogue.nara.default.work
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952853951733761
+    m_Key: dialogue.nara.default.village
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952853951733762
+    m_Key: dialogue.nara.default.choice.work
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952853951733763
+    m_Key: dialogue.nara.default.choice.village
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952853951733764
+    m_Key: dialogue.nara.default.choice.bye
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952853951733765
+    m_Key: dialogue.nara.default.choice.back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952854845120512
+    m_Key: dialogue.bento.default.work
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952854845120513
+    m_Key: dialogue.bento.default.village
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952854845120514
+    m_Key: dialogue.bento.default.choice.work
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952854845120515
+    m_Key: dialogue.bento.default.choice.village
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952854845120516
+    m_Key: dialogue.bento.default.choice.bye
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952854845120517
+    m_Key: dialogue.bento.default.choice.back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952883303473152
+    m_Key: dialogue.choice.browse_shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952883710320640
+    m_Key: shop.tomas.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952883882287104
+    m_Key: shop.isabela.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952884050059264
+    m_Key: shop.clara.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14952884201054208
+    m_Key: shop.rui.title
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
