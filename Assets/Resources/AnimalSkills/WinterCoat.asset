@@ -15,7 +15,7 @@ MonoBehaviour:
   skillId: winter_coat
   skillName: Winter Coat
   skillType: 1
-  skillIcon: {fileID: 0}
+  skillIcon: {fileID: 21300000, guid: 57a8adc17dc4cf145bc4065d7daecc6f, type: 3}
   description: A thick seasonal coat blunts blows that would otherwise land hard.
   unlockCondition:
     conditionType: 5

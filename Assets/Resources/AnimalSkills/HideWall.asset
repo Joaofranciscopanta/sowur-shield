@@ -15,7 +15,7 @@ MonoBehaviour:
   skillId: hide_wall
   skillName: Hide Wall
   skillType: 0
-  skillIcon: {fileID: 0}
+  skillIcon: {fileID: 21300000, guid: c3f1e954c19e02f468a4b8b57e1a9648, type: 3}
   description: Braces behind thick hide, sharply reducing incoming damage for several
     turns.
   unlockCondition:

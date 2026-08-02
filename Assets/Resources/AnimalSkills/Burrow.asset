@@ -15,7 +15,7 @@ MonoBehaviour:
   skillId: burrow
   skillName: Burrow
   skillType: 0
-  skillIcon: {fileID: 0}
+  skillIcon: {fileID: 21300000, guid: c958a9a30bde6ea41aff7f09e538daf7, type: 3}
   description: Vanishes underground for a moment, avoiding the worst of the next
     blow.
   unlockCondition:

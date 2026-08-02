@@ -15,7 +15,7 @@ MonoBehaviour:
   skillId: restoring_song
   skillName: Restoring Song
   skillType: 0
-  skillIcon: {fileID: 0}
+  skillIcon: {fileID: 21300000, guid: 6f853cddf9b38494d9a9c994f1da5767, type: 3}
   description: A clear song that mends the wounds of every ally who hears it.
   unlockCondition:
     conditionType: 1

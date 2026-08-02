@@ -15,17 +15,35 @@ MonoBehaviour:
   skillId: supporters_blessing
   skillName: Supporter's Blessing
   skillType: 1
-  skillIcon: {fileID: 0}
+  skillIcon: {fileID: 21300000, guid: f2d9d992f3c41734f9577b180fbec738, type: 3}
   description: Support-class animals are hardened by experience, gaining a permanent
     defense boost.
   unlockCondition:
     conditionType: 1
     requiredClass: Support
-    requiredFamily:
+    requiredFamily: 
     minFamilyCount: 0
     minHappiness: 0
-    requiredSeason:
+    requiredSeason: 
     combinedConditions: []
+    requiresText:
+      m_TableReference:
+        m_TableCollectionName: 
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    andText:
+      m_TableReference:
+        m_TableCollectionName: 
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
   damageMultiplier: 1
   defenseMultiplier: 1.15
   speedMultiplier: 1
@@ -37,3 +55,33 @@ MonoBehaviour:
   statusEffect: 0
   statusEffectValue: 0
   statusEffectDuration: 0
+  fullInfoHeaderText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  fullInfoDescText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  fullInfoUnlockText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []

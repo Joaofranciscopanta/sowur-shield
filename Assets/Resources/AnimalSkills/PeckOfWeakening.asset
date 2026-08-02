@@ -15,17 +15,35 @@ MonoBehaviour:
   skillId: peck_of_weakening
   skillName: Peck of Weakening
   skillType: 0
-  skillIcon: {fileID: 0}
+  skillIcon: {fileID: 21300000, guid: 68f0d9ce6a27a0941bdeb6830ae294ad, type: 3}
   description: A sharp peck that leaves the target's attack and defense weakened
     for a few turns.
   unlockCondition:
     conditionType: 0
-    requiredClass:
-    requiredFamily:
+    requiredClass: 
+    requiredFamily: 
     minFamilyCount: 0
     minHappiness: 0
-    requiredSeason:
+    requiredSeason: 
     combinedConditions: []
+    requiresText:
+      m_TableReference:
+        m_TableCollectionName: 
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    andText:
+      m_TableReference:
+        m_TableCollectionName: 
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
   damageMultiplier: 1.1
   defenseMultiplier: 1
   speedMultiplier: 1
@@ -37,3 +55,33 @@ MonoBehaviour:
   statusEffect: 5
   statusEffectValue: 0.2
   statusEffectDuration: 3
+  fullInfoHeaderText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  fullInfoDescText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  fullInfoUnlockText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []

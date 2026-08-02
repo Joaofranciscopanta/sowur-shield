@@ -15,7 +15,7 @@ MonoBehaviour:
   skillId: flock_call
   skillName: Flock Call
   skillType: 0
-  skillIcon: {fileID: 0}
+  skillIcon: {fileID: 21300000, guid: 8e4379e1878d51d40a1ebbfabd5fdedb, type: 3}
   description: A rallying cry that sharpens the whole team's attacks for a short
     while.
   unlockCondition:

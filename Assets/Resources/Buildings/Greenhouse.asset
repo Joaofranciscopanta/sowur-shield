@@ -31,7 +31,7 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 5c1de8eb7b2572d4abe5d49cc3c4a9c3, type: 3}
   goldCost: 1000
   materialItemName: 
   materialQuantity: 0
