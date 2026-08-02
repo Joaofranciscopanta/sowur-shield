@@ -12,19 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5140548ee5c72c849a700d17cf1935d2, type: 3}
   m_Name: LavaSalamander
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.EnemyData
-  enemyName: Lava Salamander
+  enemyName: Magma Lizard
   displayName:
     m_TableReference:
       m_TableCollectionName: Combat
     m_TableEntryReference:
-      m_KeyId: 0
-      m_Key: enemy.LavaSalamander.name
+      m_KeyId: 14964601626812416
+      m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
   enemyType: 0
   description: 
-  sprite: {fileID: 0}
+  sprite: {fileID: 6645288644207278070, guid: 636b5cd1937d1c547811340a168e2f65, type: 3}
   animatorController: {fileID: 0}
   spriteScale: 1
   baseHealth: 90

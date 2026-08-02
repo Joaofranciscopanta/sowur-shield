@@ -533,6 +533,54 @@ MonoBehaviour:
       Trae tus mejores animales \u2014 bien alimentados y acariciados."
     m_Metadata:
       m_Items: []
+  - m_Id: 14964601198993408
+    m_Localized: Lobo de Nieve
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601421291520
+    m_Localized: Elemental de Hielo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601454845952
+    m_Localized: "Bandido de la Monta\xF1a"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601488400384
+    m_Localized: Yeti de Piedra
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601521954816
+    m_Localized: "G\xF3lem de Escarcha"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601555509248
+    m_Localized: "Tit\xE1n de la Monta\xF1a"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601593257984
+    m_Localized: Limo de Fuego
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601626812416
+    m_Localized: Lagarto de Magma
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601664561152
+    m_Localized: Caballero de Lava
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601698115584
+    m_Localized: Demonio Infernal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601731670016
+    m_Localized: Coloso de Llamas
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601765224448
+    m_Localized: "Se\xF1or de las Cenizas"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

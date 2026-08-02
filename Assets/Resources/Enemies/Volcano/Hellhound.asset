@@ -12,19 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5140548ee5c72c849a700d17cf1935d2, type: 3}
   m_Name: Hellhound
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.EnemyData
-  enemyName: Hellhound
+  enemyName: Lava Knight
   displayName:
     m_TableReference:
       m_TableCollectionName: Combat
     m_TableEntryReference:
-      m_KeyId: 0
-      m_Key: enemy.Hellhound.name
+      m_KeyId: 14964601664561152
+      m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
   enemyType: 1
   description: 
-  sprite: {fileID: 0}
+  sprite: {fileID: -6268758483898754561, guid: 3b32b9c60cf3f2e4f95b76139e2bc08e, type: 3}
   animatorController: {fileID: 0}
   spriteScale: 1
   baseHealth: 140

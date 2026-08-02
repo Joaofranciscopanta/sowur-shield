@@ -12,19 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5140548ee5c72c849a700d17cf1935d2, type: 3}
   m_Name: RockHound
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.EnemyData
-  enemyName: Rock Hound
+  enemyName: Mountain Bandit
   displayName:
     m_TableReference:
       m_TableCollectionName: Combat
     m_TableEntryReference:
-      m_KeyId: 0
-      m_Key: enemy.RockHound.name
+      m_KeyId: 14964601454845952
+      m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
   enemyType: 0
   description: 
-  sprite: {fileID: 0}
+  sprite: {fileID: -7989273504415352845, guid: 7256b211b5f949d429d4f5a9b1cd61a8, type: 3}
   animatorController: {fileID: 0}
   spriteScale: 1
   baseHealth: 85

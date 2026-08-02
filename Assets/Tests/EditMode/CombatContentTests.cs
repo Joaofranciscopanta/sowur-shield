@@ -8,15 +8,20 @@ namespace SowurShield.Tests
 {
 
 /// <summary>
-/// Tests the shipped skill *content* rather than the skill system.
+/// Tests the shipped combat *content* rather than the combat systems.
 ///
-/// The system had been implemented and tested for a while, but only seven skills existed and
-/// they were all offensive status effects, so whole mechanics were unreachable: nothing applied
-/// Stun, no skill healed, none buffed an ally, and the HappinessThreshold and Season unlock
-/// conditions had never been used by any asset. These tests fail if that coverage regresses —
-/// a data-only gap that no system test would catch.
+/// Both halves of this file cover the same class of bug: a system that works, sitting next to
+/// data that never reaches it, with nothing failing loudly enough to notice.
+///
+/// Skills: the system had been implemented and tested for a while, but only seven skills
+/// existed and they were all offensive status effects, so whole mechanics were unreachable —
+/// nothing applied Stun, no skill healed, none buffed an ally, and the HappinessThreshold and
+/// Season unlock conditions had never been used by any asset.
+///
+/// Enemies: Mountain and Volcano had 12 art files on disk that no EnemyData referenced,
+/// because the filenames described different creatures than the data did.
 /// </summary>
-public class AnimalSkillContentTests
+public class CombatContentTests
 {
     private AnimalSkill[] _skills;
     private AnimalData[] _animals;
@@ -197,6 +202,70 @@ public class AnimalSkillContentTests
             System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
         Assert.IsNotNull(field, $"Expected private field '{fieldName}' on {target.GetType().Name}.");
         field.SetValue(target, value);
+    }
+
+    // ── Enemy art wiring (2026-08-02) ───────────────────────────────────────────────────
+    //
+    // Mountain and Volcano shipped with 12 PNGs on disk whose filenames described entirely
+    // different creatures from the EnemyData assets ("Enemy 19 — Snow Wolf" vs "ArmoredBear").
+    // The data had sprite: {fileID: 0} and rendered as placeholder spheres in combat while
+    // usable art sat unused beside it. The enemies were renamed to match the art.
+
+    [Test]
+    public void MountainAndVolcanoEnemies_HaveSprites()
+    {
+        // IronGolem and ObsidianGolem are knowingly excluded: there are 6 art files per biome
+        // for 7 enemies each, and giving two enemies the same sprite would be worse than none.
+        var known = new HashSet<string> { "IronGolem", "ObsidianGolem" };
+
+        var missing = Resources.LoadAll<SowurShield.Combat.EnemyData>("Enemies")
+            .Where(e => e != null && !known.Contains(e.name) && e.sprite == null)
+            .Select(e => e.name)
+            .ToList();
+
+        Assert.IsEmpty(missing,
+            "These enemies have no sprite and fall back to a placeholder sphere in combat: " +
+            string.Join(", ", missing));
+    }
+
+    [Test]
+    public void EveryEnemy_HasALocalizedDisplayName()
+    {
+        var unwired = Resources.LoadAll<SowurShield.Combat.EnemyData>("Enemies")
+            .Where(e => e != null && e.displayName.IsEmpty)
+            .Select(e => e.name)
+            .ToList();
+
+        Assert.IsEmpty(unwired,
+            "These enemies have no displayName table entry, so GetDisplayName falls back to the " +
+            "internal enemyName and the player sees an untranslated identifier: " +
+            string.Join(", ", unwired));
+    }
+
+    [Test]
+    public void EnemyLocalizationKeys_MatchTheirAssetName()
+    {
+        // Project convention, followed by every enemy: `enemyName` is the spaced English name
+        // ("Cave Bat") while the key uses the PascalCase asset name ("enemy.CaveBat.name").
+        // When an enemy is renamed, updating one without the other leaves the key pointing at
+        // the old creature — which still resolves, so nothing errors and a wrong name ships.
+        var mismatched = new List<string>();
+
+        foreach (var e in Resources.LoadAll<SowurShield.Combat.EnemyData>("Enemies"))
+        {
+            if (e == null || e.displayName.IsEmpty) continue;
+
+            string key = e.displayName.TableEntryReference.Key;
+            if (string.IsNullOrEmpty(key)) continue;   // bound by id, nothing to compare
+
+            // Spacing is the only difference the convention allows between the two.
+            string keyStem = key.Replace("enemy.", "").Replace(".name", "");
+            if (keyStem != e.enemyName.Replace(" ", ""))
+                mismatched.Add($"{e.name}: key '{key}' but enemyName '{e.enemyName}'");
+        }
+
+        Assert.IsEmpty(mismatched,
+            "Localization key and enemyName disagree: " + string.Join("; ", mismatched));
     }
 }
 
