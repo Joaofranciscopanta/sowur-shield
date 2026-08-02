@@ -529,6 +529,54 @@ MonoBehaviour:
       best animals \u2014 fully fed and petted."
     m_Metadata:
       m_Items: []
+  - m_Id: 14964601198993408
+    m_Localized: Snow Wolf
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601421291520
+    m_Localized: Ice Elemental
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601454845952
+    m_Localized: Mountain Bandit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601488400384
+    m_Localized: Stone Yeti
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601521954816
+    m_Localized: Frost Golem
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601555509248
+    m_Localized: Mountain Titan
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601593257984
+    m_Localized: Fire Slime
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601626812416
+    m_Localized: Magma Lizard
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601664561152
+    m_Localized: Lava Knight
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601698115584
+    m_Localized: Infernal Demon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601731670016
+    m_Localized: Flame Colossus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601765224448
+    m_Localized: Lord of Ashes
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

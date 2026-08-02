@@ -532,6 +532,54 @@ MonoBehaviour:
       Traga seus melhores animais \u2014 bem alimentados e acariciados."
     m_Metadata:
       m_Items: []
+  - m_Id: 14964601198993408
+    m_Localized: Lobo da Neve
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601421291520
+    m_Localized: Elemental de Gelo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601454845952
+    m_Localized: Bandido da Montanha
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601488400384
+    m_Localized: Yeti de Pedra
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601521954816
+    m_Localized: Golem de Gelo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601555509248
+    m_Localized: "Tit\xE3 da Montanha"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601593257984
+    m_Localized: Gosma de Fogo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601626812416
+    m_Localized: Lagarto de Magma
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601664561152
+    m_Localized: Cavaleiro de Lava
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601698115584
+    m_Localized: "Dem\xF4nio Infernal"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601731670016
+    m_Localized: Colosso de Chamas
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601765224448
+    m_Localized: Senhor das Cinzas
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

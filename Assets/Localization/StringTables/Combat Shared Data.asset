@@ -515,6 +515,54 @@ MonoBehaviour:
     m_Key: stage.MagmaCoreFinalBoss.description
     m_Metadata:
       m_Items: []
+  - m_Id: 14964601198993408
+    m_Key: enemy.SnowWolf.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601421291520
+    m_Key: enemy.IceElemental.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601454845952
+    m_Key: enemy.MountainBandit.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601488400384
+    m_Key: enemy.StoneYeti.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601521954816
+    m_Key: enemy.FrostGolem.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601555509248
+    m_Key: enemy.MountainTitan.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601593257984
+    m_Key: enemy.FireSlime.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601626812416
+    m_Key: enemy.MagmaLizard.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601664561152
+    m_Key: enemy.LavaKnight.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601698115584
+    m_Key: enemy.InfernalDemon.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601731670016
+    m_Key: enemy.FlameColossus.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14964601765224448
+    m_Key: enemy.LordOfAshes.name
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

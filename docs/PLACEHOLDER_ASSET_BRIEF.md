@@ -219,7 +219,39 @@ Confirmado por auditoria — já existe e está ligado:
 
 ---
 
-## ⚠️ Achado importante: Mountain e Volcano
+## ✅ RESOLVIDO: Mountain e Volcano
+
+Você escolheu renomear os dados para bater com a arte. **Feito** — os 12 inimigos foram
+renomeados e cada um recebeu seu sprite. Nada de arte nova foi necessário.
+
+| Asset (arquivo mantido) | Novo nome | Arte |
+|---|---|---|
+| `Harpy` | Snow Wolf / Lobo da Neve | Enemy 19 |
+| `ThunderEagle` | Ice Elemental / Elemental de Gelo | Enemy 20 |
+| `RockHound` | Mountain Bandit / Bandido da Montanha | Enemy 21 |
+| `ArmoredBear` | Stone Yeti / Yeti de Pedra | Enemy 22 |
+| `FrostDrake` | Frost Golem / Golem de Gelo | Enemy 23 |
+| `MountainKing` | Mountain Titan / Titã da Montanha | Enemy 24 |
+| `MagmaSlime` | Fire Slime / Gosma de Fogo | Enemy 25 |
+| `LavaSalamander` | Magma Lizard / Lagarto de Magma | Enemy 26 |
+| `Hellhound` | Lava Knight / Cavaleiro de Lava | Enemy 27 |
+| `FireImp` | Infernal Demon / Demônio Infernal | Enemy 28 |
+| `VolcanicDrake` | Flame Colossus / Colosso de Chamas | Enemy 29 |
+| `InfernoDragon` | Lord of Ashes / Senhor das Cinzas | Enemy 30 |
+
+Casei arte com stats, não por ordem alfabética: o mais rápido e frágil virou o lobo, o
+bruto lento virou o yeti, e o inimigo de maior HP de cada bioma ficou com a arte de boss.
+
+Os nomes dos **arquivos** `.asset` não mudaram de propósito — cada um é referenciado por
+uma StageData, e o nome do arquivo não é visto pelo jogador.
+
+**Sobram 2 inimigos sem arte:** `IronGolem` e `ObsidianGolem`. São 6 artes por bioma para
+7 inimigos. Se quiser cobrir esses dois, precisaria de 2 sprites novos (1024×1024, mesmo
+estilo dos outros) — ou dá para deletar os dois assets, já que cada bioma continua com 6
+inimigos.
+
+<details>
+<summary>Contexto original do problema (resolvido)</summary>
 
 Os 14 inimigos de Mountain e Volcano aparecem como "sem sprite" nos dados, **mas a
 arte existe** — 12 PNGs em `Assets/Art/Enemies/Mountain/` e `/Volcano/`.
@@ -243,7 +275,9 @@ diferentes das que os dados definem.
 2. **Gerar 14 sprites novos** com os nomes que os dados já usam (ArmoredBear,
    FrostDrake, MagmaSlime...). Aproveita as stats e o balanceamento que já existem.
 
-Me diga qual prefere que eu preparo os prompts ou faço o religamento.
+**Escolhida: opção 1.**
+
+</details>
 
 ---
 
