@@ -72,6 +72,8 @@ public class CombatUnitVFX : MonoBehaviour
 
         GameObject iconObj = new GameObject($"StatusIcon_{type}");
         iconObj.transform.SetParent(transform, false);
+        // Final placement happens in RepositionStatusIcons once the row width is known.
+        PlaceUnscaledAbove(iconObj.transform, statusIconOffset);
 
         TextMeshPro tmp = iconObj.AddComponent<TextMeshPro>();
         tmp.text = style.label;
@@ -95,6 +97,29 @@ public class CombatUnitVFX : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Place a text child at a world-space offset above the unit, cancelling the parent's
+    /// scale so the text is upright and the same size on every unit.
+    ///
+    /// Player units are mirrored to face left (localScale.x = -5) while enemy sprites sit
+    /// around 0.08. A text child inherits all of it, so damage numbers rendered mirrored
+    /// and 5x oversized on player units and near-invisible on enemies, and the local-space
+    /// offsets were multiplied by the same factor. Both are normalized here.
+    /// </summary>
+    private static void PlaceUnscaledAbove(Transform child, Vector3 worldOffset)
+    {
+        Vector3 parentScale = child.parent != null ? child.parent.lossyScale : Vector3.one;
+
+        child.localScale = new Vector3(
+            Mathf.Approximately(parentScale.x, 0f) ? 1f : 1f / parentScale.x,
+            Mathf.Approximately(parentScale.y, 0f) ? 1f : 1f / parentScale.y,
+            Mathf.Approximately(parentScale.z, 0f) ? 1f : 1f / parentScale.z);
+
+        // Offsets are authored as world distances; applying them in local space would
+        // scale them by the parent too.
+        child.position = (child.parent != null ? child.parent.position : Vector3.zero) + worldOffset;
+    }
+
     private void RepositionStatusIcons()
     {
         int i = 0;
@@ -103,7 +128,7 @@ public class CombatUnitVFX : MonoBehaviour
         {
             if (icon == null) continue;
             float x = -totalWidth / 2f + i * statusIconSpacing;
-            icon.transform.localPosition = statusIconOffset + new Vector3(x, 0, 0);
+            PlaceUnscaledAbove(icon.transform, statusIconOffset + new Vector3(x, 0, 0));
             i++;
         }
     }
@@ -132,7 +157,7 @@ public class CombatUnitVFX : MonoBehaviour
     {
         GameObject textObj = new GameObject("FloatingText");
         textObj.transform.SetParent(transform, false);
-        textObj.transform.localPosition = floatingTextOffset;
+        PlaceUnscaledAbove(textObj.transform, floatingTextOffset);
 
         TextMeshPro tmp = textObj.AddComponent<TextMeshPro>();
         tmp.text = text;

@@ -25,10 +25,13 @@ public class BattleCommandUI : MonoBehaviour
     private TextMeshProUGUI unitNameLabel;
     private TextMeshProUGUI promptLabel;
     private Button attackButton;
+    private TextMeshProUGUI attackLabel;
     private Button skillButton;
     private TextMeshProUGUI skillLabel;
     private Button defendButton;
+    private TextMeshProUGUI defendLabel;
     private Button cancelTargetButton;
+    private TextMeshProUGUI cancelLabel;
 
     private TurnManager boundManager;
     private CombatUnit commandingUnit;
@@ -100,8 +103,11 @@ public class BattleCommandUI : MonoBehaviour
         panelRect.anchorMin = new Vector2(0.5f, 0f);
         panelRect.anchorMax = new Vector2(0.5f, 0f);
         panelRect.pivot = new Vector2(0.5f, 0f);
-        panelRect.anchoredPosition = new Vector2(0f, 110f);
-        panelRect.sizeDelta = new Vector2(560f, 190f);
+        panelRect.anchoredPosition = new Vector2(0f, 100f);
+        // 300 tall, not 190: panel_wood_generic spends ~72px per side on frame art, so a
+        // 190-tall panel leaves only ~46px of interior and the 52px action row spilled
+        // over the bottom frame. 300 leaves ~156px for the name, prompt and buttons.
+        panelRect.sizeDelta = new Vector2(620f, 300f);
 
         var bg = panel.AddComponent<Image>();
         Sprite panelSprite = Resources.Load<Sprite>("Sprites/UI/Panels/panel_wood_generic");
@@ -121,39 +127,44 @@ public class BattleCommandUI : MonoBehaviour
         // panel_wood_generic spends roughly 72px per side on its frame art and its
         // interior is cream, so content is inset and text must be dark to stay readable.
         bool onWood = panelSprite != null;
-        float inset = onWood ? 60f : 20f;
+        // Measured, not guessed: the frame art is ~72px per side at this panel width.
+        float inset = onWood ? 72f : 20f;
         Color textColor = onWood
             ? (theme != null ? theme.textDark : new Color(0.18f, 0.12f, 0.06f))
             : Color.white;
+
+        // Stack inside the interior, top-down: name, prompt, then the action row pinned
+        // above the bottom frame. Heights are explicit so the total is verifiable against
+        // the panel height rather than emerging from fractions of the inset.
+        const float nameHeight = 32f;
+        const float promptHeight = 28f;
+        const float rowHeight = 52f;
 
         unitNameLabel = CreateLabel(panel.transform, "UnitName", 24, FontStyles.Bold, textColor);
         var nameRect = unitNameLabel.rectTransform;
         nameRect.anchorMin = new Vector2(0f, 1f);
         nameRect.anchorMax = new Vector2(1f, 1f);
         nameRect.pivot = new Vector2(0.5f, 1f);
-        nameRect.offsetMin = new Vector2(inset, 0f);
-        nameRect.offsetMax = new Vector2(-inset, -inset * 0.45f);
-        nameRect.sizeDelta = new Vector2(nameRect.sizeDelta.x, 30f);
+        nameRect.offsetMin = new Vector2(inset, -inset - nameHeight);
+        nameRect.offsetMax = new Vector2(-inset, -inset);
 
         promptLabel = CreateLabel(panel.transform, "Prompt", 17, FontStyles.Italic, textColor);
         var promptRect = promptLabel.rectTransform;
         promptRect.anchorMin = new Vector2(0f, 1f);
         promptRect.anchorMax = new Vector2(1f, 1f);
         promptRect.pivot = new Vector2(0.5f, 1f);
-        promptRect.offsetMin = new Vector2(inset, 0f);
-        promptRect.offsetMax = new Vector2(-inset, -inset * 0.45f - 32f);
-        promptRect.sizeDelta = new Vector2(promptRect.sizeDelta.x, 26f);
+        promptRect.offsetMin = new Vector2(inset, -inset - nameHeight - promptHeight);
+        promptRect.offsetMax = new Vector2(-inset, -inset - nameHeight);
 
-        // Action row along the bottom of the panel interior.
+        // Action row sits just above the bottom frame art.
         var row = new GameObject("Actions");
         row.transform.SetParent(panel.transform, false);
         var rowRect = row.AddComponent<RectTransform>();
         rowRect.anchorMin = new Vector2(0f, 0f);
         rowRect.anchorMax = new Vector2(1f, 0f);
         rowRect.pivot = new Vector2(0.5f, 0f);
-        rowRect.offsetMin = new Vector2(inset, inset * 0.5f);
-        rowRect.offsetMax = new Vector2(-inset, 0f);
-        rowRect.sizeDelta = new Vector2(rowRect.sizeDelta.x, 52f);
+        rowRect.offsetMin = new Vector2(inset, inset);
+        rowRect.offsetMax = new Vector2(-inset, inset + rowHeight);
 
         var layout = row.AddComponent<HorizontalLayoutGroup>();
         layout.spacing = 10f;
@@ -164,19 +175,19 @@ public class BattleCommandUI : MonoBehaviour
         layout.childForceExpandWidth = true;
         layout.childForceExpandHeight = true;
 
-        attackButton = CreateActionButton(row.transform, "AttackButton",
-            attackText_Localized.SafeGetLocalizedString(), "Attack", out _);
+        // Labels are (re)filled in RefreshStaticLabels every time the panel opens, not
+        // here: Awake runs before the localization tables finish loading, so anything
+        // resolved at build time comes back as the English fallback and never updates.
+        attackButton = CreateActionButton(row.transform, "AttackButton", "", "Attack", out attackLabel);
         attackButton.onClick.AddListener(OnAttackClicked);
 
         skillButton = CreateActionButton(row.transform, "SkillButton", "", "Skill", out skillLabel);
         skillButton.onClick.AddListener(OnSkillClicked);
 
-        defendButton = CreateActionButton(row.transform, "DefendButton",
-            defendText_Localized.SafeGetLocalizedString(), "Defend", out _);
+        defendButton = CreateActionButton(row.transform, "DefendButton", "", "Defend", out defendLabel);
         defendButton.onClick.AddListener(OnDefendClicked);
 
-        cancelTargetButton = CreateActionButton(row.transform, "CancelButton",
-            cancelText_Localized.SafeGetLocalizedString(), "Cancel", out _);
+        cancelTargetButton = CreateActionButton(row.transform, "CancelButton", "", "Back", out cancelLabel);
         cancelTargetButton.onClick.AddListener(OnCancelTargetClicked);
 
         panel.SetActive(false);
@@ -284,6 +295,25 @@ public class BattleCommandUI : MonoBehaviour
 
     // ── Action selection ───────────────────────────────────────────────────────
 
+    /// <summary>
+    /// Re-resolve the fixed button captions. Called every time the panel opens because
+    /// Awake runs before the localization tables are ready — resolving once at build
+    /// time leaves the English fallback baked in for the whole session.
+    /// </summary>
+    private void RefreshStaticLabels()
+    {
+        SetLocalized(attackLabel, attackText_Localized, "Attack");
+        SetLocalized(defendLabel, defendText_Localized, "Defend");
+        SetLocalized(cancelLabel, cancelText_Localized, "Back");
+    }
+
+    private static void SetLocalized(TextMeshProUGUI label, LocalizedString source, string fallback)
+    {
+        if (label == null) return;
+        string text = source.SafeGetLocalizedString();
+        label.text = string.IsNullOrEmpty(text) ? fallback : text;
+    }
+
     private void ShowActionChoices()
     {
         if (commandingUnit != null)
@@ -292,6 +322,7 @@ public class BattleCommandUI : MonoBehaviour
         string prompt = choosePromptText_Localized.SafeGetLocalizedString();
         promptLabel.text = string.IsNullOrEmpty(prompt) ? "Choose an action" : prompt;
 
+        RefreshStaticLabels();
         RefreshSkillButton();
 
         attackButton.gameObject.SetActive(true);
