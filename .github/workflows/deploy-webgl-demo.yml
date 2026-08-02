@@ -212,11 +212,18 @@ jobs:
             echo "✅ assets/ backed up"
           fi
 
-          # Backup any README or other custom files
-          if [ -f "docs/README.md" ]; then
-            cp docs/README.md custom_backup/README.md
-            echo "✅ README.md backed up"
-          fi
+          # Backup every top-level Markdown doc, not just README.md. The deploy step
+          # does `rm -rf docs`, so anything not backed up here is destroyed: this
+          # silently deleted PLACEHOLDER_ASSET_BRIEF.md and COMBAT_ACTIVE_PAUSE_DESIGN.md
+          # on three separate deploys before the cause was tracked down.
+          mkdir -p custom_backup/md
+          md_count=0
+          for f in docs/*.md; do
+            [ -e "$f" ] || continue
+            cp "$f" "custom_backup/md/$(basename "$f")"
+            md_count=$((md_count + 1))
+          done
+          echo "✅ $md_count Markdown file(s) backed up"
 
       - name: Create Backup Tag
         run: |
@@ -252,10 +259,15 @@ jobs:
             echo "✅ Custom assets restored"
           fi
 
-          # Restore README
-          if [ -f "custom_backup/README.md" ]; then
-            cp custom_backup/README.md docs/README.md
-            echo "✅ README restored"
+          # Restore every Markdown doc backed up above.
+          if [ -d "custom_backup/md" ]; then
+            md_count=0
+            for f in custom_backup/md/*.md; do
+              [ -e "$f" ] || continue
+              cp "$f" "docs/$(basename "$f")"
+              md_count=$((md_count + 1))
+            done
+            echo "✅ $md_count Markdown file(s) restored"
           fi
 
           # Write build metadata consumed by the landing page badge (index.html).
