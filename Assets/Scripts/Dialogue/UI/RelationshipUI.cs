@@ -606,12 +606,14 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         // needing a second colour measured against the same background.
         const float lockedAlpha = 0.55f;
 
-        if (!string.IsNullOrEmpty(entry.title))
+        string entryTitle = entry.GetTitle();
+
+        if (!string.IsNullOrEmpty(entryTitle))
         {
             var titleObj = new GameObject(isLocked ? "LoreTitleLocked" : "LoreTitle");
             titleObj.transform.SetParent(loreContainer, false);
             var titleTmp = titleObj.AddComponent<TextMeshProUGUI>();
-            titleTmp.text = isLocked ? $"🔒 {entry.title}" : entry.title;
+            titleTmp.text = isLocked ? $"🔒 {entryTitle}" : entryTitle;
             titleTmp.fontSize = 12;
             titleTmp.fontStyle = FontStyles.Bold;
             titleTmp.color = isLocked ? new Color(gold.r, gold.g, gold.b, lockedAlpha) : gold;
@@ -634,7 +636,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         }
         else
         {
-            bodyTmp.text = entry.body;
+            bodyTmp.text = entry.GetBody();
             bodyTmp.color = body;
         }
 

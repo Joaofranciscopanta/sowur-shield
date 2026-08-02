@@ -31,6 +31,20 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
         }
     }
 
+    private void Start()
+    {
+        // Re-attempt registration in case SaveManager was not yet initialized during Awake.
+        // Awake order between scene objects is undefined: when the player woke before the
+        // SaveManager, the Awake registration above was skipped and SaveData/LoadData never
+        // ran, so position, health, energy and money silently reverted on every load.
+        // RegisterSaveable ignores duplicates, so registering twice is safe.
+        if (SaveManager.Instance != null)
+        {
+            SaveManager.Instance.RegisterSaveable(this);
+            LogDebug("PlayerDataManager registered with SaveManager in Start");
+        }
+    }
+
     private void OnDestroy()
     {
         // Unregister from SaveManager

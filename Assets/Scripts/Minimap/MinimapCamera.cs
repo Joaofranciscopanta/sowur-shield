@@ -35,8 +35,12 @@ public class MinimapCamera : MonoBehaviour
     [SerializeField] private int renderTextureSize = 1024;
     [SerializeField] private Color backgroundColor = new Color(0.1f, 0.1f, 0.1f, 1f);
 
+    // Editor-only: its sole reader, LogDebug, is itself inside #if UNITY_EDITOR. Leaving the
+    // field outside the guard means a player build compiles a field nothing ever reads (CS0414).
+    #if UNITY_EDITOR
     [Header("Debug")]
     [SerializeField] private bool enableDebugLogs = true;
+    #endif
 
     // State
     private Vector3 panOffset = Vector3.zero;

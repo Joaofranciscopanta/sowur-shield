@@ -41,8 +41,12 @@ public class MinimapController : MonoBehaviour, IUIWindow
     [SerializeField] private float transitionDuration = 0.3f;
     [SerializeField] private Ease transitionEase = Ease.InOutQuad;
 
+    // Editor-only: its sole reader sits inside #if UNITY_EDITOR in LogDebug. Leaving the field
+    // outside the guard means a player build compiles a field nothing ever reads (CS0414).
+    #if UNITY_EDITOR
     [Header("Debug")]
     [SerializeField] private bool enableDebugLogs = true;
+    #endif
 
     // State
     private bool isFullscreenMode = false;
@@ -610,6 +614,9 @@ public class MinimapController : MonoBehaviour, IUIWindow
     // DEBUG & LOGGING
     // ============================================================================
 
+    // The method stays defined in every build so its call sites need no guards; only the body
+    // and the enableDebugLogs field are Editor-only. Guarding just the body while leaving the
+    // field visible is what produced CS0414 — a field with no readers in a player build.
     private void LogDebug(string message)
     {
         #if UNITY_EDITOR

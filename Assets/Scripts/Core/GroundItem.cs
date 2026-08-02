@@ -71,6 +71,14 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
 
     private void Start()
     {
+        // Re-attempt registration in case SaveManager was not yet initialized during Awake.
+        // Awake order between scene objects is undefined, so a GroundItem that woke first
+        // silently skipped RegisterSaveable above and would never save or load its picked
+        // state — a collected item reappeared on every reload. Registration is idempotent
+        // (RegisterSaveable ignores duplicates), so calling it twice is safe.
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.RegisterSaveable(this);
+
         initialY = transform.position.y;
 
         if (spriteRenderer != null)

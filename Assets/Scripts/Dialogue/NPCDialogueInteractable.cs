@@ -12,7 +12,10 @@ namespace SowurShield.Dialogue
         [SerializeField] private string npcId;
         [SerializeField] private string npcDisplayName;
         [SerializeField] private Sprite npcPortrait;
+        [Tooltip("Localized bio shown in the Codex. Falls back to npcBioFallback when unset.")]
+        [SerializeField] private LocalizedString npcBioLocalized;
         [TextArea(2, 5)]
+        [Tooltip("Legacy raw bio. Only used when npcBioLocalized is empty — it does not translate.")]
         [SerializeField] private string npcBio;
 
         [Header("Dialogue Trees")]
@@ -37,6 +40,11 @@ namespace SowurShield.Dialogue
         [Header("Seed Shop")]
         [Tooltip("If enabled, a \"Browse seeds\" dialogue choice opens the seed shop for this NPC.")]
         [SerializeField] private bool enableSeedShop = false;
+
+        [Header("General Shop")]
+        [Tooltip("Assign a ShopData asset to give this NPC a \"Let's trade\" dialogue choice. " +
+                 "Independent of the seed shop — a merchant can have either, both, or neither.")]
+        [SerializeField] private ShopData shopData;
 
         [Header("Codex / Lore")]
         [Tooltip("Lore entries revealed progressively in the Relationship codex as affinity grows.")]
@@ -427,8 +435,16 @@ namespace SowurShield.Dialogue
 
         /// <summary>
         /// Short bio/flavor text for this NPC, shown in RelationshipUI.
+        ///
+        /// Prefers the localized entry and falls back to the legacy raw string, so an NPC
+        /// that has not been migrated yet still shows its bio instead of going blank.
+        /// The raw field does not translate — that was the Codex-stays-in-Portuguese bug.
         /// </summary>
-        public string GetBio() => npcBio;
+        public string GetBio()
+        {
+            string localized = npcBioLocalized.SafeGetLocalizedString();
+            return string.IsNullOrEmpty(localized) ? npcBio : localized;
+        }
 
         /// <summary>
         /// Current relationship level with this NPC (-100..100), via ConversationMemory.
@@ -542,6 +558,21 @@ namespace SowurShield.Dialogue
                         var seedShopUI = FindFirstObjectByType<SeedShopUI>(FindObjectsInactive.Include);
                         if (seedShopUI != null)
                             seedShopUI.Open();
+                    }
+                });
+            }
+
+            if (shopData != null)
+            {
+                choices.Add(new DialogueChoice
+                {
+                    choiceText = new LocalizedString("Dialogue", "dialogue.choice.browse_shop"),
+                    isExitChoice = true,
+                    onSelectedRuntime = () =>
+                    {
+                        var shopUI = FindFirstObjectByType<ShopUI>(FindObjectsInactive.Include);
+                        if (shopUI != null)
+                            shopUI.OpenShop(shopData);
                     }
                 });
             }
@@ -777,10 +808,33 @@ namespace SowurShield.Dialogue
     {
         [Tooltip("Minimum relationship level (-100..100) needed to see this entry.")]
         public float requiredRelationship = 0f;
-        [Tooltip("Short header shown as a section title in the codex.")]
+
+        [Tooltip("Localized section title. Falls back to the raw title when unset.")]
+        public LocalizedString titleLocalized;
+        [Tooltip("Legacy raw title. Only used when titleLocalized is empty — it does not translate.")]
         public string title;
+
+        [Tooltip("Localized lore text. Falls back to the raw body when unset.")]
+        public LocalizedString bodyLocalized;
         [TextArea(2, 5)]
-        [Tooltip("The lore text revealed at this tier.")]
+        [Tooltip("Legacy raw lore text. Only used when bodyLocalized is empty — it does not translate.")]
         public string body;
+
+        /// <summary>
+        /// Title in the active language, falling back to the legacy raw string so an
+        /// unmigrated entry still renders instead of showing an empty codex row.
+        /// </summary>
+        public string GetTitle()
+        {
+            string localized = titleLocalized.SafeGetLocalizedString();
+            return string.IsNullOrEmpty(localized) ? title : localized;
+        }
+
+        /// <summary>Lore body in the active language, with the same fallback as <see cref="GetTitle"/>.</summary>
+        public string GetBody()
+        {
+            string localized = bodyLocalized.SafeGetLocalizedString();
+            return string.IsNullOrEmpty(localized) ? body : localized;
+        }
     }
 } // namespace SowurShield.Dialogue

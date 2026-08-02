@@ -40,8 +40,12 @@ public class MinimapUI : MonoBehaviour
     [SerializeField] private Color playerMarkerColor = Color.green;
     [SerializeField] private float playerMarkerSize = 10f;
 
+    // Editor-only: its sole reader, LogDebug, is itself inside #if UNITY_EDITOR. Leaving the
+    // field outside the guard means a player build compiles a field nothing ever reads (CS0414).
+    #if UNITY_EDITOR
     [Header("Debug")]
     [SerializeField] private bool enableDebugLogs = true;
+    #endif
 
     [Header("Localization")]
     [SerializeField] private LocalizedString zoomLabelLocalized; // table "Minimap", key "minimap.zoom_label"

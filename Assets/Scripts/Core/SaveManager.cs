@@ -40,6 +40,11 @@ namespace SowurShield.Core
         // Registered saveable objects
         private List<ISaveable> saveableObjects = new List<ISaveable>();
 
+        // True once Start() has decided what currentGameData is (loaded, new game, or empty).
+        // RegisterSaveable uses this to catch up objects that register after that point,
+        // which is common because Start() order between scene objects is undefined.
+        private bool hasCompletedInitialLoad = false;
+
         // Continue from start of day flag
         public static bool resetToStartOfDayAfterLoad = false;
 
@@ -140,6 +145,11 @@ namespace SowurShield.Core
                 currentGameData = new GameData();
                 LogDebug("No save file found. Created new game data.");
             }
+
+            // Set last: from here on, RegisterSaveable applies currentGameData to any object
+            // that registers late, so objects whose Start() ran after this one still get their
+            // persisted state instead of silently keeping scene defaults.
+            hasCompletedInitialLoad = true;
         }
 
         // ============================================================================
@@ -148,9 +158,25 @@ namespace SowurShield.Core
 
         public void RegisterSaveable(ISaveable saveable)
         {
-            if (saveable != null && !saveableObjects.Contains(saveable))
+            if (saveable == null || saveableObjects.Contains(saveable))
+                return;
+
+            saveableObjects.Add(saveable);
+
+            // Objects that register *after* the initial load must be caught up immediately,
+            // otherwise they keep their scene defaults forever. Start() order between scene
+            // objects is undefined, so SaveManager.Start() (which calls LoadGame) frequently
+            // runs before a PlayerDataManager or GroundItem has registered — those objects
+            // then miss the one and only LoadData pass and silently revert: the player
+            // respawned at the scene's default position and collected ground items came back.
+            //
+            // hasCompletedInitialLoad, not a null check on currentGameData: a brand-new game
+            // also has non-null data, and replaying LoadData over it is harmless, but before
+            // the load there is nothing meaningful to apply.
+            if (hasCompletedInitialLoad && currentGameData != null)
             {
-                saveableObjects.Add(saveable);
+                try { saveable.LoadData(currentGameData); }
+                catch (System.Exception e) { LogError($"Error applying loaded data into late-registered {saveable.GetType().Name}: {e.Message}"); }
             }
         }
 
