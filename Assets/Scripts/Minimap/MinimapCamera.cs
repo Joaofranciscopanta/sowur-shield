@@ -362,6 +362,7 @@ public class MinimapCamera : MonoBehaviour
     {
         if (enableDebugLogs)
         {
+            Debug.Log($"[MinimapCamera] {message}", this);
         }
     }
     #endif

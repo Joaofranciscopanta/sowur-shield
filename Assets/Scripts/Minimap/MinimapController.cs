@@ -615,6 +615,7 @@ public class MinimapController : MonoBehaviour, IUIWindow
         #if UNITY_EDITOR
         if (enableDebugLogs)
         {
+            Debug.Log($"[MinimapController] {message}", this);
         }
         #endif
     }
