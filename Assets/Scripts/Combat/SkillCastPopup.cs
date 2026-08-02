@@ -62,10 +62,22 @@ public class SkillCastPopup : MonoBehaviour
     private void Update()
     {
         // TurnManager is spawned on a delay, so bind lazily rather than in Awake.
+        // `== null` also catches a destroyed manager (Unity's fake-null), which is
+        // what happens when the battle ends while this is still bound.
         if (boundManager == null)
         {
             boundManager = Object.FindFirstObjectByType<TurnManager>();
             if (boundManager != null) boundManager.OnTelegraph += OnTelegraph;
+            else if (root != null && root.gameObject.activeSelf) SetVisible(false);
+            return;
+        }
+
+        // Never linger outside a battle: this object is not DontDestroyOnLoad, but the
+        // manager can die mid-popup when the battle ends, and a frozen icon over the
+        // results screen reads as a bug.
+        if (!boundManager.combatActive)
+        {
+            if (root.gameObject.activeSelf) SetVisible(false);
             return;
         }
 

@@ -340,11 +340,22 @@ public class BattleCommandUI : MonoBehaviour
     private void OnEnable()
     {
         UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += OnLocaleChanged;
+        // Leaving the combat scene must close the panel. Unbind() alone is not enough:
+        // it only runs when the bound manager changes, and Update may not get a frame
+        // between the battle ending and the scene swap.
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnActiveSceneChanged;
     }
 
     private void OnDisable()
     {
         UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged -= OnLocaleChanged;
+        UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= OnActiveSceneChanged;
+    }
+
+    private void OnActiveSceneChanged(UnityEngine.SceneManagement.Scene from,
+                                      UnityEngine.SceneManagement.Scene to)
+    {
+        Unbind();
     }
 
     // ── Binding to the active TurnManager ──────────────────────────────────────
@@ -363,16 +374,44 @@ public class BattleCommandUI : MonoBehaviour
             }
         }
 
+        // Outside a battle the panel must never be on screen. This is the same
+        // per-frame guard BattleHudOverlay and ConsumableBattleUI already had, and
+        // its absence here is why this panel was the one that leaked out of combat.
+        if (boundManager == null || !boundManager.combatActive)
+        {
+            if (panel != null && panel.activeSelf) HidePanel();
+            return;
+        }
+
         if (awaitingTargetFor.HasValue)
             PollForTargetClick();
     }
 
     private void Unbind()
     {
+        // Hide before the null check: the manager can be destroyed (battle won, or the
+        // scene changed) while the panel is still open, and that path never fires
+        // OnPlayerTurnEnded. This object is DontDestroyOnLoad, so a panel left visible
+        // then follows the player out of combat and sits on top of the team assembler
+        // and the main menu, still showing the last unit's actions.
+        HidePanel();
+
         if (boundManager == null) return;
         boundManager.OnPlayerTurnStarted -= HandlePlayerTurnStarted;
         boundManager.OnPlayerTurnEnded -= HandlePlayerTurnEnded;
         boundManager = null;
+    }
+
+    /// <summary>
+    /// Clears the command panel and any leftover targeting state. Safe to call at any
+    /// time, including before BuildUI has run.
+    /// </summary>
+    private void HidePanel()
+    {
+        commandingUnit = null;
+        awaitingTargetFor = null;
+        if (panel != null) panel.SetActive(false);
+        TargetHighlighter.ClearAll();
     }
 
     private void HandlePlayerTurnStarted(CombatUnit unit)
