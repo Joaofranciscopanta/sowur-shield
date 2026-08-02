@@ -472,12 +472,16 @@ public class TeamAssemblerUISetup : MonoBehaviour
             rect.sizeDelta = new Vector2(-40, 80);
 
             HorizontalLayoutGroup hlg = containerObj.AddComponent<HorizontalLayoutGroup>();
-            hlg.spacing = 20;
+            hlg.spacing = 16;
             hlg.padding = new RectOffset(20, 20, 10, 10);
             hlg.childControlWidth = true;
             hlg.childControlHeight = true;
-            hlg.childForceExpandWidth = true;
+            // forceExpandWidth splits the row equally and overrides each button's
+            // preferredWidth, which is how four buttons ended up 110px wide with labels
+            // needing 114 and 125. Off, so LayoutElement.preferredWidth is respected.
+            hlg.childForceExpandWidth = false;
             hlg.childForceExpandHeight = true;
+            hlg.childAlignment = TextAnchor.MiddleCenter;
 
             buttonContainer = containerObj.transform;
         }
@@ -507,11 +511,20 @@ public class TeamAssemblerUISetup : MonoBehaviour
         Transform existing = parent.Find(name);
         if (existing == null)
         {
-            GameObject buttonObj = new GameObject(name);
+            GameObject buttonObj = new GameObject(name, typeof(RectTransform));
             buttonObj.transform.SetParent(parent, false);
 
-            RectTransform rect = buttonObj.AddComponent<RectTransform>();
+            RectTransform rect = buttonObj.GetComponent<RectTransform>();
             rect.sizeDelta = new Vector2(150, 50);
+
+            // The parent HorizontalLayoutGroup controls width, so sizeDelta above is ignored
+            // and all four buttons were squeezed to 110px. "Clear Grid" needs 114 and
+            // "Start Battle" 125 at their font size, so both overflowed their button and ran
+            // into the neighbour. A minWidth is the only thing the layout group honours here.
+            var buttonLayout = buttonObj.AddComponent<LayoutElement>();
+            buttonLayout.minWidth = 150f;
+            buttonLayout.preferredWidth = 170f;
+            buttonLayout.minHeight = 50f;
 
             Image img = buttonObj.AddComponent<Image>();
             img.color = new Color(0.3f, 0.3f, 0.3f, 1f);

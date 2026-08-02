@@ -199,6 +199,102 @@ MonoBehaviour:
     m_Key: animal.Rabbit.name
     m_Metadata:
       m_Items: []
+  - m_Id: 14941035422277632
+    m_Key: animal.CalfBrown.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552320
+    m_Key: animal.CalfGreen.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552321
+    m_Key: animal.CalfLight.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552322
+    m_Key: animal.CalfPink.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552323
+    m_Key: animal.CalfPurple.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552324
+    m_Key: animal.ChickBlue.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552325
+    m_Key: animal.ChickBrown.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552326
+    m_Key: animal.ChickDefault.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552327
+    m_Key: animal.ChickGreen.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552328
+    m_Key: animal.ChickRed.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552329
+    m_Key: animal.ChickenBrown.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552330
+    m_Key: animal.ChickenDefault.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552331
+    m_Key: animal.ChickenGreen.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552332
+    m_Key: animal.ChickenRed.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552333
+    m_Key: animal.CowGreen.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552334
+    m_Key: animal.CowLight.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552335
+    m_Key: animal.CowPink.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552336
+    m_Key: animal.CowPurple.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552337
+    m_Key: animal.EggBlue.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552338
+    m_Key: animal.EggBrown.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552339
+    m_Key: animal.EggDefault.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552340
+    m_Key: animal.EggGreen.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552341
+    m_Key: animal.EggRed.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941095031726080
+    m_Key: animal.Cow.name
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

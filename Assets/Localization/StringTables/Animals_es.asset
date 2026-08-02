@@ -204,6 +204,102 @@ MonoBehaviour:
     m_Localized: Conejo
     m_Metadata:
       m_Items: []
+  - m_Id: 14941035422277632
+    m_Localized: "Ternero (Marr\xF3n)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552320
+    m_Localized: Ternero (Verde)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552321
+    m_Localized: Ternero (Claro)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552322
+    m_Localized: Ternero (Rosa)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552323
+    m_Localized: Ternero (Morado)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552324
+    m_Localized: Pollito (Azul)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552325
+    m_Localized: "Pollito (Marr\xF3n)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552326
+    m_Localized: Pollito
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552327
+    m_Localized: Pollito (Verde)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552328
+    m_Localized: Pollito (Rojo)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552329
+    m_Localized: "Gallina (Marr\xF3n)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552330
+    m_Localized: Gallina
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552331
+    m_Localized: Gallina (Verde)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552332
+    m_Localized: Gallina (Rojo)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552333
+    m_Localized: Vaca (Verde)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552334
+    m_Localized: Vaca (Claro)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552335
+    m_Localized: Vaca (Rosa)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552336
+    m_Localized: Vaca (Morado)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552337
+    m_Localized: Huevo (Azul)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552338
+    m_Localized: "Huevo (Marr\xF3n)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552339
+    m_Localized: Huevo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552340
+    m_Localized: Huevo (Verde)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941035514552341
+    m_Localized: Huevo (Rojo)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14941095031726080
+    m_Localized: Vaca
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

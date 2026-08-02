@@ -15,10 +15,10 @@ MonoBehaviour:
   animalName: Cow
   displayName:
     m_TableReference:
-      m_TableCollectionName: 
+      m_TableCollectionName: Animals
     m_TableEntryReference:
-      m_KeyId: 0
-      m_Key: 
+      m_KeyId: 14941095031726080
+      m_Key: animal.Cow.name
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
