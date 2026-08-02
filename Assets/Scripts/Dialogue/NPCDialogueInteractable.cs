@@ -422,16 +422,60 @@ namespace SowurShield.Dialogue
         private static string TasteKey(string npc, string itemName) => $"taste_{npc}_{itemName}";
 
         /// <summary>
-        /// Portrait sprite for this NPC, used by RelationshipUI. Falls back to the
-        /// default dialogue's start-node speaker portrait if not explicitly assigned.
+        /// Portrait sprite for this NPC, used by RelationshipUI.
+        ///
+        /// Order: the explicitly assigned portrait, then this NPC's own art in
+        /// Resources, then the dialogue's start-node portrait. The Resources step
+        /// sits in front of the dialogue fallback on purpose — several NPCs have a
+        /// start node still pointing at a shared placeholder from before they had
+        /// portraits, which made the codex show the wrong face for them.
         /// </summary>
         public Sprite GetPortrait()
         {
             if (npcPortrait != null) return npcPortrait;
 
+            Sprite own = LoadOwnPortrait();
+            if (own != null) return own;
+
             var startNode = defaultDialogue?.GetStartNode();
             return startNode?.speakerPortrait;
         }
+
+        /// <summary>
+        /// Looks up Resources/Portraits/portrait_{npcname}, matching the art naming
+        /// convention. Cached, including a miss, so the codex does not hit Resources
+        /// on every refresh.
+        /// </summary>
+        private Sprite LoadOwnPortrait()
+        {
+            if (_ownPortraitResolved) return _ownPortrait;
+            _ownPortraitResolved = true;
+
+            // npcId first: it is the stable identifier, while the display name is
+            // localized and the GameObject name is whatever the scene calls it.
+            string key = !string.IsNullOrEmpty(npcId) ? npcId
+                       : !string.IsNullOrEmpty(npcDisplayName) ? npcDisplayName
+                       : gameObject.name;
+            if (string.IsNullOrEmpty(key)) return null;
+
+            // "Tomás" -> "tomas": the scene uses accented display names while the
+            // art files are plain ASCII.
+            string slug = key.Trim().ToLowerInvariant();
+            var sb = new System.Text.StringBuilder(slug.Length);
+            foreach (char c in slug.Normalize(System.Text.NormalizationForm.FormD))
+            {
+                if (System.Globalization.CharUnicodeInfo.GetUnicodeCategory(c)
+                    != System.Globalization.UnicodeCategory.NonSpacingMark)
+                    sb.Append(c);
+            }
+            slug = sb.ToString().Replace(" ", "_");
+
+            _ownPortrait = Resources.Load<Sprite>($"Portraits/portrait_{slug}");
+            return _ownPortrait;
+        }
+
+        private Sprite _ownPortrait;
+        private bool _ownPortraitResolved;
 
         /// <summary>
         /// Short bio/flavor text for this NPC, shown in RelationshipUI.

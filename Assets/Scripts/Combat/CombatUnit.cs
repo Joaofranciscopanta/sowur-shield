@@ -223,7 +223,12 @@ public class CombatUnit : MonoBehaviour
             return;
         }
 
-        // Fallback: sphere (no sprite available)
+        // Fallback: sphere. This is a 3D primitive in a 2D scene — it renders as a
+        // large opaque blob that reads as a broken sprite, so it is a last resort
+        // and warns rather than failing quietly.
+        Debug.LogWarning($"[CombatUnit] '{name}' has no sprite " +
+                         $"(animal={(animal != null && animal.AnimalData != null ? animal.AnimalData.name : "none")}); " +
+                         "falling back to placeholder sphere.");
         CreateSphereVisual();
     }
 

@@ -25,7 +25,7 @@ MonoBehaviour:
   animalType: Rabbit
   animalFamily: Leporidae
   animalClass: Mammal
-  idleSprite: {fileID: 0}
+  idleSprite: {fileID: 7595986285605212588, guid: ce5acadeea6b2484692086623f08bcb8, type: 3}
   animatorController: {fileID: 0}
   moveSpeed: 2.2
   wanderRadius: 6
