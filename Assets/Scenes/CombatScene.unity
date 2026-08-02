@@ -2173,9 +2173,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d87fbe1cb883d7f44b55e485f46d977a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Combat.TurnManager
-  gaugeFilLRate: 10
+  gaugeFilLRate: 6
   maxActions: 500
-  actionMicroDelay: 0.05
+  actionMicroDelay: 0.25
   combatActive: 0
   currentTurn: 0
   battleResult: 0

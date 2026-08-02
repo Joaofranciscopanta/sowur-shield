@@ -191,7 +191,7 @@ a estrutura suporta.
 
 | Fase | Trabalho |
 |---|---|
-| **1. Ritmo** | Ajustar valores + botão de velocidade. Pequeno, entrega valor sozinho |
+| **1. Ritmo** | ✅ **FEITO** — valores ajustados + botão 1×/2× no HUD |
 | **2. Estrutura** | `CombatMode`, espera por input, `SubmitPlayerAction`, testes em `Auto` |
 | **3. Escolha do modo** | Campo no `TeamAssemblerData` + toggle no `TeamAssemblerUI` |
 | **4. UI de comando** | Painel de comando + seleção de alvo |
@@ -204,5 +204,24 @@ A fase 1 pode ir sozinha e já melhora a leitura hoje, mesmo que você desista d
 
 ## Estado
 
-Todas as 4 questões estão decididas. Pronto para implementar, começando pela fase 1 —
-barata e reversível — antes de mexer na estrutura do `TurnManager`.
+Todas as 4 questões estão decididas.
+
+### Fase 1 — concluída
+
+- `gaugeFilLRate` **10 → 6** e `actionMicroDelay` **0,05 → 0,25 s**, tanto no default do
+  código quanto nos valores serializados em `CombatScene.unity` (o valor que roda é o da
+  cena, não o do código — mudar só um dos dois não teria efeito nenhum).
+- Botão **1× / 2×** no canto inferior direito do `BattleHudOverlay`, com a escolha
+  persistida em `PlayerPrefs` (`combat_speed`).
+- O multiplicador escala o gauge **e** encurta o micro-delay, então o 2× acelera o lote
+  inteiro e não só o enchimento.
+- **Não usa `Time.timeScale`** — o `HitStopController` já é dono dele e o derruba por
+  alguns quadros nos golpes fortes; um botão escrevendo lá brigaria com a corrotina.
+- 10 testes novos em `CombatPacingTests.cs`. Suíte em **822** (788 EditMode + 34 PlayMode).
+
+**Bug encontrado no caminho** (não previsto no design): `TurnManager`, `GridManager` e
+`TeamAssemblerUI` nunca limpavam o `Instance` no `OnDestroy`. Ao sair e reentrar no
+`CombatScene`, o `Awake` do novo manager via um `Instance` não-nulo apontando para o objeto
+destruído e **se auto-destruía sem inicializar**. Corrigido nos três.
+
+Próximo passo: fase 2 (estrutura — `CombatMode`, espera por input, `SubmitPlayerAction`).

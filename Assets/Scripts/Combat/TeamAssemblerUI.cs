@@ -93,6 +93,14 @@ public class TeamAssemblerUI : MonoBehaviour
         if (assemblerPanel != null) assemblerPanel.SetActive(false);
     }
 
+    private void OnDestroy()
+    {
+        // Clear the singleton so a reloaded scene's instance isn't rejected in Awake
+        // by a reference to the destroyed one.
+        if (Instance == this)
+            Instance = null;
+    }
+
     private void Start()
     {
         // If we just retreated here from a battle's "Retry" button, reopen the

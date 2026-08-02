@@ -25,14 +25,48 @@ namespace SowurShield.Combat
 public class TurnManager : MonoBehaviour
 {
     [Header("Combat Configuration")]
-    [Tooltip("Speed at which turn gauges fill (multiplier). 10 = ~1s per turn at speed 10.")]
-    [SerializeField] private float gaugeFilLRate = 10f;
+    [Tooltip("Speed at which turn gauges fill (multiplier). 6 = ~1.7s per turn at speed 10.")]
+    [SerializeField] private float gaugeFilLRate = 6f;
 
     [Tooltip("Maximum number of actions before battle ends in draw")]
     [SerializeField] private int maxActions = 500;
 
     [Tooltip("Micro-delay between simultaneous actions (seconds, for visual clarity)")]
-    [SerializeField] private float actionMicroDelay = 0.05f;
+    [SerializeField] private float actionMicroDelay = 0.25f;
+
+    // ── Battle speed (1x / 2x) ─────────────────────────────────────────────────
+    // Scales the gauge fill rate up and the micro-delay down, so 2x is roughly the
+    // pre-2026-08 pacing for players who prefer it. Deliberately NOT Time.timeScale:
+    // HitStopController already owns that and briefly drops it to a fraction on big
+    // hits, so a speed button writing to it would fight the hit-stop coroutine.
+    private const string SpeedPrefKey = "combat_speed";
+
+    /// <summary>Battle speed multiplier (1 = normal, 2 = fast). Persisted in PlayerPrefs.</summary>
+    public float SpeedMultiplier { get; private set; } = 1f;
+
+    /// <summary>Fired when the battle speed multiplier changes, with the new value.</summary>
+    public event System.Action<float> OnSpeedMultiplierChanged;
+
+    /// <summary>
+    /// Set the battle speed multiplier, clamped to the 1x-2x range the HUD exposes.
+    /// Persists the choice so the next battle starts at the same speed.
+    /// </summary>
+    public void SetSpeedMultiplier(float multiplier)
+    {
+        float clamped = Mathf.Clamp(multiplier, 1f, 2f);
+        if (Mathf.Approximately(clamped, SpeedMultiplier)) return;
+
+        SpeedMultiplier = clamped;
+        PlayerPrefs.SetFloat(SpeedPrefKey, clamped);
+        OnSpeedMultiplierChanged?.Invoke(clamped);
+    }
+
+    /// <summary>Toggle between 1x and 2x battle speed. Returns the new multiplier.</summary>
+    public float ToggleSpeedMultiplier()
+    {
+        SetSpeedMultiplier(SpeedMultiplier >= 2f ? 1f : 2f);
+        return SpeedMultiplier;
+    }
 
     // ATB system tracking
     private int totalActionsExecuted = 0;
@@ -110,6 +144,17 @@ public class TurnManager : MonoBehaviour
             return;
         }
         Instance = this;
+
+        SpeedMultiplier = Mathf.Clamp(PlayerPrefs.GetFloat(SpeedPrefKey, 1f), 1f, 2f);
+    }
+
+    private void OnDestroy()
+    {
+        // Without this, Instance keeps pointing at the destroyed manager after leaving
+        // CombatScene, and the next battle's TurnManager sees a non-null Instance in
+        // Awake, destroys itself, and never initializes.
+        if (Instance == this)
+            Instance = null;
     }
 
     // Number of times InitializeCombat has retried after finding zero units
@@ -249,7 +294,7 @@ public class TurnManager : MonoBehaviour
     /// </summary>
     private void FillTurnGauges(float deltaTime)
     {
-        float rate = gaugeFilLRate;
+        float rate = gaugeFilLRate * SpeedMultiplier;
         if (activeModifier.type == BattleModifierType.DoubleSpeed)
             rate *= 2f;
 
@@ -308,10 +353,13 @@ public class TurnManager : MonoBehaviour
                 ExecuteUnitTurn(unit);
                 totalActionsExecuted++;
 
-                // Micro-delay for visual clarity (units act in quick succession)
-                if (actionMicroDelay > 0)
+                // Micro-delay for visual clarity (units act in quick succession).
+                // Shortened by the speed multiplier so 2x speeds up the whole batch,
+                // not just the gauge fill.
+                float delay = actionMicroDelay / SpeedMultiplier;
+                if (delay > 0)
                 {
-                    yield return new WaitForSeconds(actionMicroDelay);
+                    yield return new WaitForSeconds(delay);
                 }
             }
         }
