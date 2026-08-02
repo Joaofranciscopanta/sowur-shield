@@ -28,6 +28,13 @@ public class BattleCommandUI : MonoBehaviour
     private TextMeshProUGUI attackLabel;
     private Button skillButton;
     private TextMeshProUGUI skillLabel;
+    private Image skillIconImage;
+
+    // Skill-icon geometry inside the Skill button. The inset clears the button
+    // sprite's own frame art — at 4f the icon sat visually outside the raised
+    // face, on the bevel, and read as a stray mark next to the button.
+    private const float IconSize  = 40f;
+    private const float IconInset = 12f;
     private Button defendButton;
     private TextMeshProUGUI defendLabel;
     private Button cancelTargetButton;
@@ -104,10 +111,12 @@ public class BattleCommandUI : MonoBehaviour
         panelRect.anchorMax = new Vector2(0.5f, 0f);
         panelRect.pivot = new Vector2(0.5f, 0f);
         panelRect.anchoredPosition = new Vector2(0f, 100f);
-        // 300 tall, not 190: panel_wood_generic spends ~72px per side on frame art, so a
-        // 190-tall panel leaves only ~46px of interior and the 52px action row spilled
-        // over the bottom frame. 300 leaves ~156px for the name, prompt and buttons.
-        panelRect.sizeDelta = new Vector2(620f, 300f);
+        // 316 tall, not 190: panel_wood_generic spends ~72px per side on frame art, so a
+        // 190-tall panel leaves only ~46px of interior and the action row spilled over the
+        // bottom frame. 316 leaves ~172px for the name, prompt and the 68px button row.
+        // Widened to 700 so four captions fit on one line each once the Skill button
+        // gives up horizontal room to its icon.
+        panelRect.sizeDelta = new Vector2(700f, 316f);
 
         var bg = panel.AddComponent<Image>();
         Sprite panelSprite = Resources.Load<Sprite>("Sprites/UI/Panels/panel_wood_generic");
@@ -138,7 +147,10 @@ public class BattleCommandUI : MonoBehaviour
         // the panel height rather than emerging from fractions of the inset.
         const float nameHeight = 32f;
         const float promptHeight = 28f;
-        const float rowHeight = 52f;
+        // 68, not 52: the Skill button carries an icon beside its caption, and at
+        // 52 the icon shrank to ~26px (unreadable) while the caption wrapped onto
+        // a second line and spilled out of the button.
+        const float rowHeight = 68f;
 
         unitNameLabel = CreateLabel(panel.transform, "UnitName", 24, FontStyles.Bold, textColor);
         var nameRect = unitNameLabel.rectTransform;
@@ -183,6 +195,7 @@ public class BattleCommandUI : MonoBehaviour
 
         skillButton = CreateActionButton(row.transform, "SkillButton", "", "Skill", out skillLabel);
         skillButton.onClick.AddListener(OnSkillClicked);
+        skillIconImage = CreateSkillIcon(skillButton.transform, skillLabel);
 
         defendButton = CreateActionButton(row.transform, "DefendButton", "", "Defend", out defendLabel);
         defendButton.onClick.AddListener(OnDefendClicked);
@@ -239,6 +252,11 @@ public class BattleCommandUI : MonoBehaviour
         label.enableAutoSizing = true;
         label.fontSizeMin = 11;
         label.fontSizeMax = 18;
+        // Skill names are two words ("Precise Peck", "Supporter's Blessing"). Without
+        // this they wrap onto a second line that overflows the button; auto-sizing
+        // shrinks the text to fit on one line instead.
+        label.enableWordWrapping = false;
+        label.overflowMode = TextOverflowModes.Ellipsis;
 
         var labelRect = label.rectTransform;
         labelRect.anchorMin = Vector2.zero;
@@ -247,6 +265,66 @@ public class BattleCommandUI : MonoBehaviour
         labelRect.offsetMax = new Vector2(-4f, -2f);
 
         return button;
+    }
+
+    /// <summary>
+    /// Square icon pinned to the left inside the Skill button, with the label
+    /// inset to make room. Hidden whenever the active skill has no icon, so a
+    /// skill still missing art shows the plain text button it always had.
+    /// </summary>
+    private Image CreateSkillIcon(Transform parent, TextMeshProUGUI label)
+    {
+        var obj = new GameObject("Icon");
+        obj.transform.SetParent(parent, false);
+
+        var rect = obj.AddComponent<RectTransform>();
+        // Anchored to the left edge and stretched vertically, so the icon scales
+        // with the button height instead of needing a hard-coded pixel size.
+        rect.anchorMin = new Vector2(0f, 0f);
+        rect.anchorMax = new Vector2(0f, 1f);
+        rect.pivot     = new Vector2(0f, 0.5f);
+
+        float inset = SkillIconLeftInset(parent);
+        rect.offsetMin = new Vector2(inset, IconInset);
+        rect.offsetMax = new Vector2(inset + IconSize, -IconInset);
+
+        var img = obj.AddComponent<Image>();
+        img.preserveAspect = true;   // the source art is not square
+        img.raycastTarget  = false;  // must not steal the button's clicks
+        img.enabled        = false;  // no skill selected yet
+
+        // Push the caption clear of the icon.
+        var labelRect = label.rectTransform;
+        labelRect.offsetMin = new Vector2(inset + IconSize + 4f, labelRect.offsetMin.y);
+
+        return img;
+    }
+
+    /// <summary>
+    /// Distance from the button's left edge to where its art actually starts.
+    /// button_small_action is a 480px-wide sprite whose drawn face begins ~58px
+    /// in, so a fixed inset puts the icon on the transparent margin outside the
+    /// visible button. Derived from the sprite so it survives an art change.
+    /// </summary>
+    private float SkillIconLeftInset(Transform button)
+    {
+        float fallback = IconInset;
+
+        var bimg = button.GetComponent<Image>();
+        if (bimg == null || bimg.sprite == null) return fallback;
+
+        var sprite = bimg.sprite;
+        float declaredWidth = sprite.rect.width;
+        if (declaredWidth <= 0f) return fallback;
+
+        // Transparent padding on the left, in sprite pixels...
+        float padPx = sprite.textureRect.x - sprite.rect.x;
+        if (padPx <= 0f) return fallback;
+
+        // ...scaled into the button's own width, plus a small breathing gap.
+        var rect = button.GetComponent<RectTransform>();
+        float scale = rect.rect.width / declaredWidth;
+        return padPx * scale + IconInset;
     }
 
     // Captions are resolved when the panel opens, which covers the normal case. This
@@ -360,11 +438,16 @@ public class BattleCommandUI : MonoBehaviour
             // Nothing to show — most animals without an assigned active skill.
             skillButton.interactable = false;
             skillLabel.text = "—";
+            SetSkillIcon(null, false);
             return;
         }
 
         bool ready = commandingUnit.GetReadySkill() != null;
         skillButton.interactable = ready;
+
+        // Dim the icon on cooldown so the button reads as unavailable at a glance,
+        // the same signal the greyed-out caption gives.
+        SetSkillIcon(skill.skillIcon, ready);
 
         if (ready)
         {
@@ -377,6 +460,36 @@ public class BattleCommandUI : MonoBehaviour
             string text = skillCooldownText_Localized.SafeGetLocalizedString();
             skillLabel.text = string.IsNullOrEmpty(text) ? $"{skill.skillName} [{turns}]" : text;
         }
+    }
+
+    /// <summary>
+    /// Shows the icon when the skill has one; falls back to the plain text-only
+    /// button otherwise, including the label inset, so skills still awaiting art
+    /// do not leave an empty gap.
+    /// </summary>
+    private void SetSkillIcon(Sprite icon, bool ready)
+    {
+        if (skillIconImage == null) return;
+
+        bool show = icon != null;
+        skillIconImage.enabled = show;
+        skillIconImage.sprite  = icon;
+        skillIconImage.color   = ready ? Color.white : new Color(1f, 1f, 1f, 0.45f);
+
+        // Recomputed here, not just at construction: the button has no width during
+        // Awake (the HorizontalLayoutGroup sizes it on the first layout pass), so an
+        // inset derived from it back then would have been based on zero.
+        float inset = SkillIconLeftInset(skillButton.transform);
+        var iconRect = skillIconImage.rectTransform;
+        iconRect.offsetMin = new Vector2(inset, IconInset);
+        iconRect.offsetMax = new Vector2(inset + IconSize, -IconInset);
+
+        float left = show ? inset + IconSize + 4f : 4f;
+        var labelRect = skillLabel.rectTransform;
+        labelRect.offsetMin = new Vector2(left, labelRect.offsetMin.y);
+        // The caption also has to clear the button frame on the right, or a long
+        // skill name runs out past the bevel.
+        labelRect.offsetMax = new Vector2(-inset, labelRect.offsetMax.y);
     }
 
     private void OnAttackClicked() => BeginTargetSelection(TurnManager.PlayerActionType.Attack);

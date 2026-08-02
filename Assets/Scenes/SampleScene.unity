@@ -24874,7 +24874,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Dialogue.NPCDialogueInteractable
   npcId: maren
   npcDisplayName: Maren
-  npcPortrait: {fileID: -1472042890479170128, guid: 9f0e47816ac1ab242a36ee5fdd8ce891, type: 3}
+  npcPortrait: {fileID: 21300000, guid: 1299660ed2a86ba4dbb7ad60bf4683f7, type: 3}
   npcBioLocalized:
     m_TableReference:
       m_TableCollectionName: Dialogue
