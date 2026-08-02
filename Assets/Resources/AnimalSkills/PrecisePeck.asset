@@ -15,7 +15,7 @@ MonoBehaviour:
   skillId: precise_peck
   skillName: Precise Peck
   skillType: 0
-  skillIcon: {fileID: 0}
+  skillIcon: {fileID: 21300000, guid: 8e29505596c1b824798fd65064f6bb74, type: 3}
   description: A quick, accurate jab. Not devastating, but always ready.
   unlockCondition:
     conditionType: 0

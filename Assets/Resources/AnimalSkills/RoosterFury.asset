@@ -15,7 +15,7 @@ MonoBehaviour:
   skillId: rooster_fury
   skillName: Rooster Fury
   skillType: 0
-  skillIcon: {fileID: 0}
+  skillIcon: {fileID: 21300000, guid: bda19222b6d8af340b527325ec232d74, type: 3}
   description: Emboldened by the flock, it throws itself at the enemy with reckless
     force.
   unlockCondition:

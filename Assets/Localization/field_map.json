@@ -1545,5 +1545,19 @@
     "table": "Worldmap",
     "key": "worldmap.biome_completed",
     "file": "Assets/Scripts/Worldmap/WorldMapBiomePanel.cs"
+  },
+  {
+    "class": "TeamAssemblerUI",
+    "field": "combatModeActivePauseText_Localized",
+    "table": "Combat",
+    "key": "combat.teamassembler.mode_active_pause",
+    "file": "Assets/Scripts/Combat/TeamAssemblerUI.cs"
+  },
+  {
+    "class": "TeamAssemblerUI",
+    "field": "combatModeAutoText_Localized",
+    "table": "Combat",
+    "key": "combat.teamassembler.mode_auto",
+    "file": "Assets/Scripts/Combat/TeamAssemblerUI.cs"
   }
 ]

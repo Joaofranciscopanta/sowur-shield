@@ -15,7 +15,7 @@ MonoBehaviour:
   skillId: hoof_kick
   skillName: Hoof Kick
   skillType: 0
-  skillIcon: {fileID: 0}
+  skillIcon: {fileID: 21300000, guid: 22038e867209abd4d90efbc3dd670ec0, type: 3}
   description: A heavy kick that knocks the wind out of the target, making it skip
     its next turn.
   unlockCondition:

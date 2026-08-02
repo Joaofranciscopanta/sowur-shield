@@ -223,7 +223,12 @@ public class CombatUnit : MonoBehaviour
             return;
         }
 
-        // Fallback: sphere (no sprite available)
+        // Fallback: sphere. This is a 3D primitive in a 2D scene — it renders as a
+        // large opaque blob that reads as a broken sprite, so it is a last resort
+        // and warns rather than failing quietly.
+        Debug.LogWarning($"[CombatUnit] '{name}' has no sprite " +
+                         $"(animal={(animal != null && animal.AnimalData != null ? animal.AnimalData.name : "none")}); " +
+                         "falling back to placeholder sphere.");
         CreateSphereVisual();
     }
 
@@ -722,6 +727,16 @@ public class CombatUnit : MonoBehaviour
             return null;
         }
     }
+
+    /// <summary>
+    /// This player unit's active skill regardless of cooldown state (null for enemies).
+    /// The command UI needs the skill even while it is unavailable, so it can show the
+    /// name greyed out with the remaining turns — GetReadySkill() returns null there.
+    /// </summary>
+    public AnimalSkill GetPlayerActiveSkill() => isPlayerUnit ? playerActiveSkill : null;
+
+    /// <summary>Remaining cooldown turns on the active skill (0 = ready to use).</summary>
+    public int GetSkillCooldownRemaining() => skillCooldownRemaining;
 
     /// <summary>Put the active skill on cooldown after use.</summary>
     public void SetSkillOnCooldown(AnimalSkill skill)

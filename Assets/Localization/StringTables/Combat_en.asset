@@ -577,6 +577,66 @@ MonoBehaviour:
     m_Localized: Lord of Ashes
     m_Metadata:
       m_Items: []
+  - m_Id: 15112532682072064
+    m_Localized: 'Mode: Active Pause'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15112532724015104
+    m_Localized: 'Mode: Auto'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15114063577866240
+    m_Localized: Attack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15114063624003584
+    m_Localized: Defend
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15114063624003585
+    m_Localized: Back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15114063624003586
+    m_Localized: Choose an action
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15114063624003587
+    m_Localized: Click an enemy to target
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15114063624003588
+    m_Localized: '{0} [{1}]'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133377987076096
+    m_Localized: Victory!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853312
+    m_Localized: Defeated...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853313
+    m_Localized: To Farm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853314
+    m_Localized: Retry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853315
+    m_Localized: Feed All
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853316
+    m_Localized: Clear Grid
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853317
+    m_Localized: Start Battle
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

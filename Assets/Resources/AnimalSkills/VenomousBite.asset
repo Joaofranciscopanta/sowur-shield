@@ -15,17 +15,35 @@ MonoBehaviour:
   skillId: venomous_bite
   skillName: Venomous Bite
   skillType: 0
-  skillIcon: {fileID: 0}
+  skillIcon: {fileID: 21300000, guid: 60f344afba8e7824396898e43a93ee15, type: 3}
   description: A venomous bite that poisons the target, dealing damage each turn.
     Stacks if used repeatedly.
   unlockCondition:
     conditionType: 0
-    requiredClass:
-    requiredFamily:
+    requiredClass: 
+    requiredFamily: 
     minFamilyCount: 0
     minHappiness: 0
-    requiredSeason:
+    requiredSeason: 
     combinedConditions: []
+    requiresText:
+      m_TableReference:
+        m_TableCollectionName: 
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    andText:
+      m_TableReference:
+        m_TableCollectionName: 
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
   damageMultiplier: 1
   defenseMultiplier: 1
   speedMultiplier: 1
@@ -37,3 +55,33 @@ MonoBehaviour:
   statusEffect: 4
   statusEffectValue: 5
   statusEffectDuration: 3
+  fullInfoHeaderText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  fullInfoDescText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  fullInfoUnlockText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []

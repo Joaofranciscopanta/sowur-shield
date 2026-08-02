@@ -64,6 +64,14 @@ public class GridManager : MonoBehaviour
         Instance = this;
     }
 
+    private void OnDestroy()
+    {
+        // Leaving CombatScene destroys this manager; without clearing Instance the next
+        // battle's GridManager sees a stale non-null Instance in Awake and destroys itself.
+        if (Instance == this)
+            Instance = null;
+    }
+
     private void Start()
     {
         // Create grid on start

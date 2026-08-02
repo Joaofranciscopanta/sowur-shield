@@ -15,7 +15,7 @@ MonoBehaviour:
   skillId: spring_vigor
   skillName: Spring Vigor
   skillType: 1
-  skillIcon: {fileID: 0}
+  skillIcon: {fileID: 21300000, guid: 39cf4830d27739e49970c4cb1ec20ef2, type: 3}
   description: The turning season puts a spring in its step.
   unlockCondition:
     conditionType: 5

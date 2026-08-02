@@ -94,6 +94,10 @@ MonoBehaviour:
     m_Localized: Invierno
     m_Metadata:
       m_Items: []
+  - m_Id: 15133380356857856
+    m_Localized: Volver
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

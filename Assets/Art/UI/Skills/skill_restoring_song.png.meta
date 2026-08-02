@@ -1,0 +1,2808 @@
+fileFormatVersion: 2
+guid: 6f853cddf9b38494d9a9c994f1da5767
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1897363926002473241
+    second: skill_restoring_song_0
+  - first:
+      213: 2483576117469491755
+    second: skill_restoring_song_1
+  - first:
+      213: 993194569101101437
+    second: skill_restoring_song_2
+  - first:
+      213: -1970944227480902743
+    second: skill_restoring_song_3
+  - first:
+      213: -801131293334290250
+    second: skill_restoring_song_4
+  - first:
+      213: 6318141016708170239
+    second: skill_restoring_song_5
+  - first:
+      213: -1040953428643048585
+    second: skill_restoring_song_6
+  - first:
+      213: -2044588559764010672
+    second: skill_restoring_song_7
+  - first:
+      213: -3811903249018544243
+    second: skill_restoring_song_8
+  - first:
+      213: 7160476125766236034
+    second: skill_restoring_song_9
+  - first:
+      213: 912125289738334151
+    second: skill_restoring_song_10
+  - first:
+      213: 4983055796671148395
+    second: skill_restoring_song_11
+  - first:
+      213: -1170761134419750934
+    second: skill_restoring_song_12
+  - first:
+      213: -3401610243620304326
+    second: skill_restoring_song_13
+  - first:
+      213: -7606645308053424137
+    second: skill_restoring_song_14
+  - first:
+      213: 8572393035486863080
+    second: skill_restoring_song_15
+  - first:
+      213: 918748828813574026
+    second: skill_restoring_song_16
+  - first:
+      213: -8540156920088295619
+    second: skill_restoring_song_17
+  - first:
+      213: 5902424776702527889
+    second: skill_restoring_song_18
+  - first:
+      213: 4345425234979168014
+    second: skill_restoring_song_19
+  - first:
+      213: 1136359187705161043
+    second: skill_restoring_song_20
+  - first:
+      213: -1521370481808020283
+    second: skill_restoring_song_21
+  - first:
+      213: -8708270818191207610
+    second: skill_restoring_song_22
+  - first:
+      213: -5320910854887598011
+    second: skill_restoring_song_23
+  - first:
+      213: -3859452168689117251
+    second: skill_restoring_song_24
+  - first:
+      213: 2394960287063861261
+    second: skill_restoring_song_25
+  - first:
+      213: -6218291786652941361
+    second: skill_restoring_song_26
+  - first:
+      213: 5984925485867587604
+    second: skill_restoring_song_27
+  - first:
+      213: -2677221542239820852
+    second: skill_restoring_song_28
+  - first:
+      213: 158384969621673670
+    second: skill_restoring_song_29
+  - first:
+      213: -1557906630295282407
+    second: skill_restoring_song_30
+  - first:
+      213: -1949648328091253852
+    second: skill_restoring_song_31
+  - first:
+      213: 4799534562450706825
+    second: skill_restoring_song_32
+  - first:
+      213: -7818679043372426567
+    second: skill_restoring_song_33
+  - first:
+      213: 5449894855829230786
+    second: skill_restoring_song_34
+  - first:
+      213: 575566383146894039
+    second: skill_restoring_song_35
+  - first:
+      213: 7080829028189298929
+    second: skill_restoring_song_36
+  - first:
+      213: -9069398985316663766
+    second: skill_restoring_song_37
+  - first:
+      213: -5928218348171487670
+    second: skill_restoring_song_38
+  - first:
+      213: -3896728036962557341
+    second: skill_restoring_song_39
+  - first:
+      213: -1198741576853469340
+    second: skill_restoring_song_40
+  - first:
+      213: 9219785662983056107
+    second: skill_restoring_song_41
+  - first:
+      213: 2744280066140971350
+    second: skill_restoring_song_42
+  - first:
+      213: 899180075685471991
+    second: skill_restoring_song_43
+  - first:
+      213: 4841274584976777847
+    second: skill_restoring_song_44
+  - first:
+      213: 1043026964072074981
+    second: skill_restoring_song_45
+  - first:
+      213: 4399186375378145431
+    second: skill_restoring_song_46
+  - first:
+      213: -5969284724298674134
+    second: skill_restoring_song_47
+  - first:
+      213: 1861400254375919655
+    second: skill_restoring_song_48
+  - first:
+      213: 3829148287224714137
+    second: skill_restoring_song_49
+  - first:
+      213: -6260418297071502775
+    second: skill_restoring_song_50
+  - first:
+      213: -9068870252681419937
+    second: skill_restoring_song_51
+  - first:
+      213: -3287925985644927261
+    second: skill_restoring_song_52
+  - first:
+      213: -617381899618274946
+    second: skill_restoring_song_53
+  - first:
+      213: -2895205379737160535
+    second: skill_restoring_song_54
+  - first:
+      213: 476133710102485978
+    second: skill_restoring_song_55
+  - first:
+      213: 5636469785204441705
+    second: skill_restoring_song_56
+  - first:
+      213: -3547808594209224176
+    second: skill_restoring_song_57
+  - first:
+      213: -2469718192768689853
+    second: skill_restoring_song_58
+  - first:
+      213: 6498196544977556443
+    second: skill_restoring_song_59
+  - first:
+      213: 250835568657081783
+    second: skill_restoring_song_60
+  - first:
+      213: -4544096509019813808
+    second: skill_restoring_song_61
+  - first:
+      213: 2321192183149744095
+    second: skill_restoring_song_62
+  - first:
+      213: 515829626257462236
+    second: skill_restoring_song_63
+  - first:
+      213: -6933645219220920000
+    second: skill_restoring_song_64
+  - first:
+      213: -7809787224029786424
+    second: skill_restoring_song_65
+  - first:
+      213: -4916794072620390344
+    second: skill_restoring_song_66
+  - first:
+      213: 3171486641152765993
+    second: skill_restoring_song_67
+  - first:
+      213: 6992136346389807367
+    second: skill_restoring_song_68
+  - first:
+      213: 528366830714642442
+    second: skill_restoring_song_69
+  - first:
+      213: 4980188892137429927
+    second: skill_restoring_song_70
+  - first:
+      213: -5441490671473152249
+    second: skill_restoring_song_71
+  - first:
+      213: -360897359078719062
+    second: skill_restoring_song_72
+  - first:
+      213: -6021281763698414823
+    second: skill_restoring_song_73
+  - first:
+      213: -2226668746220633947
+    second: skill_restoring_song_74
+  - first:
+      213: 474987810767517500
+    second: skill_restoring_song_75
+  - first:
+      213: 1365410182056500001
+    second: skill_restoring_song_76
+  - first:
+      213: -5099236108954206614
+    second: skill_restoring_song_77
+  - first:
+      213: 7604095107302113082
+    second: skill_restoring_song_78
+  - first:
+      213: 3475339624267892199
+    second: skill_restoring_song_79
+  - first:
+      213: 1857089800866145979
+    second: skill_restoring_song_80
+  - first:
+      213: 397491448186860486
+    second: skill_restoring_song_81
+  - first:
+      213: -2356828327595272824
+    second: skill_restoring_song_82
+  - first:
+      213: 5620981558420345451
+    second: skill_restoring_song_83
+  - first:
+      213: -4030868044749399589
+    second: skill_restoring_song_84
+  - first:
+      213: 8647798448953120112
+    second: skill_restoring_song_85
+  - first:
+      213: 6896185972962898510
+    second: skill_restoring_song_86
+  - first:
+      213: 4792378694812860222
+    second: skill_restoring_song_87
+  - first:
+      213: 8901043739241928934
+    second: skill_restoring_song_88
+  - first:
+      213: -3777352292702442023
+    second: skill_restoring_song_89
+  - first:
+      213: 1278617430533793961
+    second: skill_restoring_song_90
+  - first:
+      213: 567401459044019760
+    second: skill_restoring_song_91
+  - first:
+      213: 5837041550971858058
+    second: skill_restoring_song_92
+  - first:
+      213: -1619154264760350400
+    second: skill_restoring_song_93
+  - first:
+      213: -7936218099988044225
+    second: skill_restoring_song_94
+  - first:
+      213: 1085881417330889442
+    second: skill_restoring_song_95
+  - first:
+      213: 2804326117448869255
+    second: skill_restoring_song_96
+  - first:
+      213: 5274201199243502665
+    second: skill_restoring_song_97
+  - first:
+      213: -4012849564230436297
+    second: skill_restoring_song_98
+  - first:
+      213: 4097310828823823490
+    second: skill_restoring_song_99
+  - first:
+      213: 3677098677464575840
+    second: skill_restoring_song_100
+  - first:
+      213: 2592941787068680016
+    second: skill_restoring_song_101
+  - first:
+      213: 6677671287157594652
+    second: skill_restoring_song_102
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: skill_restoring_song_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 46
+        width: 916
+        height: 718
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e66bfcdf853ba5e0800000000000000
+      internalID: -1897363926002473241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_1
+      rect:
+        serializedVersion: 2
+        x: 439
+        y: 738
+        width: 38
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b22b96ef15f677220800000000000000
+      internalID: 2483576117469491755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_2
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 429
+        width: 39
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d794e1cc23988cd00800000000000000
+      internalID: 993194569101101437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_3
+      rect:
+        serializedVersion: 2
+        x: 775
+        y: 328
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a3e4e8eaacc5a4e0800000000000000
+      internalID: -1970944227480902743
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_4
+      rect:
+        serializedVersion: 2
+        x: 707
+        y: 239
+        width: 34
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b04c52555fc1e4f0800000000000000
+      internalID: -801131293334290250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_5
+      rect:
+        serializedVersion: 2
+        x: 758
+        y: 246
+        width: 15
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff147bd97cb8ea750800000000000000
+      internalID: 6318141016708170239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_6
+      rect:
+        serializedVersion: 2
+        x: 781
+        y: 239
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 77391023f5acd81f0800000000000000
+      internalID: -1040953428643048585
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_7
+      rect:
+        serializedVersion: 2
+        x: 807
+        y: 247
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 059407f998920a3e0800000000000000
+      internalID: -2044588559764010672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_8
+      rect:
+        serializedVersion: 2
+        x: 819
+        y: 239
+        width: 18
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d8f971cf036691bc0800000000000000
+      internalID: -3811903249018544243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_9
+      rect:
+        serializedVersion: 2
+        x: 858
+        y: 248
+        width: 19
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28736fa391f1f5360800000000000000
+      internalID: 7160476125766236034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_10
+      rect:
+        serializedVersion: 2
+        x: 872
+        y: 234
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7cfe08d4e1588ac00800000000000000
+      internalID: 912125289738334151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_11
+      rect:
+        serializedVersion: 2
+        x: 698
+        y: 239
+        width: 11
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b61f88088de572540800000000000000
+      internalID: 4983055796671148395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_12
+      rect:
+        serializedVersion: 2
+        x: 749
+        y: 237
+        width: 14
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aefc31283fe90cfe0800000000000000
+      internalID: -1170761134419750934
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_13
+      rect:
+        serializedVersion: 2
+        x: 784
+        y: 228
+        width: 29
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3a8ea4818d0bc0d0800000000000000
+      internalID: -3401610243620304326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_14
+      rect:
+        serializedVersion: 2
+        x: 831
+        y: 230
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f77511e464cf6690800000000000000
+      internalID: -7606645308053424137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_15
+      rect:
+        serializedVersion: 2
+        x: 715
+        y: 223
+        width: 18
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ee1a3b1c0247f670800000000000000
+      internalID: 8572393035486863080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_16
+      rect:
+        serializedVersion: 2
+        x: 742
+        y: 229
+        width: 20
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8f3d3b213d00cc00800000000000000
+      internalID: 918748828813574026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_17
+      rect:
+        serializedVersion: 2
+        x: 814
+        y: 211
+        width: 48
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d370b0467844b7980800000000000000
+      internalID: -8540156920088295619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_18
+      rect:
+        serializedVersion: 2
+        x: 861
+        y: 212
+        width: 20
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19981d0ef00a9e150800000000000000
+      internalID: 5902424776702527889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_19
+      rect:
+        serializedVersion: 2
+        x: 471
+        y: 208
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0f93f86a3d0e4c30800000000000000
+      internalID: 4345425234979168014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_20
+      rect:
+        serializedVersion: 2
+        x: 694
+        y: 207
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 355ea6819a825cf00800000000000000
+      internalID: 1136359187705161043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_21
+      rect:
+        serializedVersion: 2
+        x: 717
+        y: 205
+        width: 24
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5cc611c7b9103eae0800000000000000
+      internalID: -1521370481808020283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_22
+      rect:
+        serializedVersion: 2
+        x: 738
+        y: 165
+        width: 89
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64310d944d1062780800000000000000
+      internalID: -8708270818191207610
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_23
+      rect:
+        serializedVersion: 2
+        x: 764
+        y: 211
+        width: 25
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54897e4d4c35826b0800000000000000
+      internalID: -5320910854887598011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_24
+      rect:
+        serializedVersion: 2
+        x: 838
+        y: 191
+        width: 29
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db79ca963b8707ac0800000000000000
+      internalID: -3859452168689117251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_25
+      rect:
+        serializedVersion: 2
+        x: 878
+        y: 212
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d08eb9921bb9c3120800000000000000
+      internalID: 2394960287063861261
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_26
+      rect:
+        serializedVersion: 2
+        x: 885
+        y: 209
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc382d2e09034b9a0800000000000000
+      internalID: -6218291786652941361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_27
+      rect:
+        serializedVersion: 2
+        x: 888
+        y: 197
+        width: 28
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 418d158150abe0350800000000000000
+      internalID: 5984925485867587604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_28
+      rect:
+        serializedVersion: 2
+        x: 361
+        y: 185
+        width: 20
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc3a5cd113998dad0800000000000000
+      internalID: -2677221542239820852
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_29
+      rect:
+        serializedVersion: 2
+        x: 607
+        y: 197
+        width: 15
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c69f0c6a42b23200800000000000000
+      internalID: 158384969621673670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_30
+      rect:
+        serializedVersion: 2
+        x: 629
+        y: 191
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91d16048c24316ae0800000000000000
+      internalID: -1557906630295282407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_31
+      rect:
+        serializedVersion: 2
+        x: 659
+        y: 191
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a3cf2fdc2571f4e0800000000000000
+      internalID: -1949648328091253852
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_32
+      rect:
+        serializedVersion: 2
+        x: 695
+        y: 191
+        width: 29
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 981951a614f5b9240800000000000000
+      internalID: 4799534562450706825
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_33
+      rect:
+        serializedVersion: 2
+        x: 724
+        y: 179
+        width: 25
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9badefec5d87e7390800000000000000
+      internalID: -7818679043372426567
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_34
+      rect:
+        serializedVersion: 2
+        x: 820
+        y: 148
+        width: 96
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c41ee02f7ae1ab40800000000000000
+      internalID: 5449894855829230786
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_35
+      rect:
+        serializedVersion: 2
+        x: 895
+        y: 193
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d280247392dcf700800000000000000
+      internalID: 575566383146894039
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_36
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 179
+        width: 22
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f06f7c3c78244260800000000000000
+      internalID: 7080829028189298929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_37
+      rect:
+        serializedVersion: 2
+        x: 515
+        y: 175
+        width: 10
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2e79e1bca5032280800000000000000
+      internalID: -9069398985316663766
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_38
+      rect:
+        serializedVersion: 2
+        x: 531
+        y: 180
+        width: 18
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a46194642dcbabda0800000000000000
+      internalID: -5928218348171487670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_39
+      rect:
+        serializedVersion: 2
+        x: 574
+        y: 181
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 362aa820f7a0ce9c0800000000000000
+      internalID: -3896728036962557341
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_40
+      rect:
+        serializedVersion: 2
+        x: 603
+        y: 163
+        width: 32
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 467482613e63d5fe0800000000000000
+      internalID: -1198741576853469340
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_41
+      rect:
+        serializedVersion: 2
+        x: 630
+        y: 181
+        width: 14
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bea2853463243ff70800000000000000
+      internalID: 9219785662983056107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_42
+      rect:
+        serializedVersion: 2
+        x: 650
+        y: 179
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 651a48a2e24a51620800000000000000
+      internalID: 2744280066140971350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_43
+      rect:
+        serializedVersion: 2
+        x: 671
+        y: 101
+        width: 168
+        height: 89
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f66758c3878a7c00800000000000000
+      internalID: 899180075685471991
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_44
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 166
+        width: 11
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 772eaa9b599af2340800000000000000
+      internalID: 4841274584976777847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_45
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 167
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ee8ba46f73997e00800000000000000
+      internalID: 1043026964072074981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_46
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 166
+        width: 12
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 790172553bc0d0d30800000000000000
+      internalID: 4399186375378145431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_47
+      rect:
+        serializedVersion: 2
+        x: 238
+        y: 172
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a20130d7b27d82da0800000000000000
+      internalID: -5969284724298674134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_48
+      rect:
+        serializedVersion: 2
+        x: 252
+        y: 165
+        width: 17
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72006e25ba505d910800000000000000
+      internalID: 1861400254375919655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_49
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 165
+        width: 22
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 993135c541ed32530800000000000000
+      internalID: 3829148287224714137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_50
+      rect:
+        serializedVersion: 2
+        x: 307
+        y: 166
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94a72b95ab68e19a0800000000000000
+      internalID: -6260418297071502775
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_51
+      rect:
+        serializedVersion: 2
+        x: 334
+        y: 166
+        width: 23
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5321dadd86e42280800000000000000
+      internalID: -9068870252681419937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_52
+      rect:
+        serializedVersion: 2
+        x: 387
+        y: 165
+        width: 18
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e6abd97cb0fe52d0800000000000000
+      internalID: -3287925985644927261
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_53
+      rect:
+        serializedVersion: 2
+        x: 509
+        y: 167
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e713f7eee6e9e67f0800000000000000
+      internalID: -617381899618274946
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_54
+      rect:
+        serializedVersion: 2
+        x: 523
+        y: 166
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a477fceb0a22d7d0800000000000000
+      internalID: -2895205379737160535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_55
+      rect:
+        serializedVersion: 2
+        x: 556
+        y: 165
+        width: 30
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: adb5f3036119b9600800000000000000
+      internalID: 476133710102485978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_56
+      rect:
+        serializedVersion: 2
+        x: 655
+        y: 165
+        width: 25
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96245560863c83e40800000000000000
+      internalID: 5636469785204441705
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_57
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 159
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01ac41371e6a3cec0800000000000000
+      internalID: -3547808594209224176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_58
+      rect:
+        serializedVersion: 2
+        x: 435
+        y: 165
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 349d3b8836cc9bdd0800000000000000
+      internalID: -2469718192768689853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_59
+      rect:
+        serializedVersion: 2
+        x: 631
+        y: 0
+        width: 285
+        height: 167
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd3de08245b3e2a50800000000000000
+      internalID: 6498196544977556443
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_60
+      rect:
+        serializedVersion: 2
+        x: 187
+        y: 148
+        width: 18
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b5a6d6ee952b7300800000000000000
+      internalID: 250835568657081783
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_61
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 144
+        width: 23
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05808cafc4020f0c0800000000000000
+      internalID: -4544096509019813808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_62
+      rect:
+        serializedVersion: 2
+        x: 314
+        y: 148
+        width: 27
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdfcd0c0ef7863020800000000000000
+      internalID: 2321192183149744095
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_63
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 151
+        width: 25
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd3d2b5ef48982700800000000000000
+      internalID: 515829626257462236
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_64
+      rect:
+        serializedVersion: 2
+        x: 415
+        y: 85
+        width: 120
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04960cdb86eb6cf90800000000000000
+      internalID: -6933645219220920000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_65
+      rect:
+        serializedVersion: 2
+        x: 455
+        y: 130
+        width: 47
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ce0254d5ef0e9390800000000000000
+      internalID: -7809787224029786424
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_66
+      rect:
+        serializedVersion: 2
+        x: 493
+        y: 149
+        width: 24
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83827bb57d904cbb0800000000000000
+      internalID: -4916794072620390344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_67
+      rect:
+        serializedVersion: 2
+        x: 537
+        y: 148
+        width: 28
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 920becffb42630c20800000000000000
+      internalID: 3171486641152765993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_68
+      rect:
+        serializedVersion: 2
+        x: 563
+        y: 131
+        width: 30
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70189ab06fe090160800000000000000
+      internalID: 6992136346389807367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_69
+      rect:
+        serializedVersion: 2
+        x: 584
+        y: 149
+        width: 25
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0068d745d2255700800000000000000
+      internalID: 528366830714642442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_70
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 135
+        width: 23
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ab9236496f2d1540800000000000000
+      internalID: 4980188892137429927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_71
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 117
+        width: 52
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70fad368011fb74b0800000000000000
+      internalID: -5441490671473152249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_72
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 132
+        width: 18
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa18cb793c5ddfaf0800000000000000
+      internalID: -360897359078719062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_73
+      rect:
+        serializedVersion: 2
+        x: 245
+        y: 132
+        width: 33
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91be736532c107ca0800000000000000
+      internalID: -6021281763698414823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_74
+      rect:
+        serializedVersion: 2
+        x: 295
+        y: 0
+        width: 301
+        height: 149
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5a00e0d92984911e0800000000000000
+      internalID: -2226668746220633947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_75
+      rect:
+        serializedVersion: 2
+        x: 611
+        y: 133
+        width: 29
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c373075b5ee779600800000000000000
+      internalID: 474987810767517500
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_76
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 116
+        width: 17
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12bdd2a8359e2f210800000000000000
+      internalID: 1365410182056500001
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_77
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 108
+        width: 6
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6e70fb96cfdb39b0800000000000000
+      internalID: -5099236108954206614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_78
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 97
+        width: 25
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3f370d363c278960800000000000000
+      internalID: 7604095107302113082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_79
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 99
+        width: 50
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e5c352a9f2ea3030800000000000000
+      internalID: 3475339624267892199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_80
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 95
+        width: 29
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb6a0a8a555b5c910800000000000000
+      internalID: 1857089800866145979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_81
+      rect:
+        serializedVersion: 2
+        x: 190
+        y: 110
+        width: 20
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c3fe6abd5c248500800000000000000
+      internalID: 397491448186860486
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_82
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 85
+        width: 54
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8851b118f1dda4fd0800000000000000
+      internalID: -2356828327595272824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_83
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 22
+        width: 190
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b629aa632fcb10e40800000000000000
+      internalID: 5620981558420345451
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_84
+      rect:
+        serializedVersion: 2
+        x: 542
+        y: 63
+        width: 117
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd91d38aeda7f08c0800000000000000
+      internalID: -4030868044749399589
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_85
+      rect:
+        serializedVersion: 2
+        x: 590
+        y: 85
+        width: 88
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 075560f0fd6230870800000000000000
+      internalID: 8647798448953120112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_86
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 79
+        width: 11
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e423c77da9c24bf50800000000000000
+      internalID: 6896185972962898510
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_87
+      rect:
+        serializedVersion: 2
+        x: 93
+        y: 68
+        width: 22
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3f78752803f18240800000000000000
+      internalID: 4792378694812860222
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_88
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 49
+        width: 75
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e8dabffe1cd68b70800000000000000
+      internalID: 8901043739241928934
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_89
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 0
+        width: 124
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9dda6f16a16249bc0800000000000000
+      internalID: -3777352292702442023
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_90
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 22
+        width: 122
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a8e69657cf8eb110800000000000000
+      internalID: 1278617430533793961
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_91
+      rect:
+        serializedVersion: 2
+        x: 357
+        y: 17
+        width: 112
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03e6b5bee90dfd700800000000000000
+      internalID: 567401459044019760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_92
+      rect:
+        serializedVersion: 2
+        x: 537
+        y: 21
+        width: 105
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8c6fd85d56510150800000000000000
+      internalID: 5837041550971858058
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_93
+      rect:
+        serializedVersion: 2
+        x: 582
+        y: 34
+        width: 84
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 049866c56cb9789e0800000000000000
+      internalID: -1619154264760350400
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_94
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 8
+        width: 75
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f36ef2a9fa3ecd190800000000000000
+      internalID: -7936218099988044225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_95
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 36
+        width: 26
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e294345563d11f00800000000000000
+      internalID: 1085881417330889442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_96
+      rect:
+        serializedVersion: 2
+        x: 470
+        y: 15
+        width: 81
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 785e3e0feb7fae620800000000000000
+      internalID: 2804326117448869255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_97
+      rect:
+        serializedVersion: 2
+        x: 387
+        y: 6
+        width: 10
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94429dafb0ab13940800000000000000
+      internalID: 5274201199243502665
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_98
+      rect:
+        serializedVersion: 2
+        x: 419
+        y: 7
+        width: 28
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73ab6f2159e7f48c0800000000000000
+      internalID: -4012849564230436297
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_99
+      rect:
+        serializedVersion: 2
+        x: 502
+        y: 13
+        width: 23
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 284c7668d729cd830800000000000000
+      internalID: 4097310828823823490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_100
+      rect:
+        serializedVersion: 2
+        x: 548
+        y: 6
+        width: 23
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06fa55ad3cda70330800000000000000
+      internalID: 3677098677464575840
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_101
+      rect:
+        serializedVersion: 2
+        x: 592
+        y: 3
+        width: 27
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 057ce7d31dafbf320800000000000000
+      internalID: 2592941787068680016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: skill_restoring_song_102
+      rect:
+        serializedVersion: 2
+        x: 874
+        y: 0
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1a9ad5e7aadbac50800000000000000
+      internalID: 6677671287157594652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      skill_restoring_song_0: -1897363926002473241
+      skill_restoring_song_1: 2483576117469491755
+      skill_restoring_song_10: 912125289738334151
+      skill_restoring_song_100: 3677098677464575840
+      skill_restoring_song_101: 2592941787068680016
+      skill_restoring_song_102: 6677671287157594652
+      skill_restoring_song_11: 4983055796671148395
+      skill_restoring_song_12: -1170761134419750934
+      skill_restoring_song_13: -3401610243620304326
+      skill_restoring_song_14: -7606645308053424137
+      skill_restoring_song_15: 8572393035486863080
+      skill_restoring_song_16: 918748828813574026
+      skill_restoring_song_17: -8540156920088295619
+      skill_restoring_song_18: 5902424776702527889
+      skill_restoring_song_19: 4345425234979168014
+      skill_restoring_song_2: 993194569101101437
+      skill_restoring_song_20: 1136359187705161043
+      skill_restoring_song_21: -1521370481808020283
+      skill_restoring_song_22: -8708270818191207610
+      skill_restoring_song_23: -5320910854887598011
+      skill_restoring_song_24: -3859452168689117251
+      skill_restoring_song_25: 2394960287063861261
+      skill_restoring_song_26: -6218291786652941361
+      skill_restoring_song_27: 5984925485867587604
+      skill_restoring_song_28: -2677221542239820852
+      skill_restoring_song_29: 158384969621673670
+      skill_restoring_song_3: -1970944227480902743
+      skill_restoring_song_30: -1557906630295282407
+      skill_restoring_song_31: -1949648328091253852
+      skill_restoring_song_32: 4799534562450706825
+      skill_restoring_song_33: -7818679043372426567
+      skill_restoring_song_34: 5449894855829230786
+      skill_restoring_song_35: 575566383146894039
+      skill_restoring_song_36: 7080829028189298929
+      skill_restoring_song_37: -9069398985316663766
+      skill_restoring_song_38: -5928218348171487670
+      skill_restoring_song_39: -3896728036962557341
+      skill_restoring_song_4: -801131293334290250
+      skill_restoring_song_40: -1198741576853469340
+      skill_restoring_song_41: 9219785662983056107
+      skill_restoring_song_42: 2744280066140971350
+      skill_restoring_song_43: 899180075685471991
+      skill_restoring_song_44: 4841274584976777847
+      skill_restoring_song_45: 1043026964072074981
+      skill_restoring_song_46: 4399186375378145431
+      skill_restoring_song_47: -5969284724298674134
+      skill_restoring_song_48: 1861400254375919655
+      skill_restoring_song_49: 3829148287224714137
+      skill_restoring_song_5: 6318141016708170239
+      skill_restoring_song_50: -6260418297071502775
+      skill_restoring_song_51: -9068870252681419937
+      skill_restoring_song_52: -3287925985644927261
+      skill_restoring_song_53: -617381899618274946
+      skill_restoring_song_54: -2895205379737160535
+      skill_restoring_song_55: 476133710102485978
+      skill_restoring_song_56: 5636469785204441705
+      skill_restoring_song_57: -3547808594209224176
+      skill_restoring_song_58: -2469718192768689853
+      skill_restoring_song_59: 6498196544977556443
+      skill_restoring_song_6: -1040953428643048585
+      skill_restoring_song_60: 250835568657081783
+      skill_restoring_song_61: -4544096509019813808
+      skill_restoring_song_62: 2321192183149744095
+      skill_restoring_song_63: 515829626257462236
+      skill_restoring_song_64: -6933645219220920000
+      skill_restoring_song_65: -7809787224029786424
+      skill_restoring_song_66: -4916794072620390344
+      skill_restoring_song_67: 3171486641152765993
+      skill_restoring_song_68: 6992136346389807367
+      skill_restoring_song_69: 528366830714642442
+      skill_restoring_song_7: -2044588559764010672
+      skill_restoring_song_70: 4980188892137429927
+      skill_restoring_song_71: -5441490671473152249
+      skill_restoring_song_72: -360897359078719062
+      skill_restoring_song_73: -6021281763698414823
+      skill_restoring_song_74: -2226668746220633947
+      skill_restoring_song_75: 474987810767517500
+      skill_restoring_song_76: 1365410182056500001
+      skill_restoring_song_77: -5099236108954206614
+      skill_restoring_song_78: 7604095107302113082
+      skill_restoring_song_79: 3475339624267892199
+      skill_restoring_song_8: -3811903249018544243
+      skill_restoring_song_80: 1857089800866145979
+      skill_restoring_song_81: 397491448186860486
+      skill_restoring_song_82: -2356828327595272824
+      skill_restoring_song_83: 5620981558420345451
+      skill_restoring_song_84: -4030868044749399589
+      skill_restoring_song_85: 8647798448953120112
+      skill_restoring_song_86: 6896185972962898510
+      skill_restoring_song_87: 4792378694812860222
+      skill_restoring_song_88: 8901043739241928934
+      skill_restoring_song_89: -3777352292702442023
+      skill_restoring_song_9: 7160476125766236034
+      skill_restoring_song_90: 1278617430533793961
+      skill_restoring_song_91: 567401459044019760
+      skill_restoring_song_92: 5837041550971858058
+      skill_restoring_song_93: -1619154264760350400
+      skill_restoring_song_94: -7936218099988044225
+      skill_restoring_song_95: 1085881417330889442
+      skill_restoring_song_96: 2804326117448869255
+      skill_restoring_song_97: 5274201199243502665
+      skill_restoring_song_98: -4012849564230436297
+      skill_restoring_song_99: 4097310828823823490
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

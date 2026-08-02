@@ -147,6 +147,50 @@ MonoBehaviour:
     m_Key: mainmenu.saveslotbutton.money_label
     m_Metadata:
       m_Items: []
+  - m_Id: 15133379002097664
+    m_Key: mainmenu.button.new_game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367296
+    m_Key: mainmenu.button.continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367297
+    m_Key: mainmenu.button.load_game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367298
+    m_Key: mainmenu.button.settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367299
+    m_Key: mainmenu.button.quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367300
+    m_Key: mainmenu.settings.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367301
+    m_Key: mainmenu.settings.master_volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367302
+    m_Key: mainmenu.settings.music_volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367303
+    m_Key: mainmenu.settings.sfx_volume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367304
+    m_Key: mainmenu.settings.fullscreen
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367305
+    m_Key: mainmenu.settings.language
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

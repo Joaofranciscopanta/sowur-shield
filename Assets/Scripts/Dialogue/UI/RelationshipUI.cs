@@ -186,6 +186,15 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
 
         targetNpc = npc;
 
+        if (isOpen)
+        {
+            // Already showing another NPC: TryOpenWindow is a no-op for a window that
+            // is open, so the panel would keep the previous villager's portrait and
+            // bio. Repopulate it directly for the new target.
+            RefreshPanel();
+            return;
+        }
+
         if (UIManager.Instance != null)
             UIManager.Instance.TryOpenWindow(this);
         else
@@ -288,29 +297,29 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         portLE.preferredWidth  = 150;
         portLE.minWidth        = 150; // preferred alone still compresses under a tight row
         portLE.flexibleWidth   = 0;
-        portraitImage = portraitObj.AddComponent<Image>();
-        portraitImage.color = theme != null ? theme.woodLight : new Color(0.25f, 0.25f, 0.28f, 1f);
-        portraitImage.preserveAspect = true;
+        // All 9 portraits ship with the same opaque (45,42,38) backdrop by design, so
+        // the slot is masked and the image fills it: the art's own dark field then
+        // reads as the portrait's background inside the frame, instead of letter-boxing
+        // into bars of a slightly different dark.
+        portraitObj.AddComponent<RectMask2D>();
 
-        // Decorative frame over the portrait, matching the minimap's treatment. Added as a
-        // child overlay rather than replacing the portrait Image, so RefreshPanel can keep
-        // swapping the sprite underneath without touching the frame. Non-raycast so it never
-        // eats clicks meant for the panel.
-        Sprite frameSprite = Resources.Load<Sprite>("Sprites/UI/Frames/frame_decorative_border");
-        if (frameSprite != null)
-        {
-            var frameObj = new GameObject("PortraitFrame");
-            frameObj.transform.SetParent(portraitObj.transform, false);
-            var frameRT = frameObj.AddComponent<RectTransform>();
-            frameRT.anchorMin = Vector2.zero;
-            frameRT.anchorMax = Vector2.one;
-            frameRT.offsetMin = new Vector2(-6f, -6f);
-            frameRT.offsetMax = new Vector2(6f, 6f);
-            var frameImg = frameObj.AddComponent<Image>();
-            frameImg.sprite = frameSprite;
-            frameImg.type = Image.Type.Sliced;
-            frameImg.raycastTarget = false;
-        }
+        var portraitInner = new GameObject("PortraitImage");
+        portraitInner.transform.SetParent(portraitObj.transform, false);
+        var innerRT = portraitInner.AddComponent<RectTransform>();
+        innerRT.anchorMin = Vector2.zero;
+        innerRT.anchorMax = Vector2.one;
+        innerRT.offsetMin = Vector2.zero;
+        innerRT.offsetMax = Vector2.zero;
+
+        portraitImage = portraitInner.AddComponent<Image>();
+        portraitImage.color = theme != null ? theme.woodLight : new Color(0.25f, 0.25f, 0.28f, 1f);
+        portraitImage.preserveAspect = false;
+        portraitImage.type = Image.Type.Simple;
+
+        // No decorative frame overlay here. frame_decorative_border's corner art is a
+        // fixed size that does not scale down with a 150x200 slot, so it landed as a
+        // small box across the character's face. The portrait's own dark field plus
+        // the panel's wooden frame already read as a framed picture.
 
         // Info column (name, bio, bar, value)
         GameObject infoObj = new GameObject("Info");
@@ -503,6 +512,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
             CloseWindow();
     }
 
+    /// <summary>
     /// <summary>
     /// Populates the panel's portrait, name, bio and relationship bar from
     /// <see cref="targetNpc"/>. Called every time the panel is opened, since

@@ -162,6 +162,50 @@ MonoBehaviour:
     m_Localized: ${0}
     m_Metadata:
       m_Items: []
+  - m_Id: 15133379002097664
+    m_Localized: Novo Jogo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367296
+    m_Localized: Continuar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367297
+    m_Localized: Carregar Jogo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367298
+    m_Localized: "Configura\xE7\xF5es"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367299
+    m_Localized: Sair
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367300
+    m_Localized: "Configura\xE7\xF5es do Jogo"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367301
+    m_Localized: Volume Geral
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367302
+    m_Localized: "Volume da M\xFAsica (BGM)"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367303
+    m_Localized: Volume dos Efeitos (SFX)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367304
+    m_Localized: Tela Cheia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133379245367305
+    m_Localized: Idioma
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

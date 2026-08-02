@@ -25,14 +25,102 @@ namespace SowurShield.Combat
 public class TurnManager : MonoBehaviour
 {
     [Header("Combat Configuration")]
-    [Tooltip("Speed at which turn gauges fill (multiplier). 10 = ~1s per turn at speed 10.")]
-    [SerializeField] private float gaugeFilLRate = 10f;
+    [Tooltip("Speed at which turn gauges fill (multiplier). 6 = ~1.7s per turn at speed 10.")]
+    [SerializeField] private float gaugeFilLRate = 6f;
 
     [Tooltip("Maximum number of actions before battle ends in draw")]
     [SerializeField] private int maxActions = 500;
 
     [Tooltip("Micro-delay between simultaneous actions (seconds, for visual clarity)")]
-    [SerializeField] private float actionMicroDelay = 0.05f;
+    [SerializeField] private float actionMicroDelay = 0.25f;
+
+    // ── Battle speed (1x / 2x) ─────────────────────────────────────────────────
+    // Scales the gauge fill rate up and the micro-delay down, so 2x is roughly the
+    // pre-2026-08 pacing for players who prefer it. Deliberately NOT Time.timeScale:
+    // HitStopController already owns that and briefly drops it to a fraction on big
+    // hits, so a speed button writing to it would fight the hit-stop coroutine.
+    private const string SpeedPrefKey = "combat_speed";
+
+    /// <summary>Battle speed multiplier (1 = normal, 2 = fast). Persisted in PlayerPrefs.</summary>
+    public float SpeedMultiplier { get; private set; } = 1f;
+
+    /// <summary>Fired when the battle speed multiplier changes, with the new value.</summary>
+    public event System.Action<float> OnSpeedMultiplierChanged;
+
+    /// <summary>
+    /// Set the battle speed multiplier, clamped to the 1x-2x range the HUD exposes.
+    /// Persists the choice so the next battle starts at the same speed.
+    /// </summary>
+    public void SetSpeedMultiplier(float multiplier)
+    {
+        float clamped = Mathf.Clamp(multiplier, 1f, 2f);
+        if (Mathf.Approximately(clamped, SpeedMultiplier)) return;
+
+        SpeedMultiplier = clamped;
+        PlayerPrefs.SetFloat(SpeedPrefKey, clamped);
+        OnSpeedMultiplierChanged?.Invoke(clamped);
+    }
+
+    /// <summary>Toggle between 1x and 2x battle speed. Returns the new multiplier.</summary>
+    public float ToggleSpeedMultiplier()
+    {
+        SetSpeedMultiplier(SpeedMultiplier >= 2f ? 1f : 2f);
+        return SpeedMultiplier;
+    }
+
+    // ── Combat mode / active pause ─────────────────────────────────────────────
+    // Defaults to Auto rather than ActivePause on purpose: a TurnManager constructed
+    // without a TeamAssemblerData (every EditMode/PlayMode test, CombatTestSpawner)
+    // must keep resolving turns immediately. InitializeCombat opts into ActivePause
+    // only when the assembler explicitly asked for it.
+
+    /// <summary>How the player's units are controlled this battle.</summary>
+    public CombatMode Mode { get; private set; } = CombatMode.Auto;
+
+    /// <summary>The player unit currently waiting for a command (null when not waiting).</summary>
+    public CombatUnit AwaitingInputFor { get; private set; }
+
+    /// <summary>True while the battle is frozen waiting for the player to choose an action.</summary>
+    public bool IsWaitingForPlayerInput => AwaitingInputFor != null;
+
+    /// <summary>
+    /// Fired when a player unit's gauge fills in ActivePause mode and the battle is
+    /// waiting for a command. The command UI listens to this to open its panel.
+    /// </summary>
+    public event System.Action<CombatUnit> OnPlayerTurnStarted;
+
+    /// <summary>
+    /// Fired once the pending player action has been resolved (or timed out), so the
+    /// command UI can close its panel.
+    /// </summary>
+    public event System.Action OnPlayerTurnEnded;
+
+    /// <summary>
+    /// How long (seconds) to wait for a command before falling back to the automatic
+    /// action. Without this, a UI that fails to open would freeze the battle forever.
+    /// </summary>
+    private const float PlayerInputTimeout = 15f;
+
+    /// <summary>Set the combat mode. Exposed for the assembler and for tests.</summary>
+    public void SetCombatMode(CombatMode mode) => Mode = mode;
+
+    /// <summary>
+    /// Put the manager into the "awaiting a command" state without running the batch
+    /// coroutine, so EditMode tests can exercise SubmitPlayerAction's validation rules
+    /// directly. Prefer the real flow (PlayMode) for anything involving timing.
+    /// </summary>
+    public void SetAwaitingInputForTesting(CombatUnit unit)
+    {
+        AwaitingInputFor = unit;
+        pendingAction = null;
+    }
+
+    /// <summary>The action submitted for the current turn, if any (test inspection hook).</summary>
+    public PlayerAction GetPendingActionForTesting() => pendingAction;
+
+    /// <summary>True if this unit should be commanded by the player rather than the AI.</summary>
+    private bool IsPlayerControlled(CombatUnit unit)
+        => Mode == CombatMode.ActivePause && unit != null && unit.isPlayerUnit;
 
     // ATB system tracking
     private int totalActionsExecuted = 0;
@@ -110,6 +198,17 @@ public class TurnManager : MonoBehaviour
             return;
         }
         Instance = this;
+
+        SpeedMultiplier = Mathf.Clamp(PlayerPrefs.GetFloat(SpeedPrefKey, 1f), 1f, 2f);
+    }
+
+    private void OnDestroy()
+    {
+        // Without this, Instance keeps pointing at the destroyed manager after leaving
+        // CombatScene, and the next battle's TurnManager sees a non-null Instance in
+        // Awake, destroys itself, and never initializes.
+        if (Instance == this)
+            Instance = null;
     }
 
     // Number of times InitializeCombat has retried after finding zero units
@@ -164,6 +263,13 @@ public class TurnManager : MonoBehaviour
         // Separate player and enemy units
         playerUnits = allUnits.Where(u => u.isPlayerUnit).ToList();
         enemyUnits = allUnits.Where(u => !u.isPlayerUnit).ToList();
+
+        // Adopt the mode chosen in the team assembler. Uses the existing instance only —
+        // TeamAssemblerData.Instance would create one on demand, which would silently flip
+        // every test and CombatTestSpawner battle into ActivePause and hang them.
+        var assemblerData = FindFirstObjectByType<TeamAssemblerData>(FindObjectsInactive.Include);
+        if (assemblerData != null)
+            Mode = assemblerData.combatMode;
 
 
         // Initialize battle status UI
@@ -220,6 +326,15 @@ public class TurnManager : MonoBehaviour
     {
         if (!combatActive) return;
 
+        // Freeze the battle while a command panel is open. Uses a flag rather than
+        // Time.timeScale = 0 so animations, tweens and HitStopController keep working
+        // (and because the WorldMap's timeScale=0 has caused silent hangs before).
+        if (IsWaitingForPlayerInput)
+        {
+            UpdateBattleStatusUI();
+            return;
+        }
+
         // Fill all unit turn gauges
         FillTurnGauges(Time.deltaTime);
 
@@ -249,7 +364,7 @@ public class TurnManager : MonoBehaviour
     /// </summary>
     private void FillTurnGauges(float deltaTime)
     {
-        float rate = gaugeFilLRate;
+        float rate = gaugeFilLRate * SpeedMultiplier;
         if (activeModifier.type == BattleModifierType.DoubleSpeed)
             rate *= 2f;
 
@@ -305,13 +420,22 @@ public class TurnManager : MonoBehaviour
             // Check if unit is still alive and ready (might have died during batch)
             if (unit != null && unit.IsAlive() && unit.IsReadyToAct())
             {
-                ExecuteUnitTurn(unit);
+                // In ActivePause the batch is walked one unit at a time, so three ready
+                // animals queue three commands in sequence rather than opening three panels.
+                if (IsPlayerControlled(unit))
+                    yield return AwaitPlayerAction(unit);
+                else
+                    ExecuteUnitTurn(unit);
+
                 totalActionsExecuted++;
 
-                // Micro-delay for visual clarity (units act in quick succession)
-                if (actionMicroDelay > 0)
+                // Micro-delay for visual clarity (units act in quick succession).
+                // Shortened by the speed multiplier so 2x speeds up the whole batch,
+                // not just the gauge fill.
+                float delay = actionMicroDelay / SpeedMultiplier;
+                if (delay > 0)
                 {
-                    yield return new WaitForSeconds(actionMicroDelay);
+                    yield return new WaitForSeconds(delay);
                 }
             }
         }
@@ -320,12 +444,195 @@ public class TurnManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Freeze the battle and wait for the player to submit an action for this unit.
+    /// Falls back to the automatic turn if the unit dies while waiting or no command
+    /// arrives within <see cref="PlayerInputTimeout"/> seconds.
+    /// </summary>
+    private System.Collections.IEnumerator AwaitPlayerAction(CombatUnit unit)
+    {
+        // Tick cooldowns/status up front so the command panel shows the same skill
+        // availability the action will actually resolve with. Returns false if the
+        // turn was consumed by the tick itself (death or stun), in which case there
+        // is nothing to command.
+        if (!TickTurnStart(unit))
+            return null;
+
+        return AwaitPlayerActionLoop(unit);
+    }
+
+    private System.Collections.IEnumerator AwaitPlayerActionLoop(CombatUnit unit)
+    {
+        pendingAction = null;
+        AwaitingInputFor = unit;
+
+        if (BattleStatusUI.Instance != null)
+            BattleStatusUI.Instance.HighlightActingUnit(unit);
+
+        OnPlayerTurnStarted?.Invoke(unit);
+
+        float waited = 0f;
+        while (pendingAction == null && waited < PlayerInputTimeout)
+        {
+            // The unit can die while the panel is open (burn tick, enemy action mid-wait).
+            if (!unit.IsAlive())
+                break;
+
+            waited += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        PlayerAction action = pendingAction;
+        pendingAction = null;
+        AwaitingInputFor = null;
+
+        OnPlayerTurnEnded?.Invoke();
+
+        if (!unit.IsAlive())
+        {
+            unit.ResetTurnGauge();
+            yield break;
+        }
+
+        if (action == null)
+        {
+            // Timed out or the panel never opened — resolve automatically so a UI bug
+            // can never hard-freeze the battle.
+            Debug.LogWarning($"[TurnManager] No command received for '{unit.name}' within " +
+                $"{PlayerInputTimeout}s — falling back to the automatic action.");
+            ResolveUnitAction(unit);
+            yield break;
+        }
+
+        ExecutePlayerAction(unit, action);
+    }
+
+    // ── Player-submitted actions (ActivePause) ─────────────────────────────────
+
+    /// <summary>What the player chose to do with the unit that is awaiting a command.</summary>
+    public enum PlayerActionType { Attack, Skill, Defend }
+
+    /// <summary>A command submitted by the player for the unit currently awaiting input.</summary>
+    public class PlayerAction
+    {
+        public PlayerActionType type;
+        /// <summary>Target for Attack/Skill. Ignored by Defend; falls back to the AI pick if null.</summary>
+        public CombatUnit target;
+    }
+
+    private PlayerAction pendingAction;
+
+    /// <summary>Defense multiplier granted for one turn by the Defend action.</summary>
+    private const float DefendShieldReduction = 0.5f;
+
+    /// <summary>
+    /// Fraction of the turn gauge Defend refunds, so giving up an attack means acting
+    /// again sooner rather than simply losing the turn.
+    /// </summary>
+    private const float DefendGaugeRefund = 50f;
+
+    /// <summary>
+    /// Submit the player's chosen action for the unit currently awaiting input.
+    /// Returns false if nothing is waiting or the action is invalid, so the UI can
+    /// keep the panel open instead of silently dropping the command.
+    /// </summary>
+    public bool SubmitPlayerAction(PlayerAction action)
+    {
+        if (action == null || AwaitingInputFor == null) return false;
+        if (pendingAction != null) return false; // already submitted this turn
+
+        // A skill command is only valid when the unit actually has one off cooldown;
+        // otherwise the UI would consume the turn doing nothing.
+        if (action.type == PlayerActionType.Skill && AwaitingInputFor.GetReadySkill() == null)
+            return false;
+
+        pendingAction = action;
+        return true;
+    }
+
+    /// <summary>Convenience overload: submit a basic attack on the given target.</summary>
+    public bool SubmitAttack(CombatUnit target)
+        => SubmitPlayerAction(new PlayerAction { type = PlayerActionType.Attack, target = target });
+
+    /// <summary>Convenience overload: submit the unit's active skill on the given target.</summary>
+    public bool SubmitSkill(CombatUnit target)
+        => SubmitPlayerAction(new PlayerAction { type = PlayerActionType.Skill, target = target });
+
+    /// <summary>Convenience overload: submit the Defend action.</summary>
+    public bool SubmitDefend()
+        => SubmitPlayerAction(new PlayerAction { type = PlayerActionType.Defend });
+
+    /// <summary>
+    /// Carry out a command submitted by the player. Mirrors ResolveUnitAction, but with
+    /// the player's choice of action and target instead of the AI's.
+    /// </summary>
+    private void ExecutePlayerAction(CombatUnit unit, PlayerAction action)
+    {
+        switch (action.type)
+        {
+            case PlayerActionType.Defend:
+                // Shield already exists as a status effect, so Defend reuses it rather
+                // than introducing a parallel damage-reduction path.
+                unit.ApplyStatusEffect(StatusEffectType.Shield, DefendShieldReduction, 1);
+                unit.ResetTurnGauge();
+                unit.turnGauge += DefendGaugeRefund;
+                return;
+
+            case PlayerActionType.Skill:
+            {
+                AnimalSkill skill = unit.GetReadySkill();
+                if (skill != null)
+                {
+                    CombatUnit target = action.target != null && action.target.IsAlive()
+                        ? action.target
+                        : SelectSkillTarget(unit, skill);
+
+                    if (target != null)
+                    {
+                        OnTelegraph?.Invoke(new TelegraphInfo { actor = unit, target = target, skill = skill });
+                        ExecuteSkill(unit, skill, target);
+                        unit.SetSkillOnCooldown(skill);
+                        unit.ResetTurnGauge();
+                        return;
+                    }
+                }
+                // Skill became unusable between the panel opening and the command
+                // resolving — fall through to a basic attack rather than wasting the turn.
+                break;
+            }
+        }
+
+        CombatUnit attackTarget = action.target != null && action.target.IsAlive()
+            ? action.target
+            : SelectTarget(unit);
+
+        if (attackTarget != null)
+        {
+            OnTelegraph?.Invoke(new TelegraphInfo { actor = unit, target = attackTarget, skill = null });
+            ExecuteAttack(unit, attackTarget);
+        }
+
+        unit.ResetTurnGauge();
+    }
+
+    /// <summary>
     /// Execute a single unit's turn: tick cooldowns/status, apply burn, check stun,
     /// then attempt skill or fall back to basic attack.
     /// </summary>
     private void ExecuteUnitTurn(CombatUnit unit)
     {
-        if (unit == null || !unit.IsAlive()) return;
+        if (!TickTurnStart(unit)) return;
+        ResolveUnitAction(unit);
+    }
+
+    /// <summary>
+    /// Start-of-turn upkeep: turn counter, HealingRain, cooldown/status ticks, burn damage
+    /// and the stun check. Split out of ExecuteUnitTurn so ActivePause can run it before
+    /// opening the command panel and resolve the action later without ticking twice.
+    /// Returns false when the turn is already over (unit null/dead/stunned).
+    /// </summary>
+    private bool TickTurnStart(CombatUnit unit)
+    {
+        if (unit == null || !unit.IsAlive()) return false;
 
         currentTurn++;
 
@@ -358,15 +665,24 @@ public class TurnManager : MonoBehaviour
         if (wasStunned)
         {
             unit.ResetTurnGauge();
-            return;
+            return false;
         }
 
-        if (!unit.IsAlive()) { unit.ResetTurnGauge(); return; }
+        if (!unit.IsAlive()) { unit.ResetTurnGauge(); return false; }
 
         // Highlight acting unit in UI
         if (BattleStatusUI.Instance != null)
             BattleStatusUI.Instance.HighlightActingUnit(unit);
 
+        return true;
+    }
+
+    /// <summary>
+    /// Resolve the unit's action for this turn using the AI: use a ready skill if one is
+    /// available, otherwise a basic attack. Assumes <see cref="TickTurnStart"/> already ran.
+    /// </summary>
+    private void ResolveUnitAction(CombatUnit unit)
+    {
         // Check if unit has a ready skill to use
         AnimalSkill skill = unit.GetReadySkill();
         if (skill != null)
@@ -781,6 +1097,15 @@ public class TurnManager : MonoBehaviour
         combatActive = false;
         battleResult = result;
 
+        // Drop any pending command so the results screen isn't left behind an open
+        // command panel waiting for a unit whose battle is already over.
+        if (AwaitingInputFor != null)
+        {
+            AwaitingInputFor = null;
+            pendingAction = null;
+            OnPlayerTurnEnded?.Invoke();
+        }
+
         // Apply happiness changes to source animals immediately (before results UI awards more)
         const float defeatHappinessPenalty = -5f;
         const float defeatedUnitPenalty    = -3f;
@@ -818,6 +1143,11 @@ public class TurnManager : MonoBehaviour
     /// Get a copy of the player units list.
     /// </summary>
     public List<CombatUnit> GetPlayerUnits() => new List<CombatUnit>(playerUnits);
+
+    /// <summary>
+    /// Get a copy of the enemy units list.
+    /// </summary>
+    public List<CombatUnit> GetEnemyUnits() => new List<CombatUnit>(enemyUnits);
 
     /// <summary>
     /// Compute rewards for a battle result.

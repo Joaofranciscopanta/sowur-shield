@@ -580,6 +580,66 @@ MonoBehaviour:
     m_Localized: Senhor das Cinzas
     m_Metadata:
       m_Items: []
+  - m_Id: 15112532682072064
+    m_Localized: 'Modo: Pausa Ativa'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15112532724015104
+    m_Localized: "Modo: Autom\xE1tico"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15114063577866240
+    m_Localized: Atacar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15114063624003584
+    m_Localized: Defender
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15114063624003585
+    m_Localized: Voltar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15114063624003586
+    m_Localized: "Escolha uma a\xE7\xE3o"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15114063624003587
+    m_Localized: Clique num inimigo para mirar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15114063624003588
+    m_Localized: '{0} [{1}]'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133377987076096
+    m_Localized: "Vit\xF3ria!"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853312
+    m_Localized: Derrota...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853313
+    m_Localized: Para a Fazenda
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853314
+    m_Localized: Tentar de Novo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853315
+    m_Localized: Alimentar Todos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853316
+    m_Localized: Limpar Grade
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15133378003853317
+    m_Localized: Iniciar Batalha
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

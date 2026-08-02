@@ -77,7 +77,12 @@ public class TelegraphHighlighter : MonoBehaviour
         GameObject glow = new GameObject("TelegraphGlow");
         glow.transform.SetParent(unit.transform, false);
         glow.transform.localPosition = new Vector3(0, 0, 0.01f);
-        glow.transform.localScale = unit.visualObject.transform.localScale * 1.25f;
+        // Local scale is a plain 1.25, NOT the unit's scale * 1.25: the glow is a
+        // child, so it already inherits the unit's scale. Multiplying by it again
+        // squared the value — a unit at 5.33 produced a 35.56 glow, which rendered
+        // as a huge translucent sprite covering the board. The unit's own scale is
+        // also negative on X (units face right by mirroring), which flipped it.
+        glow.transform.localScale = Vector3.one * 1.25f;
 
         SpriteRenderer glowSR = glow.AddComponent<SpriteRenderer>();
         glowSR.sprite = targetSR.sprite;

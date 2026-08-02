@@ -42,11 +42,20 @@ public static class LocalizedFieldAutoWirer
     private const string MapPath = "Assets/Localization/field_map.json";
 
     [MenuItem("Tools/Sowur Shield/Auto-Wire Localized Fields")]
-    public static void RunAutoWire()
+    public static void RunAutoWireFromMenu() => RunAutoWire(showDialogs: true);
+
+    /// <summary>
+    /// Wire every mapped LocalizedString field. Pass showDialogs: false when calling from
+    /// automation — EditorUtility.DisplayDialog is modal and hard-hangs an MCP session
+    /// until a human clicks it.
+    /// </summary>
+    public static void RunAutoWire(bool showDialogs = true)
     {
         if (!File.Exists(MapPath))
         {
-            EditorUtility.DisplayDialog("Auto-Wire Localized Fields", $"Map file not found at {MapPath}.", "OK");
+            string missing = $"Map file not found at {MapPath}.";
+            if (showDialogs) EditorUtility.DisplayDialog("Auto-Wire Localized Fields", missing, "OK");
+            else Debug.LogWarning("[LocalizedFieldAutoWirer] " + missing);
             return;
         }
 
@@ -155,7 +164,8 @@ public static class LocalizedFieldAutoWirer
             (missingFields.Count > 0 ? $"\nFields not found on instances (skipped, first 10): {string.Join(", ", missingFields.Distinct().Take(10))}\n" : "");
 
         Debug.Log("[LocalizedFieldAutoWirer] " + report.Replace("\n", " | "));
-        EditorUtility.DisplayDialog("Auto-Wire Localized Fields — Done", report, "OK");
+        if (showDialogs)
+            EditorUtility.DisplayDialog("Auto-Wire Localized Fields — Done", report, "OK");
     }
 
     /// <summary>

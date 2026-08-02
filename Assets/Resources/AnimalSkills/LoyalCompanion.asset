@@ -15,7 +15,7 @@ MonoBehaviour:
   skillId: loyal_companion
   skillName: Loyal Companion
   skillType: 1
-  skillIcon: {fileID: 0}
+  skillIcon: {fileID: 21300000, guid: e7dbbb28492bd894b990adced561a58a, type: 3}
   description: An animal that trusts you completely endures far more punishment at
     your side.
   unlockCondition:

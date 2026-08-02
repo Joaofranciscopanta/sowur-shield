@@ -8,14 +8,17 @@ namespace SowurShield.Combat
 {
 
 /// <summary>
-/// Self-spawning overlay that shows the active battle modifier banner and the
-/// player's current combo counter. Built procedurally (no scene wiring required)
-/// and polls <see cref="TurnManager.Instance"/> each frame.
+/// Self-spawning overlay that shows the active battle modifier banner, the
+/// player's current combo counter, and the 1x/2x battle speed toggle. Built
+/// procedurally (no scene wiring required) and polls
+/// <see cref="TurnManager.Instance"/> each frame.
 /// </summary>
 public class BattleHudOverlay : MonoBehaviour
 {
     private TextMeshProUGUI modifierText;
     private TextMeshProUGUI comboText;
+    private GameObject speedButtonObj;
+    private TextMeshProUGUI speedButtonLabel;
 
     [SerializeField] private LocalizedString comboText_Localized; // table "Combat", key "combat.hud.combo"
 
@@ -57,7 +60,9 @@ public class BattleHudOverlay : MonoBehaviour
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920, 1080);
 
-        gameObject.AddComponent<GraphicRaycaster>().enabled = false;
+        // Raycaster stays enabled for the speed button. The two text objects set
+        // raycastTarget = false so they never swallow clicks meant for the battlefield.
+        gameObject.AddComponent<GraphicRaycaster>();
 
         modifierText = CreateText("ModifierBanner", new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0, -40), 28, FontStyles.Bold);
         modifierText.alignment = TextAlignmentOptions.Center;
@@ -70,6 +75,74 @@ public class BattleHudOverlay : MonoBehaviour
         comboText.color = new Color(1f, 0.6f, 0.2f);
         AddTextOutline(comboText);
         comboText.gameObject.SetActive(false);
+
+        BuildSpeedButton();
+    }
+
+    /// <summary>
+    /// Bottom-right 1x/2x battle speed toggle. Sits below the combo counter (which
+    /// anchors at y=60) and mirrors the ConsumableBattleUI items button on the
+    /// opposite corner, so the two never overlap.
+    /// </summary>
+    private void BuildSpeedButton()
+    {
+        speedButtonObj = new GameObject("SpeedButton");
+        speedButtonObj.transform.SetParent(transform, false);
+
+        RectTransform rect = speedButtonObj.AddComponent<RectTransform>();
+        rect.anchorMin = new Vector2(1f, 0f);
+        rect.anchorMax = new Vector2(1f, 0f);
+        rect.pivot = new Vector2(1f, 0f);
+        rect.anchoredPosition = new Vector2(-40, 20);
+        rect.sizeDelta = new Vector2(90, 40);
+
+        Image image = speedButtonObj.AddComponent<Image>();
+        Sprite sprite = Resources.Load<Sprite>("Sprites/UI/Buttons/button_small_action");
+        if (sprite != null)
+        {
+            image.sprite = sprite;
+            image.type = Image.Type.Sliced;
+            image.color = Color.white;
+        }
+        else
+        {
+            // Sprite missing from Resources — flat tint keeps the button usable.
+            image.color = new Color(0.2f, 0.2f, 0.25f, 0.85f);
+        }
+
+        speedButtonObj.AddComponent<Button>().onClick.AddListener(OnSpeedButtonClicked);
+
+        GameObject labelObj = new GameObject("Label");
+        labelObj.transform.SetParent(speedButtonObj.transform, false);
+        RectTransform labelRect = labelObj.AddComponent<RectTransform>();
+        labelRect.anchorMin = Vector2.zero;
+        labelRect.anchorMax = Vector2.one;
+        labelRect.offsetMin = Vector2.zero;
+        labelRect.offsetMax = Vector2.zero;
+
+        speedButtonLabel = labelObj.AddComponent<TextMeshProUGUI>();
+        speedButtonLabel.fontSize = 24;
+        speedButtonLabel.fontStyle = FontStyles.Bold;
+        speedButtonLabel.alignment = TextAlignmentOptions.Center;
+        speedButtonLabel.raycastTarget = false;
+        // The gold button sprite needs dark text; cream only reads on the flat wood tint.
+        speedButtonLabel.color = sprite != null ? new Color(0.18f, 0.12f, 0.06f) : Color.white;
+
+        speedButtonObj.SetActive(false);
+    }
+
+    private void OnSpeedButtonClicked()
+    {
+        if (activeManager == null) return;
+        RefreshSpeedLabel(activeManager.ToggleSpeedMultiplier());
+    }
+
+    // Speed is a raw multiplier shown as "1x"/"2x" — the same glyph in every supported
+    // language, so it deliberately skips the localization table.
+    private void RefreshSpeedLabel(float multiplier)
+    {
+        if (speedButtonLabel != null)
+            speedButtonLabel.text = multiplier >= 2f ? "2x" : "1x";
     }
 
     // Floating HUD text sits directly over the stage art with no backing panel, so it needs
@@ -96,6 +169,9 @@ public class BattleHudOverlay : MonoBehaviour
         TextMeshProUGUI tmp = obj.AddComponent<TextMeshProUGUI>();
         tmp.fontSize = fontSize;
         tmp.fontStyle = style;
+        // The overlay's raycaster is on for the speed button; HUD labels must not
+        // block clicks aimed at the battlefield underneath them.
+        tmp.raycastTarget = false;
 
         return tmp;
     }
@@ -106,6 +182,7 @@ public class BattleHudOverlay : MonoBehaviour
         {
             if (modifierText.gameObject.activeSelf) modifierText.gameObject.SetActive(false);
             if (comboText.gameObject.activeSelf) comboText.gameObject.SetActive(false);
+            if (speedButtonObj.activeSelf) speedButtonObj.SetActive(false);
             lastShownModifier = BattleModifierType.None;
             activeManager = null;
             return;
@@ -115,10 +192,20 @@ public class BattleHudOverlay : MonoBehaviour
         {
             activeManager = TurnManager.Instance;
             lastShownModifier = BattleModifierType.None;
+            // New battle: adopt whatever speed it restored from PlayerPrefs.
+            RefreshSpeedLabel(activeManager.SpeedMultiplier);
         }
 
         UpdateModifierBanner();
         UpdateComboCounter();
+        UpdateSpeedButton();
+    }
+
+    private void UpdateSpeedButton()
+    {
+        bool shouldShow = activeManager.combatActive;
+        if (speedButtonObj.activeSelf != shouldShow)
+            speedButtonObj.SetActive(shouldShow);
     }
 
     private void UpdateModifierBanner()

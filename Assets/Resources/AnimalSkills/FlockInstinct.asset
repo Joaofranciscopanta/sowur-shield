@@ -15,17 +15,35 @@ MonoBehaviour:
   skillId: flock_instinct
   skillName: Flock Instinct
   skillType: 1
-  skillIcon: {fileID: 0}
+  skillIcon: {fileID: 21300000, guid: 9175d7fa5e96dd44ea80baac3264c00f, type: 3}
   description: When 2 or more Galliformes are in the roster, this animal moves faster
     in battle, sensing safety in numbers.
   unlockCondition:
     conditionType: 3
-    requiredClass:
+    requiredClass: 
     requiredFamily: Galliformes
     minFamilyCount: 2
     minHappiness: 0
-    requiredSeason:
+    requiredSeason: 
     combinedConditions: []
+    requiresText:
+      m_TableReference:
+        m_TableCollectionName: 
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    andText:
+      m_TableReference:
+        m_TableCollectionName: 
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
   damageMultiplier: 1
   defenseMultiplier: 1
   speedMultiplier: 1.1
@@ -37,3 +55,33 @@ MonoBehaviour:
   statusEffect: 0
   statusEffectValue: 0
   statusEffectDuration: 0
+  fullInfoHeaderText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  fullInfoDescText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  fullInfoUnlockText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []
