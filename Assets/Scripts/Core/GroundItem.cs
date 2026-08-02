@@ -15,6 +15,45 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
     private bool playerInRange = false;
     public bool itemPicked = false;
 
+    /// <summary>
+    /// Stable per-instance save key.
+    ///
+    /// The ISaveable key used to be gameObject.name, which requires every GroundItem in the
+    /// scene to be uniquely named. Runtime-spawned items are all called "<Item>_GroundItem(Clone)",
+    /// so they collided wholesale: in SampleScene 8 eggs and 10 milks shared two keys between
+    /// them, and picking up a single egg flagged all eight as collected. On the next load every
+    /// one of them vanished.
+    ///
+    /// Serialized so items placed in the scene keep the id assigned at author time, and
+    /// generated on first use for runtime spawns. Never regenerate it for an existing object —
+    /// that orphans whatever was already written to the save file.
+    /// </summary>
+    [SerializeField, HideInInspector] private string saveId;
+
+    /// <summary>
+    /// Position is part of the key for runtime spawns so that a reloaded scene re-derives the
+    /// same id for the same dropped item. A fresh GUID would change every session and no
+    /// pickup would ever persist.
+    /// </summary>
+    public string SaveId
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(saveId))
+            {
+                Vector3 p = transform.position;
+                string itemPart = item != null ? item.itemName : gameObject.name;
+
+                // InvariantCulture: on a pt-BR machine "F2" formats 10.04 as "10,04", so the
+                // id would be "Egg@10,04,4,68" — ambiguous, and different from the id the same
+                // item gets on an en-US machine, which breaks the save across locales.
+                saveId = string.Format(System.Globalization.CultureInfo.InvariantCulture,
+                                       "{0}@{1:F2}_{2:F2}", itemPart, p.x, p.y);
+            }
+            return saveId;
+        }
+    }
+
     // Visual components
     private SpriteRenderer spriteRenderer;
     private float initialY;
@@ -535,13 +574,22 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
     public void SaveData(GameData gameData)
     {
         if (itemPicked)
-            gameData.worldData.worldFlags[$"grounditem_picked_{gameObject.name}"] = true;
+            gameData.worldData.worldFlags[$"grounditem_picked_{SaveId}"] = true;
     }
 
     public void LoadData(GameData gameData)
     {
-        string key = $"grounditem_picked_{gameObject.name}";
-        if (gameData.worldData.worldFlags.TryGetValue(key, out bool picked) && picked)
+        if (gameData.worldData.worldFlags.TryGetValue($"grounditem_picked_{SaveId}", out bool picked) && picked)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        // Legacy key: saves written before GroundItem moved off gameObject.name. Honoured on
+        // read only — SaveData never writes it again — so an existing save does not resurrect
+        // every item the player had already collected. Uniquely-named items migrate cleanly;
+        // the "(Clone)" collisions this replaced were already unreliable either way.
+        if (gameData.worldData.worldFlags.TryGetValue($"grounditem_picked_{gameObject.name}", out bool legacyPicked) && legacyPicked)
             Destroy(gameObject);
     }
 
