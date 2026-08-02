@@ -111,60 +111,116 @@ public class TeamAssemblerUI : MonoBehaviour
         if (startBattleButton == null)
         {
             Debug.LogWarning("[TeamAssembler] startBattleButton is not assigned — the combat " +
-                "mode toggle has nothing to anchor to and will not be shown. Assign it in the Inspector.");
+                "mode toggle has nothing to sit beside and will not be shown. Assign it in the Inspector.");
             return;
         }
 
-        var anchorRect = startBattleButton.GetComponent<RectTransform>();
-        if (anchorRect == null || anchorRect.parent == null) return;
+        var sibling = startBattleButton.GetComponent<RectTransform>();
+        if (sibling == null || sibling.parent == null) return;
 
-        var go = new GameObject("CombatModeToggle");
-        go.transform.SetParent(anchorRect.parent, false);
+        // Join the existing ButtonContainer as a real sibling rather than floating above
+        // it: the container's HorizontalLayoutGroup then sizes and spaces this button
+        // exactly like Feed All / Clear Grid / Start Battle / Cancel.
+        var go = new GameObject("CombatModeToggle", typeof(RectTransform));
+        go.transform.SetParent(sibling.parent, false);
+        // First in the row — the mode is chosen before deciding to start.
+        go.transform.SetSiblingIndex(0);
 
-        // Match the start button's footprint and sit directly above it, so the toggle
-        // follows whatever layout the scene gives the button.
-        var rect = go.AddComponent<RectTransform>();
-        rect.anchorMin = anchorRect.anchorMin;
-        rect.anchorMax = anchorRect.anchorMax;
-        rect.pivot = anchorRect.pivot;
-        rect.sizeDelta = anchorRect.sizeDelta;
-        rect.anchoredPosition = anchorRect.anchoredPosition
-            + new Vector2(0f, anchorRect.sizeDelta.y + 10f);
+        var rect = go.GetComponent<RectTransform>();
+        rect.sizeDelta = sibling.sizeDelta;
 
-        var image = go.AddComponent<Image>();
-        Sprite sprite = Resources.Load<Sprite>("Sprites/UI/Buttons/button_small_action");
-        if (sprite != null)
+        // The layout group ignores sizeDelta; a LayoutElement is what it honours. Copy the
+        // neighbours' values so this button matches their width and height.
+        var siblingLayout = startBattleButton.GetComponent<LayoutElement>();
+        var layout = go.AddComponent<LayoutElement>();
+        if (siblingLayout != null)
         {
-            image.sprite = sprite;
-            image.type = Image.Type.Sliced;
-            image.color = Color.white;
+            layout.minWidth = siblingLayout.minWidth;
+            layout.preferredWidth = siblingLayout.preferredWidth;
+            layout.minHeight = siblingLayout.minHeight;
         }
         else
         {
-            image.color = new Color(0.2f, 0.2f, 0.25f, 0.85f);
+            layout.minWidth = 150f;
+            layout.preferredWidth = 170f;
+            layout.minHeight = 50f;
+        }
+
+        var image = go.AddComponent<Image>();
+        // Each button in this row carries a semantic sprite: primary = start battle,
+        // danger = clear grid, secondary = cancel, small_action = feed all. The mode
+        // toggle is a setting rather than a destructive or primary action, so it uses
+        // secondary.
+        Sprite sprite = Resources.Load<Sprite>("Sprites/UI/Buttons/button_secondary");
+        var siblingImage = startBattleButton.GetComponent<Image>();
+        if (sprite != null)
+        {
+            image.sprite = sprite;
+            image.type = siblingImage != null ? siblingImage.type : Image.Type.Sliced;
+            image.color = Color.white;
+        }
+        else if (siblingImage != null)
+        {
+            // Sprite missing — fall back to the neighbour's look so it still fits in.
+            image.sprite = siblingImage.sprite;
+            image.type = siblingImage.type;
+            image.color = siblingImage.color;
         }
 
         combatModeButton = go.AddComponent<Button>();
+        combatModeButton.targetGraphic = image;
+        if (startBattleButton.transition == Selectable.Transition.ColorTint)
+        {
+            combatModeButton.transition = startBattleButton.transition;
+            combatModeButton.colors = startBattleButton.colors;
+        }
         combatModeButton.onClick.AddListener(OnCombatModeToggleClicked);
 
-        var labelObj = new GameObject("Label");
-        labelObj.transform.SetParent(go.transform, false);
-        var labelRect = labelObj.AddComponent<RectTransform>();
+        combatModeLabel = BuildToggleLabel(go.transform, startBattleButton.GetComponentInChildren<TextMeshProUGUI>(true));
+
+        RefreshCombatModeLabel();
+    }
+
+    /// <summary>
+    /// Create the toggle's caption, mirroring the neighbouring buttons' label settings
+    /// (font asset, auto-sizing range, colour, style) so it reads as part of the same row.
+    /// </summary>
+    private TextMeshProUGUI BuildToggleLabel(Transform parent, TextMeshProUGUI template)
+    {
+        var labelObj = new GameObject("Label", typeof(RectTransform));
+        labelObj.transform.SetParent(parent, false);
+
+        var labelRect = labelObj.GetComponent<RectTransform>();
         labelRect.anchorMin = Vector2.zero;
         labelRect.anchorMax = Vector2.one;
         labelRect.offsetMin = new Vector2(8f, 4f);
         labelRect.offsetMax = new Vector2(-8f, -4f);
 
-        combatModeLabel = labelObj.AddComponent<TextMeshProUGUI>();
-        combatModeLabel.fontSize = 18;
-        combatModeLabel.alignment = TextAlignmentOptions.Center;
-        combatModeLabel.enableAutoSizing = true;
-        combatModeLabel.fontSizeMin = 12;
-        combatModeLabel.fontSizeMax = 18;
-        combatModeLabel.raycastTarget = false;
-        combatModeLabel.color = sprite != null ? new Color(0.18f, 0.12f, 0.06f) : Color.white;
+        var label = labelObj.AddComponent<TextMeshProUGUI>();
+        label.alignment = TextAlignmentOptions.Center;
+        label.raycastTarget = false;
 
-        RefreshCombatModeLabel();
+        if (template != null)
+        {
+            if (template.font != null) label.font = template.font;
+            label.fontSize = template.fontSize;
+            label.enableAutoSizing = template.enableAutoSizing;
+            label.fontSizeMin = template.fontSizeMin;
+            label.fontSizeMax = template.fontSizeMax;
+            label.color = template.color;
+            label.fontStyle = template.fontStyle;
+        }
+        else
+        {
+            label.fontSize = 11f;
+            label.enableAutoSizing = true;
+            label.fontSizeMin = 8f;
+            label.fontSizeMax = 14f;
+            label.color = new Color(0.176f, 0.165f, 0.149f);
+            label.fontStyle = FontStyles.Bold;
+        }
+
+        return label;
     }
 
     private void OnCombatModeToggleClicked()
@@ -225,6 +281,11 @@ public class TeamAssemblerUI : MonoBehaviour
     {
         // Clear previous team data so animals can be placed fresh
         TeamAssemblerData.Instance.ClearTeam();
+
+        // Re-resolve the toggle caption here, not just at build time: Awake runs before
+        // the localization tables finish loading, so the label built there keeps the
+        // English fallback ("Mode: Active Pause") for the rest of the session.
+        RefreshCombatModeLabel();
 
         // Set zone info from StageManager (set by StageButton.OnClick)
         StageData selectedStage = StageManager.GetSelectedStage();
