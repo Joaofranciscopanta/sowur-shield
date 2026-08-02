@@ -25,7 +25,7 @@ MonoBehaviour:
     minHappiness: 0
     requiredSeason:
     combinedConditions: []
-  damageMultiplier: 1
+  damageMultiplier: 0
   defenseMultiplier: 1
   speedMultiplier: 1
   attackMultiplier: 1

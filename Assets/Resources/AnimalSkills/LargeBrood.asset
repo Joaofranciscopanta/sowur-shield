@@ -1,0 +1,86 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94047afeee17abb4fb1ede24849e6fe9, type: 3}
+  m_Name: LargeBrood
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Animals.AnimalSkill
+  skillId: large_brood
+  skillName: Large Brood
+  skillType: 1
+  skillIcon: {fileID: 0}
+  description: Surrounded by its own kind, it darts about with restless energy.
+  unlockCondition:
+    conditionType: 3
+    requiredClass: 
+    requiredFamily: Galliformes
+    minFamilyCount: 5
+    minHappiness: 0
+    requiredSeason: 
+    combinedConditions: []
+    requiresText:
+      m_TableReference:
+        m_TableCollectionName: 
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    andText:
+      m_TableReference:
+        m_TableCollectionName: 
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+  damageMultiplier: 1
+  defenseMultiplier: 1
+  speedMultiplier: 1.1
+  attackMultiplier: 1
+  healAmount: 0
+  affectsAllies: 0
+  affectsSelf: 1
+  cooldownTurns: 0
+  statusEffect: 0
+  statusEffectValue: 0
+  statusEffectDuration: 0
+  fullInfoHeaderText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  fullInfoDescText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  fullInfoUnlockText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []

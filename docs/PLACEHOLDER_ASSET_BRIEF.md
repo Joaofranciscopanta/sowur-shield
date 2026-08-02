@@ -105,10 +105,11 @@ Especificação dos ícones:
 | `skill_flock_instinct.png` | Flock Instinct (passiva) | `game skill icon, three small birds flying in formation, warm orange and brown, simple bold symbol` |
 | `skill_supporters_blessing.png` | Supporter's Blessing (passiva) | `game skill icon, radiant blessing sparkle over a small heart, gold and soft white, simple bold symbol` |
 
-### 3b. Ícones para as 12 skills NOVAS propostas
+### 3b. Ícones para as 12 skills novas
 
-Estas ainda não existem — eu crio os ScriptableObjects (dano, cooldown, condição de
-desbloqueio) na importação. Ver a tabela de design logo abaixo.
+✅ **As 12 skills já foram criadas e ligadas aos animais** (`Assets/Resources/AnimalSkills/`).
+Estão funcionando no jogo — só falta o ícone de cada uma. Ver a tabela de design abaixo
+para o que cada uma faz.
 
 | Arquivo | Skill | Prompt |
 |---|---|---|
@@ -125,10 +126,16 @@ desbloqueio) na importação. Ver a tabela de design logo abaixo.
 | `skill_flock_call.png` | Chamado do Bando | `game skill icon, open beak with rising sound waves and up arrows, sky blue and gold, simple bold symbol` |
 | `skill_burrow.png` | Escavar | `game skill icon, dirt mound with tunnel entrance and dust, brown and dark earth, simple bold symbol` |
 
-### Design das 12 skills novas
+### Design das 12 skills novas — JÁ IMPLEMENTADAS
 
 Tudo abaixo usa só o que o sistema já suporta (Stun, Shield, Burn, Poison, Weakness;
 condições por classe, família, contagem de família, felicidade e estação).
+
+**Estado atual no jogo:** 19 skills no total (7 antigas + 12 novas). 23 animais têm
+skill ativa e passivas ligadas. Os 5 `egg_*` ficam de fora de propósito — são ovos.
+Reatribuí também as ativas por espécie: vacas usam Coice, galinhas Bicada Certeira,
+coelho Escavar, Sparrow Canto Restaurador. Antes disso o coelho usava "Feather Shield"
+e toda vaca usava "Draining Howl".
 
 | Skill | Tipo | Efeito | Desbloqueio | Razão |
 |---|---|---|---|---|
