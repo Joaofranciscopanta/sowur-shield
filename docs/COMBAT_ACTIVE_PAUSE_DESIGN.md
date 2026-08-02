@@ -192,11 +192,11 @@ a estrutura suporta.
 | Fase | Trabalho |
 |---|---|
 | **1. Ritmo** | ✅ **FEITO** — valores ajustados + botão 1×/2× no HUD |
-| **2. Estrutura** | `CombatMode`, espera por input, `SubmitPlayerAction`, testes em `Auto` |
-| **3. Escolha do modo** | Campo no `TeamAssemblerData` + toggle no `TeamAssemblerUI` |
-| **4. UI de comando** | Painel de comando + seleção de alvo |
-| **5. Defender** | Nova ação usando o `Shield` existente |
-| **6. Polimento** | Persistência em `PlayerPrefs`, mobile/gamepad, timeout de segurança |
+| **2. Estrutura** | ✅ **FEITO** — `CombatMode`, espera por input, `SubmitPlayerAction` |
+| **3. Escolha do modo** | ✅ **FEITO** — campo no `TeamAssemblerData` + toggle no `TeamAssemblerUI` |
+| **4. UI de comando** | ✅ **FEITO** — `BattleCommandUI` + seleção de alvo por clique |
+| **5. Defender** | ✅ **FEITO** — usa o `Shield` existente + devolve metade do gauge |
+| **6. Polimento** | ⚠️ **PARCIAL** — `PlayerPrefs` e timeout feitos; gamepad/mobile não |
 
 A fase 1 pode ir sozinha e já melhora a leitura hoje, mesmo que você desista do resto.
 
@@ -224,4 +224,40 @@ Todas as 4 questões estão decididas.
 `CombatScene`, o `Awake` do novo manager via um `Instance` não-nulo apontando para o objeto
 destruído e **se auto-destruía sem inicializar**. Corrigido nos três.
 
-Próximo passo: fase 2 (estrutura — `CombatMode`, espera por input, `SubmitPlayerAction`).
+### Fases 2 a 5 — concluídas
+
+- **`CombatMode { ActivePause, Auto }`** viaja no `TeamAssemblerData` (mesmo caminho
+  `DontDestroyOnLoad` do time) e persiste em `PlayerPrefs` como `combat_mode`.
+- **O `TurnManager` assume `Auto` por padrão**, não `ActivePause`. Um manager criado sem
+  dados do assembler (todos os testes, o `CombatTestSpawner`) precisa continuar resolvendo
+  turnos na hora — senão trava esperando input que nunca vem. O `InitializeCombat` só entra
+  em `ActivePause` quando o assembler pediu.
+- **`ExecuteUnitTurn` foi dividido** em `TickTurnStart` (upkeep: contador, HealingRain,
+  cooldowns, burn, stun) e `ResolveUnitAction`. A pausa roda o tick antes de abrir o painel
+  e resolve a ação depois, sem tickar duas vezes.
+- **`SubmitPlayerAction`** + atalhos `SubmitAttack`/`SubmitSkill`/`SubmitDefend`, rejeitando
+  comando sem unidade esperando, segunda submissão no mesmo turno, e skill em cooldown.
+- **Defender** aplica o `Shield` que já existia e devolve metade do gauge.
+- **`BattleCommandUI`** e **`TargetHighlighter`**: painel auto-construído (padrão do
+  `ConsumableBattleUI`), com Atacar / Skill / Defender / Voltar. Com um único inimigo vivo
+  o alvo é escolhido sozinho; com dois ou mais entra em seleção por clique, com os alvos
+  destacados. Localizado em en/pt/es.
+- **Toggle de modo no `TeamAssemblerUI`**, construído em código e ancorado acima do botão
+  de iniciar. Todos os outros controles de lá são `[SerializeField]` ligados na cena —
+  construir esse em código faz a feature funcionar **sem nenhuma passada manual no Unity**.
+
+**Segurança contra travamento** (risco nº 1 do design): timeout de 15 s que resolve pela IA,
+guarda para a unidade que morre esperando, e o `EndBattle` limpa qualquer comando pendente.
+
+**Testes**: 850 (800 EditMode + 50 PlayMode). Os de PlayMode cobrem o que o EditMode não
+alcança: o congelamento em si, os gauges inimigos parados, comandos enfileirados um a um com
+várias unidades prontas, e a unidade que morre durante a espera.
+
+### O que falta
+
+- **Gamepad e mobile** (fase 6). A seleção de alvo é por clique/toque via raycast nos bounds
+  do sprite. Funciona no mouse e deve funcionar no toque, mas **não foi testado em nenhum dos
+  dois de verdade**, e não há navegação por d-pad entre inimigos.
+- **Nada disso foi jogado numa batalha real** — a verificação foi por teste automatizado e
+  compilação. Os números de ritmo em particular são a proposta do doc, não algo calibrado
+  jogando.

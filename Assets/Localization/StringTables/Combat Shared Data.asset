@@ -571,6 +571,30 @@ MonoBehaviour:
     m_Key: combat.teamassembler.mode_auto
     m_Metadata:
       m_Items: []
+  - m_Id: 15114063577866240
+    m_Key: combat.command.attack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15114063624003584
+    m_Key: combat.command.defend
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15114063624003585
+    m_Key: combat.command.cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15114063624003586
+    m_Key: combat.command.choose_action
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15114063624003587
+    m_Key: combat.command.choose_target
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15114063624003588
+    m_Key: combat.command.skill_cooldown
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

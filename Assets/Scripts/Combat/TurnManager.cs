@@ -1145,6 +1145,11 @@ public class TurnManager : MonoBehaviour
     public List<CombatUnit> GetPlayerUnits() => new List<CombatUnit>(playerUnits);
 
     /// <summary>
+    /// Get a copy of the enemy units list.
+    /// </summary>
+    public List<CombatUnit> GetEnemyUnits() => new List<CombatUnit>(enemyUnits);
+
+    /// <summary>
     /// Compute rewards for a battle result.
     /// Marks the stage complete in StageManager and worldFlags on victory.
     /// Updates combatData stats regardless of outcome.
