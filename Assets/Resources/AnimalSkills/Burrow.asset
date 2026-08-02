@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94047afeee17abb4fb1ede24849e6fe9, type: 3}
+  m_Name: Burrow
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Animals.AnimalSkill
+  skillId: burrow
+  skillName: Burrow
+  skillType: 0
+  skillIcon: {fileID: 0}
+  description: Vanishes underground for a moment, avoiding the worst of the next
+    blow.
+  unlockCondition:
+    conditionType: 2
+    requiredClass: 
+    requiredFamily: Leporidae
+    minFamilyCount: 0
+    minHappiness: 0
+    requiredSeason: 
+    combinedConditions: []
+    requiresText:
+      m_TableReference:
+        m_TableCollectionName: 
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    andText:
+      m_TableReference:
+        m_TableCollectionName: 
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+  damageMultiplier: 0
+  defenseMultiplier: 1
+  speedMultiplier: 1
+  attackMultiplier: 1
+  healAmount: 0
+  affectsAllies: 0
+  affectsSelf: 1
+  cooldownTurns: 3
+  statusEffect: 2
+  statusEffectValue: 0.5
+  statusEffectDuration: 1
+  fullInfoHeaderText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  fullInfoDescText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  fullInfoUnlockText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []

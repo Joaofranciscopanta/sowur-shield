@@ -357,6 +357,133 @@ public class RegressionAug2026Tests
             "registration. Registering only in Awake loses the race whenever this " +
             "object wakes before SaveManager, and its save data is silently dropped.");
     }
+
+    // ========================================================================
+    // Save/load correctness, found by actually running Play Mode (2026-08-02)
+    //
+    // Registration was necessary but not sufficient — two further bugs made the
+    // save genuinely wrong, and both were invisible to the existing suite:
+    //
+    // 1. PlayerDataManager saved *its own* transform. In SampleScene it sits on
+    //    a separate manager GameObject parked at the origin while the player is
+    //    "Bunny", so every save wrote (0,0,0) and every load moved the manager
+    //    instead of the player.
+    // 2. GroundItem keyed its save flag on gameObject.name. Runtime spawns are
+    //    all "<Item>_GroundItem(Clone)", so 8 eggs and 10 milks shared two keys:
+    //    collecting one egg flagged all eight, and they all vanished on load.
+    // ========================================================================
+
+    [Test]
+    public void PlayerDataManager_SavesThePlayerTransform_NotItsOwn()
+    {
+        // Manager on its own GameObject at the origin, exactly as in SampleScene.
+        var managerGo = new GameObject("PlayerDataManager");
+        Track(managerGo);
+        managerGo.transform.position = Vector3.zero;
+        var manager = managerGo.AddComponent<PlayerDataManager>();
+
+        var playerGo = new GameObject("Bunny");
+        Track(playerGo);
+        playerGo.tag = "Player";
+        Vector3 playerPos = new Vector3(-17.25f, 9.5f, 0f);
+        playerGo.transform.position = playerPos;
+
+        var data = new GameData();
+        manager.SaveData(data);
+
+        Assert.AreEqual(playerPos.x, data.playerData.position.x, 0.01f,
+            "SaveData must record the player's position, not the manager's. Using this " +
+            "component's own transform wrote (0,0,0) on every save, because the manager " +
+            "GameObject never moves.");
+        Assert.AreEqual(playerPos.y, data.playerData.position.y, 0.01f);
+    }
+
+    [Test]
+    public void PlayerDataManager_LoadsIntoThePlayerTransform_NotItsOwn()
+    {
+        var managerGo = new GameObject("PlayerDataManager");
+        Track(managerGo);
+        managerGo.transform.position = Vector3.zero;
+        var manager = managerGo.AddComponent<PlayerDataManager>();
+
+        var playerGo = new GameObject("Bunny");
+        Track(playerGo);
+        playerGo.tag = "Player";
+        playerGo.transform.position = new Vector3(3f, -4f, 0f);
+
+        var data = new GameData();
+        data.playerData.position = new Vector3(-17.25f, 9.5f, 0f);
+
+        manager.LoadData(data);
+
+        Assert.AreEqual(-17.25f, playerGo.transform.position.x, 0.01f,
+            "LoadData must move the player. Writing to this component's own transform " +
+            "left the player wherever it happened to be, so position never restored.");
+        Assert.AreEqual(9.5f, playerGo.transform.position.y, 0.01f);
+        Assert.AreEqual(Vector3.zero, managerGo.transform.position,
+            "The manager GameObject itself must not be moved by a load.");
+    }
+
+    [Test]
+    public void GroundItem_SaveId_IsUniquePerInstance_EvenWhenNamesCollide()
+    {
+        // Runtime spawns all share one name — this is what Instantiate produces.
+        var a = new GameObject("Egg_GroundItem(Clone)");
+        Track(a);
+        a.transform.position = new Vector3(8.54f, 4.26f, 0f);
+        var itemA = a.AddComponent<GroundItem>();
+
+        var b = new GameObject("Egg_GroundItem(Clone)");
+        Track(b);
+        b.transform.position = new Vector3(10.04f, 4.68f, 0f);
+        var itemB = b.AddComponent<GroundItem>();
+
+        Assert.AreEqual(a.name, b.name, "Precondition: both spawns share a GameObject name.");
+        Assert.AreNotEqual(itemA.SaveId, itemB.SaveId,
+            "Two ground items at different positions must have different save ids. Keying " +
+            "on gameObject.name made every runtime spawn collide, so collecting one egg " +
+            "marked all of them collected and they all disappeared on the next load.");
+    }
+
+    [Test]
+    public void GroundItem_CollectingOne_DoesNotFlagItsNameTwins()
+    {
+        var a = new GameObject("Egg_GroundItem(Clone)");
+        Track(a);
+        a.transform.position = new Vector3(8.54f, 4.26f, 0f);
+        var collected = a.AddComponent<GroundItem>();
+
+        var b = new GameObject("Egg_GroundItem(Clone)");
+        Track(b);
+        b.transform.position = new Vector3(10.04f, 4.68f, 0f);
+        var untouched = b.AddComponent<GroundItem>();
+
+        collected.itemPicked = true;
+
+        var data = new GameData();
+        collected.SaveData(data);
+        untouched.SaveData(data);
+
+        Assert.IsTrue(data.worldData.worldFlags.ContainsKey($"grounditem_picked_{collected.SaveId}"),
+            "The collected item must be recorded.");
+        Assert.IsFalse(data.worldData.worldFlags.ContainsKey($"grounditem_picked_{untouched.SaveId}"),
+            "An item the player never touched must not be flagged just because it shares a " +
+            "GameObject name with one that was collected.");
+    }
+
+    [Test]
+    public void GroundItem_SaveId_UsesInvariantCulture()
+    {
+        var go = new GameObject("Egg_GroundItem(Clone)");
+        Track(go);
+        go.transform.position = new Vector3(10.04f, 4.68f, 0f);
+        var item = go.AddComponent<GroundItem>();
+
+        Assert.IsFalse(item.SaveId.Contains(","),
+            "SaveId must format coordinates with InvariantCulture. On a pt-BR machine " +
+            $"\"F2\" renders 10.04 as \"10,04\", producing an ambiguous id ({item.SaveId}) " +
+            "that also differs from the id the same item gets under en-US.");
+    }
 }
 
 }

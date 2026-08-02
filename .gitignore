@@ -100,3 +100,6 @@ GAME_DEVELOPMENT_PLAN.md
 # Working artefacts, not game content — 48MB and growing.
 Assets/Screenshots/
 Assets/Screenshots.meta
+
+# Staging area for generated placeholder art before import (see docs/PLACEHOLDER_ASSET_BRIEF.md)
+_Incoming/

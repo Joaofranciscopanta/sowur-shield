@@ -14,14 +14,45 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
     [Header("Debug")]
     [SerializeField] private bool enableDebugLogs = true;
 
+    /// <summary>
+    /// The transform whose position is saved and restored.
+    ///
+    /// This component does NOT have to live on the player — in SampleScene it sits on its own
+    /// "PlayerDataManager" GameObject parked at the origin, while the player is "Bunny". Using
+    /// this component's own `transform` therefore saved (0,0,0) and restored the manager rather
+    /// than the player, which is why player position never persisted. Always resolve the real
+    /// player instead, falling back to self only if no player exists.
+    /// </summary>
+    private Transform PlayerTransform
+    {
+        get
+        {
+            if (playerMove != null) return playerMove.transform;
+
+            var tagged = GameObject.FindGameObjectWithTag("Player");
+            return tagged != null ? tagged.transform : transform;
+        }
+    }
+
     private void Awake()
     {
-        // Auto-find components if not assigned
+        // Components live on the player, which is usually a different GameObject from this
+        // one, so GetComponent alone finds nothing. Fall back to the tagged player object.
         if (playerMove == null)
             playerMove = GetComponent<PlayerMove>();
 
         if (playerStats == null)
             playerStats = GetComponent<PlayerStats>();
+
+        if (playerMove == null || playerStats == null)
+        {
+            var tagged = GameObject.FindGameObjectWithTag("Player");
+            if (tagged != null)
+            {
+                if (playerMove == null) playerMove = tagged.GetComponent<PlayerMove>();
+                if (playerStats == null) playerStats = tagged.GetComponent<PlayerStats>();
+            }
+        }
 
         // Register with SaveManager (before SaveManager.Start() runs)
         if (SaveManager.Instance != null)
@@ -60,9 +91,11 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
 
     public void SaveData(GameData gameData)
     {
-        // Save player position
-        gameData.playerData.position = transform.position;
-        gameData.playerData.rotation = transform.eulerAngles.z;
+        // Save player position — PlayerTransform, not this component's own transform, which
+        // in SampleScene is a separate manager GameObject sitting at the origin.
+        Transform playerTf = PlayerTransform;
+        gameData.playerData.position = playerTf.position;
+        gameData.playerData.rotation = playerTf.eulerAngles.z;
         gameData.playerData.currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
         // Save player stats if available
@@ -88,8 +121,9 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
 
     public void LoadData(GameData gameData)
     {
-        transform.position = gameData.playerData.position;
-        transform.rotation = Quaternion.Euler(0, 0, gameData.playerData.rotation);
+        Transform playerTf = PlayerTransform;
+        playerTf.position = gameData.playerData.position;
+        playerTf.rotation = Quaternion.Euler(0, 0, gameData.playerData.rotation);
 
         // Load player stats if available
         if (playerStats != null)
@@ -129,10 +163,11 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
             var gameData = SaveManager.Instance.GetCurrentGameData();
             if (gameData != null)
             {
-                gameData.playerData.position = transform.position;
-                gameData.playerData.rotation = transform.eulerAngles.z;
+                Transform playerTf = PlayerTransform;
+                gameData.playerData.position = playerTf.position;
+                gameData.playerData.rotation = playerTf.eulerAngles.z;
                 gameData.playerData.currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-                LogDebug($"Manually saved position: {transform.position}");
+                LogDebug($"Manually saved position: {playerTf.position}");
             }
         }
     }
@@ -143,8 +178,9 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
     public PlayerGameData GetPlayerData()
     {
         var data = new PlayerGameData();
-        data.position = transform.position;
-        data.rotation = transform.eulerAngles.z;
+        Transform playerTf = PlayerTransform;
+        data.position = playerTf.position;
+        data.rotation = playerTf.eulerAngles.z;
         data.currentSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
         if (playerStats != null)

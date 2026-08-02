@@ -76,8 +76,14 @@ MonoBehaviour:
   seasonalSpeedBonus: 1.1
   canStack: 0
   maxStackSize: 1
-  activeSkill: {fileID: 11400000, guid: c2593e3c62bc425291dc5ecb4dbd64a0, type: 2}
-  availablePassiveSkills: []
+  activeSkill: {fileID: 11400000, guid: 53a335adc0a41ac41a54ce61cf66e802, type: 2}
+  availablePassiveSkills:
+  - {fileID: 11400000, guid: 9b2e890d373636243ab61bede48cced9, type: 2}
+  - {fileID: 11400000, guid: d1a7dcc6b9281c34fa0f03b1b85a33c0, type: 2}
+  - {fileID: 11400000, guid: 7e6907f8b06481744812fb124e5354aa, type: 2}
+  - {fileID: 11400000, guid: 93798da43898fcb42adf1a667939df3a, type: 2}
+  - {fileID: 11400000, guid: ce55dc8105744f88a8110459ff669c20, type: 2}
+  - {fileID: 11400000, guid: f759aa8b76143774db2b9eb9f8fca4b5, type: 2}
   illnessThresholdDays: 3
   illnessCureItemName: Medicine
   illnessStatPenalty: 0.5
