@@ -95,3 +95,8 @@ GAME_DEVELOPMENT_PLAN.md
 
 # Claude Code internals (worktrees, session data)
 .claude/
+
+# QA/verification screenshots captured via MCP during Play Mode testing.
+# Working artefacts, not game content — 48MB and growing.
+Assets/Screenshots/
+Assets/Screenshots.meta
