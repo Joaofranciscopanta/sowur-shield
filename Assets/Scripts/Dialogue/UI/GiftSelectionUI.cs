@@ -166,7 +166,13 @@ public class GiftSelectionUI : MonoBehaviour, IUIWindow
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.sortingOrder = 50;
 
-        gameObject.AddComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        // ScaleWithScreenSize alone is not enough: referenceResolution defaults to 800x600,
+        // so on a 1080p screen every panel is drawn at ~1.8x and runs off the edges. 1920x1080
+        // matches the popup canvases standardised on Jul/1.
+        var giftScaler = gameObject.AddComponent<CanvasScaler>();
+        giftScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        giftScaler.referenceResolution = new Vector2(1920f, 1080f);
+        giftScaler.matchWidthOrHeight = 0.5f;
         gameObject.AddComponent<GraphicRaycaster>();
 
         // List panel (centered, hidden by default)

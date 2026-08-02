@@ -107,7 +107,12 @@ public class ConsumableBattleUI : MonoBehaviour
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.sortingOrder = 100;
 
-        gameObject.AddComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        // referenceResolution defaults to 800x600 — without setting it, ScaleWithScreenSize
+        // draws this panel ~1.8x oversized on a 1080p screen. Matches BattleHudOverlay.
+        var battleScaler = gameObject.AddComponent<CanvasScaler>();
+        battleScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        battleScaler.referenceResolution = new Vector2(1920f, 1080f);
+        battleScaler.matchWidthOrHeight = 0.5f;
         gameObject.AddComponent<GraphicRaycaster>();
 
         // Toggle button (bottom-left corner)
