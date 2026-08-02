@@ -73,30 +73,82 @@ Os outros 8 villagers já têm retrato; **só a Maren não tem**.
 
 ---
 
-## 3. Ícones de Skills dos Animais — **12 arquivos** 🔴 PRIORIDADE ALTA
+## 3. Ícones de Skills — **19 arquivos** 🔴 PRIORIDADE ALTA
 
-**Por que importa:** a pasta `Assets/Resources/AnimalSkills/` está **vazia**. Os 28
-animais do jogo entram em combate sem nenhuma habilidade — o sistema existe em
-código mas não tem conteúdo nenhum.
+**Correção:** numa versão anterior deste documento eu disse que `AnimalSkills/` estava
+vazia. **Estava errado** — existem 7 skills funcionando, e 23 dos 28 animais já têm
+skill ativa atribuída. Meu comando de busca filtrava por nome de arquivo contendo
+"skill", e os assets não seguem esse padrão (`VenomousBite.asset`, etc.).
+
+O que realmente falta:
+
+- **As 7 skills existentes não têm ícone** (`skillIcon: {fileID: 0}` em todas)
+- **`availablePassiveSkills` está vazia em 26 dos 28 animais** — as 2 passivas que
+  existem estão ligadas só ao Sparrow e à chicken
+- Nenhuma skill usa os ganchos de **felicidade** ou **estação**, que o código suporta
+
+Especificação dos ícones:
 
 - **Dimensões: 64×64 px**
 - Pasta destino: `Assets/Art/UI/Skills/`
-- Ícone simples, símbolo centralizado, legível em tamanho pequeno.
+- Símbolo único centralizado, legível a 32px, sem texto.
+
+### 3a. Ícones para as 7 skills que JÁ existem (obrigatório)
+
+| Arquivo | Skill no jogo | Prompt |
+|---|---|---|
+| `skill_venomous_bite.png` | Venomous Bite | `game skill icon, fanged bite with green venom drip, purple and toxic green, simple bold symbol` |
+| `skill_toxic_quack.png` | Toxic Quack | `game skill icon, sound wave rings with green fumes, sickly green and yellow, simple bold symbol` |
+| `skill_peck_weakening.png` | Peck of Weakening | `game skill icon, sharp beak strike with downward arrow, grey and pale yellow, simple bold symbol` |
+| `skill_draining_howl.png` | Draining Howl | `game skill icon, howling sound waves draining energy, dark blue and violet, simple bold symbol` |
+| `skill_feather_shield.png` | Feather Shield | `game skill icon, shield made of layered feathers, cream and sky blue, simple bold symbol` |
+| `skill_flock_instinct.png` | Flock Instinct (passiva) | `game skill icon, three small birds flying in formation, warm orange and brown, simple bold symbol` |
+| `skill_supporters_blessing.png` | Supporter's Blessing (passiva) | `game skill icon, radiant blessing sparkle over a small heart, gold and soft white, simple bold symbol` |
+
+### 3b. Ícones para as 12 skills NOVAS propostas
+
+Estas ainda não existem — eu crio os ScriptableObjects (dano, cooldown, condição de
+desbloqueio) na importação. Ver a tabela de design logo abaixo.
 
 | Arquivo | Skill | Prompt |
 |---|---|---|
-| `skill_peck.png` | Bicada | `game skill icon, sharp beak strike, yellow and white, simple bold symbol on transparent background` |
-| `skill_charge.png` | Investida | `game skill icon, charging horns with motion lines, brown and orange, simple bold symbol` |
-| `skill_kick.png` | Coice | `game skill icon, hoof kick with impact burst, tan and grey, simple bold symbol` |
-| `skill_bite.png` | Mordida | `game skill icon, fanged bite marks, red and white, simple bold symbol` |
-| `skill_wool_guard.png` | Defesa de Lã | `game skill icon, fluffy wool shield, cream and soft blue, simple bold symbol` |
-| `skill_milk_heal.png` | Cura do Leite | `game skill icon, milk droplet with green cross, white and green, simple bold symbol` |
-| `skill_egg_toss.png` | Ovo Arremessado | `game skill icon, thrown egg with crack, white and yellow, simple bold symbol` |
-| `skill_feather_flurry.png` | Rajada de Penas | `game skill icon, swirling feathers, light blue and white, simple bold symbol` |
-| `skill_stampede.png` | Debandada | `game skill icon, dust cloud with many hoofprints, brown and beige, simple bold symbol` |
-| `skill_rally.png` | Grito de Guerra | `game skill icon, upward arrow with sparkle, gold and yellow, simple bold symbol` |
-| `skill_burrow.png` | Escavar | `game skill icon, dirt mound with tunnel hole, brown and dark brown, simple bold symbol` |
-| `skill_lullaby.png` | Canção de Ninar | `game skill icon, musical notes with sleep z, soft purple and blue, simple bold symbol` |
+| `skill_hoof_kick.png` | Coice | `game skill icon, powerful hoof kick with impact starburst, tan and grey, simple bold symbol` |
+| `skill_hide_wall.png` | Muralha de Couro | `game skill icon, thick leather barrier shield, deep brown and bronze, simple bold symbol` |
+| `skill_herd_bond.png` | Vínculo do Rebanho | `game skill icon, two animal silhouettes joined by a heart, warm pink and cream, simple bold symbol` |
+| `skill_loyal_companion.png` | Companheiro Leal | `game skill icon, glowing heart with a paw print inside, rose and gold, simple bold symbol` |
+| `skill_rooster_fury.png` | Fúria do Galo | `game skill icon, angry rooster comb with fire streaks, red and orange, simple bold symbol` |
+| `skill_large_brood.png` | Ninhada Numerosa | `game skill icon, cluster of small chicks with speed lines, yellow and warm brown, simple bold symbol` |
+| `skill_winter_coat.png` | Calor de Inverno | `game skill icon, snowflake over a thick wool coat, icy blue and white, simple bold symbol` |
+| `skill_spring_vigor.png` | Vigor da Primavera | `game skill icon, sprouting green shoot with speed swirls, fresh green and pink blossom, simple bold symbol` |
+| `skill_precise_peck.png` | Bicada Certeira | `game skill icon, sharp beak hitting a bullseye target, yellow and red, simple bold symbol` |
+| `skill_restoring_song.png` | Canto Restaurador | `game skill icon, musical note with a green healing cross, soft green and white, simple bold symbol` |
+| `skill_flock_call.png` | Chamado do Bando | `game skill icon, open beak with rising sound waves and up arrows, sky blue and gold, simple bold symbol` |
+| `skill_burrow.png` | Escavar | `game skill icon, dirt mound with tunnel entrance and dust, brown and dark earth, simple bold symbol` |
+
+### Design das 12 skills novas
+
+Tudo abaixo usa só o que o sistema já suporta (Stun, Shield, Burn, Poison, Weakness;
+condições por classe, família, contagem de família, felicidade e estação).
+
+| Skill | Tipo | Efeito | Desbloqueio | Razão |
+|---|---|---|---|---|
+| Coice | Ativa | 1.4× dano + **Stun** 1 turno | Sempre | Stun é o efeito mais forte e **nenhuma skill usa** hoje |
+| Muralha de Couro | Ativa | **Shield** 40%, 3 turnos | Classe Tank | São 10 Tanks sem nenhuma skill de tanque |
+| Vínculo do Rebanho | Passiva | +15% ATK e DEF | **Felicidade ≥ 75** | Recompensa direta por cuidar bem — gancho nunca usado |
+| Companheiro Leal | Passiva | +20% HP | **Felicidade ≥ 90** | Segundo tier do mesmo gancho |
+| Fúria do Galo | Ativa | 1.6× dano, CD 3 | 3+ Galliformes | Premia time temático (há 15 Galliformes) |
+| Ninhada Numerosa | Passiva | +10% velocidade | 5+ Galliformes | Escala com o roster grande de galinhas |
+| Calor de Inverno | Passiva | +25% DEF | **Estação: Winter** | Estreia o gancho sazonal, que existe e está parado |
+| Vigor da Primavera | Passiva | +20% velocidade | **Estação: Spring** | Idem, e casa com o tema de fazenda |
+| Bicada Certeira | Ativa | 1.3× dano, CD 1 | Sempre | Ataque barato; hoje todos custam CD 2–3 |
+| Canto Restaurador | Ativa | Cura 25, aliado | Classe Support | **Não existe cura no jogo inteiro** |
+| Chamado do Bando | Ativa | Aliados +20% ATK, 2 turnos | Família Passeridae | Buff de time, categoria inexistente |
+| Escavar | Ativa | **Shield** 50%, 1 turno | Família Leporidae | Dá identidade ao coelho, hoje um DPS genérico |
+
+> ✅ **Verificado no código:** cura e buff em aliado **funcionam** de verdade —
+> `TurnManager.cs:467` chama `ally.Heal(...)` e `:517` aplica `ApplyStatBuff` em todos
+> os aliados vivos. Então *Canto Restaurador* e *Chamado do Bando* são só asset,
+> nenhuma das 12 skills precisa de código novo.
 
 ---
 
@@ -155,6 +207,8 @@ Confirmado por auditoria — já existe e está ligado:
 - ✅ **Silo e Workshop** têm sprite
 - ✅ **7 quests** existem
 - ✅ **Música** — 3 faixas de OST no projeto
+- ✅ **7 skills de animal** já existem e funcionam (só falta ícone) — 23 dos 28
+  animais têm skill ativa atribuída; os 5 sem são os `egg_*`, que são ovos
 
 ---
 
@@ -191,13 +245,18 @@ Me diga qual prefere que eu preparo os prompts ou faço o religamento.
 | Categoria | Qtd | Prioridade |
 |---|---|---|
 | Sprites de corpo dos NPCs | 9 | 🔴 Alta |
-| Ícones de skills de animais | 12 | 🔴 Alta |
+| Ícones das 7 skills existentes | 7 | 🔴 Alta |
+| Ícones das 12 skills novas | 12 | 🟡 Média |
 | Efeitos sonoros | 14 | 🟡 Média |
 | Sprites de construção | 2 | 🟡 Média |
 | Retrato da Maren | 1 | 🟡 Média |
-| **TOTAL** | **38** | |
+| **TOTAL** | **45** | |
 
 Mais a decisão sobre Mountain/Volcano acima.
+
+**Se quiser cortar escopo:** os 9 NPCs + os 7 ícones de skill existente (**16 arquivos**)
+resolvem as duas lacunas mais visíveis — NPCs indistinguíveis e skills sem ícone na UI.
+O resto é melhoria.
 
 ---
 
@@ -215,7 +274,17 @@ Não precisa acertar import settings nem organizar em pastas — eu faço essa p
 
 ## Nota sobre as skills (seção 3)
 
-Os 12 nomes de skill acima são **proposta minha**, não vêm dos dados — a pasta está
-vazia, então não há nada definido ainda. Os ícones servem para qualquer conjunto,
-mas se você quiser outros nomes/efeitos, me fala antes que eu ajusto a lista.
-Eu crio os ScriptableObjects de skill (dano, custo, alvo) junto com a importação.
+Os 7 nomes da seção 3a **vêm dos assets reais** do projeto — esses ícones são
+necessários de qualquer forma, independente de qualquer decisão de design.
+
+Os 12 da seção 3b são **proposta minha**. Todos usam apenas efeitos e condições que o
+código já implementa, mas os nomes, números e desbloqueios são discutíveis. Se quiser
+outro conjunto, me fala antes de gerar — os ícones são a parte cara.
+
+Duas ideias por trás da proposta, caso queira ajustar o rumo:
+
+1. **Ligar a fazenda ao combate.** O código suporta desbloqueio por felicidade, e nada
+   usa isso. *Vínculo do Rebanho* e *Companheiro Leal* fazem cuidar dos animais valer
+   em batalha — que é o que amarra os dois lados do jogo.
+2. **Preencher buracos de papel.** Hoje não existe cura, nem buff de aliado, nem Stun.
+   São 10 Tanks sem skill de tanque e 1 único Support. As skills novas cobrem isso.
