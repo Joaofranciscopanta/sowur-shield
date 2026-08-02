@@ -65,6 +65,8 @@ public class TeamAssemblerUI : MonoBehaviour
     [SerializeField] private LocalizedString synergyLineText_Localized; // table "Combat", key "combat.teamassembler.synergy_line"
     [SerializeField] private LocalizedString noSynergiesText_Localized; // table "Combat", key "combat.teamassembler.no_synergies"
     [SerializeField] private LocalizedString availableAnimalsTitleText_Localized; // table "Combat", key "combat.teamassemblersetup.available_animals"
+    [SerializeField] private LocalizedString combatModeActivePauseText_Localized; // table "Combat", key "combat.teamassembler.mode_active_pause"
+    [SerializeField] private LocalizedString combatModeAutoText_Localized; // table "Combat", key "combat.teamassembler.mode_auto"
 
     // Runtime data
     private List<AnimalSelectionCard> animalCards = new List<AnimalSelectionCard>();
@@ -91,6 +93,102 @@ public class TeamAssemblerUI : MonoBehaviour
 
         // Hide by default
         if (assemblerPanel != null) assemblerPanel.SetActive(false);
+
+        BuildCombatModeToggle();
+    }
+
+    // ── Combat mode toggle (built procedurally) ────────────────────────────────
+    // Every other control here is a [SerializeField] wired in the scene. This one is
+    // built in code so the feature works without a manual Unity pass — the assembler
+    // canvas would otherwise need a new button hooked up by hand before the mode
+    // could be chosen at all.
+
+    private Button combatModeButton;
+    private TextMeshProUGUI combatModeLabel;
+
+    private void BuildCombatModeToggle()
+    {
+        if (startBattleButton == null)
+        {
+            Debug.LogWarning("[TeamAssembler] startBattleButton is not assigned — the combat " +
+                "mode toggle has nothing to anchor to and will not be shown. Assign it in the Inspector.");
+            return;
+        }
+
+        var anchorRect = startBattleButton.GetComponent<RectTransform>();
+        if (anchorRect == null || anchorRect.parent == null) return;
+
+        var go = new GameObject("CombatModeToggle");
+        go.transform.SetParent(anchorRect.parent, false);
+
+        // Match the start button's footprint and sit directly above it, so the toggle
+        // follows whatever layout the scene gives the button.
+        var rect = go.AddComponent<RectTransform>();
+        rect.anchorMin = anchorRect.anchorMin;
+        rect.anchorMax = anchorRect.anchorMax;
+        rect.pivot = anchorRect.pivot;
+        rect.sizeDelta = anchorRect.sizeDelta;
+        rect.anchoredPosition = anchorRect.anchoredPosition
+            + new Vector2(0f, anchorRect.sizeDelta.y + 10f);
+
+        var image = go.AddComponent<Image>();
+        Sprite sprite = Resources.Load<Sprite>("Sprites/UI/Buttons/button_small_action");
+        if (sprite != null)
+        {
+            image.sprite = sprite;
+            image.type = Image.Type.Sliced;
+            image.color = Color.white;
+        }
+        else
+        {
+            image.color = new Color(0.2f, 0.2f, 0.25f, 0.85f);
+        }
+
+        combatModeButton = go.AddComponent<Button>();
+        combatModeButton.onClick.AddListener(OnCombatModeToggleClicked);
+
+        var labelObj = new GameObject("Label");
+        labelObj.transform.SetParent(go.transform, false);
+        var labelRect = labelObj.AddComponent<RectTransform>();
+        labelRect.anchorMin = Vector2.zero;
+        labelRect.anchorMax = Vector2.one;
+        labelRect.offsetMin = new Vector2(8f, 4f);
+        labelRect.offsetMax = new Vector2(-8f, -4f);
+
+        combatModeLabel = labelObj.AddComponent<TextMeshProUGUI>();
+        combatModeLabel.fontSize = 18;
+        combatModeLabel.alignment = TextAlignmentOptions.Center;
+        combatModeLabel.enableAutoSizing = true;
+        combatModeLabel.fontSizeMin = 12;
+        combatModeLabel.fontSizeMax = 18;
+        combatModeLabel.raycastTarget = false;
+        combatModeLabel.color = sprite != null ? new Color(0.18f, 0.12f, 0.06f) : Color.white;
+
+        RefreshCombatModeLabel();
+    }
+
+    private void OnCombatModeToggleClicked()
+    {
+        var data = TeamAssemblerData.Instance;
+        data.combatMode = data.combatMode == CombatMode.ActivePause
+            ? CombatMode.Auto
+            : CombatMode.ActivePause;
+
+        RefreshCombatModeLabel();
+    }
+
+    private void RefreshCombatModeLabel()
+    {
+        if (combatModeLabel == null) return;
+
+        bool activePause = TeamAssemblerData.Instance.combatMode == CombatMode.ActivePause;
+
+        LocalizedString source = activePause ? combatModeActivePauseText_Localized : combatModeAutoText_Localized;
+        string localized = source.SafeGetLocalizedString();
+
+        combatModeLabel.text = string.IsNullOrEmpty(localized)
+            ? (activePause ? "Mode: Active Pause" : "Mode: Auto")
+            : localized;
     }
 
     private void OnDestroy()

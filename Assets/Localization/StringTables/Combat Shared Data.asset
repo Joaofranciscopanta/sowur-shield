@@ -563,6 +563,14 @@ MonoBehaviour:
     m_Key: enemy.LordOfAshes.name
     m_Metadata:
       m_Items: []
+  - m_Id: 15112532682072064
+    m_Key: combat.teamassembler.mode_active_pause
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15112532724015104
+    m_Key: combat.teamassembler.mode_auto
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -116,6 +116,13 @@ public class TeamAssemblerData : MonoBehaviour
     public string selectedStageName = "";
 
     /// <summary>
+    /// How the player wants to play this battle: <see cref="CombatMode.ActivePause"/> to
+    /// command each of their animals, or <see cref="CombatMode.Auto"/> to let the AI play.
+    /// Chosen in the team assembler and read by TurnManager.InitializeCombat.
+    /// </summary>
+    public CombatMode combatMode = CombatMode.ActivePause;
+
+    /// <summary>
     /// Set by BattleResultsUI.RetryBattle() before loading the farm scene; consumed (and
     /// cleared) by TeamAssemblerUI.Start() to automatically reopen the assembler for the
     /// same stage.
@@ -171,6 +178,7 @@ public class TeamAssemblerData : MonoBehaviour
     // ── PlayerPrefs persistence (survives domain reload in builds) ────────────
 
     private const string PrefsKeyStage = "Combat_SelectedStage";
+    private const string PrefsKeyMode = "combat_mode";
     private const string PrefsKeyTeamCount = "Combat_TeamCount";
     private const string PrefsKeyTeamPrefix = "Combat_Team_";
 
@@ -180,6 +188,7 @@ public class TeamAssemblerData : MonoBehaviour
     public void SaveToPrefs()
     {
         PlayerPrefs.SetString(PrefsKeyStage, selectedStageName);
+        PlayerPrefs.SetInt(PrefsKeyMode, (int)combatMode);
         PlayerPrefs.SetInt(PrefsKeyTeamCount, team.Count);
         for (int i = 0; i < team.Count; i++)
         {
@@ -207,6 +216,10 @@ public class TeamAssemblerData : MonoBehaviour
     /// </summary>
     public void LoadFromPrefs()
     {
+        // Read the mode before the team early-out: the player's mode preference should
+        // survive even when there is no saved team to restore.
+        combatMode = (CombatMode)PlayerPrefs.GetInt(PrefsKeyMode, (int)CombatMode.ActivePause);
+
         if (!PlayerPrefs.HasKey(PrefsKeyTeamCount)) return;
 
         selectedStageName = PlayerPrefs.GetString(PrefsKeyStage, "");

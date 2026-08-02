@@ -580,6 +580,14 @@ MonoBehaviour:
     m_Localized: Senhor das Cinzas
     m_Metadata:
       m_Items: []
+  - m_Id: 15112532682072064
+    m_Localized: 'Modo: Pausa Ativa'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15112532724015104
+    m_Localized: "Modo: Autom\xE1tico"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

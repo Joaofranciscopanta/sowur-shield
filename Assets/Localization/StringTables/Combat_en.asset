@@ -577,6 +577,14 @@ MonoBehaviour:
     m_Localized: Lord of Ashes
     m_Metadata:
       m_Items: []
+  - m_Id: 15112532682072064
+    m_Localized: 'Mode: Active Pause'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15112532724015104
+    m_Localized: 'Mode: Auto'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

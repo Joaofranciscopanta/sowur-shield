@@ -723,6 +723,16 @@ public class CombatUnit : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// This player unit's active skill regardless of cooldown state (null for enemies).
+    /// The command UI needs the skill even while it is unavailable, so it can show the
+    /// name greyed out with the remaining turns — GetReadySkill() returns null there.
+    /// </summary>
+    public AnimalSkill GetPlayerActiveSkill() => isPlayerUnit ? playerActiveSkill : null;
+
+    /// <summary>Remaining cooldown turns on the active skill (0 = ready to use).</summary>
+    public int GetSkillCooldownRemaining() => skillCooldownRemaining;
+
     /// <summary>Put the active skill on cooldown after use.</summary>
     public void SetSkillOnCooldown(AnimalSkill skill)
     {
