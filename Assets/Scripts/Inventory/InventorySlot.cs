@@ -362,8 +362,14 @@ namespace SowurShield.Inventory
             if (slotNumberText != null)
             {
                 slotNumberText.text = (slotIndex + 1).ToString();
-                slotNumberText.fontSize = 10;
-                slotNumberText.color = new Color(1f, 1f, 1f, 0.6f);
+                // 12 is the theme's caption step; 10 was off-scale and, at 60% white on a
+                // pale slot plate, the 1-9 hotbar numbers measured 1.0:1 contrast — i.e.
+                // completely invisible. Dark glyph with a light outline stays legible both
+                // on the empty plate and on top of a colourful item sprite.
+                slotNumberText.fontSize = 12;
+                slotNumberText.color = new Color(0.176f, 0.165f, 0.149f, 0.95f);
+                slotNumberText.outlineWidth = 0.18f;
+                slotNumberText.outlineColor = new Color32(255, 255, 255, 220);
                 slotNumberText.fontStyle = FontStyles.Bold;
                 slotNumberText.alignment = TextAlignmentOptions.TopLeft;
                 slotNumberText.raycastTarget = false;
