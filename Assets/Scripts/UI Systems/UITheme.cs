@@ -42,9 +42,32 @@ public class UITheme : ScriptableObject
     public float spacingXXL = 32f;
 
     [Header("Typography")]
-    public float fontSizeH1   = 32f;
-    public float fontSizeH2   = 24f;
-    public float fontSizeBody = 16f;
+    // A 6-step scale. An audit on 2026-08-04 found 21 distinct font sizes in use
+    // across the screen-space UI (10,11,12,13,14,16,17,18,20,22,24,26,28,30,36,45
+    // plus six autosize ranges) because every screen picked its own — which is why
+    // the game read as "tudo de tamanho diferente". Pick the nearest step here
+    // instead of inventing a new value.
+    public float fontSizeH1      = 32f; // screen / panel title
+    public float fontSizeH2      = 24f; // section heading
+    public float fontSizeBody    = 18f; // dialogue and primary reading text
+    public float fontSizeButton  = 18f; // control labels
+    public float fontSizeSmall   = 14f; // secondary / supporting text
+    public float fontSizeCaption = 12f; // hints, counters, timestamps
+
+    [Header("Control Sizing")]
+    // Controls must not stretch to whatever container they land in. A dialogue
+    // choice expanded to 1750px wide reads as a progress bar, not a button.
+    public float buttonHeight      = 44f;
+    public float buttonHeightSmall = 34f;
+    public float buttonMinWidth    = 160f;
+    public float buttonMaxWidth    = 560f;
+
+    /// <summary>
+    /// Longest comfortable line for body copy, in reference pixels. Beyond roughly
+    /// this width the eye loses the start of the next line, which is what made the
+    /// full-bleed 1495px dialogue text feel wrong even though it technically fit.
+    /// </summary>
+    public float maxTextLineWidth = 900f;
 }
 
 } // namespace SowurShield.UI

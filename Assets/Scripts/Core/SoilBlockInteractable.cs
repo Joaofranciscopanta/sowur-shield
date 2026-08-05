@@ -276,7 +276,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             currentState = SoilState.Tilled;
             UpdateAppearance();
             PlayEffect(tillEffect);
-            PlaySound(tillSound);
+            PlaySound(tillSound, "TillSoil");
         }
     }
 
@@ -396,7 +396,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         currentState = SoilState.Tilled;
         UpdateAppearance();
         PlayEffect(tillEffect);
-        PlaySound(tillSound);
+        PlaySound(tillSound, "TillSoil");
         TutorialManager.NotifyStepComplete("till_soil");
     }
 
@@ -416,7 +416,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             currentState = SoilState.Watered;
             UpdateAppearance();
             PlayEffect(waterEffect);
-            PlaySound(waterSound);
+            PlaySound(waterSound, "WaterSoil");
             TutorialManager.NotifyStepComplete("water_crop");
         }
         else if (currentState == SoilState.WithCrop && cropGrowthManager != null)
@@ -424,7 +424,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             cropGrowthManager.WaterCrop();
             UpdateAppearance(); // Atualiza aparência caso cultivo estivesse morrendo
             PlayEffect(waterEffect);
-            PlaySound(waterSound);
+            PlaySound(waterSound, "WaterSoil");
         }
     }
 
@@ -569,7 +569,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
 
             // Visual and sound effects
             PlayEffect(harvestEffect);
-            PlaySound(harvestSound);
+            PlaySound(harvestSound, "HarvestCrop");
 
             // Workshop upgrade: chance to refund the planted seed (Hades II "Lucky Seed")
             bool luckySeedUpgrade = FarmBuildingManager.Instance != null && FarmBuildingManager.Instance.HasLuckySeedUpgrade;
@@ -977,12 +977,34 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         }
     }
 
-    private void PlaySound(AudioClip clip)
+    /// <summary>
+    /// Plays an Inspector-assigned clip when there is one, otherwise falls back to
+    /// SFXManager's key lookup (Resources/Audio/SFX/sfx_*).
+    ///
+    /// The fallback is what actually makes tilling and watering audible: those
+    /// AudioClip fields are unassigned on every soil block in the scene, so the
+    /// old clip-only version returned silently while the rest of the game — which
+    /// already called SFXManager by key — kept working. Going through the manager
+    /// also picks a random variation and honours the volume settings, neither of
+    /// which PlayClipAtPoint did.
+    /// </summary>
+    private void PlaySound(AudioClip clip, string sfxKey = null)
     {
         if (clip != null)
         {
-            AudioSource.PlayClipAtPoint(clip, transform.position);
+            AudioSource.PlayClipAtPoint(clip, transform.position, GetSfxVolume());
+            return;
         }
+
+        if (!string.IsNullOrEmpty(sfxKey))
+        {
+            SFXManager.Play(sfxKey);
+        }
+    }
+
+    private static float GetSfxVolume()
+    {
+        return PlayerPrefs.GetFloat("MasterVolume", 1f) * PlayerPrefs.GetFloat("SFXVolume", 1f);
     }
 
     #endregion

@@ -29,6 +29,19 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
     private TextMeshProUGUI relationshipValueText;
     private Image relationshipFillImage;
 
+    /// <summary>
+    /// Panel width in reference pixels. The wood frame is drawn as a fraction of this,
+    /// so the layout padding is derived from it rather than hard-coded — see BuildCodexPanel.
+    /// </summary>
+    private const float PanelWidth = 720f;
+
+    /// <summary>
+    /// Fraction of the panel height the codex may occupy before the lore list starts
+    /// scrolling. Without a cap the ContentSizeFitter grows the panel past the screen
+    /// once an NPC has all four lore tiers plus discovered tastes.
+    /// </summary>
+    private const float MaxPanelHeightFraction = 0.86f;
+
     // Lore section (built dynamically on open)
     private Transform loreContainer;
     private TextMeshProUGUI loreTitleHeader;
@@ -255,20 +268,29 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         panel.anchorMax = new Vector2(0.5f, 0.5f);
         panel.pivot    = new Vector2(0.5f, 0.5f);
         panel.anchoredPosition = Vector2.zero;
-        // 680: the frame eats ~144px of width (72 per side), so this leaves ~536px of usable
-        // content — close to the 520 the layout was originally authored against.
-        panel.sizeDelta = new Vector2(680, 0); // height driven by fitter
+        // The frame scales with the panel and eats ~1/8 per side, so 720 leaves ~540px of
+        // usable content — close to the 520 the layout was originally authored against.
+        panel.sizeDelta = new Vector2(PanelWidth, 0); // height driven by fitter
 
         // Cozy sprite kit, same treatment the other panels got Jul/26–Aug/1.
         UIThemeStyler.StylePanel(panelObj, theme);
 
         var rootVlg = panelObj.AddComponent<VerticalLayoutGroup>();
-        // Measured against the render, not the sprite metadata: panel_wood_generic's painted
-        // frame covers roughly an eighth of the panel's width per side, so a 600px-wide panel
-        // needs ~72px of horizontal inset. The texture is not read-enabled (kit import
-        // settings), so this cannot be sampled in code — it was read off a screenshot.
-        // The 9-slice border field (32px) is NOT the usable inset. See SOWUR_SHIELD_STATUS.md.
-        rootVlg.padding = new RectOffset(72, 72, 52, 52);
+        // panel_wood_generic's painted frame covers roughly an eighth of the sprite per side.
+        // The sprite is Sliced from a 512px source, so that band SCALES with the panel — a
+        // fixed pixel inset is only correct at one size. At 680px wide the frame is ~85px,
+        // not the 72 this was pinned at, which is why the codex text still sat on the wood
+        // even though every child measured "inside" the old padding.
+        //
+        // The 9-slice border field (32px) is NOT the usable inset, and the texture is not
+        // read-enabled, so this cannot be sampled — it is derived from the 1/8 ratio.
+        // See SOWUR_SHIELD_STATUS.md.
+        const float FrameRatio = 0.125f;
+        int padX = Mathf.RoundToInt(PanelWidth * FrameRatio);
+        // Vertical padding is deliberately larger than the frame band: at exactly the band
+        // width the NPC name sat flush against the top edge and the close button against the
+        // bottom, both reading as clipped even though they measured inside.
+        rootVlg.padding = new RectOffset(padX, padX, 78, 74);
         rootVlg.spacing = 0;
         rootVlg.childControlWidth  = true;
         rootVlg.childControlHeight = true;
@@ -346,7 +368,11 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         bioText.fontSize  = 13;
         bioText.alignment = TextAlignmentOptions.TopLeft;
         bioText.textWrappingMode = TMPro.TextWrappingModes.Normal;
-        SetPreferredHeight(bioText, 90);
+        // Measured, not fixed: Maren's bio wraps past the 90px this was pinned at and ran
+        // over the relationship label underneath it.
+        var bioLE = bioText.GetComponent<LayoutElement>();
+        bioLE.preferredHeight = -1;
+        bioLE.minHeight = 60;
 
         relationshipLabelText = CreateLabel(infoObj.transform, acquaintanceText.SafeGetLocalizedString());
         relationshipLabelText.fontSize  = 14;
@@ -549,6 +575,35 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         relationshipValueText.text = scoreText.SafeGetLocalizedString();
 
         RefreshLore();
+        ClampPanelToScreen();
+    }
+
+    /// <summary>
+    /// Caps the panel's height so a fully-unlocked codex cannot grow past the screen.
+    /// The root ContentSizeFitter sizes to content with no upper bound, so an NPC with
+    /// all four lore tiers plus discovered tastes would run off the top and bottom.
+    /// </summary>
+    private void ClampPanelToScreen()
+    {
+        if (panel == null) return;
+
+        var fitter = panel.GetComponent<ContentSizeFitter>();
+
+        // Restore content-sizing first. Without this, the first oversized villager would
+        // pin the height and every smaller NPC opened afterwards would keep that pinned
+        // size, showing a half-empty panel.
+        if (fitter != null) fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+
+        // The fitter has not run yet this frame; force it so the measurement is real
+        // rather than the previous NPC's height.
+        LayoutRebuilder.ForceRebuildLayoutImmediate(panel);
+
+        float maxHeight = Screen.height * MaxPanelHeightFraction;
+        if (panel.rect.height <= maxHeight) return;
+
+        // Over budget: drop the fitter's control of height and pin it to the cap.
+        if (fitter != null) fitter.verticalFit = ContentSizeFitter.FitMode.Unconstrained;
+        panel.sizeDelta = new Vector2(PanelWidth, maxHeight);
     }
 
     private void RefreshLore()
@@ -563,9 +618,12 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
             return;
         }
 
-        // Clear previous entries
+        // Clear previous entries. DestroyImmediate, not Destroy: Destroy is deferred to the
+        // end of the frame, so the rows rebuilt immediately below were appended to the old
+        // ones instead of replacing them. Reopening the codex ten times left 100 stacked
+        // rows and a panel that grew every time — the layout group measured the corpses.
         for (int i = loreContainer.childCount - 1; i >= 0; i--)
-            Destroy(loreContainer.GetChild(i).gameObject);
+            DestroyImmediate(loreContainer.GetChild(i).gameObject);
 
         if (targetNpc == null)
         {
@@ -628,7 +686,11 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
             titleTmp.fontStyle = FontStyles.Bold;
             titleTmp.color = isLocked ? new Color(gold.r, gold.g, gold.b, lockedAlpha) : gold;
             titleTmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
-            titleObj.AddComponent<LayoutElement>().preferredHeight = 16;
+            // Same fixed-height problem as the body: a wrapping title ("A Seca do Vale
+            // Oriental") needs more than one 16px line. Measure instead of assuming.
+            var titleLE = titleObj.AddComponent<LayoutElement>();
+            titleLE.preferredHeight = -1;
+            titleLE.minHeight = 16;
         }
 
         var bodyObj = new GameObject(isLocked ? "LoreBodyLocked" : "LoreBody");
@@ -652,9 +714,19 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
 
         bodyTmp.fontSize = 11;
         bodyTmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
+
+        // Height must come from the text, not a constant. A flat 32px fitted the two-line
+        // entries it was authored against, but Maren's longer tiers wrap to three lines and
+        // need ~38px — those rows spilled ~6px past their own box and collided with the row
+        // below, which is what made the codex look like overlapping text.
+        //
+        // ContentSizeFitter can't do this job here: the parent VerticalLayoutGroup drives
+        // width, and the fitter would measure before that width is known. Instead let the
+        // layout system ask the text itself, with a floor so an empty string keeps a sane row.
         var bodyLE = bodyObj.AddComponent<LayoutElement>();
-        bodyLE.preferredHeight = isLocked ? 16 : 32;
-        bodyLE.flexibleHeight = 1;
+        bodyLE.preferredHeight = -1;   // -1 = "no override", fall through to TMP's own measure
+        bodyLE.minHeight = isLocked ? 16 : 24;
+        bodyLE.flexibleHeight = 0;     // was 1: let a row grow to fill slack, misaligning the stack
     }
 
     /// <summary>

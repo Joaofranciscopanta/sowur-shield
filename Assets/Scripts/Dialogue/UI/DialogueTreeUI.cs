@@ -460,24 +460,46 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
         if (choicePanel != null)
             choicePanel.SetActive(true);
         
-        // Create choice buttons
+        // Build every button FIRST, then animate. The previous version yielded inside the
+        // creation loop with the button already scaled to zero, so anything that interrupted
+        // the coroutine (or a tween that failed to run) left the list half-built and the
+        // buttons that did exist stuck at scale 0 — visible as an empty choice panel.
+        var spawned = new List<GameObject>();
         for (int i = 0; i < choices.Length && i < maxChoicesDisplayed; i++)
         {
-            var choice = choices[i];
             var buttonObj = Instantiate(choiceButtonPrefab, choiceContainer);
             var choiceButton = buttonObj.GetComponent<ChoiceButton>();
-            
-            if (choiceButton != null)
+            if (choiceButton == null)
             {
-                choiceButton.Initialize(choice, OnChoiceSelected);
-                activeChoiceButtons.Add(choiceButton);
-                
-                // Animate in with stagger
-                buttonObj.transform.localScale = Vector3.zero;
-                yield return new WaitForSeconds(choiceStaggerDelay);
-                buttonObj.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
+                Destroy(buttonObj);
+                continue;
             }
+
+            choiceButton.Initialize(choices[i], OnChoiceSelected);
+            activeChoiceButtons.Add(choiceButton);
+            spawned.Add(buttonObj);
         }
+
+        // Let the layout group place them at full size before anything is scaled down,
+        // otherwise the group measures zero-sized children and collapses the panel.
+        Canvas.ForceUpdateCanvases();
+        if (choiceContainer is RectTransform containerRect)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(containerRect);
+
+        for (int i = 0; i < spawned.Count; i++)
+        {
+            var buttonTransform = spawned[i].transform;
+            buttonTransform.localScale = Vector3.zero;
+            // SetUpdate(true): dialogue runs with the game paused in some contexts, and a
+            // timescale-dependent tween never completes there — which leaves the button
+            // permanently invisible at scale 0.
+            buttonTransform.DOScale(Vector3.one, 0.3f)
+                           .SetDelay(i * choiceStaggerDelay)
+                           .SetEase(Ease.OutBack)
+                           .SetUpdate(true);
+        }
+
+        yield return null;
         
         // Select first choice for keyboard navigation
         if (activeChoiceButtons.Count > 0)
