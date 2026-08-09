@@ -45,6 +45,14 @@ namespace SowurShield.Core
         // which is common because Start() order between scene objects is undefined.
         private bool hasCompletedInitialLoad = false;
 
+        /// <summary>
+        /// Whether the initial load has already run. Anything that must apply a change *on top
+        /// of* loaded data — rather than have it overwritten by the load — needs this to decide
+        /// between acting now and waiting for <see cref="OnLoadCompleted"/>. See
+        /// PlayerStats.Start, where combat rewards were being erased by the load that followed.
+        /// </summary>
+        public bool HasCompletedInitialLoad => hasCompletedInitialLoad;
+
         // Continue from start of day flag
         public static bool resetToStartOfDayAfterLoad = false;
 

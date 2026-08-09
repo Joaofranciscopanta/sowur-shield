@@ -67,6 +67,11 @@ public class PlayerStats : MonoBehaviour, ISaveable
     private void OnDestroy()
     {
         LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+
+        // May still be subscribed if this object is destroyed between Start() and the load
+        // completing — a scene change during loading, for instance.
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.OnLoadCompleted -= HandleLoadCompletedForRewards;
     }
 
     private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)
@@ -76,16 +81,53 @@ public class PlayerStats : MonoBehaviour, ISaveable
 
     private void Start()
     {
-        var teamData = SowurShield.Combat.TeamAssemblerData.Instance;
-        if (teamData.pendingGoldReward != 0 || teamData.pendingXpReward != 0f)
+        // Combat rewards must be applied ON TOP OF the loaded save, never before it.
+        //
+        // This used to award them right here, and the gold silently vanished: LoadData assigns
+        // `money = gameData.playerData.money` outright, so whenever SaveManager.Start() ran
+        // second — and Start() order between them is undefined, both sit at execution order 0 —
+        // the load overwrote the freshly credited reward. The pending value had already been
+        // zeroed by then, so the gold was not merely delayed, it was gone for good.
+        //
+        // Deferring until after the load fixes it regardless of which Start() wins the race.
+        if (SaveManager.Instance == null || SaveManager.Instance.HasCompletedInitialLoad)
         {
-            AddMoney(teamData.pendingGoldReward);
-            AddExperience(teamData.pendingXpReward);
-            teamData.pendingGoldReward = 0;
-            teamData.pendingXpReward = 0f;
+            ApplyPendingCombatRewards();
+        }
+        else
+        {
+            SaveManager.Instance.OnLoadCompleted += HandleLoadCompletedForRewards;
         }
 
         UpdateUI();
+    }
+
+    private void HandleLoadCompletedForRewards(bool success)
+    {
+        // One-shot: rewards are consumed once, whether or not the load itself succeeded —
+        // a failed load still leaves the player in a scene expecting their winnings.
+        SaveManager.Instance.OnLoadCompleted -= HandleLoadCompletedForRewards;
+        ApplyPendingCombatRewards();
+    }
+
+    /// <summary>
+    /// Moves gold and XP earned in CombatScene onto the player. CombatScene has no PlayerStats,
+    /// so BattleResultsUI stashes them on the persistent TeamAssemblerData for this to collect.
+    /// </summary>
+    private void ApplyPendingCombatRewards()
+    {
+        var teamData = SowurShield.Combat.TeamAssemblerData.Instance;
+        if (teamData == null) return;
+        if (teamData.pendingGoldReward == 0 && teamData.pendingXpReward == 0f) return;
+
+        AddMoney(teamData.pendingGoldReward);
+        AddExperience(teamData.pendingXpReward);
+        teamData.pendingGoldReward = 0;
+        teamData.pendingXpReward = 0f;
+
+        // Persist immediately: the rewards have now been cleared from TeamAssemblerData, so if
+        // the player quits before the next autosave they would otherwise be lost from both.
+        SaveManager.Instance?.SaveGame();
     }
 
     private System.Collections.IEnumerator DelayedRegistration()
