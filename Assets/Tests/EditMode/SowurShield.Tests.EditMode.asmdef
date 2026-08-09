@@ -5,7 +5,8 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "SowurShield.Runtime",
-        "Unity.Localization"
+        "Unity.Localization",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [
         "Editor"
