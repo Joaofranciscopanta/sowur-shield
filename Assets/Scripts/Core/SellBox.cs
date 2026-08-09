@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SowurShield.Inventory;
 using UnityEngine.Localization;
+using TMPro;
 
 namespace SowurShield.Core
 {
@@ -17,8 +18,8 @@ namespace SowurShield.Core
  * 4. Assign UI references:
  *    - sellBoxSlotParent: Parent Transform for slot UI
  *    - sellBoxSlotPrefab: InventorySlot prefab
- *    - totalValueText: Text showing total value
- *    - sellBoxTitleText: Title text for the UI
+ *    - totalValueText: TMP_Text showing total value
+ *    - sellBoxTitleText: TMP_Text title for the UI
  * 5. Assign Visual references:
  *    - boxSpriteRenderer: SpriteRenderer for box visual
  *    - defaultBoxSprite: Default sprite for empty box
@@ -71,8 +72,11 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
     public GameObject sellBoxMainPanel; // Main SellBox UI panel
     public Transform sellBoxSlotParent;
     public GameObject sellBoxSlotPrefab;
-    public UnityEngine.UI.Text totalValueText;
-    public UnityEngine.UI.Text sellBoxTitleText;
+    // TextMeshPro, not UnityEngine.UI.Text. This was the last screen in the game
+    // still on the legacy component, which meant it rendered in LegacyRuntime and
+    // was the one place the project-wide font could not reach.
+    public TMP_Text totalValueText;
+    public TMP_Text sellBoxTitleText;
 
     [Header("Localized Strings")]
     [SerializeField] private LocalizedString titleText; // table "Farming", key "farming.sellbox.title"
