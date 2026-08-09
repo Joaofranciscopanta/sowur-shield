@@ -446,7 +446,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 14872607390949377
-    m_Localized: (Nao gosta)
+    m_Localized: (Não gosta)
     m_Metadata:
       m_Items: []
   - m_Id: 14872607390949378
@@ -458,7 +458,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 14872607390949380
-    m_Localized: Voce ainda nao descobriu do que ela gosta.
+    m_Localized: Você ainda não descobriu do que ela gosta.
     m_Metadata:
       m_Items: []
   - m_Id: 14879358790131712
@@ -551,7 +551,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 14880977640480769
-    m_Localized: A despensa de Isabela esta baixa antes da leva de paes. Ela precisa
+    m_Localized: A despensa de Isabela está baixa antes da leva de pães. Ela precisa
       de ovos e leite.
     m_Metadata:
       m_Items: []
@@ -568,7 +568,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 14880977829224449
-    m_Localized: Clara esta sem ingredientes e o rebanho de alguem adoeceu. Leve
+    m_Localized: Clara está sem ingredientes e o rebanho de alguém adoeceu. Leve
       o que ela precisa.
     m_Metadata:
       m_Items: []

@@ -357,7 +357,7 @@ namespace SowurShield.Core
                     CreateBackupSave();
 
                 string jsonData = JsonUtility.ToJson(currentGameData, true);
-                File.WriteAllText(savePath, jsonData);
+                WriteFileAtomic(savePath, jsonData);
 
                 WriteSlotMeta(activeSlotName, currentGameData);
 
@@ -367,6 +367,29 @@ namespace SowurShield.Core
             {
                 LogError($"Failed to save game: {e.Message}");
                 OnSaveCompleted?.Invoke(false);
+            }
+        }
+
+        /// <summary>
+        /// Write text to <paramref name="path"/> without ever leaving a half-written file there.
+        /// A plain File.WriteAllText truncates the target first, so a crash or a kill mid-write
+        /// destroys the save — and the widest window is the autosave during the sleep fade,
+        /// exactly when an impatient player is most likely to quit. Writing to a temp file and
+        /// swapping it in means the target is always either the old save or the new one.
+        /// </summary>
+        private static void WriteFileAtomic(string path, string contents)
+        {
+            string tempPath = path + ".tmp";
+            File.WriteAllText(tempPath, contents);
+
+            if (File.Exists(path))
+            {
+                // File.Replace is atomic on NTFS and keeps a .bak of the previous contents.
+                File.Replace(tempPath, path, path + ".bak", ignoreMetadataErrors: true);
+            }
+            else
+            {
+                File.Move(tempPath, path);
             }
         }
 
@@ -391,8 +414,13 @@ namespace SowurShield.Core
             try
             {
                 string slotDir = GetSlotDirectory(activeSlotName);
+                // Sort by the yyyyMMdd_HHmmss stamp in the filename, not File.GetCreationTime:
+                // Windows "file system tunneling" gives a file recreated at the same path within
+                // ~15s the *original's* creation time, so rapid saves could rank the newest
+                // backup as oldest and delete it. The embedded stamp is unambiguous and sorts
+                // lexicographically because it is zero-padded and big-endian.
                 var backupFiles = Directory.GetFiles(slotDir, $"{saveFileName}_backup_*{saveFileExtension}")
-                    .OrderByDescending(f => File.GetCreationTime(f))
+                    .OrderByDescending(f => Path.GetFileNameWithoutExtension(f), System.StringComparer.Ordinal)
                     .ToArray();
 
                 for (int i = maxBackupSaves; i < backupFiles.Length; i++)

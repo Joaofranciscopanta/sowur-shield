@@ -255,7 +255,7 @@ public class BattleCommandUI : MonoBehaviour
         // Skill names are two words ("Precise Peck", "Supporter's Blessing"). Without
         // this they wrap onto a second line that overflows the button; auto-sizing
         // shrinks the text to fit on one line instead.
-        label.enableWordWrapping = false;
+        label.textWrappingMode = TMPro.TextWrappingModes.NoWrap;
         label.overflowMode = TextOverflowModes.Ellipsis;
 
         var labelRect = label.rectTransform;

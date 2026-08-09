@@ -681,7 +681,10 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
             var titleObj = new GameObject(isLocked ? "LoreTitleLocked" : "LoreTitle");
             titleObj.transform.SetParent(loreContainer, false);
             var titleTmp = titleObj.AddComponent<TextMeshProUGUI>();
-            titleTmp.text = isLocked ? $"🔒 {entryTitle}" : entryTitle;
+            // No emoji here: LiberationSans (and any font without emoji coverage) renders
+            // U+1F512 as a tofu box and logs a "character not found" warning on every layout
+            // rebuild. A bracketed marker reads the same and works in every font.
+            titleTmp.text = isLocked ? $"[ {entryTitle} ]" : entryTitle;
             titleTmp.fontSize = 12;
             titleTmp.fontStyle = FontStyles.Bold;
             titleTmp.color = isLocked ? new Color(gold.r, gold.g, gold.b, lockedAlpha) : gold;

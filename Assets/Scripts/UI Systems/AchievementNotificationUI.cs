@@ -154,7 +154,10 @@ public class AchievementNotificationUI : MonoBehaviour
 
         var scaler = canvasGO.AddComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(1280, 720);
+        // Must match every other canvas in the project (1920×1080). At 1280×720 this canvas
+        // scaled its contents 1.5× on a 1080p display, so achievement toasts rendered half
+        // again larger than the rest of the UI and ignored the shared type scale.
+        scaler.referenceResolution = new Vector2(1920, 1080);
         scaler.matchWidthOrHeight = 0.5f;
 
         canvasGO.AddComponent<GraphicRaycaster>();
@@ -223,7 +226,7 @@ public class AchievementNotificationUI : MonoBehaviour
             _iconImage.enabled = achievement.icon != null;
         }
         if (_titleText != null)
-            _titleText.text = achievement.title;
+            _titleText.text = achievement.GetTitle();
 
         _toastGO.SetActive(true);
 

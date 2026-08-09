@@ -167,7 +167,7 @@ public class SkillCastPopup : MonoBehaviour
         label.alignment = TextAlignmentOptions.Center;
         label.color = Color.white;
         label.raycastTarget = false;
-        label.enableWordWrapping = false;
+        label.textWrappingMode = TMPro.TextWrappingModes.NoWrap;
         // Dark outline so the name stays readable over both the red and green
         // halves of the grid.
         label.outlineWidth = 0.25f;

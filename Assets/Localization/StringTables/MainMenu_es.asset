@@ -152,7 +152,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 296476701
-    m_Localized: Ranura
+    m_Localized: 'Ranura '
     m_Metadata:
       m_Items: []
   - m_Id: 296476702
@@ -161,6 +161,10 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 296476703
     m_Localized: ${0}
+    m_Metadata:
+      m_Items: []
+  - m_Id: 296476704
+    m_Localized: "Ranura Vac\xEDa"
     m_Metadata:
       m_Items: []
   - m_Id: 15133379002097664

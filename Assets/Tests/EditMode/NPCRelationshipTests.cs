@@ -42,10 +42,12 @@ public class NPCRelationshipTests
         GameData data = new GameData();
         _memory.SaveData(data);
 
-        // Expect key "rel_Elara" = 4550 (45.5 × 100)
-        Assert.IsTrue(data.worldData.worldCounters.ContainsKey("rel_Elara"),
-            "rel_Elara key missing after SaveData");
-        Assert.AreEqual(4550, data.worldData.worldCounters["rel_Elara"]);
+        // NPC ids are normalised to lower case so "Elara"/"elara" cannot diverge into two
+        // entries, so the persisted key is "rel_elara". The value is what matters here:
+        // 4550 = 45.5 × 100.
+        Assert.IsTrue(data.worldData.worldCounters.ContainsKey("rel_elara"),
+            "rel_elara key missing after SaveData");
+        Assert.AreEqual(4550, data.worldData.worldCounters["rel_elara"]);
 
         // Now load into a fresh memory instance
         GameObject go2 = new GameObject("Memory2");
@@ -54,6 +56,8 @@ public class NPCRelationshipTests
 
         Assert.AreEqual(45.5f, mem2.GetRelationshipLevel("Elara"), 0.01f,
             "Relationship level not restored after LoadData");
+        Assert.AreEqual(45.5f, mem2.GetRelationshipLevel("elara"), 0.01f,
+            "Lookup must be case-insensitive: a mismatched capital previously read as 0");
 
         Object.DestroyImmediate(go2);
     }
@@ -75,8 +79,8 @@ public class NPCRelationshipTests
         GameData data = new GameData();
         _memory.SaveData(data);
 
-        // Should save 10000 (100.0 × 100), not 15000
-        Assert.AreEqual(10000, data.worldData.worldCounters["rel_Bob"]);
+        // Should save 10000 (100.0 × 100), not 15000. Key is normalised to lower case.
+        Assert.AreEqual(10000, data.worldData.worldCounters["rel_bob"]);
     }
 
     [Test]
@@ -87,7 +91,7 @@ public class NPCRelationshipTests
         GameData data = new GameData();
         _memory.SaveData(data);
 
-        Assert.AreEqual(-3000, data.worldData.worldCounters["rel_Villain"]);
+        Assert.AreEqual(-3000, data.worldData.worldCounters["rel_villain"]);
 
         _memory.LoadData(data);
         Assert.AreEqual(-30f, _memory.GetRelationshipLevel("Villain"), 0.01f);
