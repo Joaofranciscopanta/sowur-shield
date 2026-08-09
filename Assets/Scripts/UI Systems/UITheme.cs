@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 namespace SowurShield.UI
 {
@@ -42,6 +43,14 @@ public class UITheme : ScriptableObject
     public float spacingXXL = 32f;
 
     [Header("Typography")]
+    // The project font. Until 2026-08-09 every label carried an explicit
+    // "LiberationSans SDF" reference — TextMeshPro's built-in fallback — so the
+    // whole game shipped in the default engine font. Nunito (SIL OFL, in
+    // Assets/Fonts/) replaced it across all scenes and prefabs. Anything that
+    // creates a label at runtime should take its font from here rather than
+    // leaving it null, even though TMP_Settings now also defaults to Nunito.
+    public TMP_FontAsset fontPrimary;
+
     // A 6-step scale. An audit on 2026-08-04 found 21 distinct font sizes in use
     // across the screen-space UI (10,11,12,13,14,16,17,18,20,22,24,26,28,30,36,45
     // plus six autosize ranges) because every screen picked its own — which is why
