@@ -34,7 +34,7 @@ MonoBehaviour:
   energyRestore: 0
   healthRestore: 0
   isConsumable: 0
-  baseValue: 9
+  baseValue: 24
   canBeSold: 1
   giftAffinityValue: 10
   references:

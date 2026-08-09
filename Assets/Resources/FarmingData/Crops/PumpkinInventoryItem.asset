@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2df1b3057e07cad45a9e4bdcec3840e0, type: 3}
   m_Name: PumpkinInventoryItem
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   itemName: Pumpkin
   displayName:
     m_TableReference:
@@ -36,6 +36,9 @@ MonoBehaviour:
   energyRestore: 0
   healthRestore: 0
   isConsumable: 0
-  baseValue: 100
+  baseValue: 35
   canBeSold: 1
   giftAffinityValue: 5
+  references:
+    version: 2
+    RefIds: []

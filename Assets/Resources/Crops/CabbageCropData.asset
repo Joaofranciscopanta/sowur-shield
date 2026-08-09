@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5fe9390976aeace449ceeb0ce9cc35bf, type: 3}
   m_Name: CabbageCropData
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   cropName: Cabbage
   displayName:
     m_TableReference:
@@ -25,6 +25,10 @@ MonoBehaviour:
   description: A sturdy leafy vegetable that grows into a dense head.
   seedItem: {fileID: 11400000, guid: db1d62b0cca74083804ea2ce6371abc5, type: 2}
   harvestItem: {fileID: 11400000, guid: a06ef0c563ec40b8ab6d61bd7103a75d, type: 2}
+  isMysterySeed: 0
+  possibleOutcomes: []
+  outcomeWeights: 
+  startsUnlocked: 0
   daysPerStage: 4
   totalStages: 5
   totalGrowthDays: 20
@@ -39,9 +43,7 @@ MonoBehaviour:
   requiresWater: 1
   maxDaysWithoutWater: 3
   growsInAllSeasons: 0
-  validSeasons:
-  - 0
-  - 1
+  validSeasons: 0000000001000000
   minYield: 1
   maxYield: 3
   regrowsAfterHarvest: 0
@@ -50,5 +52,8 @@ MonoBehaviour:
   canGrowInWinter: 0
   needsTrellis: 0
   spreadsToCells: 0
-  baseValue: 60
+  baseValue: 52
   qualityMultiplier: 1
+  references:
+    version: 2
+    RefIds: []

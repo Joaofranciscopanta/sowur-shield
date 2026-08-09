@@ -74,7 +74,14 @@ namespace SowurShield.Core
         public bool spreadsToCells = false; // For plants that spread
 
         [Header("Value")]
-        public int baseValue = 50; // Base selling price
+        // ⚠ NOT READ AT RUNTIME. No selling path looks at this field — SellBox,
+        // the tooltips and the inventory all price a harvest from
+        // harvestItem.baseValue (see SellBox.cs SellAllItems/CalculateTotalValue).
+        // CropCreatorWindow writes it, nothing consumes it, and the two numbers
+        // had drifted badly apart: in Aug 2026 Tomato read 80 here while its
+        // harvest item was worth 9, which is why crop profit ranged 1.05 to
+        // 17.64 gold/day. Balance a crop by editing its harvestItem, not this.
+        public int baseValue = 50;
         public float qualityMultiplier = 1.0f; // For quality system
 
         // Properties for easy access

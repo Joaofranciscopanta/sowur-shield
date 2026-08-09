@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5fe9390976aeace449ceeb0ce9cc35bf, type: 3}
   m_Name: TomatoCropData
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   cropName: Tomato
   displayName:
     m_TableReference:
@@ -25,6 +25,10 @@ MonoBehaviour:
   description: A juicy summer tomato that regrows after each harvest.
   seedItem: {fileID: 11400000, guid: 6d991de2f6ea42af9533f8b2328dfb8b, type: 2}
   harvestItem: {fileID: 11400000, guid: 4a3d22c8e63bff247b2f92a3295a1139, type: 2}
+  isMysterySeed: 0
+  possibleOutcomes: []
+  outcomeWeights: 
+  startsUnlocked: 0
   daysPerStage: 3
   totalStages: 5
   totalGrowthDays: 15
@@ -39,8 +43,7 @@ MonoBehaviour:
   requiresWater: 1
   maxDaysWithoutWater: 2
   growsInAllSeasons: 0
-  validSeasons:
-  - 1
+  validSeasons: 01000000
   minYield: 2
   maxYield: 4
   regrowsAfterHarvest: 1
@@ -49,5 +52,8 @@ MonoBehaviour:
   canGrowInWinter: 0
   needsTrellis: 0
   spreadsToCells: 0
-  baseValue: 80
+  baseValue: 24
   qualityMultiplier: 1
+  references:
+    version: 2
+    RefIds: []
