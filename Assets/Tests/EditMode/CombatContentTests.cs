@@ -258,9 +258,13 @@ public class CombatContentTests
             string key = e.displayName.TableEntryReference.Key;
             if (string.IsNullOrEmpty(key)) continue;   // bound by id, nothing to compare
 
-            // Spacing is the only difference the convention allows between the two.
+            // Spacing and casing are the only differences the convention allows between the two.
+            // Casing has to be ignored because PascalCase capitalises words the English name
+            // leaves lowercase: "Lord of Ashes" is keyed "enemy.LordOfAshes.name", and a
+            // case-sensitive compare would flag that correct pair as a mismatch.
             string keyStem = key.Replace("enemy.", "").Replace(".name", "");
-            if (keyStem != e.enemyName.Replace(" ", ""))
+            if (!string.Equals(keyStem, e.enemyName.Replace(" ", ""),
+                               System.StringComparison.OrdinalIgnoreCase))
                 mismatched.Add($"{e.name}: key '{key}' but enemyName '{e.enemyName}'");
         }
 

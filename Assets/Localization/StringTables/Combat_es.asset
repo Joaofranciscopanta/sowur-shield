@@ -243,60 +243,12 @@ MonoBehaviour:
     m_Localized: Limo
     m_Metadata:
       m_Items: []
-  - m_Id: 2630370347180051
-    m_Localized: Oso Acorazado
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180052
-    m_Localized: "Drag\xF3n de Escarcha"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180053
-    m_Localized: "Arp\xEDa"
-    m_Metadata:
-      m_Items: []
   - m_Id: 2630370347180054
     m_Localized: "G\xF3lem de Hierro"
     m_Metadata:
       m_Items: []
-  - m_Id: 2630370347180055
-    m_Localized: "Rey de la Monta\xF1a"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180056
-    m_Localized: Sabueso de Roca
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180057
-    m_Localized: "\xC1guila del Trueno"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180058
-    m_Localized: Diablillo de Fuego
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180059
-    m_Localized: Sabueso Infernal
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180060
-    m_Localized: "Drag\xF3n del Infierno"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180061
-    m_Localized: Salamandra de Lava
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180062
-    m_Localized: Limo de Magma
-    m_Metadata:
-      m_Items: []
   - m_Id: 2630370347180063
     m_Localized: "G\xF3lem de Obsidiana"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180064
-    m_Localized: "Drag\xF3n Volc\xE1nico"
     m_Metadata:
       m_Items: []
   - m_Id: 2630370347180065
@@ -639,6 +591,26 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 15133378003853317
     m_Localized: Iniciar Batalla
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837549371392
+    m_Localized: ATD
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837570342912
+    m_Localized: ESC
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837570342913
+    m_Localized: QMD
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837574537216
+    m_Localized: VNN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837574537217
+    m_Localized: DBL
     m_Metadata:
       m_Items: []
   references:

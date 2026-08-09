@@ -17,8 +17,8 @@ MonoBehaviour:
     m_TableReference:
       m_TableCollectionName: Combat
     m_TableEntryReference:
-      m_KeyId: 14964601731670016
-      m_Key: 
+      m_KeyId: 0
+      m_Key: enemy.FlameColossus.name
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
