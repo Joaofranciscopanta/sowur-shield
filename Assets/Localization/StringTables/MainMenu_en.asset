@@ -162,6 +162,10 @@ MonoBehaviour:
     m_Localized: ${0}
     m_Metadata:
       m_Items: []
+  - m_Id: 296476704
+    m_Localized: Empty Slot
+    m_Metadata:
+      m_Items: []
   - m_Id: 15133379002097664
     m_Localized: New Game
     m_Metadata:

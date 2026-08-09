@@ -243,60 +243,12 @@ MonoBehaviour:
     m_Localized: Gosma
     m_Metadata:
       m_Items: []
-  - m_Id: 2630370347180051
-    m_Localized: Urso Blindado
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180052
-    m_Localized: "Drag\xE3o de Gelo"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180053
-    m_Localized: Harpia
-    m_Metadata:
-      m_Items: []
   - m_Id: 2630370347180054
     m_Localized: Golem de Ferro
     m_Metadata:
       m_Items: []
-  - m_Id: 2630370347180055
-    m_Localized: Rei da Montanha
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180056
-    m_Localized: "C\xE3o de Pedra"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180057
-    m_Localized: "\xC1guia do Trov\xE3o"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180058
-    m_Localized: Diabrete de Fogo
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180059
-    m_Localized: "C\xE3o do Inferno"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180060
-    m_Localized: "Drag\xE3o do Inferno"
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180061
-    m_Localized: Salamandra de Lava
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180062
-    m_Localized: Gosma de Magma
-    m_Metadata:
-      m_Items: []
   - m_Id: 2630370347180063
     m_Localized: Golem de Obsidiana
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180064
-    m_Localized: "Drag\xE3o Vulc\xE2nico"
     m_Metadata:
       m_Items: []
   - m_Id: 2630370347180065
@@ -638,6 +590,26 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 15133378003853317
     m_Localized: Iniciar Batalha
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837549371392
+    m_Localized: ATD
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837570342912
+    m_Localized: ESC
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837570342913
+    m_Localized: QMD
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837574537216
+    m_Localized: VNN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837574537217
+    m_Localized: FRQ
     m_Metadata:
       m_Items: []
   references:

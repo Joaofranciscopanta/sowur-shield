@@ -147,6 +147,10 @@ MonoBehaviour:
     m_Key: mainmenu.saveslotbutton.money_label
     m_Metadata:
       m_Items: []
+  - m_Id: 296476704
+    m_Key: mainmenu.saveslotbutton.empty
+    m_Metadata:
+      m_Items: []
   - m_Id: 15133379002097664
     m_Key: mainmenu.button.new_game
     m_Metadata:

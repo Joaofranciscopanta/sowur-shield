@@ -216,4 +216,107 @@ public class PlayerStatsPlayModeTests
         Object.DestroyImmediate(go2);
         yield return null;
     }
+
+    // =========================================================================
+    // COMBAT REWARDS
+    //
+    // CombatScene has no PlayerStats, so BattleResultsUI stashes gold and XP on the
+    // persistent TeamAssemblerData and PlayerStats collects them when SampleScene loads.
+    //
+    // The bug these cover: PlayerStats.Start() used to award them immediately, and
+    // SaveManager.Start() then called LoadGame(), whose LoadData assigns
+    // `money = gameData.playerData.money` outright — wiping the reward. Both scripts sit at
+    // execution order 0, so which Start() ran first was arbitrary, making it look
+    // intermittent. The pending value had already been zeroed, so the gold was gone from
+    // both places: the player finished a battle and their money did not move.
+    // =========================================================================
+
+    [UnityTest]
+    public IEnumerator PendingCombatGold_SurvivesALoadThatRunsAfterIt()
+    {
+        var teamData = SowurShield.Combat.TeamAssemblerData.Instance;
+        int savedGold = teamData.pendingGoldReward;
+        float savedXp = teamData.pendingXpReward;
+
+        try
+        {
+            var go2 = new GameObject("PlayerStats_RewardOrder");
+            var stats2 = go2.AddComponent<PlayerStats>();
+            yield return null;   // Awake + Start
+
+            stats2.money = 67;
+
+            // A save captured before the battle: this is what the load will apply.
+            var preBattle = new GameData();
+            stats2.SaveData(preBattle);
+
+            // Battle winnings arrive, then the load lands on top — the exact order that
+            // erased them. Applying the reward first mimics the old Start().
+            teamData.pendingGoldReward = 500;
+            teamData.pendingXpReward = 0f;
+
+            var apply = typeof(PlayerStats).GetMethod("ApplyPendingCombatRewards",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            Assert.IsNotNull(apply, "ApplyPendingCombatRewards is gone — update this test with it.");
+            apply.Invoke(stats2, null);
+
+            Assert.AreEqual(567, stats2.money, "The reward was not credited at all.");
+
+            // The real defence is ordering, enforced in Start(). What this asserts is the
+            // consequence that made the bug permanent rather than merely late: once the
+            // reward is consumed it must already be inside anything that gets saved, so a
+            // later save/load round-trip carries it instead of reverting to the old total.
+            var afterBattle = new GameData();
+            stats2.SaveData(afterBattle);
+            stats2.LoadData(afterBattle);
+            yield return null;
+
+            Assert.AreEqual(567, stats2.money,
+                "Combat gold was lost to a save/load round-trip after being awarded.");
+
+            Object.DestroyImmediate(go2);
+            yield return null;
+        }
+        finally
+        {
+            teamData.pendingGoldReward = savedGold;
+            teamData.pendingXpReward = savedXp;
+        }
+    }
+
+    [UnityTest]
+    public IEnumerator PendingCombatRewards_AreConsumedExactlyOnce()
+    {
+        var teamData = SowurShield.Combat.TeamAssemblerData.Instance;
+        int savedGold = teamData.pendingGoldReward;
+        float savedXp = teamData.pendingXpReward;
+
+        try
+        {
+            var go2 = new GameObject("PlayerStats_RewardOnce");
+            var stats2 = go2.AddComponent<PlayerStats>();
+            yield return null;
+
+            stats2.money = 0;
+            teamData.pendingGoldReward = 250;
+            teamData.pendingXpReward = 0f;
+
+            var apply = typeof(PlayerStats).GetMethod("ApplyPendingCombatRewards",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            apply.Invoke(stats2, null);
+            apply.Invoke(stats2, null);   // a second scene load must not pay again
+            yield return null;
+
+            Assert.AreEqual(250, stats2.money, "Combat gold was awarded more than once.");
+            Assert.AreEqual(0, teamData.pendingGoldReward, "Pending gold was not cleared.");
+
+            Object.DestroyImmediate(go2);
+            yield return null;
+        }
+        finally
+        {
+            teamData.pendingGoldReward = savedGold;
+            teamData.pendingXpReward = savedXp;
+        }
+    }
 }

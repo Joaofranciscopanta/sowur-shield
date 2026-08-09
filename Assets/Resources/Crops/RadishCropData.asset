@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5fe9390976aeace449ceeb0ce9cc35bf, type: 3}
   m_Name: RadishCropData
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   cropName: Radish
   displayName:
     m_TableReference:
@@ -25,6 +25,10 @@ MonoBehaviour:
   description: A fast-growing root vegetable. Perfect for the impatient farmer.
   seedItem: {fileID: 11400000, guid: b08a7959708b40fc9f1c479060ffa24c, type: 2}
   harvestItem: {fileID: 11400000, guid: e429b91939144d1e962013ae08ce13ed, type: 2}
+  isMysterySeed: 0
+  possibleOutcomes: []
+  outcomeWeights: 
+  startsUnlocked: 0
   daysPerStage: 4
   totalStages: 4
   totalGrowthDays: 16
@@ -38,9 +42,7 @@ MonoBehaviour:
   requiresWater: 1
   maxDaysWithoutWater: 2
   growsInAllSeasons: 0
-  validSeasons:
-  - 0
-  - 2
+  validSeasons: 0000000002000000
   minYield: 2
   maxYield: 5
   regrowsAfterHarvest: 0
@@ -49,5 +51,8 @@ MonoBehaviour:
   canGrowInWinter: 0
   needsTrellis: 0
   spreadsToCells: 0
-  baseValue: 30
+  baseValue: 21
   qualityMultiplier: 1
+  references:
+    version: 2
+    RefIds: []

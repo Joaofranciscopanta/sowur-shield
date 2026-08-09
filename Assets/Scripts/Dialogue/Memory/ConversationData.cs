@@ -130,13 +130,25 @@ namespace SowurShield.Dialogue
         }
 
         /// <summary>
+        /// Canonical form of an NPC id. Callers pass these ids from three different places —
+        /// hand-written dialogue assets ("joana"), GameObject names ("Joana") and shop
+        /// shopkeeperNpcId fields — and a dictionary miss is indistinguishable from a genuine
+        /// zero, so a mismatched capital silently reported "no relationship" instead of failing.
+        /// Normalising on both read and write keeps all three spellings on the same entry.
+        /// </summary>
+        private static string NormalizeNpcId(string npcId)
+        {
+            return string.IsNullOrEmpty(npcId) ? "" : npcId.Trim().ToLowerInvariant();
+        }
+
+        /// <summary>
         /// Sets relationship level with an NPC
         /// </summary>
         public void SetRelationshipLevel(string npcId, float level)
         {
             if (!string.IsNullOrEmpty(npcId))
             {
-                relationshipLevels[npcId] = Mathf.Clamp(level, -100f, 100f);
+                relationshipLevels[NormalizeNpcId(npcId)] = Mathf.Clamp(level, -100f, 100f);
             }
         }
 
@@ -157,7 +169,11 @@ namespace SowurShield.Dialogue
         /// </summary>
         public float GetRelationshipLevel(string npcId)
         {
-            return relationshipLevels.TryGetValue(npcId ?? "", out float level) ? level : 0f;
+            string key = NormalizeNpcId(npcId);
+            if (relationshipLevels.TryGetValue(key, out float level)) return level;
+
+            // Saves written before ids were normalised may hold the original casing.
+            return relationshipLevels.TryGetValue(npcId ?? "", out float legacy) ? legacy : 0f;
         }
 
         /// <summary>

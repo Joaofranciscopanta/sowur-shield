@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Localization;
 using TMPro;
+using SowurShield.Core;
 
 namespace SowurShield.Combat
 {
@@ -26,7 +28,9 @@ public class CombatUnitVFX : MonoBehaviour
     private Camera mainCamera;
     private readonly Dictionary<StatusEffectType, GameObject> activeStatusIcons = new Dictionary<StatusEffectType, GameObject>();
 
-    private static readonly Dictionary<StatusEffectType, (string label, Color color)> StatusIconStyles =
+    // The English abbreviation doubles as the fallback if the entry is missing, so a
+    // broken table shows "STN" rather than an empty icon.
+    private static readonly Dictionary<StatusEffectType, (string fallback, Color color)> StatusIconStyles =
         new Dictionary<StatusEffectType, (string, Color)>
     {
         { StatusEffectType.Stun,     ("STN", new Color(0.9f, 0.9f, 0.3f)) },
@@ -35,6 +39,19 @@ public class CombatUnitVFX : MonoBehaviour
         { StatusEffectType.Poison,   ("PSN", new Color(0.6f, 0.9f, 0.2f)) },
         { StatusEffectType.Weakness, ("WKN", new Color(0.8f, 0.4f, 0.8f)) },
     };
+
+    /// <summary>
+    /// Localized three-letter tag for a status icon. These sat in English above units
+    /// whose names were translated, so a Portuguese player read "Gosma" with "PSN"
+    /// floating over it. Kept to three characters in every language because the icons
+    /// are laid out on a fixed 0.22-unit pitch.
+    /// </summary>
+    private static string GetStatusLabel(StatusEffectType type, string fallback)
+    {
+        string key = "combat.status." + type.ToString().ToLowerInvariant();
+        string localized = new LocalizedString("Combat", key).SafeGetLocalizedString();
+        return string.IsNullOrEmpty(localized) ? fallback : localized;
+    }
 
     private void Awake()
     {
@@ -76,7 +93,7 @@ public class CombatUnitVFX : MonoBehaviour
         PlaceUnscaledAbove(iconObj.transform, statusIconOffset);
 
         TextMeshPro tmp = iconObj.AddComponent<TextMeshPro>();
-        tmp.text = style.label;
+        tmp.text = GetStatusLabel(type, style.fallback);
         tmp.fontSize = 2.5f;
         tmp.color = style.color;
         tmp.alignment = TextAlignmentOptions.Center;

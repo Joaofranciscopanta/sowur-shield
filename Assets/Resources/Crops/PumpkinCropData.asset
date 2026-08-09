@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5fe9390976aeace449ceeb0ce9cc35bf, type: 3}
   m_Name: PumpkinCropData
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   cropName: Pumpkin
   displayName:
     m_TableReference:
@@ -25,6 +25,10 @@ MonoBehaviour:
   description: A slow-growing autumn crop with a rewarding large harvest.
   seedItem: {fileID: 11400000, guid: edaa2bd4097e4efb8d7206ad5efc859e, type: 2}
   harvestItem: {fileID: 11400000, guid: a2072e8497154fd88a6b8590bd17951f, type: 2}
+  isMysterySeed: 0
+  possibleOutcomes: []
+  outcomeWeights: 
+  startsUnlocked: 0
   daysPerStage: 5
   totalStages: 5
   totalGrowthDays: 25
@@ -39,8 +43,7 @@ MonoBehaviour:
   requiresWater: 1
   maxDaysWithoutWater: 3
   growsInAllSeasons: 0
-  validSeasons:
-  - 2
+  validSeasons: 02000000
   minYield: 3
   maxYield: 6
   regrowsAfterHarvest: 0
@@ -49,5 +52,8 @@ MonoBehaviour:
   canGrowInWinter: 0
   needsTrellis: 0
   spreadsToCells: 0
-  baseValue: 120
+  baseValue: 35
   qualityMultiplier: 1
+  references:
+    version: 2
+    RefIds: []

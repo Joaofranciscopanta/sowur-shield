@@ -243,60 +243,12 @@ MonoBehaviour:
     m_Localized: Slime
     m_Metadata:
       m_Items: []
-  - m_Id: 2630370347180051
-    m_Localized: Armored Bear
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180052
-    m_Localized: Frost Drake
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180053
-    m_Localized: Harpy
-    m_Metadata:
-      m_Items: []
   - m_Id: 2630370347180054
     m_Localized: Iron Golem
     m_Metadata:
       m_Items: []
-  - m_Id: 2630370347180055
-    m_Localized: Mountain King
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180056
-    m_Localized: Rock Hound
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180057
-    m_Localized: Thunder Eagle
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180058
-    m_Localized: Fire Imp
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180059
-    m_Localized: Hellhound
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180060
-    m_Localized: Inferno Dragon
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180061
-    m_Localized: Lava Salamander
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180062
-    m_Localized: Magma Slime
-    m_Metadata:
-      m_Items: []
   - m_Id: 2630370347180063
     m_Localized: Obsidian Golem
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180064
-    m_Localized: Volcanic Drake
     m_Metadata:
       m_Items: []
   - m_Id: 2630370347180065
@@ -635,6 +587,26 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 15133378003853317
     m_Localized: Start Battle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837549371392
+    m_Localized: STN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837570342912
+    m_Localized: SHD
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837570342913
+    m_Localized: BRN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837574537216
+    m_Localized: PSN
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837574537217
+    m_Localized: WKN
     m_Metadata:
       m_Items: []
   references:

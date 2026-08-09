@@ -209,6 +209,14 @@ MonoBehaviour:
     m_Localized: "As culturas crescem em qualquer esta\xE7\xE3o"
     m_Metadata:
       m_Items: []
+  - m_Id: 17658494503870464
+    m_Localized: "Constru\xE7\xF5es da Fazenda"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17658494520647680
+    m_Localized: Construir
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -239,60 +239,12 @@ MonoBehaviour:
     m_Key: enemy.Slime.name
     m_Metadata:
       m_Items: []
-  - m_Id: 2630370347180051
-    m_Key: enemy.ArmoredBear.name
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180052
-    m_Key: enemy.FrostDrake.name
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180053
-    m_Key: enemy.Harpy.name
-    m_Metadata:
-      m_Items: []
   - m_Id: 2630370347180054
     m_Key: enemy.IronGolem.name
     m_Metadata:
       m_Items: []
-  - m_Id: 2630370347180055
-    m_Key: enemy.MountainKing.name
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180056
-    m_Key: enemy.RockHound.name
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180057
-    m_Key: enemy.ThunderEagle.name
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180058
-    m_Key: enemy.FireImp.name
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180059
-    m_Key: enemy.Hellhound.name
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180060
-    m_Key: enemy.InfernoDragon.name
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180061
-    m_Key: enemy.LavaSalamander.name
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180062
-    m_Key: enemy.MagmaSlime.name
-    m_Metadata:
-      m_Items: []
   - m_Id: 2630370347180063
     m_Key: enemy.ObsidianGolem.name
-    m_Metadata:
-      m_Items: []
-  - m_Id: 2630370347180064
-    m_Key: enemy.VolcanicDrake.name
     m_Metadata:
       m_Items: []
   - m_Id: 2630370347180065
@@ -621,6 +573,26 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 15133378003853317
     m_Key: combat.teamassembler.start_battle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837549371392
+    m_Key: combat.status.stun
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837570342912
+    m_Key: combat.status.shield
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837570342913
+    m_Key: combat.status.burn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837574537216
+    m_Key: combat.status.poison
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17659837574537217
+    m_Key: combat.status.weakness
     m_Metadata:
       m_Items: []
   m_Metadata:

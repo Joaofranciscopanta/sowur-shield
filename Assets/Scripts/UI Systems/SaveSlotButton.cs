@@ -37,6 +37,10 @@ public class SaveSlotButton : MonoBehaviour
     [SerializeField] private LocalizedString slotPrefixText; // table "MainMenu", key "mainmenu.saveslotbutton.slot_prefix"
     [SerializeField] private LocalizedString dayLabelText; // table "MainMenu", key "mainmenu.saveslotbutton.day_label"
     [SerializeField] private LocalizedString moneyLabelText; // table "MainMenu", key "mainmenu.saveslotbutton.money_label"
+    [Tooltip("Label for an unused slot. Left unset, the prefab's literal 'Empty Slot' shows " +
+             "in every language.")]
+    [SerializeField] private LocalizedString emptySlotText; // table "MainMenu", key "mainmenu.saveslotbutton.empty"
+    [SerializeField] private TextMeshProUGUI emptyText;
 
     /// <summary>
     /// Initializes the slot button with save info and callbacks.
@@ -62,6 +66,12 @@ public class SaveSlotButton : MonoBehaviour
         {
             SetGroupActive(contentGroup, false);
             SetGroupActive(emptyGroup, true);
+
+            if (emptyText != null)
+            {
+                string label = emptySlotText.SafeGetLocalizedString();
+                if (!string.IsNullOrEmpty(label)) emptyText.text = label;
+            }
         }
         else
         {
@@ -70,7 +80,13 @@ public class SaveSlotButton : MonoBehaviour
 
             if (daySeasonText != null)
             {
-                dayLabelText.Arguments = new object[] { info.currentDay, info.season, info.year };
+                // info.season is the raw English enum name ("Spring") straight out of the save
+                // file. Passing it through untranslated produced "Dia 1 — Spring, Ano 1" on
+                // every slot in the Portuguese build.
+                dayLabelText.Arguments = new object[]
+                {
+                    info.currentDay, LocalizeSeason(info.season), info.year
+                };
                 daySeasonText.text = dayLabelText.SafeGetLocalizedString();
             }
 
@@ -123,6 +139,29 @@ public class SaveSlotButton : MonoBehaviour
         // Locked indicator
         if (lockedIndicator != null)
             lockedIndicator.SetActive(locked);
+    }
+
+    /// <summary>
+    /// Map a save file's English season name onto the shared UI_Common season entry so the
+    /// slot row reads in the player's language. Unknown values fall through unchanged rather
+    /// than becoming blank — a wrong-but-visible season beats an empty one.
+    /// </summary>
+    private static string LocalizeSeason(string rawSeason)
+    {
+        if (string.IsNullOrEmpty(rawSeason)) return rawSeason;
+
+        string key = rawSeason.Trim().ToLowerInvariant() switch
+        {
+            "spring" => "ui_common.season.spring",
+            "summer" => "ui_common.season.summer",
+            "fall" or "autumn" => "ui_common.season.fall",
+            "winter" => "ui_common.season.winter",
+            _ => null
+        };
+        if (key == null) return rawSeason;
+
+        string localized = new LocalizedString("UI_Common", key).SafeGetLocalizedString();
+        return string.IsNullOrEmpty(localized) ? rawSeason : localized;
     }
 
     private void SetGroupActive(GameObject group, bool active)

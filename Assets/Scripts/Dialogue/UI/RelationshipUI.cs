@@ -286,11 +286,18 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         // read-enabled, so this cannot be sampled — it is derived from the 1/8 ratio.
         // See SOWUR_SHIELD_STATUS.md.
         const float FrameRatio = 0.125f;
-        int padX = Mathf.RoundToInt(PanelWidth * FrameRatio);
-        // Vertical padding is deliberately larger than the frame band: at exactly the band
-        // width the NPC name sat flush against the top edge and the close button against the
-        // bottom, both reading as clipped even though they measured inside.
-        rootVlg.padding = new RectOffset(padX, padX, 78, 74);
+        // Horizontal padding needs the same breathing room the vertical already had. At exactly
+        // the band width (90px on a 720px panel) the text starts on the very pixel the wood
+        // ends: Maren's bio and every codex line ran right up to the painted frame and read as
+        // spilling out of the panel, even though each label measured perfectly inside its rect.
+        // Being "inside the frame" is not the same as being readable against it.
+        int padX = Mathf.RoundToInt(PanelWidth * FrameRatio) + 16;
+        // Vertical gets the same treatment, and the old 78/74 were not "larger than the frame
+        // band" as previously claimed — they were SMALLER than the ~90px band, which is why the
+        // close button and the tastes list rendered on top of the painted wood at the bottom.
+        // Every child measured inside the panel rect the whole time; the rect simply is not the
+        // readable area. Same inset on all four sides, so the content block sits centred.
+        rootVlg.padding = new RectOffset(padX, padX, padX, padX);
         rootVlg.spacing = 0;
         rootVlg.childControlWidth  = true;
         rootVlg.childControlHeight = true;
@@ -303,7 +310,12 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         GameObject rowObj = new GameObject("HeaderRow");
         rowObj.transform.SetParent(panelObj.transform, false);
         var rowLE = rowObj.AddComponent<LayoutElement>();
-        rowLE.preferredHeight = 200;
+        // 200 was the portrait's height, and the info column beside it happened to fit at the
+        // old font sizes. On the type scale it needs name 34 + bio 60 + label 22 + bar 16 +
+        // value 18 plus four 6px gaps = 174 minimum, and the bio grows past its floor for
+        // longer NPCs. minHeight keeps the row from compressing the column instead.
+        rowLE.preferredHeight = 220;
+        rowLE.minHeight = 220;
 
         var hlg = rowObj.AddComponent<HorizontalLayoutGroup>();
         hlg.spacing = 12;
@@ -356,16 +368,18 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         infoVlg.childForceExpandHeight = false;
 
         nameText = CreateLabel(infoObj.transform, "NPC Name");
-        nameText.fontSize  = 22;
+        nameText.fontSize  = FontH2;
         nameText.fontStyle = FontStyles.Bold;
         nameText.alignment = TextAlignmentOptions.TopLeft;
         // Gold on the wood panel: the NPC's name is the panel's heading and should read as
         // one. Cream is kept for the body text below, where gold would be lower contrast.
         nameText.color = theme != null ? theme.highlightGold : new Color(0.96f, 0.83f, 0.37f);
-        SetPreferredHeight(nameText, 30);
+        // Heights track the type scale: this was 30 for a 22px name and would clip the
+        // 24px one, the same overflow this file already fixed for the bio and lore rows.
+        SetPreferredHeight(nameText, 34);
 
         bioText = CreateLabel(infoObj.transform, noInfoText.SafeGetLocalizedString());
-        bioText.fontSize  = 13;
+        bioText.fontSize  = FontSmall;
         bioText.alignment = TextAlignmentOptions.TopLeft;
         bioText.textWrappingMode = TMPro.TextWrappingModes.Normal;
         // Measured, not fixed: Maren's bio wraps past the 90px this was pinned at and ran
@@ -375,7 +389,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         bioLE.minHeight = 60;
 
         relationshipLabelText = CreateLabel(infoObj.transform, acquaintanceText.SafeGetLocalizedString());
-        relationshipLabelText.fontSize  = 14;
+        relationshipLabelText.fontSize  = FontSmall;
         relationshipLabelText.fontStyle = FontStyles.Bold;
         relationshipLabelText.alignment = TextAlignmentOptions.TopLeft;
         SetPreferredHeight(relationshipLabelText, 22);
@@ -417,7 +431,8 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         }
 
         relationshipValueText = CreateLabel(infoObj.transform, "0 / 100"); // placeholder, replaced by RefreshPanel via scoreText
-        relationshipValueText.fontSize  = 13;
+        // Caption: this is a counter ("40 / 100") reading off the bar above it, not prose.
+        relationshipValueText.fontSize  = FontCaption;
         relationshipValueText.alignment = TextAlignmentOptions.TopLeft;
         SetPreferredHeight(relationshipValueText, 18);
 
@@ -428,11 +443,11 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         divObj.AddComponent<LayoutElement>().preferredHeight = 1;
 
         loreTitleHeader = CreateLabel(panelObj.transform, codexHeaderText.SafeGetLocalizedString());
-        loreTitleHeader.fontSize  = 13;
+        loreTitleHeader.fontSize  = FontSmall;
         loreTitleHeader.fontStyle = FontStyles.Bold;
         loreTitleHeader.color     = highlightGold;
         loreTitleHeader.alignment = TextAlignmentOptions.TopLeft;
-        SetPreferredHeight(loreTitleHeader, 20);
+        SetPreferredHeight(loreTitleHeader, 22);
         loreTitleHeader.gameObject.SetActive(false);
 
         // RectTransform first, and only then cache the reference. `new GameObject()` starts
@@ -474,7 +489,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
 
         closeLabelRef = CreateLabel(closeButtonObj.transform, closeButtonText.SafeGetLocalizedString());
         closeLabelRef.alignment = TextAlignmentOptions.Center;
-        closeLabelRef.fontSize  = 15;
+        closeLabelRef.fontSize  = FontButton;
 
         // StyleButton applies the gold sprite and darkens the label for it — it must run
         // after the label exists, since it looks the TMP text up as a child.
@@ -496,7 +511,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
 
         TextMeshProUGUI tmp = obj.AddComponent<TextMeshProUGUI>();
         tmp.text = text;
-        tmp.fontSize = 18;
+        tmp.fontSize = FontBody;
         // Dark by default: this panel's sprite has a cream interior, so cream text (the old
         // default, chosen when the background was a flat woodDark fill) was invisible on it.
         // Callers that sit on the wood border — the NPC name, the close button — override.
@@ -512,6 +527,23 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         return tmp;
     }
 
+    // ── Typography ───────────────────────────────────────────────────────────
+    // This panel used to carry nine hand-picked font sizes (22/18/15/14/13/13/13/12/11),
+    // four of them below 13px, which is why the codex read as a different screen from the
+    // rest of the game. Every size now comes from UITheme's 6-step scale.
+    //
+    // The fallbacks repeat UITheme's defaults rather than the old numbers: `theme` is loaded
+    // from Resources and is null in tests and if the asset ever goes missing, and falling
+    // back to the sizes this commit is removing would quietly reinstate them.
+    //
+    // Note the shipped CozyUITheme.asset serializes fontSizeBody as 16, not the class
+    // default of 18 — the asset is what the game runs, so body copy here renders at 16.
+    private float FontH2      => theme != null ? theme.fontSizeH2      : 24f;
+    private float FontBody    => theme != null ? theme.fontSizeBody    : 18f;
+    private float FontButton  => theme != null ? theme.fontSizeButton  : 18f;
+    private float FontSmall   => theme != null ? theme.fontSizeSmall   : 14f;
+    private float FontCaption => theme != null ? theme.fontSizeCaption : 12f;
+
     /// <summary>
     /// Adds a <see cref="LayoutElement"/> with a fixed preferred height so the label
     /// behaves predictably inside the info column's VerticalLayoutGroup.
@@ -524,6 +556,10 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         LayoutElement layoutElement = label.GetComponent<LayoutElement>();
         if (layoutElement == null) layoutElement = label.gameObject.AddComponent<LayoutElement>();
         layoutElement.preferredHeight = height;
+        // A preferred height is only a request: when the info column runs short the group
+        // shrinks these rows to fit, which is how the 24px NPC name ended up in a 30px rect
+        // measuring 30 and overlapping the bio below it. minHeight is the part that holds.
+        layoutElement.minHeight = height;
     }
 
     // =========================================================================
@@ -681,16 +717,20 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
             var titleObj = new GameObject(isLocked ? "LoreTitleLocked" : "LoreTitle");
             titleObj.transform.SetParent(loreContainer, false);
             var titleTmp = titleObj.AddComponent<TextMeshProUGUI>();
-            titleTmp.text = isLocked ? $"🔒 {entryTitle}" : entryTitle;
-            titleTmp.fontSize = 12;
+            // No emoji here: LiberationSans (and any font without emoji coverage) renders
+            // U+1F512 as a tofu box and logs a "character not found" warning on every layout
+            // rebuild. A bracketed marker reads the same and works in every font.
+            titleTmp.text = isLocked ? $"[ {entryTitle} ]" : entryTitle;
+            titleTmp.fontSize = FontSmall;
             titleTmp.fontStyle = FontStyles.Bold;
             titleTmp.color = isLocked ? new Color(gold.r, gold.g, gold.b, lockedAlpha) : gold;
             titleTmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
             // Same fixed-height problem as the body: a wrapping title ("A Seca do Vale
-            // Oriental") needs more than one 16px line. Measure instead of assuming.
+            // Oriental") needs more than one line. Measure instead of assuming; the floor
+            // tracks the font size so a 14px line is never asked to fit in 16px.
             var titleLE = titleObj.AddComponent<LayoutElement>();
             titleLE.preferredHeight = -1;
-            titleLE.minHeight = 16;
+            titleLE.minHeight = 20;
         }
 
         var bodyObj = new GameObject(isLocked ? "LoreBodyLocked" : "LoreBody");
@@ -712,7 +752,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
             bodyTmp.color = body;
         }
 
-        bodyTmp.fontSize = 11;
+        bodyTmp.fontSize = FontCaption;
         bodyTmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
 
         // Height must come from the text, not a constant. A flat 32px fitted the two-line
@@ -725,7 +765,8 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         // layout system ask the text itself, with a floor so an empty string keeps a sane row.
         var bodyLE = bodyObj.AddComponent<LayoutElement>();
         bodyLE.preferredHeight = -1;   // -1 = "no override", fall through to TMP's own measure
-        bodyLE.minHeight = isLocked ? 16 : 24;
+        // Floors raised with the font: a locked row is one line, an unlocked one at least two.
+        bodyLE.minHeight = isLocked ? 18 : 26;
         bodyLE.flexibleHeight = 0;     // was 1: let a row grow to fill slack, misaligning the stack
     }
 
@@ -755,11 +796,11 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         var headerTmp = headerObj.AddComponent<TextMeshProUGUI>();
         tastesHeaderText.Arguments = new object[] { known.Count, allPreferred.Length };
         headerTmp.text = tastesHeaderText.SafeGetLocalizedString();
-        headerTmp.fontSize = 12;
+        headerTmp.fontSize = FontSmall;
         headerTmp.fontStyle = FontStyles.Bold;
         headerTmp.color = theme != null ? theme.highlightGold : new Color(0.9f, 0.8f, 0.5f);
         headerTmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
-        headerObj.AddComponent<LayoutElement>().preferredHeight = 18;
+        headerObj.AddComponent<LayoutElement>().preferredHeight = 22;
 
         var bodyObj = new GameObject("TastesBody");
         bodyObj.transform.SetParent(loreContainer, false);
@@ -767,12 +808,15 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         bodyTmp.text = known.Count > 0
             ? string.Join("\n", known)
             : noTastesKnownText.SafeGetLocalizedString();
-        bodyTmp.fontSize = 11;
+        bodyTmp.fontSize = FontCaption;
         // Dark, like the lore bodies: the panel's interior is cream, not wood.
         bodyTmp.color = theme != null ? theme.textDark : new Color(0.18f, 0.16f, 0.15f);
         bodyTmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
         var bodyLE = bodyObj.AddComponent<LayoutElement>();
-        bodyLE.preferredHeight = Mathf.Max(16, known.Count * 14);
+        // One row per known taste. The per-line figure is derived from the font rather than
+        // hardcoded — it was 14 for an 11px font, which would now crop a 12px list.
+        float tasteLineHeight = Mathf.Ceil(FontCaption * 1.4f);
+        bodyLE.preferredHeight = Mathf.Max(tasteLineHeight, known.Count * tasteLineHeight);
         bodyLE.flexibleHeight = 1;
     }
 

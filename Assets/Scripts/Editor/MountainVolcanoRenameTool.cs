@@ -163,10 +163,23 @@ public static class MountainVolcanoRenameTool
             enemy.enemyName = SpacedName(r.en);
 
             string key = $"enemy.{r.newInternal}.name";
-            long keyId = WriteEntry(collection, key, r.en, r.pt, r.es);
+            if (WriteEntry(collection, key, r.en, r.pt, r.es) == 0)
+            {
+                Debug.LogWarning($"[MountainVolcanoRenameTool] Could not create '{key}' in the " +
+                                 $"{TableName} table. {r.en} will fall back to its enemyName.");
+            }
 
+            // Bound by key string, not by the shared-entry id. Both resolve at runtime, but an
+            // id-only binding writes `m_Key:` empty into the .asset — which makes the YAML diff
+            // unreadable and, worse, silently opts the enemy out of
+            // CombatContentTests.EnemyLocalizationKeys_MatchTheirAssetName, which skips entries
+            // it cannot compare. The test then passes by omission rather than by correctness.
+            //
+            // The constructor is not enough: LocalizedString(table, key) resolves the key against
+            // the table and serializes only the id it found, leaving m_Key empty. Assigning the
+            // string to TableEntryReference afterwards is what makes the name survive into YAML.
             var localized = new LocalizedString(TableName, key);
-            if (keyId != 0) localized.TableEntryReference = keyId;
+            localized.TableEntryReference = key;
             enemy.displayName = localized;
 
             var sprite = LoadSprite(r.artPath);

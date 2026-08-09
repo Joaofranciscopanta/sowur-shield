@@ -761,9 +761,7 @@ public class TurnManager : MonoBehaviour
             if (UnityEngine.Random.value <= accuracy)
             {
                 float baseDamage = attacker.GetAttack() * skill.damageMultiplier;
-                float defense = primaryTarget.GetDefense();
-                float damageReduction = 1f - (defense / (defense + 100f));
-                float finalDamage = baseDamage * damageReduction;
+                float finalDamage = ApplyDefense(baseDamage, primaryTarget.GetDefense());
 
                 bool isCrit = UnityEngine.Random.value < attacker.GetCritChance();
                 finalDamage = CombatUnit.ApplyCrit(finalDamage, isCrit);
@@ -975,14 +973,29 @@ public class TurnManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Smallest damage any connecting hit may deal. Without a floor, defense/(defense+100)
+    /// drives damage asymptotically toward zero, so a high-defense enemy makes an encounter
+    /// unwinnable rather than merely hard — the player keeps hitting and nothing happens.
+    /// </summary>
+    private const float MinimumDamage = 1f;
+
+    /// <summary>
+    /// Apply the defense curve to a raw damage figure. Single definition so the basic-attack
+    /// and skill paths cannot drift apart.
+    /// </summary>
+    public static float ApplyDefense(float rawDamage, float defense)
+    {
+        float damageReduction = 1f - (defense / (defense + 100f));
+        return Mathf.Max(MinimumDamage, rawDamage * damageReduction);
+    }
+
+    /// <summary>
     /// Estimate the damage attacker's basic attack would deal to target, ignoring accuracy
     /// (Shield is applied separately by the caller). Mirrors the formula in ExecuteAttack.
     /// </summary>
     private float EstimateAttackDamage(CombatUnit attacker, CombatUnit target)
     {
-        float defense = target.GetDefense();
-        float damageReduction = 1f - (defense / (defense + 100f));
-        return attacker.GetAttack() * damageReduction;
+        return ApplyDefense(attacker.GetAttack(), target.GetDefense());
     }
 
     /// <summary>

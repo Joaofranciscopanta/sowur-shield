@@ -5,6 +5,7 @@ UI_Common,ui_common.ok,OK,OK,OK
 UI_Common,ui_common.cancel,Cancel,Cancelar,Cancelar
 UI_Common,ui_common.close,Close,Fechar,Cerrar
 UI_Common,ui_common.buy,Buy,Comprar,Comprar
+UI_Common,ui_common.sell,Sell,Vender,Vender
 UI_Common,ui_common.give,Give,Dar,Dar
 UI_Common,ui_common.unassigned,Unassigned,Não atribuído,Sin asignar
 UI_Common,ui_common.gold_amount,{0}g,{0}g,{0}g
@@ -90,6 +91,7 @@ Animals,animals.info.happiness,Happiness: {0:F0}/100,Felicidade: {0:F0}/100,Feli
 Animals,animals.info.stat_multiplier,Stat Multiplier: {0:F2}x,Multiplicador de Status: {0:F2}x,Multiplicador de Estadística: {0:F2}x
 Animals,animals.info.no_production,No production,Sem produção,Sin producción
 Animals,animals.info.produces,"Produces: {0}\n","Produz: {0}\n","Produce: {0}\n"
+Animals,animals.market.title,Animal Market,Mercado de Animais,Mercado de Animales
 Animals,animals.market.buy_price,{0}g,{0}g,{0}g
 Animals,animals.market.sell_price,+{0}g,+{0}g,+{0}g
 Animals,animals.market.unassigned,Unassigned,Não atribuído,Sin asignar
@@ -140,6 +142,11 @@ Combat,combat.results.gold,Gold: {0},Ouro: {0},Oro: {0}
 Combat,combat.results.xp,XP: +{0} (surviving units),XP: +{0} (unidades sobreviventes),XP: +{0} (unidades sobrevivientes)
 Combat,combat.results.item_reward,{0} x{1},{0} x{1},{0} x{1}
 Combat,combat.results.animal_happiness,Animal Happiness: +{0},Felicidade Animal: +{0},Felicidad Animal: +{0}
+Combat,combat.status.stun,STN,ATD,ATD
+Combat,combat.status.shield,SHD,ESC,ESC
+Combat,combat.status.burn,BRN,QMD,QMD
+Combat,combat.status.poison,PSN,VNN,VNN
+Combat,combat.status.weakness,WKN,FRQ,DBL
 Combat,combat.status.turn_counter,Turn: {0}/{1},Turno: {0}/{1},Turno: {0}/{1}
 Combat,combat.status.your_team,Your Team: {0}/{1},Seu Time: {0}/{1},Tu Equipo: {0}/{1}
 Combat,combat.status.enemies,Enemies: {0}/{1},Inimigos: {0}/{1},Enemigos: {0}/{1}
@@ -178,20 +185,20 @@ Combat,enemy.GiantSlime.name,Giant Slime,Gosma Gigante,Limo Gigante
 Combat,enemy.HoneyBee.name,Honey Bee,Abelha,Abeja
 Combat,enemy.MeadowWolf.name,Meadow Wolf,Lobo da Pradaria,Lobo de la Pradera
 Combat,enemy.Slime.name,Slime,Gosma,Limo
-Combat,enemy.ArmoredBear.name,Armored Bear,Urso Blindado,Oso Acorazado
-Combat,enemy.FrostDrake.name,Frost Drake,Dragão de Gelo,Dragón de Escarcha
-Combat,enemy.Harpy.name,Harpy,Harpia,Arpía
+Combat,enemy.StoneYeti.name,Stone Yeti,Yeti de Pedra,Yeti de Piedra
+Combat,enemy.FrostGolem.name,Frost Golem,Golem de Gelo,Gólem de Escarcha
+Combat,enemy.SnowWolf.name,Snow Wolf,Lobo da Neve,Lobo de Nieve
 Combat,enemy.IronGolem.name,Iron Golem,Golem de Ferro,Gólem de Hierro
-Combat,enemy.MountainKing.name,Mountain King,Rei da Montanha,Rey de la Montaña
-Combat,enemy.RockHound.name,Rock Hound,Cão de Pedra,Sabueso de Roca
-Combat,enemy.ThunderEagle.name,Thunder Eagle,Águia do Trovão,Águila del Trueno
-Combat,enemy.FireImp.name,Fire Imp,Diabrete de Fogo,Diablillo de Fuego
-Combat,enemy.Hellhound.name,Hellhound,Cão do Inferno,Sabueso Infernal
-Combat,enemy.InfernoDragon.name,Inferno Dragon,Dragão do Inferno,Dragón del Infierno
-Combat,enemy.LavaSalamander.name,Lava Salamander,Salamandra de Lava,Salamandra de Lava
-Combat,enemy.MagmaSlime.name,Magma Slime,Gosma de Magma,Limo de Magma
+Combat,enemy.MountainTitan.name,Mountain Titan,Titã da Montanha,Titán de la Montaña
+Combat,enemy.MountainBandit.name,Mountain Bandit,Bandido da Montanha,Bandido de la Montaña
+Combat,enemy.IceElemental.name,Ice Elemental,Elemental de Gelo,Elemental de Hielo
+Combat,enemy.InfernalDemon.name,Infernal Demon,Demônio Infernal,Demonio Infernal
+Combat,enemy.LavaKnight.name,Lava Knight,Cavaleiro de Lava,Caballero de Lava
+Combat,enemy.LordOfAshes.name,Lord of Ashes,Senhor das Cinzas,Señor de las Cenizas
+Combat,enemy.MagmaLizard.name,Magma Lizard,Lagarto de Magma,Lagarto de Magma
+Combat,enemy.FireSlime.name,Fire Slime,Gosma de Fogo,Limo de Fuego
 Combat,enemy.ObsidianGolem.name,Obsidian Golem,Golem de Obsidiana,Gólem de Obsidiana
-Combat,enemy.VolcanicDrake.name,Volcanic Drake,Dragão Vulcânico,Dragón Volcánico
+Combat,enemy.FlameColossus.name,Flame Colossus,Colosso de Chamas,Coloso de Llamas
 Combat,combat.modifier.None.description,A normal battle.,Uma batalha normal.,Una batalla normal.
 Combat,combat.modifier.DoubleSpeed.description,Turn gauges fill twice as fast!,Os medidores de turno enchem duas vezes mais rápido!,¡Los medidores de turno se llenan el doble de rápido!
 Combat,combat.modifier.LowVisibility.description,Reduced accuracy for all combatants.,Precisão reduzida para todos os combatentes.,Precisión reducida para todos los combatientes.
@@ -296,6 +303,8 @@ Dialogue,dialogue.seedshop.buy,Buy,Comprar,Comprar
 Farming,farming.building.cost_progress,{0}: {1} / {2},{0}: {1} / {2},{0}: {1} / {2}
 Farming,farming.building.built,✓ Built,✓ Construído,✓ Construido
 Farming,farming.building.cannot_afford,Cannot afford,Não pode pagar,No se puede pagar
+Farming,farming.buildingshop.title,Farm Buildings,Construções da Fazenda,Construcciones de la Granja
+Farming,farming.buildingshop.build,Build,Construir,Construir
 Farming,farming.buildingshop.gold_cost,{0} gold,{0} ouro,{0} oro
 Farming,farming.buildingshop.extra_cost,"\n+ {0}x {1}","\n+ {0}x {1}","\n+ {0}x {1}"
 Farming,farming.buildingshop.purchase_failed,Purchase failed — missing references.,Falha na compra — referências ausentes.,Compra fallida — referencias faltantes.
