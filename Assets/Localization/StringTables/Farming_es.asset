@@ -208,6 +208,14 @@ MonoBehaviour:
     m_Localized: "Los cultivos crecen en cualquier estaci\xF3n"
     m_Metadata:
       m_Items: []
+  - m_Id: 17658494503870464
+    m_Localized: Construcciones de la Granja
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17658494520647680
+    m_Localized: Construir
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

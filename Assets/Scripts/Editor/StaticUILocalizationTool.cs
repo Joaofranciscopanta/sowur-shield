@@ -143,6 +143,40 @@ public static class StaticUILocalizationTool
         new LabelBinding("TeamAssemblerCanvas/AssemblerPanel/ButtonContainer/CancelButton/Text",
             "UI_Common", "ui_common.cancel", "Cancel", "Cancelar", "Cancelar",
             autoSize: true, autoSizeMin: 8f),
+
+        // Animal market. The rows inside these panels were already localized in code,
+        // so the shop showed Portuguese animal names and prices under an English
+        // title with English tabs — the chrome was the only part left untranslated.
+        new LabelBinding("AnimalMarketCanvas/MarketPanel/TitleText",
+            "Animals", "animals.market.title", "Animal Market", "Mercado de Animais", "Mercado de Animales",
+            autoSize: true, autoSizeMin: 14f),
+        new LabelBinding("AnimalMarketCanvas/MarketPanel/TabRow/BuyTabButton/Text",
+            "UI_Common", "ui_common.buy", "Buy", "Comprar", "Comprar",
+            autoSize: true, autoSizeMin: 8f),
+        new LabelBinding("AnimalMarketCanvas/MarketPanel/TabRow/SellTabButton/Text",
+            "UI_Common", "ui_common.sell", "Sell", "Vender", "Vender",
+            autoSize: true, autoSizeMin: 8f),
+        new LabelBinding("AnimalMarketCanvas/ConfirmationPanel/ConfirmButtonRow/ConfirmYesButton/Text",
+            "UI_Common", "ui_common.sell", "Sell", "Vender", "Vender",
+            autoSize: true, autoSizeMin: 8f),
+        new LabelBinding("AnimalMarketCanvas/ConfirmationPanel/ConfirmButtonRow/ConfirmNoButton/Text",
+            "UI_Common", "ui_common.cancel", "Cancel", "Cancelar", "Cancelar",
+            autoSize: true, autoSizeMin: 8f),
+
+        // Building shop, same story.
+        new LabelBinding("BuildingShopCanvas/BuildingPanel/TitleText",
+            "Farming", "farming.buildingshop.title", "Farm Buildings", "Construções da Fazenda", "Construcciones de la Granja",
+            autoSize: true, autoSizeMin: 14f),
+        new LabelBinding("BuildingShopCanvas/ConfirmationPanel/ConfirmButtonRow/ConfirmYesButton/Text",
+            "Farming", "farming.buildingshop.build", "Build", "Construir", "Construir",
+            autoSize: true, autoSizeMin: 8f),
+        new LabelBinding("BuildingShopCanvas/ConfirmationPanel/ConfirmButtonRow/ConfirmNoButton/Text",
+            "UI_Common", "ui_common.cancel", "Cancel", "Cancelar", "Cancelar",
+            autoSize: true, autoSizeMin: 8f),
+
+        new LabelBinding("UI/SleepUICanvas/SleepConfirmationPanel/Container/ButtonContainer/CancelButton/Text (TMP)",
+            "UI_Common", "ui_common.cancel", "Cancel", "Cancelar", "Cancelar",
+            autoSize: true, autoSizeMin: 8f),
     };
 
     [MenuItem("Tools/Sowur Shield/Localize Static UI Text")]

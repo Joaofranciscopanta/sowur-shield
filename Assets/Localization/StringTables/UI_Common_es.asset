@@ -98,6 +98,10 @@ MonoBehaviour:
     m_Localized: Volver
     m_Metadata:
       m_Items: []
+  - m_Id: 17658497792204800
+    m_Localized: Vender
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

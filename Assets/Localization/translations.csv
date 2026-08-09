@@ -5,6 +5,7 @@ UI_Common,ui_common.ok,OK,OK,OK
 UI_Common,ui_common.cancel,Cancel,Cancelar,Cancelar
 UI_Common,ui_common.close,Close,Fechar,Cerrar
 UI_Common,ui_common.buy,Buy,Comprar,Comprar
+UI_Common,ui_common.sell,Sell,Vender,Vender
 UI_Common,ui_common.give,Give,Dar,Dar
 UI_Common,ui_common.unassigned,Unassigned,Não atribuído,Sin asignar
 UI_Common,ui_common.gold_amount,{0}g,{0}g,{0}g
@@ -90,6 +91,7 @@ Animals,animals.info.happiness,Happiness: {0:F0}/100,Felicidade: {0:F0}/100,Feli
 Animals,animals.info.stat_multiplier,Stat Multiplier: {0:F2}x,Multiplicador de Status: {0:F2}x,Multiplicador de Estadística: {0:F2}x
 Animals,animals.info.no_production,No production,Sem produção,Sin producción
 Animals,animals.info.produces,"Produces: {0}\n","Produz: {0}\n","Produce: {0}\n"
+Animals,animals.market.title,Animal Market,Mercado de Animais,Mercado de Animales
 Animals,animals.market.buy_price,{0}g,{0}g,{0}g
 Animals,animals.market.sell_price,+{0}g,+{0}g,+{0}g
 Animals,animals.market.unassigned,Unassigned,Não atribuído,Sin asignar
@@ -296,6 +298,8 @@ Dialogue,dialogue.seedshop.buy,Buy,Comprar,Comprar
 Farming,farming.building.cost_progress,{0}: {1} / {2},{0}: {1} / {2},{0}: {1} / {2}
 Farming,farming.building.built,✓ Built,✓ Construído,✓ Construido
 Farming,farming.building.cannot_afford,Cannot afford,Não pode pagar,No se puede pagar
+Farming,farming.buildingshop.title,Farm Buildings,Construções da Fazenda,Construcciones de la Granja
+Farming,farming.buildingshop.build,Build,Construir,Construir
 Farming,farming.buildingshop.gold_cost,{0} gold,{0} ouro,{0} oro
 Farming,farming.buildingshop.extra_cost,"\n+ {0}x {1}","\n+ {0}x {1}","\n+ {0}x {1}"
 Farming,farming.buildingshop.purchase_failed,Purchase failed — missing references.,Falha na compra — referências ausentes.,Compra fallida — referencias faltantes.

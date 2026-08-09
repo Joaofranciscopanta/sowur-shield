@@ -95,6 +95,10 @@ MonoBehaviour:
     m_Key: ui_common.back
     m_Metadata:
       m_Items: []
+  - m_Id: 17658497792204800
+    m_Key: ui_common.sell
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
