@@ -817,15 +817,20 @@ namespace SowurShield.Inventory
         {
             if (dragHandler == null) return;
 
-            // Slots owned by a ContainerView (SellBox, feeding trough) never gave up their item
-            // at BeginDrag — it is still in their container. Dropping one on empty ground must
-            // therefore restore it rather than spawn a GroundItem, or the item would exist in
-            // both places. The trough already worked this way; the rule now covers every
-            // container-owned slot, which also closes that duplication hole on the SellBox.
+            // Slots whose container KEPT the item during the drag (SellBox, feeding trough)
+            // must not also spawn a GroundItem when the drag ends on empty space — the item
+            // would then exist in both places. Marking the drag successful suppresses
+            // SlotDragHandler's recovery and simply refreshes the visual from the container.
             //
-            // Removing the item from the source container is no longer done here: the router
-            // does it through ItemTransferService when the drop lands on a slot.
-            if (OwnerView != null && !dragHandler.wasDroppedOnSlot && !dragHandler.DraggedItemStack.IsEmpty)
+            // The test is whether the drag was destructive, not whether the slot has an
+            // OwnerView. Those were the same thing until Inventory adopted ContainerView:
+            // after that, player slots had an OwnerView too, took this branch, and had their
+            // recovery suppressed — while BeginDrag had emptied them. Releasing the mouse
+            // between two slots then destroyed the stack outright: nothing in the container,
+            // nothing on the floor. Same root cause as the SlotTransferRouter fix.
+            bool dragWasDestructive = InventoryManager != null && !isSellBoxMode;
+
+            if (!dragWasDestructive && !dragHandler.wasDroppedOnSlot && !dragHandler.DraggedItemStack.IsEmpty)
             {
                 dragHandler.MarkDragSuccessful();
                 SetItemStack(itemStack); // refresh visual from the container-backed stack

@@ -104,6 +104,49 @@ public class SlotTransferRouterPlayModeTests
         Assert.AreEqual(3, StackAt(1).quantity, "The whole stack should have moved.");
     }
 
+    /// <summary>
+    /// Releasing the mouse between two slots, or on the seam where they meet, means no slot
+    /// receives an OnDrop — only OnEndDrag runs. That path suppressed SlotDragHandler's
+    /// recovery for any slot with an OwnerView, which after Inventory adopted ContainerView
+    /// meant every player slot: the stack was gone from the container and no ground item was
+    /// ever spawned. Reported from play as "solto entre os slots e o item some".
+    /// </summary>
+    [UnityTest]
+    public IEnumerator ReleasingBetweenSlots_DropsTheItemRatherThanDestroyingIt()
+    {
+        var items = Resources.LoadAll<Item>("Items");
+        if (items.Length == 0) Assert.Ignore("No Item assets under Resources/Items.");
+
+        inventory.Container.SetSlot(0, new ItemStack(items[0], 3));
+        yield return null;
+
+        InventorySlot from = SlotAt(0);
+        Assert.IsNotNull(from);
+
+        int groundBefore = Object.FindObjectsByType<SowurShield.Core.GroundItem>(
+            FindObjectsSortMode.None).Length;
+
+        // Begin the drag, then end it without any slot calling OnDrop.
+        var pointer = new UnityEngine.EventSystems.PointerEventData(
+            UnityEngine.EventSystems.EventSystem.current)
+        {
+            button = UnityEngine.EventSystems.PointerEventData.InputButton.Left,
+            position = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f),
+        };
+        from.OnBeginDrag(pointer);
+        from.OnEndDrag(pointer);
+        yield return null;
+
+        int groundAfter = Object.FindObjectsByType<SowurShield.Core.GroundItem>(
+            FindObjectsSortMode.None).Length;
+
+        bool backInSlot = !StackAt(0).IsEmpty;
+        bool onTheFloor = groundAfter > groundBefore;
+
+        Assert.IsTrue(backInSlot || onTheFloor,
+            "The stack was destroyed: it is neither back in its slot nor on the ground.");
+    }
+
     [UnityTest]
     public IEnumerator DraggingOntoAnotherItem_KeepsBothStacks()
     {
