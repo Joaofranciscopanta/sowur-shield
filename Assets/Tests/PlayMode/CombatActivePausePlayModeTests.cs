@@ -24,6 +24,10 @@ public class CombatActivePausePlayModeTests
     [UnityTearDown]
     public IEnumerator TearDown()
     {
+        // Reset unconditionally: the two long-waiting tests below switch this on, and leaving
+        // it set would silently suppress genuine errors in every test that runs after them.
+        LogAssert.ignoreFailingMessages = false;
+
         foreach (var obj in _cleanup)
             if (obj != null) Object.Destroy(obj);
         _cleanup.Clear();
@@ -32,6 +36,14 @@ public class CombatActivePausePlayModeTests
 
     private TurnManager CreateTurnManager(CombatMode mode)
     {
+        // TurnManager is a singleton whose Awake destroys itself if Instance is already set.
+        // Object.Destroy in TearDown is deferred, so without this the next test's manager
+        // suicides on creation and the test silently keeps using the PREVIOUS one — inheriting
+        // its state. That is how a test asserting the input failsafe saw the flag from the
+        // test before it and could never fail.
+        foreach (var stale in Object.FindObjectsByType<TurnManager>(FindObjectsSortMode.None))
+            Object.DestroyImmediate(stale.gameObject);
+
         var go = Track(new GameObject("TurnManager"));
         var tm = go.AddComponent<TurnManager>();
         tm.SetCombatMode(mode);
@@ -267,5 +279,89 @@ public class CombatActivePausePlayModeTests
 
         Assert.AreSame(second, tm.AwaitingInputFor,
             "After the first command resolves, the second ready unit should be awaiting input.");
+    }
+
+    // =========================================================================
+    // INPUT WAIT
+    //
+    // The wait used to be a flat 15-second countdown against the player, with no timer, bar
+    // or warning drawn anywhere — so Active Pause silently took the turn from anyone still
+    // reading their skills, and it read as a bug rather than as time pressure. It is now a
+    // failsafe against the command panel failing to open, and stops counting once the panel
+    // reports itself ready.
+    // =========================================================================
+
+    [UnityTest]
+    public IEnumerator AwaitingInput_DoesNotTimeOutOnceTheCommandUiIsUp()
+    {
+        // TurnManager schedules InitializeCombat shortly after Awake and logs an error with no
+        // GridManager present. The other tests here finish before that fires; these two wait
+        // several seconds by design. Unrelated to what they assert, so it is ignored rather
+        // than matched — these tests check state, not log text.
+        LogAssert.ignoreFailingMessages = true;
+
+        var tm = CreateTurnManager(CombatMode.ActivePause);
+        var player = CreateUnit(isPlayer: true);
+        var enemy = CreateUnit(isPlayer: false);
+        InjectUnits(tm, new List<CombatUnit> { player }, new List<CombatUnit> { enemy });
+
+        FillGauge(player);
+        yield return null;
+        yield return null;
+
+        Assert.AreSame(player, tm.AwaitingInputFor, "The unit should be awaiting a command.");
+
+        // No manual NotifyCommandUiReady: the real BattleCommandUI bootstraps itself into every
+        // Play Mode session and acknowledges on its own, so this exercises the actual path.
+        var ackField = typeof(TurnManager).GetField("commandUiAcknowledged",
+            BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.IsTrue((bool)ackField.GetValue(tm),
+            "The command UI should have acknowledged the turn it was told about.");
+
+        // Well past the 5s failsafe. A player reading their options must not lose the turn.
+        yield return new WaitForSecondsRealtime(6f);
+
+        Assert.AreSame(player, tm.AwaitingInputFor,
+            "The turn was taken automatically while the command panel was open. Active Pause " +
+            "must wait indefinitely once the player can actually see their options.");
+
+        Assert.IsTrue(tm.SubmitAttack(enemy), "The command should still be accepted after the wait.");
+    }
+
+    [UnityTest]
+    public IEnumerator AwaitingInput_FallsBackWhenTheCommandUiNeverOpens()
+    {
+        // Same unrelated GridManager error as the test above; see the note there.
+        LogAssert.ignoreFailingMessages = true;
+
+        // BattleCommandUI bootstraps itself via RuntimeInitializeOnLoadMethod and survives as
+        // DontDestroyOnLoad, so it is present in every Play Mode test whether or not the test
+        // asked for it. Disabling it is what actually reproduces "the panel never opened" —
+        // leaving it alive means it acknowledges the turn and the failsafe correctly never
+        // fires, which is the real behaviour, just not the one under test here.
+        var commandUis = Object.FindObjectsByType<BattleCommandUI>(FindObjectsInactive.Include,
+                                                                   FindObjectsSortMode.None);
+        foreach (var ui in commandUis) ui.enabled = false;
+
+        var tm = CreateTurnManager(CombatMode.ActivePause);
+        var player = CreateUnit(isPlayer: true);
+        var enemy = CreateUnit(isPlayer: false);
+        InjectUnits(tm, new List<CombatUnit> { player }, new List<CombatUnit> { enemy });
+
+        FillGauge(player);
+        yield return null;
+        yield return null;
+
+        Assert.AreSame(player, tm.AwaitingInputFor);
+
+        // Asserted on state rather than on the warning text, so the test does not break when
+        // someone rewords the log line. TearDown restores ignoreFailingMessages.
+        yield return new WaitForSecondsRealtime(6f);
+
+        foreach (var ui in commandUis) if (ui != null) ui.enabled = true;
+
+        Assert.IsNull(tm.AwaitingInputFor,
+            "With no command panel the battle must resolve the turn automatically rather than " +
+            "freezing forever.");
     }
 }

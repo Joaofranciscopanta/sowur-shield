@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 using UnityEngine.UI;
 using TMPro;
 using SowurShield.UI;
@@ -45,6 +46,10 @@ public class CodexLayoutTests
     [TearDown]
     public void TearDown()
     {
+        // Reset unconditionally: leaving this on would silently swallow real errors in every
+        // test that runs after this fixture.
+        LogAssert.ignoreFailingMessages = false;
+
         if (host != null) Object.DestroyImmediate(host);
     }
 
@@ -62,6 +67,13 @@ public class CodexLayoutTests
     /// </summary>
     private RectTransform BuildPanel(bool withLoreRows = true)
     {
+        // The panel resolves LocalizedStrings while building, and Unity's localization throws
+        // "SelectedLocale is null" whenever no locale has been selected — which is the case in
+        // a bare EditMode run, but not after a Play Mode session has initialised it. That made
+        // these tests pass or fail depending on what ran before them. The errors say nothing
+        // about layout, which is all this file asserts, so they are ignored outright.
+        LogAssert.ignoreFailingMessages = true;
+
         var build = typeof(RelationshipUI).GetMethod("TryBuildUI", Priv);
         Assert.IsNotNull(build, "TryBuildUI is gone — this test needs updating alongside it.");
         build.Invoke(ui, null);

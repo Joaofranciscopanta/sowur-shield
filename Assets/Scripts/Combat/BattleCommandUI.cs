@@ -420,6 +420,11 @@ public class BattleCommandUI : MonoBehaviour
         awaitingTargetFor = null;
         ShowActionChoices();
         panel.SetActive(true);
+
+        // Tell the manager the panel is up, which switches its wait from a short failsafe
+        // countdown to an indefinite one. Reported last: if anything above threw, the
+        // countdown should still be running, because that is exactly the case it guards.
+        boundManager?.NotifyCommandUiReady();
     }
 
     private void HandlePlayerTurnEnded()
