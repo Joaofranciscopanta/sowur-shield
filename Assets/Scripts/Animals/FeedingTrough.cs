@@ -6,6 +6,7 @@ using UnityEngine.Localization;
 using SowurShield.Core;
 using SowurShield.Inventory;
 using SowurShield.Inventory.Policies;
+using SowurShield.UI;
 
 namespace SowurShield.Animals
 {
@@ -74,6 +75,11 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         if (troughPanel != null)
             troughPanel.SetActive(true);
         isOpen = true;
+
+        // Re-tint the slot wells on every open. Doing it once in SetupUI is not enough: each
+        // InventorySlot repaints its own Background when it initialises, which happens after
+        // SetupUI has run, so the styling applied there was immediately overwritten.
+        StyleSlotBackgrounds(UIThemeStyler.LoadTheme());
 
         DisablePlayerMovement();
         UpdateStatusText();
@@ -173,7 +179,224 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         if (titleText != null)
             titleText.text = troughTitleText.SafeGetLocalizedString();
 
+        ApplyTheme();
         UpdateStatusText();
+    }
+
+    /// <summary>
+    /// Give the trough the same wooden frame every other window in the game wears.
+    ///
+    /// It was the odd one out: a "Dialogue Box" sprite tinted near-black brown and drawn
+    /// Simple, so the painted frame in that art was flattened into a plain rectangle. Beside
+    /// the inventory and the codex it read as a debug placeholder, which is what the audit
+    /// flagged. Restyling here rather than in the scene keeps it working if the panel is ever
+    /// rebuilt, and matches how SellBox and the battle UI adopt the theme.
+    /// </summary>
+    private void ApplyTheme()
+    {
+        if (troughPanel == null) return;
+
+        var theme = UIThemeStyler.LoadTheme();
+        UIThemeStyler.StylePanel(troughPanel, theme);
+
+        // panel_wood_generic paints a frame over roughly an eighth of its width per side, and
+        // that band SCALES with the panel. Content laid out to the rect edge ends up sitting on
+        // the wood — the codex defect from earlier today.
+        //
+        // There is no layout group here to hold padding: every child is anchored by hand, so
+        // the inset has to be applied to the children themselves. The panel also grows, because
+        // insetting a 530px panel by 66 a side would leave the eight-wide slot row no room.
+        var panelRect = troughPanel.GetComponent<RectTransform>();
+        if (panelRect != null)
+        {
+            const float TargetWidth = 720f;
+            const float TargetHeight = 560f;
+            if (panelRect.rect.width < TargetWidth)
+                panelRect.sizeDelta = new Vector2(TargetWidth, TargetHeight);
+
+            float inset = Mathf.Round(panelRect.rect.width * 0.125f) + 12f;
+            InsetFromFrame(titleText != null ? titleText.rectTransform : null, inset, fromTop: true);
+            InsetFromFrame(statusText != null ? statusText.rectTransform : null, inset, fromTop: false);
+            InsetFromFrame(closeButton != null ? closeButton.GetComponent<RectTransform>() : null,
+                           inset, fromTop: false);
+
+            FitSlotGrid();
+
+            // Stack the middle content between the title and the status line rather than only
+            // clearing the frame. Insetting each child independently leaves them free to meet
+            // in the middle: the slot grid ended up under the title and the status text ran
+            // into the close button.
+            StackBetween(inset);
+        }
+
+        // This panel is rendered at half scale, so a theme size set here lands on screen at
+        // half its value — 24pt reads as 12px. Divide the scale back out so the trough's text
+        // matches the rest of the UI optically rather than numerically.
+        float scale = troughPanel.transform.lossyScale.x;
+        float sizeFactor = scale > 0.01f ? 1f / scale : 1f;
+
+        if (titleText != null)
+        {
+            titleText.fontSize = (theme != null ? theme.fontSizeH2 : 24f) * sizeFactor;
+            titleText.color = theme != null ? theme.textDark : new Color(0.176f, 0.165f, 0.149f);
+        }
+
+        if (statusText != null)
+        {
+            // Small, not the 24pt it had: this is supporting text under the slots, and the
+            // panel interior is cream so it needs dark ink rather than the pale tan it used.
+            statusText.fontSize = (theme != null ? theme.fontSizeSmall : 14f) * sizeFactor;
+            statusText.color = theme != null ? theme.textDark : new Color(0.176f, 0.165f, 0.149f);
+        }
+
+        StyleSlotBackgrounds(theme);
+
+        if (closeButton != null)
+        {
+            // Was a flat dark-red rectangle, the only one of its kind in the game. StyleButton
+            // gives it the shared gold art and darkens the label to suit it.
+            UIThemeStyler.StyleButton(closeButton, theme);
+            var closeLabel = closeButton.GetComponentInChildren<TextMeshProUGUI>(true);
+            if (closeLabel != null)
+                closeLabel.fontSize = theme != null ? theme.fontSizeButton : 18f;
+        }
+    }
+
+    /// <summary>
+    /// Positions the slot grid and the status line in the gap between the title and the close
+    /// button, with a consistent gutter, so nothing overlaps its neighbour.
+    /// </summary>
+    private void StackBetween(float inset)
+    {
+        var panelRect = troughPanel.GetComponent<RectTransform>();
+        var gridRect = slotParent as RectTransform;
+        if (panelRect == null || gridRect == null) return;
+
+        float gutter = 24f;
+        float half = panelRect.rect.height * 0.5f;
+
+        // Title occupies the top band; the grid starts one gutter below it.
+        float titleBottom = titleText != null
+            ? titleText.rectTransform.anchoredPosition.y - titleText.rectTransform.rect.height * 0.5f
+            : -inset;
+
+        // Height comes from the grid's own contents, not from rect.height: FitSlotGrid has just
+        // written sizeDelta and the rect does not reflect it until the next layout pass, so
+        // reading rect.height here returns the stale (larger) authored value and the grid ends
+        // up mispositioned and oversized.
+        float gridHeight = gridRect.sizeDelta.y;
+
+        gridRect.anchorMin = gridRect.anchorMax = new Vector2(0.5f, 1f);
+        gridRect.anchoredPosition = new Vector2(
+            gridRect.anchoredPosition.x,
+            titleBottom - gutter - gridHeight * 0.5f);
+
+        // Status sits above the close button, below the grid.
+        if (statusText != null && closeButton != null)
+        {
+            var closeRect = closeButton.GetComponent<RectTransform>();
+            float closeTop = closeRect.anchoredPosition.y + closeRect.rect.height * 0.5f;
+            var statusRect = statusText.rectTransform;
+            statusRect.anchoredPosition = new Vector2(
+                statusRect.anchoredPosition.x,
+                closeTop + gutter + statusRect.rect.height * 0.5f);
+        }
+    }
+
+    /// <summary>
+    /// Darkens the slot wells so they read as slots.
+    ///
+    /// The slot prefab paints its Background white at 52% alpha, which was fine over the old
+    /// near-black panel but disappears on the wooden panel's cream interior — the grid became
+    /// twelve invisible squares. A tan well with a solid alpha gives each slot a visible edge
+    /// against the cream, the same way the inventory reads.
+    /// </summary>
+    private void StyleSlotBackgrounds(UITheme theme)
+    {
+        if (slotParent == null) return;
+
+        Color well = theme != null ? theme.backgroundTan : new Color(0.937f, 0.890f, 0.753f);
+        well = new Color(well.r * 0.82f, well.g * 0.80f, well.b * 0.74f, 1f);
+
+        foreach (Transform slot in slotParent)
+        {
+            var background = slot.Find("Background");
+            var image = background != null ? background.GetComponent<Image>() : null;
+            if (image != null) image.color = well;
+        }
+    }
+
+    /// <summary>
+    /// Sizes the slot grid to the width it actually has.
+    ///
+    /// The grid was authored as 8 columns of 112px, which needs 966px — but once the content
+    /// is inset past the wooden frame only 772px remain, so the right-hand slots hung outside
+    /// the panel. Slots are re-flowed to a column count that fits and squared off so the 12
+    /// slots fill whole rows rather than leaving a ragged tail.
+    /// </summary>
+    private void FitSlotGrid()
+    {
+        var grid = slotParent != null ? slotParent.GetComponent<GridLayoutGroup>() : null;
+        var gridRect = slotParent as RectTransform;
+        if (grid == null || gridRect == null) return;
+
+        const int Columns = 6;   // 12 slots = 2 full rows
+        grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        grid.constraintCount = Columns;
+
+        // Narrow the grid to the frame-free width first. This is not done through
+        // InsetFromFrame because the grid's vertical placement is decided later by
+        // StackBetween, and letting both touch anchoredPosition made them fight.
+        var panelRect = troughPanel.GetComponent<RectTransform>();
+        if (panelRect != null)
+        {
+            float inset = Mathf.Round(panelRect.rect.width * 0.125f) + 12f;
+            float maxWidth = panelRect.rect.width - inset * 2f;
+            if (gridRect.sizeDelta.x > maxWidth)
+                gridRect.sizeDelta = new Vector2(maxWidth, gridRect.sizeDelta.y);
+        }
+
+        // sizeDelta, not rect.width: InsetFromFrame has just narrowed this rect and the change
+        // is not visible through rect until the next layout pass.
+        float width = gridRect.sizeDelta.x > 0f ? gridRect.sizeDelta.x : gridRect.rect.width;
+        float available = width - grid.padding.left - grid.padding.right;
+        float cell = Mathf.Floor((available - grid.spacing.x * (Columns - 1)) / Columns);
+        if (cell > 0f) grid.cellSize = new Vector2(cell, cell);
+
+        // Height follows from the rows actually needed, so the panel does not reserve space for
+        // a third row that never exists.
+        int rows = Mathf.CeilToInt(slotCount / (float)Columns);
+        float neededHeight = rows * cell + grid.spacing.y * (rows - 1)
+                           + grid.padding.top + grid.padding.bottom;
+        gridRect.sizeDelta = new Vector2(gridRect.sizeDelta.x, neededHeight);
+    }
+
+    /// <summary>
+    /// Pushes one anchored child clear of the panel's painted frame, keeping its distance from
+    /// whichever edge it is anchored to. Children here sit on point anchors rather than in a
+    /// layout group, so this adjusts each one individually.
+    /// </summary>
+    private static void InsetFromFrame(RectTransform child, float inset, bool fromTop)
+    {
+        if (child == null) return;
+
+        // Width: leave the frame clear on both sides. Anything anchored to the horizontal
+        // centre keeps its centre; only its width shrinks.
+        float panelWidth = ((RectTransform)child.parent).rect.width;
+        float maxWidth = panelWidth - inset * 2f;
+        if (child.sizeDelta.x > maxWidth)
+            child.sizeDelta = new Vector2(maxWidth, child.sizeDelta.y);
+
+        // Vertical: the anchor tells us which edge the offset is measured from, so a top-anchored
+        // title moves down and a bottom-anchored button moves up.
+        float halfHeight = child.rect.height * 0.5f;
+        float limit = inset + halfHeight;
+        Vector2 pos = child.anchoredPosition;
+
+        if (fromTop && pos.y > -limit) pos.y = -limit;
+        else if (!fromTop && pos.y < limit) pos.y = limit;
+
+        child.anchoredPosition = pos;
     }
 
     /// <summary>

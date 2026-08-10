@@ -111,23 +111,57 @@ public class PlayerStats : MonoBehaviour, ISaveable
     }
 
     /// <summary>
-    /// Moves gold and XP earned in CombatScene onto the player. CombatScene has no PlayerStats,
-    /// so BattleResultsUI stashes them on the persistent TeamAssemblerData for this to collect.
+    /// Moves gold, XP and loot earned in CombatScene onto the player. CombatScene has neither
+    /// PlayerStats nor Inventory, so BattleResultsUI stashes all three on the persistent
+    /// TeamAssemblerData for this to collect once the farm scene is back.
     /// </summary>
     private void ApplyPendingCombatRewards()
     {
         var teamData = SowurShield.Combat.TeamAssemblerData.Instance;
         if (teamData == null) return;
-        if (teamData.pendingGoldReward == 0 && teamData.pendingXpReward == 0f) return;
+
+        bool hasLoot = teamData.pendingLoot != null && teamData.pendingLoot.Count > 0;
+        if (teamData.pendingGoldReward == 0 && teamData.pendingXpReward == 0f && !hasLoot) return;
 
         AddMoney(teamData.pendingGoldReward);
         AddExperience(teamData.pendingXpReward);
         teamData.pendingGoldReward = 0;
         teamData.pendingXpReward = 0f;
 
+        if (hasLoot) GrantPendingLoot(teamData);
+
         // Persist immediately: the rewards have now been cleared from TeamAssemblerData, so if
         // the player quits before the next autosave they would otherwise be lost from both.
         SaveManager.Instance?.SaveGame();
+    }
+
+    /// <summary>
+    /// Hands battle loot to the inventory. Entries are only cleared once they are actually
+    /// delivered — an item that will not fit stays pending rather than evaporating, which is
+    /// the failure this whole path exists to prevent.
+    /// </summary>
+    private void GrantPendingLoot(SowurShield.Combat.TeamAssemblerData teamData)
+    {
+        var inventory = FindFirstObjectByType<SowurShield.Inventory.Inventory>();
+        if (inventory == null) return;   // no inventory yet; keep the loot for the next attempt
+
+        var undelivered = new System.Collections.Generic.List<SowurShield.Combat.TeamAssemblerData.PendingLoot>();
+
+        foreach (var entry in teamData.pendingLoot)
+        {
+            var item = SowurShield.Inventory.ItemDatabase.GetItem(entry.itemName);
+            if (item == null)
+            {
+                Debug.LogWarning($"[PlayerStats] Battle loot '{entry.itemName}' is not in the " +
+                                 "ItemDatabase, so it cannot be granted. Dropping it.");
+                continue;
+            }
+
+            if (!inventory.AddItem(item, entry.quantity))
+                undelivered.Add(entry);
+        }
+
+        teamData.pendingLoot = undelivered;
     }
 
     private System.Collections.IEnumerator DelayedRegistration()

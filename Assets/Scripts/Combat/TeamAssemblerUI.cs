@@ -179,6 +179,77 @@ public class TeamAssemblerUI : MonoBehaviour
         combatModeLabel = BuildToggleLabel(go.transform, startBattleButton.GetComponentInChildren<TextMeshProUGUI>(true));
 
         RefreshCombatModeLabel();
+        // Sizing happens in OpenAssembler, not here: at this point every caption is still the
+        // English fallback, so measuring now would fit the buttons to the wrong strings.
+    }
+
+    /// <summary>
+    /// Widens each button in the row to fit its own caption.
+    ///
+    /// Every button carried preferredWidth 170, a value picked against the English strings
+    /// ("Clear Grid" needs 114). Portuguese is longer: "Modo: Pausa Ativa" wants 203px and
+    /// "Alimentar Todos" 181, so both overflowed. Auto-sizing hid it badly rather than
+    /// fixing it — those two shrank to 16.7pt and 20.7pt beside neighbours at 22pt, which is
+    /// why the row looked like it used three different fonts.
+    ///
+    /// There is no shortage of space: the row is 1920px wide and the five buttons occupied
+    /// 914 of it. This just stops them all insisting on the same arbitrary width.
+    /// </summary>
+    private void FitButtonRowToLabels(RectTransform row)
+    {
+        if (row == null) return;
+
+        var theme = Resources.Load<SowurShield.UI.UITheme>("UI/CozyUITheme");
+        float minWidth = theme != null ? theme.buttonMinWidth : 160f;
+        float maxWidth = theme != null ? theme.buttonMaxWidth : 560f;
+
+        // Lift the row off the bottom edge. Anchored at y=25 with a 50px height it occupied
+        // screen rows 0-50, flush against the very last pixel — the buttons read as cropped
+        // by the window even though they were technically on screen.
+        float bottomMargin = theme != null ? theme.spacingXXL : 32f;
+        float halfHeight = row.rect.height * 0.5f;
+        if (row.anchorMin.y == 0f && row.anchorMax.y == 0f &&
+            row.anchoredPosition.y < bottomMargin + halfHeight)
+        {
+            row.anchoredPosition = new Vector2(row.anchoredPosition.x, bottomMargin + halfHeight);
+        }
+
+        foreach (Transform child in row)
+        {
+            var label = child.GetComponentInChildren<TextMeshProUGUI>(true);
+            var layout = child.GetComponent<LayoutElement>();
+            if (label == null || layout == null) continue;
+
+            // Measure at the label's own maximum, not its current shrunken size: the point is
+            // to size the box for the text rather than the text for the box.
+            float measureAt = label.enableAutoSizing && label.fontSizeMax > 0f
+                ? label.fontSizeMax
+                : label.fontSize;
+
+            float previous = label.fontSize;
+            bool wasAuto = label.enableAutoSizing;
+            label.enableAutoSizing = false;
+            label.fontSize = measureAt;
+
+            // Measure against an unconstrained width. GetPreferredValues() with no arguments
+            // reports the width the label has *already been given*, so calling it here — before
+            // the layout group has run with the new sizes — returned the current 160/170px for
+            // every caption and collapsed them all onto the same clamp floor.
+            float needed = label.GetPreferredValues(label.text, Mathf.Infinity, Mathf.Infinity).x;
+
+            label.enableAutoSizing = wasAuto;
+            if (!wasAuto) label.fontSize = previous;
+
+            // Horizontal padding for the button art, then clamp so one long caption cannot
+            // stretch into a banner — the 1750px dialogue-choice mistake from Aug/4.
+            float target = Mathf.Clamp(needed + 32f, minWidth, maxWidth);
+            layout.preferredWidth = target;
+            layout.minWidth = target;   // the group honours min first; leaving it lower let it shrink back
+        }
+
+        // The group measures on the next layout pass otherwise, and the labels' auto-sizing
+        // would spend one frame fitting text to the old widths.
+        LayoutRebuilder.ForceRebuildLayoutImmediate(row);
     }
 
     /// <summary>
@@ -368,6 +439,13 @@ public class TeamAssemblerUI : MonoBehaviour
 
         // Update UI
         UpdateInfoDisplay();
+
+        // Last, and only once assemblerPanel is active: Unity does not lay out or measure text
+        // on inactive objects, so running this any earlier had every label report a preferred
+        // width of zero. Every button then collapsed onto the theme's 160px minimum — which
+        // looked exactly like the fitter had not run at all.
+        if (startBattleButton != null)
+            FitButtonRowToLabels(startBattleButton.transform.parent as RectTransform);
     }
 
     /// <summary>

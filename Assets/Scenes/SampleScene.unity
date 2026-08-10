@@ -32214,6 +32214,9 @@ MonoBehaviour:
   buttonImage: {fileID: 0}
   lockedColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
   unlockedColor: {r: 1, g: 1, b: 1, a: 1}
+  lockedTextColor: {r: 0.24, g: 0.23, b: 0.21, a: 1}
+  unlockedTextColor: {r: 0.196, g: 0.196, b: 0.196, a: 1}
+  lockedDisabledTint: {r: 0.72, g: 0.71, b: 0.68, a: 1}
 --- !u!114 &1991246360
 MonoBehaviour:
   m_ObjectHideFlags: 0

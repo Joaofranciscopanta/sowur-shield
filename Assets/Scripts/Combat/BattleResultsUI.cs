@@ -394,11 +394,21 @@ public class BattleResultsUI : MonoBehaviour
             TeamAssemblerData.Instance.pendingXpReward += pendingRewards.xpReward;
         }
 
-        // Loot
+        // Loot — same deal as gold above: Inventory lives on the player in SampleScene and is
+        // not carried across the scene load, so in CombatScene this lookup finds nothing. The
+        // old `if (inventory != null)` guard silently dropped every item on the floor. Stash it
+        // for PlayerStats to hand over once the farm scene is back.
         var inventory = FindFirstObjectByType<SowurShield.Inventory.Inventory>();
-        if (inventory != null)
-            foreach (var (item, qty) in pendingRewards.lootDrops)
+        foreach (var (item, qty) in pendingRewards.lootDrops)
+        {
+            if (item == null) continue;
+
+            if (inventory != null)
                 inventory.AddItem(item, qty);
+            else
+                TeamAssemblerData.Instance.pendingLoot.Add(
+                    new TeamAssemblerData.PendingLoot { itemName = item.itemName, quantity = qty });
+        }
 
         // Animal happiness + XP
         foreach (var unit in pendingRewards.survivingPlayerUnits)

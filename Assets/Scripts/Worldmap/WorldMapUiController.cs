@@ -254,6 +254,22 @@ public class WorldMapUIController : MonoBehaviour, IUIWindow
         List<StageTheme> themesInOrder = new List<StageTheme>(byTheme.Keys);
         themesInOrder.Sort((a, b) => a.ToString().CompareTo(b.ToString()));
 
+        // Centre the grid in whatever space the map actually has, instead of hanging it from a
+        // fixed top-left offset. With 5 rows the block measures 710px inside a 1080px map, and
+        // the fixed origin pinned it high: 70px of air above, 300px below. That imbalance is
+        // what read as "the map is half empty" — the grid was not too small, it was off-centre.
+        //
+        // The leftover margin is deliberately *not* absorbed by growing the buttons. The empty
+        // band at the bottom is the illustration's village and central path; covering it to
+        // fill space would trade one problem for a worse one.
+        var parentRect = parent as RectTransform;
+        float gridHeight = themesInOrder.Count > 0
+            ? themesInOrder.Count * flatButtonCellSize.y + (themesInOrder.Count - 1) * flatButtonSpacing.y
+            : 0f;
+        float originY = parentRect != null && gridHeight > 0f
+            ? -Mathf.Max(flatLayoutOrigin.y * -1f, (parentRect.rect.height - gridHeight) * 0.5f)
+            : flatLayoutOrigin.y;
+
         int row = 0;
         foreach (StageTheme theme in themesInOrder)
         {
@@ -268,7 +284,7 @@ public class WorldMapUIController : MonoBehaviour, IUIWindow
                 if (!isFirst)
                     buttonGO.name = GeneratedButtonPrefix + stage.stageName;
 
-                ConfigureFlatStageButton(buttonGO, stage, row, col);
+                ConfigureFlatStageButton(buttonGO, stage, row, col, originY);
             }
 
             row++;
@@ -279,7 +295,8 @@ public class WorldMapUIController : MonoBehaviour, IUIWindow
     /// Positions a (possibly cloned) stage button in the flat grid and wires
     /// its stageName, label text, and WorldMap reference.
     /// </summary>
-    private void ConfigureFlatStageButton(GameObject buttonGO, StageData stage, int row, int col)
+    private void ConfigureFlatStageButton(GameObject buttonGO, StageData stage, int row, int col,
+                                          float originY)
     {
         RectTransform rect = buttonGO.GetComponent<RectTransform>();
         if (rect != null)
@@ -289,7 +306,7 @@ public class WorldMapUIController : MonoBehaviour, IUIWindow
             rect.pivot = new Vector2(0f, 1f);
 
             float x = flatLayoutOrigin.x + col * (flatButtonCellSize.x + flatButtonSpacing.x);
-            float y = flatLayoutOrigin.y - row * (flatButtonCellSize.y + flatButtonSpacing.y);
+            float y = originY - row * (flatButtonCellSize.y + flatButtonSpacing.y);
             rect.anchoredPosition = new Vector2(x, y);
             rect.sizeDelta = flatButtonCellSize;
         }

@@ -75,7 +75,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4293456631
-  m_fontColor: {r: 0.969, g: 0.949, b: 0.91, a: 1}
+  m_fontColor: {r: 0.176, g: 0.165, b: 0.149, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -358,12 +358,12 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  normalColor: {r: 0.651, g: 0.416, b: 0.247, a: 0.85}
-  hoverColor: {r: 0.957, g: 0.827, b: 0.369, a: 0.85}
-  inTeamColor: {r: 0.506, g: 0.788, b: 0.514, a: 0.5}
-  fedColor: {r: 0.506, g: 0.788, b: 0.514, a: 1}
-  hungryColor: {r: 1, g: 0.718, b: 0.302, a: 1}
-  notInTeamColor: {r: 0.176, g: 0.165, b: 0.149, a: 1}
+  normalColor: {r: 0.36, g: 0.23, b: 0.12, a: 1}
+  hoverColor: {r: 0.45, g: 0.29, b: 0.15, a: 1}
+  inTeamColor: {r: 0.15, g: 0.32, b: 0.18, a: 1}
+  fedColor: {r: 0.15, g: 0.45, b: 0.2, a: 1}
+  hungryColor: {r: 0.6, g: 0.36, b: 0.02, a: 1}
+  notInTeamColor: {r: 0.35, g: 0.33, b: 0.3, a: 1}
   happinessLowColor: {r: 0.898, g: 0.451, b: 0.451, a: 1}
   happinessMidColor: {r: 1, g: 0.718, b: 0.302, a: 1}
   happinessHighColor: {r: 0.506, g: 0.788, b: 0.514, a: 1}
@@ -445,7 +445,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4293456631
-  m_fontColor: {r: 0.969, g: 0.949, b: 0.91, a: 1}
+  m_fontColor: {r: 0.176, g: 0.165, b: 0.149, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -582,7 +582,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4293456631
-  m_fontColor: {r: 0.969, g: 0.949, b: 0.91, a: 1}
+  m_fontColor: {r: 0.176, g: 0.165, b: 0.149, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

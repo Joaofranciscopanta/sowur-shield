@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -281,6 +282,106 @@ public class PlayerStatsPlayModeTests
         {
             teamData.pendingGoldReward = savedGold;
             teamData.pendingXpReward = savedXp;
+        }
+    }
+
+    [UnityTest]
+    public IEnumerator PendingLoot_ReachesTheInventoryAfterReturningFromCombat()
+    {
+        var teamData = SowurShield.Combat.TeamAssemblerData.Instance;
+        var savedLoot = teamData.pendingLoot;
+        int savedGold = teamData.pendingGoldReward;
+
+        // Any real item will do; the test is about delivery, not about which item.
+        var item = Resources.LoadAll<SowurShield.Inventory.Item>("Items").FirstOrDefault();
+        if (item == null)
+        {
+            Assert.Ignore("No Item assets under Resources/Items to test loot delivery with.");
+            yield break;
+        }
+
+        GameObject invGo = null, statsGo = null;
+        try
+        {
+            // A bare Inventory logs this because no slot UI is wired. The container — which is
+            // what actually holds items and what this test is about — is built regardless.
+            LogAssert.Expect(LogType.Error, new System.Text.RegularExpressions.Regex(
+                "hotbarParent, storageParent and slotPrefab must all be assigned"));
+
+            invGo = new GameObject("Inventory_LootTest");
+            var inventory = invGo.AddComponent<SowurShield.Inventory.Inventory>();
+            yield return null;
+
+            statsGo = new GameObject("PlayerStats_LootTest");
+            var stats2 = statsGo.AddComponent<PlayerStats>();
+            yield return null;
+
+            int before = inventory.GetItemCount(item);
+
+            // BattleResultsUI stashes loot exactly like this when CombatScene has no Inventory.
+            teamData.pendingGoldReward = 0;
+            teamData.pendingLoot = new System.Collections.Generic.List<SowurShield.Combat.TeamAssemblerData.PendingLoot>
+            {
+                new SowurShield.Combat.TeamAssemblerData.PendingLoot { itemName = item.itemName, quantity = 2 },
+            };
+
+            var apply = typeof(PlayerStats).GetMethod("ApplyPendingCombatRewards",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            apply.Invoke(stats2, null);
+            yield return null;
+
+            Assert.AreEqual(before + 2, inventory.GetItemCount(item),
+                "Battle loot never reached the inventory.");
+            Assert.IsEmpty(teamData.pendingLoot, "Delivered loot was not cleared from the pending list.");
+        }
+        finally
+        {
+            teamData.pendingLoot = savedLoot;
+            teamData.pendingGoldReward = savedGold;
+            if (statsGo != null) Object.DestroyImmediate(statsGo);
+            if (invGo != null) Object.DestroyImmediate(invGo);
+        }
+    }
+
+    [UnityTest]
+    public IEnumerator PendingLoot_IsKeptWhenThereIsNoInventoryToReceiveIt()
+    {
+        var teamData = SowurShield.Combat.TeamAssemblerData.Instance;
+        var savedLoot = teamData.pendingLoot;
+        int savedGold = teamData.pendingGoldReward;
+
+        try
+        {
+            // No Inventory in the scene — the state while CombatScene is loaded. Loot must
+            // survive rather than be dropped, which is the original defect.
+            foreach (var existing in Object.FindObjectsByType<SowurShield.Inventory.Inventory>(FindObjectsSortMode.None))
+                existing.gameObject.SetActive(false);
+
+            var go2 = new GameObject("PlayerStats_NoInventory");
+            var stats2 = go2.AddComponent<PlayerStats>();
+            yield return null;
+
+            teamData.pendingGoldReward = 10;
+            teamData.pendingLoot = new System.Collections.Generic.List<SowurShield.Combat.TeamAssemblerData.PendingLoot>
+            {
+                new SowurShield.Combat.TeamAssemblerData.PendingLoot { itemName = "Wood", quantity = 1 },
+            };
+
+            var apply = typeof(PlayerStats).GetMethod("ApplyPendingCombatRewards",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            apply.Invoke(stats2, null);
+            yield return null;
+
+            Assert.AreEqual(1, teamData.pendingLoot.Count,
+                "Loot was discarded when no Inventory was present; it must stay pending.");
+
+            Object.DestroyImmediate(go2);
+            yield return null;
+        }
+        finally
+        {
+            teamData.pendingLoot = savedLoot;
+            teamData.pendingGoldReward = savedGold;
         }
     }
 

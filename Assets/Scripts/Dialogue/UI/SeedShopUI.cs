@@ -160,19 +160,34 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
         listPanel.anchorMax = new Vector2(0.5f, 0.5f);
         listPanel.pivot = new Vector2(0.5f, 0.5f);
         listPanel.anchoredPosition = Vector2.zero;
-        listPanel.sizeDelta = new Vector2(360, 0);
+        // Wider than the 360 it was: the wooden frame eats an eighth of the width per side, so
+        // a narrow panel leaves the seed rows almost no room once they clear it. At 560 the
+        // rows got 400px, which fits but leaves the Buy buttons hard against the frame art;
+        // 680 gives them room to breathe without the panel dominating the screen.
+        listPanel.sizeDelta = new Vector2(680, 0);
 
-        Color panelTint = theme != null ? theme.woodDark : new Color(0.08f, 0.06f, 0.1f);
-        Image panelBg = panelObj.AddComponent<Image>();
-        panelBg.color = new Color(panelTint.r, panelTint.g, panelTint.b, 0.95f);
+        // The shared wood panel, like every other window. This one was a flat woodDark
+        // rectangle — the last screen still drawing its own background instead of wearing the
+        // sprite kit, which is what made it look unfinished beside the inventory and the codex.
+        UIThemeStyler.StylePanel(panelObj, theme);
 
         VerticalLayoutGroup vlg = panelObj.AddComponent<VerticalLayoutGroup>();
-        vlg.padding = new RectOffset(12, 12, 12, 12);
+        // panel_wood_generic's painted border covers roughly an eighth per side and scales with
+        // the panel, so a fixed 12px padding put every row on top of the wood.
+        //
+        // Vertical padding is deliberately deeper than the horizontal. The sprite is square and
+        // drawn Sliced, so on a panel wider than it is tall the top and bottom bands take a
+        // larger share of the height than the sides do of the width.
+        int insetX = Mathf.RoundToInt(listPanel.sizeDelta.x * 0.125f) + 10;
+        int insetY = insetX + 30;
+        vlg.padding = new RectOffset(insetX, insetX, insetY, insetY);
         vlg.spacing = 6;
         vlg.childControlWidth = true;
         vlg.childControlHeight = false;
+        // Rows still span the full width; only children with their own LayoutElement opt out.
         vlg.childForceExpandWidth = true;
         vlg.childForceExpandHeight = false;
+        vlg.childAlignment = TextAnchor.UpperCenter;
 
         ContentSizeFitter fitter = panelObj.AddComponent<ContentSizeFitter>();
         fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
@@ -182,7 +197,7 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
         titleObj.transform.SetParent(panelObj.transform, false);
         titleObj.AddComponent<RectTransform>().sizeDelta = new Vector2(0, 28);
         titleLabel = CreateLabel(titleObj.transform, seedShopTitleText.SafeGetLocalizedString());
-        titleLabel.fontSize = 20;
+        titleLabel.fontSize = theme != null ? theme.fontSizeH2 : 24f;
         titleLabel.fontStyle = FontStyles.Bold;
         titleLabel.alignment = TextAlignmentOptions.Center;
 
@@ -191,19 +206,45 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
         goldObj.transform.SetParent(panelObj.transform, false);
         goldObj.AddComponent<RectTransform>().sizeDelta = new Vector2(0, 22);
         goldLabel = CreateLabel(goldObj.transform, goldZeroText.SafeGetLocalizedString());
-        goldLabel.fontSize = 16;
+        goldLabel.fontSize = theme != null ? theme.fontSizeSmall : 14f;
         goldLabel.alignment = TextAlignmentOptions.Center;
-        goldLabel.color = theme != null ? theme.highlightGold : new Color(1f, 0.85f, 0.2f);
+        // A dark amber rather than the theme's highlightGold: gold is meant for dark surfaces
+        // and measures 1.3:1 on this panel's cream interior. This keeps the coin association
+        // and reads at 5.2:1.
+        goldLabel.color = new Color(0.55f, 0.36f, 0.02f);
 
-        // Close button
-        GameObject closeButtonObj = new GameObject("CloseButton");
-        closeButtonObj.transform.SetParent(panelObj.transform, false);
-        closeButtonObj.AddComponent<RectTransform>().sizeDelta = new Vector2(0, 36);
-        closeButtonObj.AddComponent<Image>().color = theme != null ? theme.woodDark : new Color(0.3f, 0.25f, 0.25f, 0.9f);
+        // Close button, inside a full-width row that centres it.
+        //
+        // The button used to BE the row, and childForceExpandWidth stretched it to the whole
+        // 490px. button_small_action is drawn Sliced, so at that width its end caps smear
+        // across the panel and it reads as a squashed gold bar rather than a button — the same
+        // "stretching to the edge is not a fix" lesson as the 1750px dialogue choice.
+        float buttonHeight = theme != null ? theme.buttonHeight : 44f;
+
+        GameObject closeRowObj = new GameObject("CloseRow");
+        closeRowObj.transform.SetParent(panelObj.transform, false);
+        closeRowObj.AddComponent<RectTransform>().sizeDelta = new Vector2(0, buttonHeight);
+        var closeRow = closeRowObj.AddComponent<HorizontalLayoutGroup>();
+        closeRow.childAlignment = TextAnchor.MiddleCenter;
+        closeRow.childControlWidth = true;
+        closeRow.childForceExpandWidth = false;
+
+        GameObject closeButtonObj = new GameObject("CloseButton", typeof(RectTransform));
+        closeButtonObj.transform.SetParent(closeRowObj.transform, false);
+        var closeLayout = closeButtonObj.AddComponent<LayoutElement>();
+        closeLayout.preferredWidth = theme != null ? theme.buttonMinWidth : 160f;
+        closeLayout.preferredHeight = buttonHeight;
+        closeButtonObj.AddComponent<Image>();
         Button closeButton = closeButtonObj.AddComponent<Button>();
         closeButton.onClick.AddListener(OnCloseClicked);
         closeLabel = CreateLabel(closeButtonObj.transform, closeButtonText.SafeGetLocalizedString());
         closeLabel.alignment = TextAlignmentOptions.Center;
+        closeLabel.fontSize = theme != null ? theme.fontSizeButton : 18f;
+
+        // Gold button art instead of a flat woodDark fill, so it reads as a control rather than
+        // a darker strip of panel. StyleButton runs after the label exists — it looks the TMP
+        // text up as a child to darken it for the gold sprite.
+        UIThemeStyler.StyleButton(closeButton, theme, UIThemeStyler.ButtonSmallPath);
 
         panelObj.SetActive(false);
     }
@@ -225,8 +266,10 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
         rect.offsetMax = Vector2.zero;
         TextMeshProUGUI tmp = obj.AddComponent<TextMeshProUGUI>();
         tmp.text = text;
-        tmp.fontSize = 18;
-        tmp.color = theme != null ? theme.backgroundCream : Color.white;
+        tmp.fontSize = theme != null ? theme.fontSizeBody : 16f;
+        // Dark ink, not cream: panel_wood_generic's interior is cream, so the cream this used
+        // to get was near-invisible on it. Only the gold row overrides, and gold reads on cream.
+        tmp.color = theme != null ? theme.textDark : new Color(0.176f, 0.165f, 0.149f);
         return tmp;
     }
 
@@ -244,9 +287,14 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
 
     private void RefreshList()
     {
-        // Remove all rows except Title(0), GoldRow(1), CloseButton(last)
+        // Remove all rows except Title(0), GoldRow(1), CloseButton(last).
+        //
+        // DestroyImmediate, not Destroy: Destroy is deferred to the end of the frame, so the
+        // old rows are still children while CreateRow inserts the new ones below. The sibling
+        // indices then land among the doomed rows and the list rebuilds in the wrong order —
+        // the same deferred-destroy trap that stacked 50 buttons on the world map.
         for (int i = listPanel.childCount - 2; i >= 2; i--)
-            Destroy(listPanel.GetChild(i).gameObject);
+            DestroyImmediate(listPanel.GetChild(i).gameObject);
 
         PlayerStats stats = FindFirstObjectByType<PlayerStats>();
         int playerGold = stats != null ? stats.Money : 0;
@@ -283,17 +331,23 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
         rowObj.transform.SetParent(listPanel, false);
         rowObj.transform.SetSiblingIndex(siblingIndex);
         rowObj.AddComponent<RectTransform>().sizeDelta = new Vector2(0, 34);
-        Color rowTint = theme != null ? theme.woodLight : new Color(0.2f, 0.2f, 0.25f);
+        // A light tan well, not woodLight. woodLight over the panel's cream reads as a mid
+        // brown where nothing is legible: dark ink measures 3.8:1 on it and cream 3.4:1 — the
+        // same trap the animal cards had. Tan keeps the row visible against the cream interior
+        // while leaving dark ink at 7.8:1.
+        Color rowTint = theme != null ? theme.backgroundTan : new Color(0.937f, 0.890f, 0.753f);
         rowObj.AddComponent<Image>().color = seed != null
-            ? new Color(rowTint.r, rowTint.g, rowTint.b, 0.9f)
+            ? new Color(rowTint.r * 0.86f, rowTint.g * 0.84f, rowTint.b * 0.82f, 1f)
             : new Color(0f, 0f, 0f, 0f);
 
         var rowLabel = CreateLabel(rowObj.transform, label);
-        rowLabel.fontSize = 15;
+        rowLabel.fontSize = theme != null ? theme.fontSizeSmall : 14f;
         rowLabel.alignment = TextAlignmentOptions.MidlineLeft;
         rowLabel.margin = new Vector4(8, 0, 70, 0);
+        // Unaffordable rows are dimmed toward the row fill rather than set to mid grey, which
+        // on this lighter well would have been the least readable colour available.
         if (seed != null && !canAfford)
-            rowLabel.color = new Color(0.5f, 0.5f, 0.5f);
+            rowLabel.color = new Color(0.42f, 0.40f, 0.37f);
 
         if (seed != null)
         {

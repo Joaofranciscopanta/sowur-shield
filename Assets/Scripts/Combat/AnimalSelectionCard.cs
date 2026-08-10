@@ -38,15 +38,27 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
     [SerializeField] private LocalizedString needsText_Localized; // table "Combat", key "combat.selection.needs"
     [SerializeField] private LocalizedString foodLineText_Localized; // table "Combat", key "combat.selection.food_line"
 
+    // These tint `cardBackground`, which is NOT what the player sees: a CardBackgroundFrame
+    // child draws the card_animal sprite on top, and that art has a CREAM interior. So the
+    // card reads light no matter what is set here, and every caption on it must be dark ink.
+    //
+    // That is the whole bug. The name and happiness lines were cream — 1.0:1 against the art
+    // behind them, i.e. invisible — while the food line was dark and perfectly readable. Two
+    // text colours on one surface, one of which could never work.
+    //
+    // Worth stating plainly for the next reader: darkening these three values does nothing
+    // visible. It was tried; the sprite covers them.
     [Header("Colors")]
-    [SerializeField] private Color normalColor = new Color(0.18f, 0.18f, 0.22f, 0.95f);
-    [SerializeField] private Color hoverColor = new Color(0.28f, 0.28f, 0.36f, 0.95f);
-    [SerializeField] private Color inTeamColor = new Color(0.16f, 0.32f, 0.2f, 0.95f);
+    [SerializeField] private Color normalColor = new Color(0.36f, 0.23f, 0.12f, 1f);
+    [SerializeField] private Color hoverColor = new Color(0.45f, 0.29f, 0.15f, 1f);
+    [SerializeField] private Color inTeamColor = new Color(0.15f, 0.32f, 0.18f, 1f);
 
+    // Dark variants, because the card art they sit on is cream. The stock brighter greens and
+    // ambers were chosen for a dark card and measure 1.3-1.4:1 on this one.
     [Header("Food Status Colors")]
-    [SerializeField] private Color fedColor = new Color(0.35f, 0.85f, 0.4f);
-    [SerializeField] private Color hungryColor = new Color(0.95f, 0.75f, 0.2f);
-    [SerializeField] private Color notInTeamColor = new Color(0.6f, 0.6f, 0.6f);
+    [SerializeField] private Color fedColor = new Color(0.15f, 0.45f, 0.20f);
+    [SerializeField] private Color hungryColor = new Color(0.60f, 0.36f, 0.02f);
+    [SerializeField] private Color notInTeamColor = new Color(0.35f, 0.33f, 0.30f);
 
     [Header("Happiness Bar Colors")]
     [SerializeField] private Color happinessLowColor = new Color(0.85f, 0.35f, 0.3f);
