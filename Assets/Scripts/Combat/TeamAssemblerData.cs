@@ -136,6 +136,29 @@ public class TeamAssemblerData : MonoBehaviour
     public int pendingGoldReward = 0;
     public float pendingXpReward = 0f;
 
+    /// <summary>
+    /// Loot won in battle, waiting for an Inventory to hand it to.
+    ///
+    /// Same reason gold needs a pending field: Inventory lives on the player in SampleScene
+    /// and is not DontDestroyOnLoad, so it does not exist while CombatScene is loaded.
+    /// AwardRewards used to call AddItem behind an `if (inventory != null)` guard, which in
+    /// CombatScene is always false — every drop was discarded without a word. Nothing has
+    /// been lost in practice only because all 25 shipped stages have an empty lootTable;
+    /// the first one that gets loot would have hit this.
+    ///
+    /// Stored by item name rather than by Item reference: Item is a ScriptableObject and
+    /// ItemDatabase is already the project's lookup for turning a name back into one, the
+    /// same way saved inventory slots round-trip.
+    /// </summary>
+    [System.Serializable]
+    public struct PendingLoot
+    {
+        public string itemName;
+        public int quantity;
+    }
+
+    public List<PendingLoot> pendingLoot = new List<PendingLoot>();
+
     // ── MonoBehaviour singleton with DontDestroyOnLoad ────────────────────────
     private static TeamAssemblerData instance;
     public static TeamAssemblerData Instance

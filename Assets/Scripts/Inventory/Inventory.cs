@@ -231,6 +231,11 @@ public class Inventory : MonoBehaviour, ISaveable
             inventoryToggleAction.action.performed += OnInventoryToggle;
         }
 
+        // Null-guarded, not just element-guarded: hotbarActions is a public array left unset
+        // unless someone fills it in the Inspector, so an Inventory created in code — a test,
+        // or any runtime-built one — threw here in Start() and again in OnDestroy().
+        if (hotbarActions == null) return;
+
         for (int i = 0; i < hotbarActions.Length; i++)
         {
             if (hotbarActions[i] != null)
@@ -249,6 +254,8 @@ public class Inventory : MonoBehaviour, ISaveable
             inventoryToggleAction.action.performed -= OnInventoryToggle;
             inventoryToggleAction.action.Disable();
         }
+
+        if (hotbarActions == null) return;
 
         for (int i = 0; i < hotbarActions.Length; i++)
         {
