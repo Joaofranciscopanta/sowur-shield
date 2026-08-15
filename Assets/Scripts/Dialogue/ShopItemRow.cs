@@ -30,6 +30,13 @@ public class ShopItemRow : MonoBehaviour
     [SerializeField] private LocalizedString priceLabelText; // table "Dialogue", key "dialogue.shop.price"
     [SerializeField] private LocalizedString unlimitedStockText; // table "Dialogue", key "dialogue.shop.unlimited_stock"
     [SerializeField] private LocalizedString stockCountText; // table "Dialogue", key "dialogue.shop.stock_count"
+    [SerializeField] private LocalizedString buyLabelText; // table "Dialogue", key "dialogue.shop.buy"
+
+    /// <summary>
+    /// The button's own label. Left as the literal "Buy" from the prefab until 2026-08-15, which
+    /// read as English inside an otherwise fully translated Portuguese panel.
+    /// </summary>
+    [SerializeField] private TextMeshProUGUI buyButtonLabel;
 
     private ShopItemEntry _entry;
 
@@ -48,6 +55,15 @@ public class ShopItemRow : MonoBehaviour
         {
             priceLabelText.Arguments = new object[] { finalPrice };
             priceText.text = priceLabelText.SafeGetLocalizedString();
+        }
+
+        if (buyButtonLabel != null)
+        {
+            string label = buyLabelText.SafeGetLocalizedString();
+            // SafeGetLocalizedString returns empty until the tables preload (the WebGL deadlock
+            // guard), so keep whatever the prefab carries rather than blanking the button.
+            if (!string.IsNullOrEmpty(label))
+                buyButtonLabel.text = label;
         }
 
         RefreshStock();

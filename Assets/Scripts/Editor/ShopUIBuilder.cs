@@ -26,6 +26,29 @@ public class ShopUIBuilder : EditorWindow
     // Between BuildingShopCanvas (45) and TeamAssembler (47) — shop modals never compete.
     private const int ShopCanvasSortingOrder = 46;
 
+    /// <summary>
+    /// Usable insets from the panel edge to the cream field, in the panel's own local units.
+    ///
+    /// Measured by rendering the panel with its content hidden and scanning for where the cream
+    /// actually starts — NOT from the sprite's 9-slice border, which reports ~32px for art that
+    /// covers far more. The scan returned 138 left and 225 right; these carry a margin on top.
+    ///
+    /// The asymmetry is real: this panel's art has a noticeably thicker right edge. A single
+    /// symmetric inset (the first attempt used 100 everywhere) left every row bleeding out
+    /// through the right-hand frame.
+    /// </summary>
+    private const float FrameInsetLeft = 150f;
+    private const float FrameInsetRight = 195f;
+    // Top and bottom sit closer than the sides: the scan put the cream field at y 163..595 of a
+    // 720px render, and the header/list need the vertical room more than the frame needs margin.
+    private const float FrameInsetTop = 110f;
+    private const float FrameInsetBottom = 110f;
+
+    private const float CloseButtonSize = 52f;
+
+    /// <summary>Dark brown for text on the panel's cream field (~12:1), where cream reads ~1.1.</summary>
+    private static readonly Color TextDark = new Color(0.16f, 0.12f, 0.09f);
+
     [MenuItem("Tools/Sowur Shield/Rebuild Shop UI")]
     public static void RebuildUI()
     {
@@ -69,26 +92,42 @@ public class ShopUIBuilder : EditorWindow
         // ── ShopPanel ───────────────────────────────────────────────────────────
         // ShopUI.ApplyTheme replaces this Image with the wood panel sprite at runtime. The
         // flat colour here is only what the Editor preview shows before Play Mode.
+        //
+        // Wider and shorter than a naive centred card: at 0.18–0.82 the panel measured 819x576
+        // and the painted wooden frame ate it down to 627x288 of usable field, which could not
+        // fit four rows (the content wanted 368px). Measured from the render, not from the
+        // sprite's 9-slice border, which understates the frame badly.
         var shopPanel = CreateStretchPanel(canvasGO.transform, "ShopPanel",
-            new Vector2(0.18f, 0.10f), new Vector2(0.82f, 0.90f),
+            new Vector2(0.10f, 0.02f), new Vector2(0.90f, 0.98f),
             new Color(0.08f, 0.08f, 0.08f, 0.96f));
         shopPanel.SetActive(false);
 
-        // Header. The panel frame art is ~90px thick once the sprite kit is applied, which is
-        // NOT the 32px 9-slice border — these insets are measured against the painted frame, so
-        // the header sits on the cream field rather than on the border.
+        // Header insets are FrameInset, measured against the rendered frame rather than the
+        // 9-slice border field, which reports ~32px for art that actually covers ~100px here.
         var titleText = CreateTMPText(shopPanel.transform, "ShopTitleText", "Shop",
-            new Vector2(0, 1), new Vector2(0.62f, 1),
-            new Vector2(96, -150), new Vector2(0, -96), 24, FontStyles.Bold, noWrap: true);
+            new Vector2(0, 1), new Vector2(0.55f, 1),
+            new Vector2(FrameInsetLeft, -(FrameInsetTop + 52)), new Vector2(0, -FrameInsetTop),
+            24, FontStyles.Bold, noWrap: true);
+        // NOT cream: this heading sits on the panel's cream field, where UITheme's cream scores
+        // about 1.1 against it and vanished entirely in the first render. ShopUI.ApplyTheme
+        // forces cream on every Awake, so the colour is re-applied there too — changing it only
+        // here would be silently repainted at runtime.
+        titleText.color = TextDark;
 
+        // The gold readout gets its own column stopping short of the close button; at full
+        // width it ran underneath the X and rendered as "Ouro: 9?7".
         var goldText = CreateTMPText(shopPanel.transform, "PlayerGoldText", "Gold: 0g",
-            new Vector2(0.62f, 1), new Vector2(1f, 1),
-            new Vector2(0, -150), new Vector2(-96, -96), 18, FontStyles.Bold, noWrap: true);
+            new Vector2(0.55f, 1), new Vector2(1f, 1),
+            new Vector2(8, -(FrameInsetTop + 52)),
+            new Vector2(-(FrameInsetRight + CloseButtonSize + 16), -FrameInsetTop),
+            18, FontStyles.Bold, noWrap: true);
         goldText.alignment = TextAlignmentOptions.Right;
 
         var discountText = CreateTMPText(shopPanel.transform, "RelationshipDiscountText", "",
             new Vector2(0, 1), new Vector2(1f, 1),
-            new Vector2(96, -186), new Vector2(-96, -150), 14, FontStyles.Italic, noWrap: true);
+            new Vector2(FrameInsetLeft, -(FrameInsetTop + 88)),
+            new Vector2(-FrameInsetRight, -(FrameInsetTop + 56)),
+            14, FontStyles.Italic, noWrap: true);
 
         var closeBtn = CreateButton(shopPanel.transform, "CloseButton", "X", new Color(0.5f, 0.15f, 0.15f));
         {
@@ -96,8 +135,10 @@ public class ShopUIBuilder : EditorWindow
             rt.anchorMin = new Vector2(1, 1);
             rt.anchorMax = new Vector2(1, 1);
             rt.pivot = new Vector2(1, 1);
-            rt.anchoredPosition = new Vector2(-96, -96);
-            rt.sizeDelta = new Vector2(44, 44);
+            // Inside the cream field, not on the frame: at the old inset it sat on the painted
+            // wood, where a dark red button on dark brown all but disappeared.
+            rt.anchoredPosition = new Vector2(-FrameInsetRight, -FrameInsetTop);
+            rt.sizeDelta = new Vector2(CloseButtonSize, CloseButtonSize);
         }
 
         // ── ScrollView with item rows ───────────────────────────────────────────
@@ -106,11 +147,16 @@ public class ShopUIBuilder : EditorWindow
         var scrollRect = scrollGO.AddComponent<ScrollRect>();
         scrollRect.horizontal = false;
         scrollRect.vertical = true;
+        // Elastic with no visible scrollbar makes an overflowing list look like a clipped one.
+        // The four placeholder shops fit, but a longer stock list must be reachable rather than
+        // silently cut off at the frame.
+        scrollRect.movementType = ScrollRect.MovementType.Clamped;
+        scrollRect.scrollSensitivity = 24f;
         var scrollRT = scrollGO.GetComponent<RectTransform>();
         scrollRT.anchorMin = new Vector2(0, 0);
         scrollRT.anchorMax = new Vector2(1, 1);
-        scrollRT.offsetMin = new Vector2(96, 96);
-        scrollRT.offsetMax = new Vector2(-96, -192);
+        scrollRT.offsetMin = new Vector2(FrameInsetLeft, FrameInsetBottom);
+        scrollRT.offsetMax = new Vector2(-FrameInsetRight, -(FrameInsetTop + 92));
 
         var viewportGO = new GameObject("Viewport");
         viewportGO.transform.SetParent(scrollGO.transform, false);
@@ -275,13 +321,16 @@ public class ShopUIBuilder : EditorWindow
             new Vector2(84, 6), new Vector2(-4, 0), 14, FontStyles.Bold, noWrap: true);
         priceText.color = new Color(0.55f, 0.40f, 0.05f);
 
+        // Stock column. 18pt, not 12: at 12 the unlimited glyph rendered as a faint dash that
+        // read as an empty cell rather than as "infinite stock".
         var stockText = CreateTMPText(rowGO.transform, "StockText", "",
             new Vector2(0.58f, 0f), new Vector2(0.80f, 1f),
-            new Vector2(4, 6), new Vector2(-4, -6), 12, FontStyles.Normal, noWrap: true);
+            new Vector2(4, 6), new Vector2(-4, -6), 18, FontStyles.Bold, noWrap: true);
         stockText.alignment = TextAlignmentOptions.Center;
         stockText.color = textDark;
 
-        // Buy button
+        // Buy button. The label is localized at Initialize; "Buy" here is only the prefab's
+        // fallback for before the localization tables finish preloading.
         var buyBtn = CreateButton(rowGO.transform, "BuyButton", "Buy", new Color(0.15f, 0.45f, 0.15f));
         var buyRT = buyBtn.GetComponent<RectTransform>();
         buyRT.anchorMin = new Vector2(0.80f, 0.22f);
@@ -296,9 +345,12 @@ public class ShopUIBuilder : EditorWindow
         rowSO.FindProperty("priceText").objectReferenceValue = priceText;
         rowSO.FindProperty("stockText").objectReferenceValue = stockText;
         rowSO.FindProperty("buyButton").objectReferenceValue = buyBtn;
+        rowSO.FindProperty("buyButtonLabel").objectReferenceValue =
+            buyBtn.GetComponentInChildren<TextMeshProUGUI>();
         ApplyLocalizedString(rowSO, "priceLabelText", "dialogue.shop.price");
         ApplyLocalizedString(rowSO, "unlimitedStockText", "dialogue.shop.unlimited_stock");
         ApplyLocalizedString(rowSO, "stockCountText", "dialogue.shop.stock_count");
+        ApplyLocalizedString(rowSO, "buyLabelText", "dialogue.shop.buy");
         rowSO.ApplyModifiedProperties();
 
         // Overwrite any stale prefab from a previous build

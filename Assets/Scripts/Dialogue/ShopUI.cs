@@ -35,6 +35,13 @@ public class ShopUI : MonoBehaviour, IUIWindow, ISaveable
     [SerializeField] private LocalizedString friendshipDiscountText; // table "Dialogue", key "dialogue.shop.friendship_discount"
     [SerializeField] private LocalizedString goldLabelText; // table "Dialogue", key "dialogue.shop.gold_label"
 
+    /// <summary>
+    /// The theme's `positive` green is tuned for a dark background and drops to roughly 2.2 on
+    /// this panel's cream field. Deepened to clear 4.5 while keeping the same "you're getting a
+    /// discount" meaning.
+    /// </summary>
+    private static readonly Color DiscountGreenOnCream = new Color(0.11f, 0.38f, 0.13f);
+
     private ShopData _currentShop;
     private PlayerStats _playerStats;
     private Inventory.Inventory _inventory;
@@ -123,9 +130,13 @@ public class ShopUI : MonoBehaviour, IUIWindow, ISaveable
 
         if (theme != null)
         {
-            UIThemeStyler.TintText(shopTitleText, theme.backgroundCream);
-            UIThemeStyler.TintText(playerGoldText, theme.highlightGold);
-            UIThemeStyler.TintText(relationshipDiscountText, theme.positive);
+            // All three sit on the panel's CREAM field, not on wood. The cream/gold pairing used
+            // elsewhere is measured against a wood background and inverts here: cream-on-cream
+            // scored ~1.1 (the title was invisible in the first render) and highlightGold ~1.4.
+            // Same trap as the settings panel and the building shop header.
+            UIThemeStyler.TintText(shopTitleText, theme.textDark);
+            UIThemeStyler.TintText(playerGoldText, theme.textDark);
+            UIThemeStyler.TintText(relationshipDiscountText, DiscountGreenOnCream);
         }
     }
 
