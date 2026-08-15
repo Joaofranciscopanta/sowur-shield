@@ -109,21 +109,33 @@ namespace SowurShield.Inventory
         /// </summary>
         private static SlotBinding Resolve(InventorySlot slot)
         {
+            // Whether the drag already emptied the container is decided by SlotDragHandler:
+            // it calls Inventory.ClearSlotForDrag whenever the slot has an InventoryManager.
+            // Read it from there rather than inferring it from OwnerView.
+            //
+            // Inferring was correct until Inventory adopted ContainerView — from then on player
+            // slots had BOTH an InventoryManager and an OwnerView, took the view branch, and
+            // were reported as non-destructive. The router then skipped the restore for a drag
+            // that HAD emptied the slot, so the item was gone from the container before the
+            // transfer and the drop silently destroyed it.
+            Inventory inventory = slot.InventoryManager;
+            bool dragWasDestructive = inventory != null && !slot.isSellBoxMode;
+
             ContainerView view = slot.OwnerView;
             if (view != null && view.Container != null)
             {
                 int index = view.IndexOf(slot);
                 return index >= 0
-                    ? new SlotBinding(view.Container, index, view.Policy, false, null)
+                    ? new SlotBinding(view.Container, index, view.Policy, dragWasDestructive, inventory)
                     : SlotBinding.None;
             }
 
-            Inventory inventory = slot.InventoryManager;
             if (inventory != null && inventory.Container != null)
             {
                 int index = inventory.IndexOfSlot(slot);
                 return index >= 0
-                    ? new SlotBinding(inventory.Container, index, DefaultContainerPolicy.Instance, true, inventory)
+                    ? new SlotBinding(inventory.Container, index, DefaultContainerPolicy.Instance,
+                                      dragWasDestructive, inventory)
                     : SlotBinding.None;
             }
 

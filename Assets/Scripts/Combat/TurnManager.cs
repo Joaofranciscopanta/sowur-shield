@@ -96,10 +96,28 @@ public class TurnManager : MonoBehaviour
     public event System.Action OnPlayerTurnEnded;
 
     /// <summary>
-    /// How long (seconds) to wait for a command before falling back to the automatic
-    /// action. Without this, a UI that fails to open would freeze the battle forever.
+    /// How long (seconds) to wait for the command UI to appear before falling back to the
+    /// automatic action. Without this, a UI that fails to open would freeze the battle forever.
+    ///
+    /// This is a failsafe against a broken panel, NOT a shot clock. It used to be 15s measured
+    /// against the player rather than the UI, which meant Active Pause quietly took the turn
+    /// away from anyone still reading their skills — with no timer, bar or warning anywhere on
+    /// screen, so it read as a bug rather than as time pressure. Once the panel is up, the
+    /// player gets as long as they want: pausing is the entire point of the mode.
     /// </summary>
-    private const float PlayerInputTimeout = 15f;
+    private const float CommandUiTimeout = 5f;
+
+    /// <summary>
+    /// Set by the command UI to confirm it has opened for the unit currently awaiting input.
+    /// The failsafe above only fires while this is false — once a panel is on screen there is
+    /// nothing to rescue the player from, so the wait becomes indefinite.
+    /// </summary>
+    private bool commandUiAcknowledged;
+
+    /// <summary>
+    /// Called by <see cref="BattleCommandUI"/> when its panel is up and accepting input.
+    /// </summary>
+    public void NotifyCommandUiReady() => commandUiAcknowledged = true;
 
     /// <summary>Set the combat mode. Exposed for the assembler and for tests.</summary>
     public void SetCombatMode(CombatMode mode) => Mode = mode;
@@ -464,20 +482,29 @@ public class TurnManager : MonoBehaviour
     {
         pendingAction = null;
         AwaitingInputFor = unit;
+        commandUiAcknowledged = false;
 
         if (BattleStatusUI.Instance != null)
             BattleStatusUI.Instance.HighlightActingUnit(unit);
 
         OnPlayerTurnStarted?.Invoke(unit);
 
+        // Wait for a command. The clock only runs until the panel confirms it is up: after
+        // that the player takes as long as they like, which is what Active Pause is for.
         float waited = 0f;
-        while (pendingAction == null && waited < PlayerInputTimeout)
+        while (pendingAction == null)
         {
             // The unit can die while the panel is open (burn tick, enemy action mid-wait).
             if (!unit.IsAlive())
                 break;
 
-            waited += Time.unscaledDeltaTime;
+            if (!commandUiAcknowledged)
+            {
+                waited += Time.unscaledDeltaTime;
+                if (waited >= CommandUiTimeout)
+                    break;
+            }
+
             yield return null;
         }
 
@@ -495,10 +522,11 @@ public class TurnManager : MonoBehaviour
 
         if (action == null)
         {
-            // Timed out or the panel never opened — resolve automatically so a UI bug
-            // can never hard-freeze the battle.
-            Debug.LogWarning($"[TurnManager] No command received for '{unit.name}' within " +
-                $"{PlayerInputTimeout}s — falling back to the automatic action.");
+            // The command panel never came up — resolve automatically so a UI bug can never
+            // hard-freeze the battle. This is no longer reachable by a player simply taking
+            // their time, so it now means what it says: the UI is broken or missing.
+            Debug.LogWarning($"[TurnManager] Command UI did not open for '{unit.name}' within " +
+                $"{CommandUiTimeout}s — falling back to the automatic action.");
             ResolveUnitAction(unit);
             yield break;
         }
