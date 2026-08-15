@@ -160,6 +160,19 @@ Assets/Scripts/
 
 ## Development Notes
 
+### ⚠️ A MonoBehaviour needs its own file, or it cannot go in a prefab
+
+Unity creates one **MonoScript asset per file**, named after the file. A `MonoBehaviour`
+declared as a *second* class inside another script compiles and runs fine, but has no MonoScript
+to reference — so `AddComponent` + `SaveAsPrefabAsset` writes a **missing-script** component,
+with no compile error and no console warning. The prefab looks right in the Project window and
+the component is simply absent at runtime.
+
+`ShopItemRow` lived inside `ShopUI.cs` this way until 2026-08-15, which is one of three reasons
+the shop system was unreachable for months. `BuildingRow` — the working equivalent — always had
+its own file. **One MonoBehaviour per file, named after the class.** Plain classes, structs and
+enums can still share a file.
+
 ### Architecture
 - Singletons: UIManager, InteractionManager, SaveManager, GameTimeController
 - Interfaces: IInteractable, IUIWindow (all UI windows), ISaveable

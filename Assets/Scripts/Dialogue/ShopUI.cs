@@ -222,9 +222,13 @@ public class ShopUI : MonoBehaviour, IUIWindow, ISaveable
 
     private void BuildItemRows(float discount)
     {
-        // Clear existing rows
+        // DestroyImmediate, not Destroy: Destroy is deferred to the end of the frame, so the old
+        // rows are still children while the new ones are instantiated below — switching shops
+        // stacked every previous shop's stock on top of the current one (rui's 3 items rendered
+        // as 15). Same deferred-destroy trap already fixed in RelationshipUI, SeedShopUI and
+        // WorldMapUiController.
         foreach (var row in _rows)
-            if (row != null) Destroy(row.gameObject);
+            if (row != null) DestroyImmediate(row.gameObject);
         _rows.Clear();
 
         if (shopItemContainer == null || shopItemRowPrefab == null || _currentShop.items == null) return;
@@ -337,66 +341,6 @@ public class ShopUI : MonoBehaviour, IUIWindow, ISaveable
     {
         PlayerMove player = Object.FindFirstObjectByType<PlayerMove>();
         if (player != null) player.EnableMovement();
-    }
-}
-
-// ============================================================================
-// ShopItemRow — one row in the shop grid
-// ============================================================================
-
-/// <summary>
-/// Represents one buyable item in the shop list.
-/// Wire itemIcon, itemNameText, priceText, stockText, buyButton in the prefab.
-/// </summary>
-public class ShopItemRow : MonoBehaviour
-{
-    [SerializeField] private Image itemIcon;
-    [SerializeField] private TextMeshProUGUI itemNameText;
-    [SerializeField] private TextMeshProUGUI priceText;
-    [SerializeField] private TextMeshProUGUI stockText;
-    [SerializeField] private Button buyButton;
-
-    [SerializeField] private LocalizedString priceLabelText; // table "Dialogue", key "dialogue.shop.price"
-    [SerializeField] private LocalizedString unlimitedStockText; // table "Dialogue", key "dialogue.shop.unlimited_stock"
-    [SerializeField] private LocalizedString stockCountText; // table "Dialogue", key "dialogue.shop.stock_count"
-
-    private ShopItemEntry _entry;
-
-    public void Initialize(Item item, ShopItemEntry entry, int finalPrice,
-                           System.Action<ShopItemEntry, Item, int> onBuy)
-    {
-        _entry = entry;
-
-        if (itemIcon != null && item.icon != null)
-            itemIcon.sprite = item.icon;
-
-        if (itemNameText != null)
-            itemNameText.text = item.GetDisplayName();
-
-        if (priceText != null)
-        {
-            priceLabelText.Arguments = new object[] { finalPrice };
-            priceText.text = priceLabelText.SafeGetLocalizedString();
-        }
-
-        RefreshStock();
-
-        if (buyButton != null)
-            buyButton.onClick.AddListener(() => onBuy(entry, item, finalPrice));
-    }
-
-    public void RefreshStock()
-    {
-        if (stockText == null || _entry == null) return;
-        if (_entry.IsUnlimited)
-        {
-            stockText.text = unlimitedStockText.SafeGetLocalizedString();
-        }
-        else
-        {
-            stockCountText.Arguments = new object[] { _entry.currentStock };
-            stockText.text = stockCountText.SafeGetLocalizedString();
-        }
     }
 }
 
