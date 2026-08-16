@@ -162,6 +162,22 @@ MonoBehaviour:
     m_Localized: Remedio
     m_Metadata:
       m_Items: []
+  - m_Id: 20037808398524416
+    m_Localized: Machado
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20037808436273152
+    m_Localized: Leite
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20037808436273153
+    m_Localized: Madeira
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20037808436273154
+    m_Localized: Vara de Pesca
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

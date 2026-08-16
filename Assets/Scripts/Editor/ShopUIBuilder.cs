@@ -37,12 +37,16 @@ public class ShopUIBuilder : EditorWindow
     /// symmetric inset (the first attempt used 100 everywhere) left every row bleeding out
     /// through the right-hand frame.
     /// </summary>
-    private const float FrameInsetLeft = 150f;
-    private const float FrameInsetRight = 195f;
-    // Top and bottom sit closer than the sides: the scan put the cream field at y 163..595 of a
-    // 720px render, and the header/list need the vertical room more than the frame needs margin.
-    private const float FrameInsetTop = 110f;
-    private const float FrameInsetBottom = 110f;
+    // Re-measured after the canvas moved to 1920x1080 (the scan reported 129/188/105/130 in the
+    // panel's own units, with the content hidden). The bottom was the one that mattered: at 110
+    // it sat inside the painted frame and clipped the last row off every four-item shop.
+    // The scan measures where the cream *field* starts, but the panel art also paints a gold
+    // inner border a little way inside that — content flush against the scan value touches it.
+    // These carry ~25px of breathing room past the measured 129/188/105/130.
+    private const float FrameInsetLeft = 155f;
+    private const float FrameInsetRight = 215f;
+    private const float FrameInsetTop = 140f;
+    private const float FrameInsetBottom = 155f;
 
     private const float CloseButtonSize = 52f;
 
@@ -82,9 +86,10 @@ public class ShopUIBuilder : EditorWindow
 
         var scaler = canvasGO.AddComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        // Set explicitly: ScaleWithScreenSize alone leaves the 800x600 default, which draws
-        // roughly 1.8x oversized on a 1080p screen.
-        scaler.referenceResolution = new Vector2(1280, 720);
+        // 1920x1080 to match every other canvas in SampleScene. The older builders in this
+        // project use 1280x720 and I copied that; the scene's sixteen other canvases are all
+        // 1920x1080, so the shop drew about 1.5x larger than everything around it.
+        scaler.referenceResolution = new Vector2(1920, 1080);
         scaler.matchWidthOrHeight = 0.5f;
 
         canvasGO.AddComponent<GraphicRaycaster>();

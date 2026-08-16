@@ -12,21 +12,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2df1b3057e07cad45a9e4bdcec3840e0, type: 3}
   m_Name: Axe
   m_EditorClassIdentifier: 
-  itemTags:
-  - Axe
-  toolLevel: 0
-  itemType: 1
   itemName: Axe
   displayName:
     m_TableReference:
-      m_TableCollectionName:
+      m_TableCollectionName: c7818de13af7bf241b2d39f8152a219d
     m_TableEntryReference:
-      m_KeyId: 0
-      m_Key:
+      m_KeyId: 20037808398524416
+      m_Key: item.Axe.name
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
-  itemDesc: Use to chop trees
+  description: A useful item
   icon: {fileID: 657875912277218462, guid: 4ffb15b23c66820449ab4e1c321986e4, type: 3}
+  itemType: 1
+  rarity: 0
   isStackable: 0
   maxStackSize: 99
+  itemTags:
+  - Axe
+  toolLevel: 0
+  durability: -1
+  energyRestore: 0
+  healthRestore: 0
+  isConsumable: 0
+  baseValue: 1
+  canBeSold: 1
+  giftAffinityValue: 0
+  references:
+    version: 2
+    RefIds: []
