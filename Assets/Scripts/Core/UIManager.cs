@@ -20,6 +20,49 @@ public class UIManager : MonoBehaviour
     private List<IUIWindow> registeredWindows = new List<IUIWindow>();
     private Stack<IUIWindow> openWindowStack = new Stack<IUIWindow>();
 
+    /// <summary>
+    /// Whether a registered window is still usable.
+    ///
+    /// `window != null` is not enough: these collections hold IUIWindow, an *interface*, and
+    /// Unity's overloaded == is declared on UnityEngine.Object. Compared through an interface
+    /// reference, C# falls back to plain reference equality, so a destroyed MonoBehaviour — a
+    /// live C# object with a dead native side — passes the guard and throws on the first member
+    /// access. `InteractionManager` already guards its own list this way
+    /// (`item is MonoBehaviour mb && mb == null`); this stack did not.
+    /// </summary>
+    private static bool IsAlive(IUIWindow window)
+    {
+        if (window == null) return false;
+
+        var asUnityObject = window as UnityEngine.Object;
+        // Not a Unity object at all: the reference check above is the only liveness there is.
+        if (ReferenceEquals(asUnityObject, null)) return true;
+
+        return asUnityObject != null;
+    }
+
+    /// <summary>
+    /// Drops destroyed windows from the registry and the open stack.
+    ///
+    /// A window destroyed while open (scene change, a panel that Destroys itself) stays on the
+    /// stack, and `HandleEscapeKey` peeked it and read `CanCloseWithEsc` with no guard at all —
+    /// so one destroyed window left ESC throwing every time, which locks the player out of
+    /// closing anything *and* out of opening the pause menu.
+    /// </summary>
+    private void PruneDeadWindows()
+    {
+        registeredWindows.RemoveAll(w => !IsAlive(w));
+
+        if (openWindowStack.Count == 0) return;
+        if (openWindowStack.All(IsAlive)) return;
+
+        // Stack has no removal; rebuild it bottom-up so the ordering survives.
+        var survivors = openWindowStack.Where(IsAlive).Reverse().ToList();
+        openWindowStack.Clear();
+        foreach (var w in survivors)
+            openWindowStack.Push(w);
+    }
+
     private void Awake()
     {
         // Singleton pattern
@@ -93,6 +136,10 @@ public class UIManager : MonoBehaviour
             return false;
         }
 
+        // A destroyed window left on the stack would otherwise block every future open, and the
+        // WindowName read below would throw before the block was even reported.
+        PruneDeadWindows();
+
         // Check if any window is currently open
         if (openWindowStack.Count > 0)
         {
@@ -140,6 +187,9 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public void HandleEscapeKey()
     {
+        // A window destroyed while open would otherwise be peeked below and dereferenced.
+        PruneDeadWindows();
+
         LogDebug($"ESC pressed. Open windows: {openWindowStack.Count}");
 
         // If windows are open, try to close the top one
@@ -160,7 +210,9 @@ public class UIManager : MonoBehaviour
         }
 
         // No windows open, try to open game menu
-        var gameMenu = registeredWindows.FirstOrDefault(w => w.WindowName == "GameMenu");
+        // IsAlive first: the predicate reads WindowName, which is a member access on every
+        // registered window, so a destroyed one throws here rather than being filtered out.
+        var gameMenu = registeredWindows.FirstOrDefault(w => IsAlive(w) && w.WindowName == "GameMenu");
         if (gameMenu != null && !gameMenu.IsWindowOpen &&
             (gameMenu is not GameMenuManager menuManager || menuManager.CanOpenMenu()))
         {
@@ -178,6 +230,9 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public bool IsAnyWindowOpen()
     {
+        // Callers use this to decide whether to lock player movement and swallow input, so a
+        // destroyed window counted as "open" would leave the player frozen with no way out.
+        PruneDeadWindows();
         return openWindowStack.Count > 0;
     }
 
@@ -186,6 +241,7 @@ public class UIManager : MonoBehaviour
     /// </summary>
     public IUIWindow GetActiveWindow()
     {
+        PruneDeadWindows();
         return openWindowStack.Count > 0 ? openWindowStack.Peek() : null;
     }
 
@@ -199,7 +255,9 @@ public class UIManager : MonoBehaviour
         while (openWindowStack.Count > 0)
         {
             var window = openWindowStack.Pop();
-            window.CloseWindow();
+            // Popped regardless, but only a live window can be told to close.
+            if (IsAlive(window))
+                window.CloseWindow();
         }
     }
 
