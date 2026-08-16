@@ -414,6 +414,11 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &8224920 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 749233578676966313, guid: f56b4abf0cec4b06853cba2cc963a2d5, type: 3}
+  m_PrefabInstance: {fileID: 1049453081043179343}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &9261440
 GameObject:
   m_ObjectHideFlags: 0
@@ -1204,6 +1209,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 42419266}
   m_CullTransparentMesh: 1
+--- !u!1 &44084638 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2457634641800672012, guid: 212d9a2db9d3444a8975bc18c674c0d5, type: 3}
+  m_PrefabInstance: {fileID: 4026501120924639565}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &56617402
 GameObject:
   m_ObjectHideFlags: 0
@@ -1559,6 +1569,7 @@ GameObject:
   - component: {fileID: 104627023}
   - component: {fileID: 104627022}
   - component: {fileID: 104627021}
+  - component: {fileID: 104627025}
   m_Layer: 0
   m_Name: Joana
   m_TagString: Untagged
@@ -1818,6 +1829,29 @@ Transform:
   - {fileID: 175611241}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &104627025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 104627020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 2
+  iconSprite: {fileID: 0}
+  iconColor: {r: 0.25, g: 0.45, b: 0.95, a: 1}
+  iconSize: 0.8
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &106570219
 GameObject:
   m_ObjectHideFlags: 0
@@ -1905,6 +1939,11 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!1 &112669270 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2913577777649586777, guid: 63bd1b735271480b85779335e8c7648a, type: 3}
+  m_PrefabInstance: {fileID: 432409592727303774}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &118295612
 GameObject:
   m_ObjectHideFlags: 0
@@ -3738,6 +3777,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 211684439}
   m_CullTransparentMesh: 1
+--- !u!1 &220029486 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3518258184039755209, guid: 341e81fb324a4859b4853647e8c57bb9, type: 3}
+  m_PrefabInstance: {fileID: 3822276161171119584}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &228169069
 GameObject:
   m_ObjectHideFlags: 0
@@ -5763,6 +5807,7 @@ GameObject:
   - component: {fileID: 372578046}
   - component: {fileID: 372578045}
   - component: {fileID: 372578044}
+  - component: {fileID: 372578048}
   m_Layer: 0
   m_Name: Rui
   m_TagString: Untagged
@@ -6021,6 +6066,29 @@ Transform:
   - {fileID: 244492455}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &372578048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 372578043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 2
+  iconSprite: {fileID: 0}
+  iconColor: {r: 0.25, g: 0.45, b: 0.95, a: 1}
+  iconSize: 0.8
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &376229797
 GameObject:
   m_ObjectHideFlags: 0
@@ -6113,6 +6181,7 @@ GameObject:
   - component: {fileID: 382205513}
   - component: {fileID: 382205512}
   - component: {fileID: 382205511}
+  - component: {fileID: 382205515}
   m_Layer: 0
   m_Name: "Tom\xE1s"
   m_TagString: Untagged
@@ -6372,6 +6441,29 @@ Transform:
   - {fileID: 552451372}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &382205515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 382205510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 2
+  iconSprite: {fileID: 0}
+  iconColor: {r: 0.25, g: 0.45, b: 0.95, a: 1}
+  iconSize: 0.8
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &383649596
 GameObject:
   m_ObjectHideFlags: 0
@@ -7950,6 +8042,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds: []
+--- !u!1 &477526630 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1015530346471570137, guid: 41bc174e7f634738b14630fa4eca9680, type: 3}
+  m_PrefabInstance: {fileID: 948864149298424816}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &484233441
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8648,7 +8745,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4294967231
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -9247,6 +9344,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 556723552}
   m_CullTransparentMesh: 1
+--- !u!1 &557183104 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1738917068596766384, guid: 5196a7479be640f2b3aad0fbbaaa430e, type: 3}
+  m_PrefabInstance: {fileID: 2925542859164953645}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &558867910
 GameObject:
   m_ObjectHideFlags: 0
@@ -9467,6 +9569,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 565650674}
   m_CullTransparentMesh: 1
+--- !u!1 &571968673 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 37235439118089758, guid: c7f10dae47aa49da89e4a6aa1d81accc, type: 3}
+  m_PrefabInstance: {fileID: 4026150107940698465}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &574026768
 GameObject:
   m_ObjectHideFlags: 0
@@ -10112,6 +10219,11 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!1 &590027075 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2667027066378554312, guid: 5c969a73bde54560b85f37fe46aa13d5, type: 3}
+  m_PrefabInstance: {fileID: 146776255626318338}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &593278505
 GameObject:
   m_ObjectHideFlags: 0
@@ -10579,6 +10691,11 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &615015419 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2526262328728684302, guid: 19bb7ffbce1b4d35b420681311a65f17, type: 3}
+  m_PrefabInstance: {fileID: 483692108816296143}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &635798465
 GameObject:
   m_ObjectHideFlags: 0
@@ -11579,6 +11696,7 @@ GameObject:
   - component: {fileID: 667461107}
   - component: {fileID: 667461106}
   - component: {fileID: 667461105}
+  - component: {fileID: 667461109}
   m_Layer: 0
   m_Name: Clara
   m_TagString: Untagged
@@ -11839,6 +11957,57 @@ Transform:
   - {fileID: 1103733203}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &667461109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 667461104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 2
+  iconSprite: {fileID: 0}
+  iconColor: {r: 0.25, g: 0.45, b: 0.95, a: 1}
+  iconSize: 0.8
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
+--- !u!1 &667490744 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6127428680552932189, guid: 4b6f73fa056ef7b46973cb5301b77ce8, type: 3}
+  m_PrefabInstance: {fileID: 5368916688261412387}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &667490749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 667490744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 6
+  iconSprite: {fileID: 0}
+  iconColor: {r: 0.95, g: 0.6, b: 0.2, a: 1}
+  iconSize: 0.62
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &667828789
 GameObject:
   m_ObjectHideFlags: 0
@@ -15640,6 +15809,11 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &906783087 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5522219693077281312, guid: 60252a25a2bc00c589a40bc9a549da73, type: 3}
+  m_PrefabInstance: {fileID: 3024074362188930777}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &907462415
 GameObject:
   m_ObjectHideFlags: 0
@@ -16775,7 +16949,7 @@ MonoBehaviour:
   iconType: 2
   iconSprite: {fileID: 0}
   iconColor: {r: 0, g: 0, b: 1, a: 1}
-  iconSize: 1.5
+  iconSize: 0.8
   alwaysVisible: 1
   visibilityRange: 100
   rotateWithObject: 0
@@ -17877,6 +18051,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1703771085}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1063727264 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4383182597930209328, guid: d9b11ab7cd474dc1b117624a2dfd3120, type: 3}
+  m_PrefabInstance: {fileID: 3687264395286759}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1076084195
 GameObject:
   m_ObjectHideFlags: 0
@@ -18398,6 +18577,7 @@ GameObject:
   - component: {fileID: 1118328935}
   - component: {fileID: 1118328934}
   - component: {fileID: 1118328933}
+  - component: {fileID: 1118328937}
   m_Layer: 0
   m_Name: Bento
   m_TagString: Untagged
@@ -18656,6 +18836,29 @@ Transform:
   - {fileID: 35869577}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1118328937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1118328932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 2
+  iconSprite: {fileID: 0}
+  iconColor: {r: 0.25, g: 0.45, b: 0.95, a: 1}
+  iconSize: 0.8
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &1137548870
 GameObject:
   m_ObjectHideFlags: 0
@@ -18834,6 +19037,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds: []
+--- !u!1 &1148919180 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3692823190808146296, guid: ea6c470fa434404aad5175a1d7a87f0c, type: 3}
+  m_PrefabInstance: {fileID: 2281098958484010904}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1149027846
 GameObject:
   m_ObjectHideFlags: 0
@@ -20368,10 +20576,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  iconType: 0
+  iconType: 1
   iconSprite: {fileID: 0}
-  iconColor: {r: 0, g: 1, b: 0, a: 1}
-  iconSize: 1.5
+  iconColor: {r: 0.15, g: 0.85, b: 0.25, a: 1}
+  iconSize: 0.85
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -21090,7 +21298,7 @@ GameObject:
   - component: {fileID: 1244841105}
   - component: {fileID: 1244841107}
   - component: {fileID: 1244841106}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DisplayTilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23395,6 +23603,11 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &1375241320 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5522219693077281312, guid: 1ada5cb7cb773264e8d4634d28ce21ef, type: 3}
+  m_PrefabInstance: {fileID: 3024074362188938321}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1379890528
 GameObject:
   m_ObjectHideFlags: 0
@@ -23521,11 +23734,57 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2140981987456499093, guid: 60252a25a2bc00c589a40bc9a549da73, type: 3}
   m_PrefabInstance: {fileID: 3024074362188930777}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1388240785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 906783087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!4 &1388248064 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2140981987456499093, guid: 1ada5cb7cb773264e8d4634d28ce21ef, type: 3}
   m_PrefabInstance: {fileID: 3024074362188938321}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1388248072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1375241320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &1398386443
 GameObject:
   m_ObjectHideFlags: 0
@@ -25389,6 +25648,7 @@ GameObject:
   - component: {fileID: 1526481664}
   - component: {fileID: 1526481663}
   - component: {fileID: 1526481662}
+  - component: {fileID: 1526481666}
   m_Layer: 0
   m_Name: Isabela
   m_TagString: Untagged
@@ -25648,6 +25908,29 @@ Transform:
   - {fileID: 1933839738}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1526481666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1526481661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 2
+  iconSprite: {fileID: 0}
+  iconColor: {r: 0.25, g: 0.45, b: 0.95, a: 1}
+  iconSize: 0.8
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &1527073469
 GameObject:
   m_ObjectHideFlags: 0
@@ -26452,6 +26735,7 @@ GameObject:
   - component: {fileID: 1585185862}
   - component: {fileID: 1585185861}
   - component: {fileID: 1585185860}
+  - component: {fileID: 1585185864}
   m_Layer: 0
   m_Name: Maren
   m_TagString: Untagged
@@ -26725,6 +27009,29 @@ Transform:
   - {fileID: 9261441}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1585185864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1585185859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 2
+  iconSprite: {fileID: 0}
+  iconColor: {r: 0.25, g: 0.45, b: 0.95, a: 1}
+  iconSize: 0.8
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &1586298734
 GameObject:
   m_ObjectHideFlags: 0
@@ -27153,7 +27460,7 @@ GameObject:
   - component: {fileID: 1598530929}
   - component: {fileID: 1598530931}
   - component: {fileID: 1598530930}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PlaceholderTilemap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27600,7 +27907,7 @@ MonoBehaviour:
   iconType: 2
   iconSprite: {fileID: 0}
   iconColor: {r: 0, g: 0, b: 1, a: 1}
-  iconSize: 1.5
+  iconSize: 0.8
   alwaysVisible: 1
   visibilityRange: 100
   rotateWithObject: 0
@@ -27608,6 +27915,11 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!1 &1627936727 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2042305433374018968, guid: 07df1bd62512496fa96663ed993e5654, type: 3}
+  m_PrefabInstance: {fileID: 3876745739826890243}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1631085790
 GameObject:
   m_ObjectHideFlags: 0
@@ -28844,6 +29156,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1679415676}
   m_CullTransparentMesh: 1
+--- !u!1 &1682617334 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3862485980763262710, guid: 96f88dd17df5428783ee3f6daa037f94, type: 3}
+  m_PrefabInstance: {fileID: 2037471928975492022}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1689888014
 GameObject:
   m_ObjectHideFlags: 0
@@ -29461,6 +29778,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1709491346}
   m_CullTransparentMesh: 1
+--- !u!1 &1711224299 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1450212734838952641, guid: 8d882921beef4834aabb63b2f12edaa4, type: 3}
+  m_PrefabInstance: {fileID: 2108151728132177433}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1715545961
 GameObject:
   m_ObjectHideFlags: 0
@@ -29762,6 +30084,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1730966906}
   m_CullTransparentMesh: 1
+--- !u!1 &1735170474 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3820323058700499694, guid: c0c16908bdfb4716b12a939a428e8abe, type: 3}
+  m_PrefabInstance: {fileID: 2005028703608251296}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1740275012
 GameObject:
   m_ObjectHideFlags: 0
@@ -30000,7 +30327,7 @@ MonoBehaviour:
   iconType: 3
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 1, b: 0, a: 1}
-  iconSize: 1
+  iconSize: 0.62
   alwaysVisible: 1
   visibilityRange: 100
   rotateWithObject: 0
@@ -31226,6 +31553,7 @@ GameObject:
   - component: {fileID: 1816704878}
   - component: {fileID: 1816704877}
   - component: {fileID: 1816704876}
+  - component: {fileID: 1816704880}
   m_Layer: 0
   m_Name: Nara
   m_TagString: Untagged
@@ -31484,6 +31812,29 @@ Transform:
   - {fileID: 383649597}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1816704880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1816704875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 2
+  iconSprite: {fileID: 0}
+  iconColor: {r: 0.25, g: 0.45, b: 0.95, a: 1}
+  iconSize: 0.8
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &1824821715
 GameObject:
   m_ObjectHideFlags: 0
@@ -32821,7 +33172,7 @@ MonoBehaviour:
   iconType: 4
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.2901961, b: 0, a: 1}
-  iconSize: 1
+  iconSize: 0.62
   alwaysVisible: 1
   visibilityRange: 100
   rotateWithObject: 0
@@ -32860,6 +33211,16 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1526481665}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1943181358 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1443399726490648096, guid: 262e7419827f4ea5886a0df9d0ddada6, type: 3}
+  m_PrefabInstance: {fileID: 1489867014780315827}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1947797358 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3597338933758414, guid: a72a411140384a1585fcf7b7002f86bd, type: 3}
+  m_PrefabInstance: {fileID: 2772597589367211756}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1955035983
 GameObject:
   m_ObjectHideFlags: 0
@@ -33760,6 +34121,11 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &2049333594 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2104492053052722648, guid: ff0e3894f19848c2afa8fff56bf08611, type: 3}
+  m_PrefabInstance: {fileID: 247187766013670800}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2060384449
 GameObject:
   m_ObjectHideFlags: 0
@@ -35358,10 +35724,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minimapCam: {fileID: 0}
-  defaultOrthographicSize: 10
+  defaultOrthographicSize: 16
   minimapLayers:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 320
   cameraDistance: 10
   playerTarget: {fileID: 1203825692}
   followPlayer: 1
@@ -35373,7 +35739,7 @@ MonoBehaviour:
   maxOrthographicSize: 30
   renderTexture: {fileID: 0}
   renderTextureSize: 1024
-  backgroundColor: {r: 0, g: 0, b: 0, a: 1}
+  backgroundColor: {r: 0.62, g: 0.74, b: 0.42, a: 1}
   enableDebugLogs: 1
 --- !u!20 &2135538200
 Camera:
@@ -35595,6 +35961,7 @@ GameObject:
   - component: {fileID: 2138437089}
   - component: {fileID: 2138437088}
   - component: {fileID: 2138437087}
+  - component: {fileID: 2138437091}
   m_Layer: 0
   m_Name: Elias
   m_TagString: Untagged
@@ -35851,6 +36218,29 @@ Transform:
   - {fileID: 1689888015}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2138437091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2138437086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 2
+  iconSprite: {fileID: 0}
+  iconColor: {r: 0.25, g: 0.45, b: 0.95, a: 1}
+  iconSize: 0.8
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &2141346929
 GameObject:
   m_ObjectHideFlags: 0
@@ -36195,7 +36585,7 @@ PrefabInstance:
       objectReference: {fileID: 490554983}
     - target: {fileID: 2998352490716152548, guid: d9b11ab7cd474dc1b117624a2dfd3120, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 10.0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2998352490716152548, guid: d9b11ab7cd474dc1b117624a2dfd3120, type: 3}
       propertyPath: m_LocalPosition.y
@@ -36240,7 +36630,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4383182597930209328, guid: d9b11ab7cd474dc1b117624a2dfd3120, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1702216779771361268}
   m_SourcePrefab: {fileID: 100100000, guid: d9b11ab7cd474dc1b117624a2dfd3120, type: 3}
 --- !u!1001 &5500000000000001
 PrefabInstance:
@@ -39409,11 +39802,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3619502337782683967, guid: 5c969a73bde54560b85f37fe46aa13d5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 8.0
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3619502337782683967, guid: 5c969a73bde54560b85f37fe46aa13d5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -11.0
+      value: -11
       objectReference: {fileID: 0}
     - target: {fileID: 3619502337782683967, guid: 5c969a73bde54560b85f37fe46aa13d5, type: 3}
       propertyPath: m_LocalPosition.z
@@ -39450,7 +39843,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2667027066378554312, guid: 5c969a73bde54560b85f37fe46aa13d5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 964362210293726557}
   m_SourcePrefab: {fileID: 100100000, guid: 5c969a73bde54560b85f37fe46aa13d5, type: 3}
 --- !u!1001 &247187766013670800
 PrefabInstance:
@@ -39462,7 +39858,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 786585759640530399, guid: ff0e3894f19848c2afa8fff56bf08611, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.0
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 786585759640530399, guid: ff0e3894f19848c2afa8fff56bf08611, type: 3}
       propertyPath: m_LocalPosition.y
@@ -39511,7 +39907,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2104492053052722648, guid: ff0e3894f19848c2afa8fff56bf08611, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 719194590303157637}
   m_SourcePrefab: {fileID: 100100000, guid: ff0e3894f19848c2afa8fff56bf08611, type: 3}
 --- !u!1001 &252585951133911936
 PrefabInstance:
@@ -39575,6 +39974,29 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4140866068074673296, guid: 5196a7479be640f2b3aad0fbbaaa430e, type: 3}
   m_PrefabInstance: {fileID: 2925542859164953645}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &338891131517632858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 557183104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1001 &432409592727303774
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39585,11 +40007,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1179770615292351749, guid: 63bd1b735271480b85779335e8c7648a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.0
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 1179770615292351749, guid: 63bd1b735271480b85779335e8c7648a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -11.0
+      value: -11
       objectReference: {fileID: 0}
     - target: {fileID: 1179770615292351749, guid: 63bd1b735271480b85779335e8c7648a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -39634,7 +40056,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2913577777649586777, guid: 63bd1b735271480b85779335e8c7648a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2789758287852816024}
   m_SourcePrefab: {fileID: 100100000, guid: 63bd1b735271480b85779335e8c7648a, type: 3}
 --- !u!1001 &483692108816296143
 PrefabInstance:
@@ -39646,11 +40071,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1739725826480762175, guid: 19bb7ffbce1b4d35b420681311a65f17, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 10.0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1739725826480762175, guid: 19bb7ffbce1b4d35b420681311a65f17, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -12.0
+      value: -12
       objectReference: {fileID: 0}
     - target: {fileID: 1739725826480762175, guid: 19bb7ffbce1b4d35b420681311a65f17, type: 3}
       propertyPath: m_LocalPosition.z
@@ -39695,23 +40120,95 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2526262328728684302, guid: 19bb7ffbce1b4d35b420681311a65f17, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2196436409478320730}
   m_SourcePrefab: {fileID: 100100000, guid: 19bb7ffbce1b4d35b420681311a65f17, type: 3}
 --- !u!4 &611405416849852403 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1935787475740395243, guid: a72a411140384a1585fcf7b7002f86bd, type: 3}
   m_PrefabInstance: {fileID: 2772597589367211756}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &611405416849852411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1947797358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!4 &703493033699129254 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2378429455154854949, guid: c7f10dae47aa49da89e4a6aa1d81accc, type: 3}
   m_PrefabInstance: {fileID: 4026150107940698465}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &703493033699129262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 571968673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!4 &719194590303157629 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 786585759640530399, guid: ff0e3894f19848c2afa8fff56bf08611, type: 3}
   m_PrefabInstance: {fileID: 247187766013670800}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &719194590303157637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2049333594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1001 &948864149298424816
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39771,7 +40268,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1015530346471570137, guid: 41bc174e7f634738b14630fa4eca9680, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3751012722821907240}
   m_SourcePrefab: {fileID: 100100000, guid: 41bc174e7f634738b14630fa4eca9680, type: 3}
 --- !u!1001 &956314799389161821
 PrefabInstance:
@@ -39835,6 +40335,29 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3619502337782683967, guid: 5c969a73bde54560b85f37fe46aa13d5, type: 3}
   m_PrefabInstance: {fileID: 146776255626318338}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &964362210293726557
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 590027075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1001 &1049453081043179343
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39849,7 +40372,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1769353545089039666, guid: f56b4abf0cec4b06853cba2cc963a2d5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.0
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 1769353545089039666, guid: f56b4abf0cec4b06853cba2cc963a2d5, type: 3}
       propertyPath: m_LocalPosition.y
@@ -39894,7 +40417,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 749233578676966313, guid: f56b4abf0cec4b06853cba2cc963a2d5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3650617076694230035}
   m_SourcePrefab: {fileID: 100100000, guid: f56b4abf0cec4b06853cba2cc963a2d5, type: 3}
 --- !u!1001 &1489867014780315827
 PrefabInstance:
@@ -39955,7 +40481,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1443399726490648096, guid: 262e7419827f4ea5886a0df9d0ddada6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1830427403424503849}
   m_SourcePrefab: {fileID: 100100000, guid: 262e7419827f4ea5886a0df9d0ddada6, type: 3}
 --- !u!1001 &1685464650766730969
 PrefabInstance:
@@ -40019,16 +40548,85 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2998352490716152548, guid: d9b11ab7cd474dc1b117624a2dfd3120, type: 3}
   m_PrefabInstance: {fileID: 3687264395286759}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1702216779771361268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1063727264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!4 &1830427403424503841 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4510302732231568207, guid: 262e7419827f4ea5886a0df9d0ddada6, type: 3}
   m_PrefabInstance: {fileID: 1489867014780315827}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1830427403424503849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1943181358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!4 &1900201302583332084 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3984300888905625373, guid: 341e81fb324a4859b4853647e8c57bb9, type: 3}
   m_PrefabInstance: {fileID: 3822276161171119584}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1900201302583332092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 220029486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1001 &2005028703608251296
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40047,7 +40645,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2682919887137586881, guid: c0c16908bdfb4716b12a939a428e8abe, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -9.0
+      value: -9
       objectReference: {fileID: 0}
     - target: {fileID: 2682919887137586881, guid: c0c16908bdfb4716b12a939a428e8abe, type: 3}
       propertyPath: m_LocalPosition.z
@@ -40088,7 +40686,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3820323058700499694, guid: c0c16908bdfb4716b12a939a428e8abe, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3169651166295129173}
   m_SourcePrefab: {fileID: 100100000, guid: c0c16908bdfb4716b12a939a428e8abe, type: 3}
 --- !u!1001 &2037471928975492022
 PrefabInstance:
@@ -40104,7 +40705,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2483966549485666684, guid: 96f88dd17df5428783ee3f6daa037f94, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.0
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 2483966549485666684, guid: 96f88dd17df5428783ee3f6daa037f94, type: 3}
       propertyPath: m_LocalPosition.z
@@ -40149,7 +40750,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3862485980763262710, guid: 96f88dd17df5428783ee3f6daa037f94, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3380322079348340372}
   m_SourcePrefab: {fileID: 100100000, guid: 96f88dd17df5428783ee3f6daa037f94, type: 3}
 --- !u!1001 &2108151728132177433
 PrefabInstance:
@@ -40165,7 +40769,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 507825417088085553, guid: 8d882921beef4834aabb63b2f12edaa4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -12.0
+      value: -12
       objectReference: {fileID: 0}
     - target: {fileID: 507825417088085553, guid: 8d882921beef4834aabb63b2f12edaa4, type: 3}
       propertyPath: m_LocalPosition.z
@@ -40210,13 +40814,39 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1450212734838952641, guid: 8d882921beef4834aabb63b2f12edaa4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4338556122532156506}
   m_SourcePrefab: {fileID: 100100000, guid: 8d882921beef4834aabb63b2f12edaa4, type: 3}
 --- !u!4 &2196436409478320722 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1739725826480762175, guid: 19bb7ffbce1b4d35b420681311a65f17, type: 3}
   m_PrefabInstance: {fileID: 483692108816296143}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2196436409478320730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615015419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1001 &2281098958484010904
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40276,7 +40906,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3692823190808146296, guid: ea6c470fa434404aad5175a1d7a87f0c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3149294118518512878}
   m_SourcePrefab: {fileID: 100100000, guid: ea6c470fa434404aad5175a1d7a87f0c, type: 3}
 --- !u!1001 &2567698056743946580
 PrefabInstance:
@@ -40353,11 +40986,11 @@ PrefabInstance:
       objectReference: {fileID: 490554983}
     - target: {fileID: 1935787475740395243, guid: a72a411140384a1585fcf7b7002f86bd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.0
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 1935787475740395243, guid: a72a411140384a1585fcf7b7002f86bd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 1935787475740395243, guid: a72a411140384a1585fcf7b7002f86bd, type: 3}
       propertyPath: m_LocalPosition.z
@@ -40394,13 +41027,39 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3597338933758414, guid: a72a411140384a1585fcf7b7002f86bd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 611405416849852411}
   m_SourcePrefab: {fileID: 100100000, guid: a72a411140384a1585fcf7b7002f86bd, type: 3}
 --- !u!4 &2789758287852816016 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1179770615292351749, guid: 63bd1b735271480b85779335e8c7648a, type: 3}
   m_PrefabInstance: {fileID: 432409592727303774}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2789758287852816024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 112669270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1001 &2882865572390531794
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40517,7 +41176,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1738917068596766384, guid: 5196a7479be640f2b3aad0fbbaaa430e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 338891131517632858}
   m_SourcePrefab: {fileID: 100100000, guid: 5196a7479be640f2b3aad0fbbaaa430e, type: 3}
 --- !u!1001 &3024074362188930777
 PrefabInstance:
@@ -40529,11 +41191,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2140981987456499093, guid: 60252a25a2bc00c589a40bc9a549da73, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 8.0
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2140981987456499093, guid: 60252a25a2bc00c589a40bc9a549da73, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5.0
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 2140981987456499093, guid: 60252a25a2bc00c589a40bc9a549da73, type: 3}
       propertyPath: m_LocalPosition.z
@@ -40578,7 +41240,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5522219693077281312, guid: 60252a25a2bc00c589a40bc9a549da73, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1388240785}
   m_SourcePrefab: {fileID: 100100000, guid: 60252a25a2bc00c589a40bc9a549da73, type: 3}
 --- !u!1001 &3024074362188938321
 PrefabInstance:
@@ -40590,11 +41255,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2140981987456499093, guid: 1ada5cb7cb773264e8d4634d28ce21ef, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 8.0
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 2140981987456499093, guid: 1ada5cb7cb773264e8d4634d28ce21ef, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 2140981987456499093, guid: 1ada5cb7cb773264e8d4634d28ce21ef, type: 3}
       propertyPath: m_LocalPosition.z
@@ -40639,28 +41304,123 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5522219693077281312, guid: 1ada5cb7cb773264e8d4634d28ce21ef, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1388248072}
   m_SourcePrefab: {fileID: 100100000, guid: 1ada5cb7cb773264e8d4634d28ce21ef, type: 3}
 --- !u!4 &3149294118518512870 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3616386730224539778, guid: ea6c470fa434404aad5175a1d7a87f0c, type: 3}
   m_PrefabInstance: {fileID: 2281098958484010904}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3149294118518512878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1148919180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!4 &3169651166295129165 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2682919887137586881, guid: c0c16908bdfb4716b12a939a428e8abe, type: 3}
   m_PrefabInstance: {fileID: 2005028703608251296}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3169651166295129173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1735170474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!4 &3380322079348340364 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2483966549485666684, guid: 96f88dd17df5428783ee3f6daa037f94, type: 3}
   m_PrefabInstance: {fileID: 2037471928975492022}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3380322079348340372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1682617334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!4 &3471329427369814232 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3655733499632568837, guid: 212d9a2db9d3444a8975bc18c674c0d5, type: 3}
   m_PrefabInstance: {fileID: 4026501120924639565}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3471329427369814240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 44084638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1001 &3517489215541726548
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40780,16 +41540,85 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1769353545089039666, guid: f56b4abf0cec4b06853cba2cc963a2d5, type: 3}
   m_PrefabInstance: {fileID: 1049453081043179343}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3650617076694230035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8224920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!4 &3713625050177847996 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3732291291501366203, guid: 07df1bd62512496fa96663ed993e5654, type: 3}
   m_PrefabInstance: {fileID: 3876745739826890243}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3713625050177848004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1627936727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!4 &3751012722821907232 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2582331041020273098, guid: 41bc174e7f634738b14630fa4eca9680, type: 3}
   m_PrefabInstance: {fileID: 948864149298424816}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3751012722821907240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 477526630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1001 &3822276161171119584
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40808,11 +41637,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3984300888905625373, guid: 341e81fb324a4859b4853647e8c57bb9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.0
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 3984300888905625373, guid: 341e81fb324a4859b4853647e8c57bb9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -7.0
+      value: -7
       objectReference: {fileID: 0}
     - target: {fileID: 3984300888905625373, guid: 341e81fb324a4859b4853647e8c57bb9, type: 3}
       propertyPath: m_LocalPosition.z
@@ -40849,7 +41678,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3518258184039755209, guid: 341e81fb324a4859b4853647e8c57bb9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1900201302583332092}
   m_SourcePrefab: {fileID: 100100000, guid: 341e81fb324a4859b4853647e8c57bb9, type: 3}
 --- !u!1001 &3876745739826890243
 PrefabInstance:
@@ -40910,7 +41742,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2042305433374018968, guid: 07df1bd62512496fa96663ed993e5654, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3713625050177848004}
   m_SourcePrefab: {fileID: 100100000, guid: 07df1bd62512496fa96663ed993e5654, type: 3}
 --- !u!1001 &4026150107940698465
 PrefabInstance:
@@ -40930,7 +41765,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2378429455154854949, guid: c7f10dae47aa49da89e4a6aa1d81accc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -6.0
+      value: -6
       objectReference: {fileID: 0}
     - target: {fileID: 2378429455154854949, guid: c7f10dae47aa49da89e4a6aa1d81accc, type: 3}
       propertyPath: m_LocalPosition.z
@@ -40971,7 +41806,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 37235439118089758, guid: c7f10dae47aa49da89e4a6aa1d81accc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 703493033699129262}
   m_SourcePrefab: {fileID: 100100000, guid: c7f10dae47aa49da89e4a6aa1d81accc, type: 3}
 --- !u!1001 &4026501120924639565
 PrefabInstance:
@@ -40987,7 +41825,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3655733499632568837, guid: 212d9a2db9d3444a8975bc18c674c0d5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 10.0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3655733499632568837, guid: 212d9a2db9d3444a8975bc18c674c0d5, type: 3}
       propertyPath: m_LocalPosition.y
@@ -41032,7 +41870,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2457634641800672012, guid: 212d9a2db9d3444a8975bc18c674c0d5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3471329427369814240}
   m_SourcePrefab: {fileID: 100100000, guid: 212d9a2db9d3444a8975bc18c674c0d5, type: 3}
 --- !u!1001 &4067545289236582760
 PrefabInstance:
@@ -41096,6 +41937,29 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 507825417088085553, guid: 8d882921beef4834aabb63b2f12edaa4, type: 3}
   m_PrefabInstance: {fileID: 2108151728132177433}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4338556122532156506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1711224299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d5d13f9d06141f4abab7d0dc63d4ade, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIcon
+  iconType: 10
+  iconSprite: {fileID: 0}
+  iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
+  iconSize: 0.34
+  alwaysVisible: 1
+  visibilityRange: 50
+  rotateWithObject: 0
+  minimapLayerName: Minimap
+  iconObject: {fileID: 0}
+  iconRenderer: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1001 &5352230356748431498
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -41256,7 +42120,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6127428680552932189, guid: 4b6f73fa056ef7b46973cb5301b77ce8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 667490749}
   m_SourcePrefab: {fileID: 100100000, guid: 4b6f73fa056ef7b46973cb5301b77ce8, type: 3}
 --- !u!1001 &5828497649052131104
 PrefabInstance:
