@@ -64,6 +64,19 @@ public class MinimapTerrainPainter : MonoBehaviour
     private SpriteRenderer groundRenderer;
     private Texture2D groundTexture;
 
+    // The bounds the ground was last painted over. Anything that must line up with the map —
+    // the fog mask especially — has to use this exact rectangle rather than re-measuring, since
+    // padding and the self-exclusion rule would otherwise produce a slightly different one.
+    private Bounds paintedBounds;
+    private bool hasPainted = false;
+
+    /// <summary>The world rectangle the painted ground currently covers.</summary>
+    public bool TryGetPaintedBounds(out Bounds bounds)
+    {
+        bounds = paintedBounds;
+        return hasPainted;
+    }
+
     /// <summary>Categories the painter can distinguish, in the order they overpaint each other.</summary>
     private enum Ground { Grass, Scrub, Soil, Water, Tree, Structure }
 
@@ -169,6 +182,9 @@ public class MinimapTerrainPainter : MonoBehaviour
         StampWorldFeatures(pixels, res, world);
 
         ApplyTexture(pixels, res, world);
+
+        paintedBounds = world;
+        hasPainted = true;
     }
 
     // ============================================================================
