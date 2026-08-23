@@ -54,8 +54,11 @@ public class MinimapIconClusterer : MonoBehaviour
     [SerializeField] private float updateInterval = 0.25f;
 
     [Header("HUD Reference")]
-    [Tooltip("Panel width in pixels the merge distance is judged against.")]
-    [SerializeField] private float hudPanelPixels = 200f;
+    // The *drawn map* height in the corner state, not the panel's: the frame insets the map to
+    // roughly 72% of the panel, so 200 would overstate the reference by a third.
+    [Tooltip("Height in pixels of the map image in the corner HUD state. The reference every " +
+             "on-screen size is judged against.")]
+    [SerializeField] private float hudPanelPixels = 144f;
 
     private MinimapCamera minimapCamera;
     private MinimapController controller;
@@ -160,8 +163,11 @@ public class MinimapIconClusterer : MonoBehaviour
             var type = icon.IconType;
             if (neverCluster.Contains(type))
             {
-                // Still make sure a previously-clustered icon is restored.
-                icon.ApplyClusterState(1);
+                // Never grouped, but still view-compensated: these are world-space sprites, so
+                // without it the player's chevron ballooned into a coloured slab covering the
+                // farm the moment fullscreen widened the view. Passing a bare 1 here is what
+                // left it that size.
+                icon.ApplyClusterState(1, ViewCompensation());
                 continue;
             }
 
@@ -205,6 +211,7 @@ public class MinimapIconClusterer : MonoBehaviour
     {
         // One icon per group stays visible and is scaled to reflect the count; the rest hide.
         var groupRepresented = new bool[groupCounts.Count];
+        float view = ViewCompensation();
 
         for (int i = 0; i < candidates.Count; i++)
         {
@@ -214,13 +221,65 @@ public class MinimapIconClusterer : MonoBehaviour
             if (!groupRepresented[g])
             {
                 groupRepresented[g] = true;
-                candidates[i].ApplyClusterState(count, ScaleForCount(count));
+                candidates[i].ApplyClusterState(count, ScaleForCount(count) * view);
             }
             else
             {
                 candidates[i].ApplyClusterState(0); // hidden member
             }
         }
+    }
+
+    /// <summary>
+    /// Keeps markers a roughly constant size *on screen*.
+    ///
+    /// Markers are world-space sprites photographed by the camera, so their on-screen size is set
+    /// by two independent things: how much world the camera shows, and how many pixels the panel
+    /// gives that world. Fullscreen changes the second — same 32 units, four times the pixels —
+    /// which drew the player's chevron at 20px against 5px on the HUD: a coloured slab sitting on
+    /// top of the farm it was meant to mark.
+    ///
+    /// Compensating for zoom alone missed this entirely, because the zoom had not changed.
+    /// Referenced against the corner HUD, so that state stays at 1.0 and is unaffected.
+    /// </summary>
+    private float ViewCompensation()
+    {
+        if (minimapCamera == null) return 1f;
+
+        float baseSize = minimapCamera.DefaultOrthographicSize();
+        float current = minimapCamera.CurrentOrthographicSize();
+        if (baseSize <= 0f || current <= 0f) return 1f;
+
+        // Wider view -> markers shrink on screen -> scale them up to compensate.
+        float zoomRatio = current / baseSize;
+
+        // Bigger panel -> markers grow on screen -> scale them down to compensate.
+        float panelRatio = hudPanelPixels > 0f ? CurrentViewportPixels() / hudPanelPixels : 1f;
+        if (panelRatio <= 0f) panelRatio = 1f;
+
+        // Partial, not exact. Compensating fully drove the animal markers to 3px in fullscreen —
+        // below the ~4px floor where the outlined shapes stop being distinguishable, which traded
+        // the "giant slab" problem for an "invisible speck" one. Exponent 0.62 keeps the player's
+        // chevron near its HUD size while letting the smallest markers gain back a pixel or two.
+        float ratio = zoomRatio / panelRatio;
+        return Mathf.Clamp(Mathf.Pow(ratio, 0.62f), 0.3f, 4f);
+    }
+
+    /// <summary>Height of the map viewport in pixels, which is what markers are drawn into.</summary>
+    private float CurrentViewportPixels()
+    {
+        var ui = controller != null ? controller.UI : null;
+        if (ui == null) return hudPanelPixels;
+
+        var panel = ui.GetPanel();
+        if (panel == null) return hudPanelPixels;
+
+        // The map image is inset inside the decorative frame, so the panel's own rect overstates
+        // the drawing area; measure the image if it is available.
+        var image = ui.GetMapImageRect();
+        var rect = image != null ? image.rect : panel.rect;
+
+        return rect.height > 0f ? rect.height : hudPanelPixels;
     }
 
     private float ScaleForCount(int count)

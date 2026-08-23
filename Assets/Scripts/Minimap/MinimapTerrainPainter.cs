@@ -34,9 +34,12 @@ public class MinimapTerrainPainter : MonoBehaviour
     [Tooltip("World padding around the scene bounds, in units.")]
     [SerializeField] private float worldPadding = 4f;
 
+    // 3.2 was tuned while the blobs had a wide soft falloff, where the outer half was nearly
+    // transparent and the painted size read much smaller than it measured. With a hard edge that
+    // same value makes every bush a boulder, so it comes down as the falloff tightens.
     [Tooltip("How much larger than life each feature is painted. A minimap shows regions, " +
              "not objects: stamped 1:1 a tree covers ~1px of the HUD and reads as noise.")]
-    [SerializeField] private float featureSpread = 3.2f;
+    [SerializeField] private float featureSpread = 2.1f;
 
     [Tooltip("Smallest a stamp may be, in world units, so single small props still register.")]
     [SerializeField] private float minFeatureRadius = 0.9f;
@@ -79,6 +82,12 @@ public class MinimapTerrainPainter : MonoBehaviour
 
     /// <summary>Categories the painter can distinguish, in the order they overpaint each other.</summary>
     private enum Ground { Grass, Scrub, Soil, Water, Tree, Structure }
+
+    /// <summary>
+    /// Fraction of a blob's radius that stays fully opaque before the edge starts to fade.
+    /// High on purpose — see the comment in StampBlob about the aura this produced at 0.45.
+    /// </summary>
+    private const float EdgeFeatherStart = 0.88f;
 
     [Header("Behaviour")]
     [Tooltip("Stand down when a tilemap on the terrain layer already draws the ground. " +
@@ -323,8 +332,14 @@ public class MinimapTerrainPainter : MonoBehaviour
                 float d2 = dx * dx + dy * dy;
                 if (d2 > 1f) continue;
 
-                // Solid core, feathered rim.
-                float t = Mathf.SmoothStep(1f, 0f, Mathf.InverseLerp(0.45f, 1f, Mathf.Sqrt(d2)));
+                // Mostly solid, with only the outermost sliver feathered.
+                //
+                // This used to start fading at 45% of the radius. Combined with featureSpread
+                // (3.2x), that put a huge soft gradient around every object — on the finished map
+                // it read as a glowing aura rather than ground, which is the first thing anyone
+                // noticed about it. Keeping the fade to the last ~12% gives each feature a
+                // definite edge while still letting neighbours merge instead of pebble-dashing.
+                float t = Mathf.SmoothStep(1f, 0f, Mathf.InverseLerp(EdgeFeatherStart, 1f, Mathf.Sqrt(d2)));
 
                 int i = y * res + x;
                 Color existing = pixels[i];

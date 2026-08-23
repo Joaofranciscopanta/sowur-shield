@@ -373,6 +373,12 @@ public class MinimapCamera : MonoBehaviour
         return new Vector3(transform.position.x, transform.position.y, 0);
     }
 
+    /// <summary>Half-height the view scales multiply, before any zoom is applied.</summary>
+    public float DefaultOrthographicSize()
+    {
+        return defaultOrthographicSize;
+    }
+
     /// <summary>Half-height of the current view, in world units.</summary>
     public float CurrentOrthographicSize()
     {
@@ -423,37 +429,20 @@ public class MinimapCamera : MonoBehaviour
             else cachedWorldBounds.Encapsulate(sr.bounds);
         }
 
-        foreach (var tm in FindObjectsByType<UnityEngine.Tilemaps.Tilemap>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
-        {
-            // SampleScene's two tilemaps hold zero tiles, and an empty Tilemap does NOT report an
-            // empty localBounds — it reports the default 100x100 cell grid. Trusting that stretched
-            // the pan limit to 101 units around a farm that is 28 wide. cellBounds is likewise
-            // non-empty here, so the only reliable test is counting actual tiles.
-            if (CountTiles(tm) == 0) continue;
-
-            var b = tm.localBounds;
-            b.center = tm.transform.TransformPoint(b.center);
-            if (!any) { cachedWorldBounds = b; any = true; }
-            else cachedWorldBounds.Encapsulate(b);
-        }
+        // Tilemaps are deliberately NOT measured.
+        //
+        // SampleScene's DisplayTilemap is filled at runtime with 10,201 tiles spanning 101 world
+        // units, so counting tiles says "there is terrain here" — yet it renders nothing the
+        // minimap camera can see. Believing it put the pan limit 101 units around a farm that is
+        // 28 across, and made fullscreen open zoomed out onto empty space.
+        //
+        // The sprites ARE the visible world here, and they are what the player navigates by, so
+        // they alone define the bounds. If a project later paints terrain that genuinely draws,
+        // its own renderer bounds should be added back here explicitly.
 
         worldBoundsValid = any;
         bounds = cachedWorldBounds;
         return any;
-    }
-
-    /// <summary>
-    /// Number of tiles actually placed. Walked rather than inferred from cellBounds, which stays
-    /// non-empty on a tilemap that has never been painted.
-    /// </summary>
-    private static int CountTiles(UnityEngine.Tilemaps.Tilemap tilemap)
-    {
-        int count = 0;
-        foreach (var pos in tilemap.cellBounds.allPositionsWithin)
-        {
-            if (tilemap.HasTile(pos)) count++;
-        }
-        return count;
     }
 
     /// <summary>Drop the cached bounds, e.g. after the world changes size.</summary>

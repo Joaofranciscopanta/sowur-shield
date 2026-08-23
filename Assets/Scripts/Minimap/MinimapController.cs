@@ -373,7 +373,14 @@ public class MinimapController : MonoBehaviour, IUIWindow
 
         isFullscreenMode = true;
         fullscreenPanOffset = Vector3.zero;
-        currentZoomIndex = 1; // Reset to default zoom
+
+        // Open on a WIDER view than the corner HUD, not the same one.
+        //
+        // The panel grows 200px -> 800px, but the camera kept showing the same 32 world units, so
+        // fullscreen was just the HUD magnified 4x: a small explored blob marooned in a large
+        // frame, with the player's marker drawn 28px wide. Opening a map should reveal more of
+        // the farm, not less of it per pixel.
+        currentZoomIndex = DefaultFullscreenZoomIndex();
 
         // Update UI
         if (minimapUI != null)
@@ -578,6 +585,45 @@ public class MinimapController : MonoBehaviour, IUIWindow
             currentZoomIndex++;
             ApplyZoom();
         }
+    }
+
+    /// <summary>
+    /// View scale fullscreen opens at: the tightest step that still shows most of the world,
+    /// falling back to the widest configured scale. Derived from the world's actual size rather
+    /// than hard-coded, so a larger map opens wider without anyone retuning a constant.
+    /// </summary>
+    private int DefaultFullscreenZoomIndex()
+    {
+        if (viewScales == null || viewScales.Length == 0)
+            return 0;
+
+        int widest = viewScales.Length - 1;
+
+        if (minimapCamera == null || !minimapCamera.TryGetWorldBounds(out Bounds world))
+            return widest;
+
+        float baseSize = minimapCamera.DefaultOrthographicSize();
+        if (baseSize <= 0f) return widest;
+
+        // orthographicSize is the HALF-height, so compare against the world's half-extent — not
+        // its full size, which overshoots by 2x and opened a 30-unit farm at 64 units, leaving
+        // the map a small island in a field of empty ground.
+        float needHalf = Mathf.Max(world.extents.x / Mathf.Max(minimapCamera.CurrentAspect(), 0.0001f),
+                                   world.extents.y);
+
+        // Pick the tightest scale that shows *most* of the world rather than the first that
+        // contains all of it. Insisting on full containment plus a margin made a farm that very
+        // nearly fits at one step jump to the next, doubling the empty border for the sake of the
+        // last few units. Showing ~90% and letting the player pan for the rest reads far better.
+        const float AcceptableCoverage = 0.9f;
+
+        for (int i = 0; i < viewScales.Length; i++)
+        {
+            if (baseSize * viewScales[i] >= needHalf * AcceptableCoverage)
+                return i;
+        }
+
+        return widest;
     }
 
     /// <summary>

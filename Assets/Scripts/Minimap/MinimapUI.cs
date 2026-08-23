@@ -121,6 +121,40 @@ public class MinimapUI : MonoBehaviour
     // INITIALIZATION
     // ============================================================================
 
+    /// <summary>
+    /// Pulls the map image inside the frame's *painted* area.
+    ///
+    /// frame_decorative_border is 512px of which the art occupies x[46..472], y[67..458] — roughly
+    /// 9-13% transparent padding, and not symmetrical. Border and map share the same rect, so the
+    /// map ran out past the visible frame and the padding showed as a black gutter between the
+    /// two. Measured from the art, not guessed, and expressed as fractions so it holds at both
+    /// 200px and 800px.
+    ///
+    /// This is the same class of trap as the panel frames: the rect is not the painted area.
+    /// </summary>
+    private void InsetMapInsideFrame()
+    {
+        if (minimapImage == null || borderImage == null) return;
+
+        var mapRect = minimapImage.rectTransform;
+
+        // Stretch to the panel, then pull each edge in by the frame's own padding plus a little
+        // of the frame's width so the map tucks under the moulding rather than butting against it.
+        mapRect.anchorMin = Vector2.zero;
+        mapRect.anchorMax = Vector2.one;
+
+        mapRect.anchorMin = new Vector2(FrameInsetLeft, FrameInsetBottom);
+        mapRect.anchorMax = new Vector2(1f - FrameInsetRight, 1f - FrameInsetTop);
+        mapRect.offsetMin = Vector2.zero;
+        mapRect.offsetMax = Vector2.zero;
+    }
+
+    // Fractions of the frame sprite taken up by transparent padding plus the moulding itself.
+    private const float FrameInsetLeft = 0.115f;
+    private const float FrameInsetRight = 0.105f;
+    private const float FrameInsetBottom = 0.155f;
+    private const float FrameInsetTop = 0.135f;
+
     private void SetupUI()
     {
         if (minimapPanel == null)
@@ -138,6 +172,8 @@ public class MinimapUI : MonoBehaviour
         // Set initial opacity
         if (canvasGroup != null)
             canvasGroup.alpha = 1f;
+
+        InsetMapInsideFrame();
     }
 
     private void ConnectToMinimapCamera()
@@ -530,6 +566,16 @@ public class MinimapUI : MonoBehaviour
     public RectTransform GetPanel()
     {
         return minimapPanel;
+    }
+
+    /// <summary>
+    /// The rect the map itself is drawn into — inset inside the decorative frame, so noticeably
+    /// smaller than the panel. Anything sizing against "how big is the map on screen" wants this,
+    /// not the panel.
+    /// </summary>
+    public RectTransform GetMapImageRect()
+    {
+        return minimapImage != null ? minimapImage.rectTransform : null;
     }
 
     /// <summary>
