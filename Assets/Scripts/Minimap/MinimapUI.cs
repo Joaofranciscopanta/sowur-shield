@@ -62,6 +62,11 @@ public class MinimapUI : MonoBehaviour
     private Tween sizeTween;
     private Tween opacityTween;
 
+    // Resolved once in Start rather than searched every frame (see UpdatePlayerMarker)
+    private MinimapCamera cachedMinimapCamera;
+    private Transform cachedPlayer;
+    private bool useCanvasPlayerMarker = true;
+
     private void Awake()
     {
         // Auto-find references if not assigned
@@ -167,7 +172,26 @@ public class MinimapUI : MonoBehaviour
 
     private void SetupPlayerMarker()
     {
-        if (playerMarker != null && playerMarkerImage != null)
+        cachedMinimapCamera = FindFirstObjectByType<MinimapCamera>();
+
+        var playerObj = GameObject.FindGameObjectWithTag("Player");
+        cachedPlayer = playerObj != null ? playerObj.transform : null;
+
+        // If the player already renders a world-space marker, this Canvas one would draw a second
+        // arrow on top of the first. Stand down and let the world icon do the job.
+        useCanvasPlayerMarker = playerObj == null
+                             || playerObj.GetComponentInChildren<MinimapIcon>(true) == null;
+
+        if (playerMarker == null)
+            return;
+
+        if (!useCanvasPlayerMarker)
+        {
+            playerMarker.gameObject.SetActive(false);
+            return;
+        }
+
+        if (playerMarkerImage != null)
         {
             // The marker's sprite was whatever the scene happened to carry — in SampleScene a
             // frame of the character spritesheet, tinted flat green at 10x10px, which rendered
@@ -387,36 +411,41 @@ public class MinimapUI : MonoBehaviour
     // PLAYER MARKER
     // ============================================================================
 
+    /// <summary>
+    /// Positions the Canvas-space player marker over the rendered map.
+    ///
+    /// Only runs when the player carries no world-space <see cref="MinimapIcon"/>. When it does —
+    /// which is the case in SampleScene — the camera already photographs a chevron at the
+    /// player's position, and drawing this one too put two arrows on the same spot, visibly
+    /// stacked. The world icon wins because it scales with zoom and sorts against other markers;
+    /// this one stays as the fallback for scenes that never set an icon up.
+    ///
+    /// The two per-frame Find calls it used to make are resolved once in Start instead.
+    /// </summary>
     private void UpdatePlayerMarker()
     {
-        if (playerMarker == null)
+        if (playerMarker == null || !useCanvasPlayerMarker)
             return;
 
-        // Get player position from minimap camera
-        var minimapCamera = FindFirstObjectByType<MinimapCamera>();
-        if (minimapCamera == null)
+        if (cachedMinimapCamera == null || cachedPlayer == null)
             return;
 
-        var player = GameObject.FindGameObjectWithTag("Player");
-        if (player == null)
-            return;
-
-        // Convert world position to minimap UI position
-        var camera = minimapCamera.GetCamera();
+        var camera = cachedMinimapCamera.GetCamera();
         if (camera == null)
             return;
 
-        Vector3 playerWorldPos = player.transform.position;
-        Vector3 viewportPos = camera.WorldToViewportPoint(playerWorldPos);
+        Vector3 viewportPos = camera.WorldToViewportPoint(cachedPlayer.position);
 
         // Check if player is within minimap view
         if (viewportPos.x < 0 || viewportPos.x > 1 || viewportPos.y < 0 || viewportPos.y > 1)
         {
-            playerMarker.gameObject.SetActive(false);
+            if (playerMarker.gameObject.activeSelf)
+                playerMarker.gameObject.SetActive(false);
             return;
         }
 
-        playerMarker.gameObject.SetActive(true);
+        if (!playerMarker.gameObject.activeSelf)
+            playerMarker.gameObject.SetActive(true);
 
         // Convert viewport to local position within minimap panel
         Vector2 localPos = new Vector2(
@@ -549,25 +578,37 @@ public class MinimapUI : MonoBehaviour
         TransitionToFullscreen(0.3f, Ease.InOutQuad);
     }
 
+    // These two were empty shells — `if (x) { }` with both branches blank, left behind when their
+    // Debug.Log calls were stripped. A menu item that reports nothing is worse than none, since it
+    // reads as "checked, all fine". They now actually print what they claim to check.
+
     [ContextMenu("Debug - Check Texture Connection")]
     private void DebugTextureConnection()
     {
         if (minimapImage == null)
         {
+            Debug.LogWarning("[MinimapUI] minimapImage is not assigned.", this);
             return;
         }
 
         if (minimapImage.texture == null)
-        {
-        }
+            Debug.LogWarning("[MinimapUI] RawImage has no texture — the minimap will be blank.", this);
         else
-        {
-        }
+            Debug.Log($"[MinimapUI] Connected to '{minimapImage.texture.name}' " +
+                      $"({minimapImage.texture.width}x{minimapImage.texture.height}).", this);
     }
 
     [ContextMenu("Debug - Check Size Settings")]
     private void DebugSizeSettings()
     {
+        if (minimapPanel == null)
+        {
+            Debug.LogWarning("[MinimapUI] minimapPanel is not assigned.", this);
+            return;
+        }
+
+        Debug.Log($"[MinimapUI] panel size={minimapPanel.sizeDelta} pos={minimapPanel.anchoredPosition} " +
+                  $"| normal={normalSize} fullscreen={fullscreenSize}", this);
     }
 
     [ContextMenu("Debug - Force Fullscreen Size")]

@@ -32,7 +32,11 @@ public class MinimapController : MonoBehaviour, IUIWindow
     [SerializeField] private float semiTransparentOpacity = 0.5f;
 
     [Header("Fullscreen Settings")]
-    [SerializeField] private float[] zoomLevels = { 0.5f, 1f, 2f };
+    // These are *view scales*, not zoom factors: each multiplies the camera's orthographic size,
+    // so a LARGER number shows MORE world. Sorted ascending, which means zooming IN walks the
+    // index DOWN. Naming them "zoomLevels" and stepping the index up on ZoomIn is exactly the
+    // bug this replaced — scrolling up pushed the camera away from the player.
+    [SerializeField] private float[] viewScales = { 0.5f, 1f, 2f, 3.5f };
     [SerializeField] private int currentZoomIndex = 1;
     [SerializeField] private float panSpeed = 10f;
     [SerializeField] private float mousePanSensitivity = 1f;
@@ -67,6 +71,9 @@ public class MinimapController : MonoBehaviour, IUIWindow
     // Properties
     public MinimapState CurrentState => currentState;
     public bool IsInFullscreenMode => isFullscreenMode;
+
+    /// <summary>The UI this controller drives. Used by the clusterer to read the panel's size.</summary>
+    public MinimapUI UI => minimapUI;
 
     // Singleton
     public static MinimapController Instance { get; private set; }
@@ -379,7 +386,13 @@ public class MinimapController : MonoBehaviour, IUIWindow
         {
             minimapCamera.SetFollowPlayer(false);
             minimapCamera.SetPanOffset(fullscreenPanOffset);
-            minimapCamera.SetZoomLevel(zoomLevels[currentZoomIndex], immediate);
+            minimapCamera.SetZoomLevel(CurrentViewScale(), immediate);
+        }
+
+        if (minimapUI != null)
+        {
+            float scale = CurrentViewScale();
+            minimapUI.UpdateZoomIndicator(scale > 0f ? 1f / scale : 1f);
         }
 
         // Disable player movement
@@ -499,32 +512,48 @@ public class MinimapController : MonoBehaviour, IUIWindow
     private void ApplyPan(Vector3 delta)
     {
         fullscreenPanOffset += delta;
-
-        if (minimapCamera != null)
-        {
-            minimapCamera.SetPanOffset(fullscreenPanOffset);
-        }
+        ClampPanOffset();
     }
 
     /// <summary>
-    /// Zoom in to next zoom level
+    /// Keeps the panned view over the map. Without this the player can drag the fullscreen map
+    /// into empty space indefinitely and lose the farm entirely, with no way back but closing it.
+    ///
+    /// The limit is the world bounds expanded by half a screen, so the edge of the map can still
+    /// be centred — clamping to the bounds themselves would stop panning while the far edge was
+    /// still off-screen.
     /// </summary>
-    public void ZoomIn()
+    private void ClampPanOffset()
     {
-        if (!isFullscreenMode)
+        if (minimapCamera == null)
             return;
 
-        if (currentZoomIndex < zoomLevels.Length - 1)
-        {
-            currentZoomIndex++;
-            ApplyZoom();
-        }
+        if (!minimapCamera.TryGetWorldBounds(out Bounds bounds))
+            return;
+
+        Vector3 anchor = player != null ? player.position : bounds.center;
+
+        float halfHeight = minimapCamera.CurrentOrthographicSize();
+        float halfWidth = halfHeight * minimapCamera.CurrentAspect();
+
+        float minX = bounds.min.x - halfWidth;
+        float maxX = bounds.max.x + halfWidth;
+        float minY = bounds.min.y - halfHeight;
+        float maxY = bounds.max.y + halfHeight;
+
+        // Offsets are relative to the player, so convert to absolute, clamp, convert back.
+        float absX = Mathf.Clamp(anchor.x + fullscreenPanOffset.x, minX, maxX);
+        float absY = Mathf.Clamp(anchor.y + fullscreenPanOffset.y, minY, maxY);
+
+        fullscreenPanOffset = new Vector3(absX - anchor.x, absY - anchor.y, 0f);
+
+        minimapCamera.SetPanOffset(fullscreenPanOffset);
     }
 
     /// <summary>
-    /// Zoom out to previous zoom level
+    /// Zoom in — show less world, closer up. Walks DOWN the ascending viewScales array.
     /// </summary>
-    public void ZoomOut()
+    public void ZoomIn()
     {
         if (!isFullscreenMode)
             return;
@@ -536,17 +565,52 @@ public class MinimapController : MonoBehaviour, IUIWindow
         }
     }
 
+    /// <summary>
+    /// Zoom out — show more world. Walks UP the ascending viewScales array.
+    /// </summary>
+    public void ZoomOut()
+    {
+        if (!isFullscreenMode)
+            return;
+
+        if (currentZoomIndex < viewScales.Length - 1)
+        {
+            currentZoomIndex++;
+            ApplyZoom();
+        }
+    }
+
+    /// <summary>
+    /// Current view scale, clamped so a bad serialized index cannot throw.
+    /// </summary>
+    private float CurrentViewScale()
+    {
+        if (viewScales == null || viewScales.Length == 0)
+            return 1f;
+
+        currentZoomIndex = Mathf.Clamp(currentZoomIndex, 0, viewScales.Length - 1);
+        return viewScales[currentZoomIndex];
+    }
+
     private void ApplyZoom()
     {
+        float scale = CurrentViewScale();
+
         if (minimapCamera != null)
         {
-            minimapCamera.SetZoomLevel(zoomLevels[currentZoomIndex]);
+            minimapCamera.SetZoomLevel(scale);
         }
 
         if (minimapUI != null)
         {
-            minimapUI.UpdateZoomIndicator(zoomLevels[currentZoomIndex]);
+            // The label reads as magnification, so it is the reciprocal of the view scale:
+            // showing half the world is "2.0x", not "0.5x".
+            minimapUI.UpdateZoomIndicator(scale > 0f ? 1f / scale : 1f);
         }
+
+        // Panning further than the map exists is disorienting, and the reachable area shrinks
+        // as you zoom in, so the existing offset has to be re-clamped on every zoom change.
+        ClampPanOffset();
     }
 
     // ============================================================================
