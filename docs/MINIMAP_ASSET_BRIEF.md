@@ -107,7 +107,7 @@ carved wood, hollow transparent center, 9-slice friendly, pixel art, no text`
 
 ---
 
-### 4. Pins colocáveis pelo jogador (feature futura, estilo Valheim)
+### 4. Ícones para os pins do jogador (a feature já existe)
 
 | | |
 |---|---|
@@ -123,7 +123,7 @@ pin_star.png     pin_question.png pin_resource.png
 bold silhouette, thick dark outline, flat single color fill, readable at 8 pixels,
 transparent background, no text`
 
-Ainda **não há código** para pins — só gere se quiser que eu implemente depois.
+✅ **Já implementado** (`MinimapPinManager`): botão direito no mapa cheio coloca um pin, botão direito em cima de um pin remove. Salva por slot. Hoje todos usam a mesma forma de estrela; estes ícones dariam a cada pin um significado próprio.
 
 ---
 
@@ -149,7 +149,7 @@ Ainda **não há código** para pins — só gere se quiser que eu implemente de
 Assets/Resources/Sprites/Minimap/Terrain/    ← 8 tiles 32x32   (prioridade 1)
 Assets/Resources/Sprites/UI/Frames/          ← já existe; add frame_minimap.png
 Assets/Resources/Sprites/UI/Icons/           ← já existe; add 3 ícones de zoom
-Assets/Resources/Sprites/Minimap/Pins/       ← 6 pins 32x32    (só se quiser a feature)
+Assets/Resources/Sprites/Minimap/Pins/       ← 6 pins 32x32    (pins já funcionam; isto dá variedade)
 ```
 
 Se você só fizer **uma** coisa: o tileset de terreno (item 1).
