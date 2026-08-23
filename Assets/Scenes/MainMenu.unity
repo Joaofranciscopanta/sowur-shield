@@ -3309,6 +3309,45 @@ MonoBehaviour:
   confirmButton: {fileID: 422482893}
   cancelButton: {fileID: 749572558}
   titleText: {fileID: 1491914610}
+  titleString:
+    m_TableReference:
+      m_TableCollectionName: GUID:6f5ef45f291ad3e4abdae9d700e1005b
+    m_TableEntryReference:
+      m_KeyId: 22830650426646529
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  placeholderString:
+    m_TableReference:
+      m_TableCollectionName: GUID:6f5ef45f291ad3e4abdae9d700e1005b
+    m_TableEntryReference:
+      m_KeyId: 22830650426646530
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  confirmString:
+    m_TableReference:
+      m_TableCollectionName: GUID:6f5ef45f291ad3e4abdae9d700e1005b
+    m_TableEntryReference:
+      m_KeyId: 22830650426646531
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  cancelString:
+    m_TableReference:
+      m_TableCollectionName: GUID:6f5ef45f291ad3e4abdae9d700e1005b
+    m_TableEntryReference:
+      m_KeyId: 22830650426646532
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!114 &543862995
 MonoBehaviour:
   m_ObjectHideFlags: 0

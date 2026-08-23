@@ -210,6 +210,30 @@ MonoBehaviour:
     m_Localized: Language
     m_Metadata:
       m_Items: []
+  - m_Id: 22830650388897792
+    m_Localized: Delete
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646528
+    m_Localized: Rename
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646529
+    m_Localized: Rename Slot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646530
+    m_Localized: Slot name...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646531
+    m_Localized: OK
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646532
+    m_Localized: Cancel
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

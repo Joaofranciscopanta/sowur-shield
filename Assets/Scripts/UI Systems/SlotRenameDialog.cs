@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.UI;
 using SowurShield.Core;
 
@@ -25,6 +26,13 @@ namespace SowurShield.UI
         [SerializeField] private Button cancelButton;
         [SerializeField] private TextMeshProUGUI titleText;
 
+        [Header("Localized Strings")]
+        [Tooltip("All optional. Left unset, the prefab's literal text shows in every language.")]
+        [SerializeField] private LocalizedString titleString;       // "mainmenu.slotrename.title"
+        [SerializeField] private LocalizedString placeholderString; // "mainmenu.slotrename.placeholder"
+        [SerializeField] private LocalizedString confirmString;     // "mainmenu.slotrename.confirm"
+        [SerializeField] private LocalizedString cancelString;      // "mainmenu.slotrename.cancel"
+
         /// <summary>Raised with the typed label when the player confirms. Blank means "reset to default".</summary>
         public event Action<string> OnConfirmed;
 
@@ -46,13 +54,49 @@ namespace SowurShield.UI
                 inputField.onSubmit.AddListener(_ => HandleConfirm());
             }
 
+            ApplyLocalizedText();
             SetPanelActive(false);
+
+            UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged
+                += HandleLocaleChanged;
+        }
+
+        private void HandleLocaleChanged(UnityEngine.Localization.Locale _) => ApplyLocalizedText();
+
+        /// <summary>
+        /// Pushes the localized strings onto the prefab's labels. Each is skipped when it
+        /// resolves empty, so the authored text remains as the fallback before the tables
+        /// preload rather than the label going blank.
+        /// </summary>
+        private void ApplyLocalizedText()
+        {
+            SetText(titleText, titleString);
+
+            if (inputField != null)
+            {
+                SetText(inputField.placeholder as TextMeshProUGUI, placeholderString);
+                SetText(LabelOf(confirmButton), confirmString);
+                SetText(LabelOf(cancelButton), cancelString);
+            }
+        }
+
+        private static TextMeshProUGUI LabelOf(Button button)
+            => button != null ? button.GetComponentInChildren<TextMeshProUGUI>(true) : null;
+
+        private static void SetText(TextMeshProUGUI target, LocalizedString source)
+        {
+            if (target == null) return;
+            string value = source.SafeGetLocalizedString();
+            if (!string.IsNullOrEmpty(value)) target.text = value;
         }
 
         private void OnDestroy()
         {
             if (confirmButton != null) confirmButton.onClick.RemoveListener(HandleConfirm);
             if (cancelButton != null) cancelButton.onClick.RemoveListener(HandleCancel);
+
+            UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged
+                -= HandleLocaleChanged;
         }
 
         /// <summary>
@@ -61,6 +105,12 @@ namespace SowurShield.UI
         /// </summary>
         public void Open(string currentName, string title = null)
         {
+            // Re-apply every time: Awake ran once, so a language change after startup would
+            // otherwise leave the placeholder and buttons in the boot language. Measured --
+            // switching en -> pt kept "Slot name...", "OK" and "Cancel" in English.
+            ApplyLocalizedText();
+
+            // An explicit title wins over the localized default.
             if (titleText != null && !string.IsNullOrEmpty(title))
                 titleText.text = title;
 

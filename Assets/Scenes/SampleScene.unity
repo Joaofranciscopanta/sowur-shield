@@ -24126,6 +24126,45 @@ MonoBehaviour:
   confirmButton: {fileID: 1153978486}
   cancelButton: {fileID: 715460689}
   titleText: {fileID: 1846841506}
+  titleString:
+    m_TableReference:
+      m_TableCollectionName: GUID:6f5ef45f291ad3e4abdae9d700e1005b
+    m_TableEntryReference:
+      m_KeyId: 22830650426646529
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  placeholderString:
+    m_TableReference:
+      m_TableCollectionName: GUID:6f5ef45f291ad3e4abdae9d700e1005b
+    m_TableEntryReference:
+      m_KeyId: 22830650426646530
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  confirmString:
+    m_TableReference:
+      m_TableCollectionName: GUID:6f5ef45f291ad3e4abdae9d700e1005b
+    m_TableEntryReference:
+      m_KeyId: 22830650426646531
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  cancelString:
+    m_TableReference:
+      m_TableCollectionName: GUID:6f5ef45f291ad3e4abdae9d700e1005b
+    m_TableEntryReference:
+      m_KeyId: 22830650426646532
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1375241320 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5522219693077281312, guid: 1ada5cb7cb773264e8d4634d28ce21ef, type: 3}

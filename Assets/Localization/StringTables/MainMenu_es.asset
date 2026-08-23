@@ -211,6 +211,30 @@ MonoBehaviour:
     m_Localized: Idioma
     m_Metadata:
       m_Items: []
+  - m_Id: 22830650388897792
+    m_Localized: Borrar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646528
+    m_Localized: Renombrar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646529
+    m_Localized: Renombrar Ranura
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646530
+    m_Localized: Nombre de ranura...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646531
+    m_Localized: OK
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646532
+    m_Localized: Cancelar
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

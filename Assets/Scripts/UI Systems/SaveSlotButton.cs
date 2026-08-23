@@ -43,6 +43,11 @@ public class SaveSlotButton : MonoBehaviour
     [SerializeField] private LocalizedString emptySlotText; // table "MainMenu", key "mainmenu.saveslotbutton.empty"
     [SerializeField] private TextMeshProUGUI emptyText;
 
+    [Tooltip("Labels for the two action buttons. Left unset, the prefab's literal text shows " +
+             "in every language.")]
+    [SerializeField] private LocalizedString deleteButtonText; // key "mainmenu.saveslotbutton.delete"
+    [SerializeField] private LocalizedString renameButtonText; // key "mainmenu.saveslotbutton.rename"
+
     /// <summary>
     /// Initializes the slot button with save info and callbacks.
     /// </summary>
@@ -134,6 +139,7 @@ public class SaveSlotButton : MonoBehaviour
             {
                 deleteButton.onClick.RemoveAllListeners();
                 deleteButton.onClick.AddListener(() => onDeleteAction());
+                ApplyButtonLabel(deleteButton, deleteButtonText);
             }
         }
 
@@ -146,12 +152,28 @@ public class SaveSlotButton : MonoBehaviour
             {
                 renameButton.onClick.RemoveAllListeners();
                 renameButton.onClick.AddListener(() => onRenameAction());
+                ApplyButtonLabel(renameButton, renameButtonText);
             }
         }
 
         // Locked indicator
         if (lockedIndicator != null)
             lockedIndicator.SetActive(locked);
+    }
+
+    /// <summary>
+    /// Replaces a button's child label with its localized string. A blank result leaves the
+    /// prefab's literal text alone, which is what shows before the tables finish preloading.
+    /// </summary>
+    private static void ApplyButtonLabel(Button button, LocalizedString source)
+    {
+        if (button == null) return;
+
+        string label = source.SafeGetLocalizedString();
+        if (string.IsNullOrEmpty(label)) return;
+
+        var text = button.GetComponentInChildren<TextMeshProUGUI>(true);
+        if (text != null) text.text = label;
     }
 
     /// <summary>
