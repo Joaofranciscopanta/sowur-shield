@@ -484,6 +484,111 @@ public class RegressionAug2026Tests
             $"\"F2\" renders 10.04 as \"10,04\", producing an ambiguous id ({item.SaveId}) " +
             "that also differs from the id the same item gets under en-US.");
     }
+
+    // ========================================================================
+    // 2026-08-15: a destroyed saveable passed SaveManager's null guard
+    // ========================================================================
+    //
+    // saveableObjects holds ISaveable, an *interface*. Unity's overloaded == is declared on
+    // UnityEngine.Object, so `saveable != null` through an interface reference falls back to
+    // plain C# reference equality — a destroyed MonoBehaviour is a live C# object with a dead
+    // native side and sails straight through.
+    //
+    // Observed as a real save failing with "[SaveManager] Error saving data from
+    // PlayerDataManager: The object of type has been destroyed but you are still trying to
+    // access it." The destroyed object lost its save pass while every saveable after it in the
+    // list still saved, so the file came out quietly incomplete instead of failing outright.
+
+    [Test]
+    public void SaveManager_SkipsDestroyedSaveables_InsteadOfThrowing()
+    {
+        var managerGo = new GameObject("SaveManager_DestroyedSaveableTest");
+        Track(managerGo);
+        var manager = managerGo.AddComponent<SaveManager>();
+
+        // Two things had to be right for this test to actually exercise the bug, and the first
+        // two attempts got each of them wrong — both went green with the fix reverted:
+        //
+        // 1. Destroy BEFORE registering. PlayerDataManager unregisters itself in OnDestroy, so
+        //    registering first leaves the list empty and there is no corpse to trip over. This
+        //    stands in for an ISaveable whose OnDestroy could not reach the SaveManager.
+        // 2. Use a saveable whose SaveData touches its own object. PlayerDataManager resolves the
+        //    player by tag and never dereferences itself, so it saves fine while destroyed —
+        //    measured. Animal throws MissingReferenceException, which is the real symptom.
+        var victimGo = new GameObject("DestroyedSaveable");
+        var victim = victimGo.AddComponent<SowurShield.Animals.Animal>();
+        Object.DestroyImmediate(victimGo);
+        manager.RegisterSaveable(victim);
+
+        // A live saveable registered *after* it, to prove the loop keeps going.
+        var survivorGo = new GameObject("LiveSaveable");
+        Track(survivorGo);
+        survivorGo.tag = "Player";
+        var survivor = survivorGo.AddComponent<PlayerDataManager>();
+        manager.RegisterSaveable(survivor);
+
+        var data = new GameData();
+        data.playerData.position = Vector3.zero;
+
+        // Before the fix this threw MissingReferenceException out of the foreach.
+        Assert.DoesNotThrow(() => manager.CaptureRegisteredObjectsIntoCurrentGameData(),
+            "A destroyed saveable must be skipped, not dereferenced. Guarding an interface " +
+            "reference with != null does not consult Unity's destroyed-object check.");
+    }
+
+    // ========================================================================
+    // 2026-08-15: same interface-null trap in UIManager's window stack
+    // ========================================================================
+    //
+    // Found by grepping for other collections of interfaces after the SaveManager fix.
+    // InteractionManager already guarded its list correctly (`item is MonoBehaviour mb &&
+    // mb == null`); UIManager did not guard at all, and its consequences are worse than a bad
+    // save because they lock the player out of their own UI.
+
+    /// <summary>
+    /// A window destroyed while open used to sit on the stack forever. IsAnyWindowOpen is what
+    /// gates player movement, so the player was frozen with no window to close.
+    /// </summary>
+    [Test]
+    public void UIManager_DestroyedWindow_DoesNotCountAsOpen()
+    {
+        var managerGo = new GameObject("UIManager_DeadWindowTest");
+        Track(managerGo);
+        var manager = managerGo.AddComponent<UIManager>();
+
+        var windowGo = new GameObject("DoomedWindow");
+        var window = windowGo.AddComponent<SellBox>();
+        manager.RegisterWindow(window);
+        manager.TryOpenWindow(window);
+
+        Object.DestroyImmediate(windowGo);
+
+        Assert.IsFalse(manager.IsAnyWindowOpen(),
+            "A destroyed window must not keep counting as open. IsAnyWindowOpen gates player " +
+            "movement, so a stale entry freezes the player permanently.");
+    }
+
+    /// <summary>
+    /// HandleEscapeKey peeked the stack and read CanCloseWithEsc with no guard, so one destroyed
+    /// window made every subsequent ESC throw — no closing anything, no opening the pause menu.
+    /// </summary>
+    [Test]
+    public void UIManager_EscapeKey_SurvivesADestroyedTopWindow()
+    {
+        var managerGo = new GameObject("UIManager_EscTest");
+        Track(managerGo);
+        var manager = managerGo.AddComponent<UIManager>();
+
+        var windowGo = new GameObject("DoomedWindow");
+        var window = windowGo.AddComponent<SellBox>();
+        manager.RegisterWindow(window);
+        manager.TryOpenWindow(window);
+
+        Object.DestroyImmediate(windowGo);
+
+        Assert.DoesNotThrow(() => manager.HandleEscapeKey(),
+            "ESC must not throw when the top window was destroyed while open.");
+    }
 }
 
 }

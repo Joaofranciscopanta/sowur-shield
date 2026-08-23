@@ -1174,6 +1174,10 @@ MonoBehaviour:
     m_Localized: Taller de Rui
     m_Metadata:
       m_Items: []
+  - m_Id: 19872338869477376
+    m_Localized: Comprar
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

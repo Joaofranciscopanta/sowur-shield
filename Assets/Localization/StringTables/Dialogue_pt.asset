@@ -446,7 +446,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 14872607390949377
-    m_Localized: (Não gosta)
+    m_Localized: "(N\xE3o gosta)"
     m_Metadata:
       m_Items: []
   - m_Id: 14872607390949378
@@ -458,7 +458,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 14872607390949380
-    m_Localized: Você ainda não descobriu do que ela gosta.
+    m_Localized: "Voc\xEA ainda n\xE3o descobriu do que ela gosta."
     m_Metadata:
       m_Items: []
   - m_Id: 14879358790131712
@@ -551,8 +551,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 14880977640480769
-    m_Localized: A despensa de Isabela está baixa antes da leva de pães. Ela precisa
-      de ovos e leite.
+    m_Localized: "A despensa de Isabela est\xE1 baixa antes da leva de p\xE3es. Ela
+      precisa de ovos e leite."
     m_Metadata:
       m_Items: []
   - m_Id: 14880977640480770
@@ -568,8 +568,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 14880977829224449
-    m_Localized: Clara está sem ingredientes e o rebanho de alguém adoeceu. Leve
-      o que ela precisa.
+    m_Localized: "Clara est\xE1 sem ingredientes e o rebanho de algu\xE9m adoeceu.
+      Leve o que ela precisa."
     m_Metadata:
       m_Items: []
   - m_Id: 14880977829224450
@@ -1171,6 +1171,10 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 14952884201054208
     m_Localized: Oficina do Rui
+    m_Metadata:
+      m_Items: []
+  - m_Id: 19872338869477376
+    m_Localized: Comprar
     m_Metadata:
       m_Items: []
   references:

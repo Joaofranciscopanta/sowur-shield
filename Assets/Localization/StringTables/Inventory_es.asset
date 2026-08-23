@@ -162,6 +162,22 @@ MonoBehaviour:
     m_Localized: Medicina
     m_Metadata:
       m_Items: []
+  - m_Id: 20037808398524416
+    m_Localized: Hacha
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20037808436273152
+    m_Localized: Leche
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20037808436273153
+    m_Localized: Madera
+    m_Metadata:
+      m_Items: []
+  - m_Id: 20037808436273154
+    m_Localized: "Ca\xF1a de Pescar"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

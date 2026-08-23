@@ -1172,6 +1172,10 @@ MonoBehaviour:
     m_Localized: Rui's Workshop
     m_Metadata:
       m_Items: []
+  - m_Id: 19872338869477376
+    m_Localized: Buy
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

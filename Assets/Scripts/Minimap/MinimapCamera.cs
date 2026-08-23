@@ -33,7 +33,11 @@ public class MinimapCamera : MonoBehaviour
     [Header("Render Settings")]
     [SerializeField] private RenderTexture renderTexture;
     [SerializeField] private int renderTextureSize = 1024;
-    [SerializeField] private Color backgroundColor = new Color(0.1f, 0.1f, 0.1f, 1f);
+    // This is the minimap's ground colour, not a void colour. SampleScene has no terrain to
+    // photograph — both tilemaps are empty and there is no ground sprite — so the camera's clear
+    // colour IS the field the markers sit on. Near-black (the old default) read as "the minimap
+    // is switched off"; a field green reads as the farm.
+    [SerializeField] private Color backgroundColor = new Color(0.62f, 0.74f, 0.42f, 1f);
 
     // Editor-only: its sole reader, LogDebug, is itself inside #if UNITY_EDITOR. Leaving the
     // field outside the guard means a player build compiles a field nothing ever reads (CS0414).
@@ -110,7 +114,7 @@ public class MinimapCamera : MonoBehaviour
         // Configure camera for 2D minimap (XY plane)
         minimapCam.orthographic = true;
         minimapCam.orthographicSize = defaultOrthographicSize;
-        minimapCam.cullingMask = minimapLayers;
+        minimapCam.cullingMask = ResolveCullingMask();
         minimapCam.backgroundColor = backgroundColor;
         minimapCam.clearFlags = CameraClearFlags.SolidColor;
         minimapCam.depth = 10; // Render after main camera
@@ -119,6 +123,54 @@ public class MinimapCamera : MonoBehaviour
         minimapCam.nearClipPlane = 0.1f;
         minimapCam.farClipPlane = 1000f;
     }
+
+    /// <summary>
+    /// The layers the minimap renders: the terrain layer plus the icon layer.
+    ///
+    /// In SampleScene `minimapLayers` was serialized to the Minimap layer alone, which holds only
+    /// the icon sprites — the terrain tilemaps and all 107 world sprites live on Default — so the
+    /// camera rendered its clear colour plus three dots and the panel read as a black square.
+    /// Nothing errored; it simply looked switched off, and shipped that way.
+    ///
+    /// Pointing it at Default instead is the obvious fix and the wrong one: it draws every world
+    /// sprite at full detail, which at the HUD's ~200px reduces to unreadable confetti. A minimap
+    /// wants ground plus markers, so the terrain gets its own layer (see
+    /// <see cref="MinimapTerrainLayerName"/>) that both this camera and the main camera render.
+    ///
+    /// A mask that cannot show terrain is treated as unconfigured. An explicit mask that already
+    /// includes something beyond the icon layer is honoured, so deliberate setups still work.
+    /// </summary>
+    private int ResolveCullingMask()
+    {
+        int iconBit = LayerBit(MinimapLayerName);
+        int terrainBit = LayerBit(MinimapTerrainLayerName);
+        int configured = minimapLayers.value;
+
+        // Icons-only (or nothing) cannot draw a map.
+        bool cannotShowGround = configured == 0 || (configured & ~iconBit) == 0;
+        if (!cannotShowGround)
+            return configured;
+
+        // Fall back to terrain + icons; if the terrain layer does not exist in this project,
+        // Default at least shows something rather than a blank square.
+        int fallback = (terrainBit != 0 ? terrainBit : 1) | iconBit;
+        minimapLayers = fallback;
+        return fallback;
+    }
+
+    private static int LayerBit(string layerName)
+    {
+        int layer = LayerMask.NameToLayer(layerName);
+        return layer >= 0 ? (1 << layer) : 0;
+    }
+
+    private const string MinimapLayerName = "Minimap";
+
+    /// <summary>
+    /// Layer holding the ground tilemaps. Rendered by the minimap camera *and* the main camera —
+    /// it exists to separate "ground" from "props", not to hide anything from the player.
+    /// </summary>
+    public const string MinimapTerrainLayerName = "MinimapTerrain";
 
     private void CreateRenderTexture()
     {

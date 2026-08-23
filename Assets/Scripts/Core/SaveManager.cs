@@ -164,6 +164,37 @@ namespace SowurShield.Core
         // REGISTRATION SYSTEM
         // ============================================================================
 
+        /// <summary>
+        /// Whether a registered saveable is still usable.
+        ///
+        /// `saveable != null` is NOT enough here, and the reason is subtle: `saveableObjects`
+        /// holds ISaveable, an interface. Unity's overloaded `==` lives on UnityEngine.Object, so
+        /// comparing through an interface reference uses plain C# reference equality instead — a
+        /// destroyed MonoBehaviour is a live C# object with a dead native side, so it sails
+        /// through the guard and throws on the first member access.
+        ///
+        /// The symptom was a real save failing: "[SaveManager] Error saving data from
+        /// PlayerDataManager: The object of type has been destroyed but you are still trying to
+        /// access it." Whoever was destroyed lost that save pass, and every saveable after it in
+        /// the list still saved, so the file came out silently incomplete rather than erroring.
+        ///
+        /// This is the same trap CLAUDE.md records for `??` on GetComponent, wearing a different
+        /// hat. Casting to UnityEngine.Object restores the operator Unity intends.
+        /// </summary>
+        private static bool IsAlive(ISaveable saveable)
+        {
+            if (saveable == null) return false;
+
+            var asUnityObject = saveable as UnityEngine.Object;
+
+            // Not a Unity object at all (a plain C# saveable): the reference check above is the
+            // only liveness there is. Otherwise ask through UnityEngine.Object, where the
+            // overloaded == knows about the destroyed native side.
+            if (ReferenceEquals(asUnityObject, null)) return true;
+
+            return asUnityObject != null;
+        }
+
         public void RegisterSaveable(ISaveable saveable)
         {
             if (saveable == null || saveableObjects.Contains(saveable))
@@ -209,7 +240,7 @@ namespace SowurShield.Core
 
             foreach (var saveable in saveableObjects.ToList())
             {
-                if (saveable != null)
+                if (IsAlive(saveable))
                 {
                     try { saveable.LoadData(currentGameData); }
                     catch (System.Exception e) { LogError($"Error re-applying data into {saveable.GetType().Name}: {e.Message}"); }
@@ -232,7 +263,7 @@ namespace SowurShield.Core
 
             foreach (var saveable in saveableObjects.ToList())
             {
-                if (saveable != null)
+                if (IsAlive(saveable))
                 {
                     try { saveable.SaveData(currentGameData); }
                     catch (System.Exception e) { LogError($"Error capturing data from {saveable.GetType().Name}: {e.Message}"); }
@@ -352,7 +383,7 @@ namespace SowurShield.Core
 
                 foreach (var saveable in saveableObjects.ToList())
                 {
-                    if (saveable != null)
+                    if (IsAlive(saveable))
                     {
                         try { saveable.SaveData(currentGameData); }
                         catch (System.Exception e) { LogError($"Error saving data from {saveable.GetType().Name}: {e.Message}"); }

@@ -40,6 +40,34 @@ public class MinimapIcon : MonoBehaviour
     private void Awake()
     {
         minimapLayer = LayerMask.NameToLayer(minimapLayerName);
+        HideMinimapLayerFromGameplayCameras();
+    }
+
+    /// <summary>
+    /// Takes the minimap layer out of every gameplay camera's culling mask.
+    ///
+    /// Markers are drawn as real world-space sprites so the minimap camera can photograph them,
+    /// which means any camera that renders their layer draws them too. SampleScene's main camera
+    /// had a culling mask of -1 (everything), so the markers were always being drawn over the
+    /// game — harmless while there were five small ones, and a screen full of giant diamonds the
+    /// moment the scene gained thirty.
+    ///
+    /// Fixing the scene alone would leave the same trap for the next camera anyone adds, so the
+    /// icons enforce it themselves. The minimap camera is exempt: it is the one that must see
+    /// them, identified by carrying a MinimapCamera component.
+    /// </summary>
+    private void HideMinimapLayerFromGameplayCameras()
+    {
+        if (minimapLayer < 0) return;
+        int bit = 1 << minimapLayer;
+
+        foreach (var cam in Camera.allCameras)
+        {
+            if (cam == null) continue;
+            if (cam.GetComponent<MinimapCamera>() != null) continue;
+            if ((cam.cullingMask & bit) == 0) continue;
+            cam.cullingMask &= ~bit;
+        }
     }
 
     private void Start()
@@ -103,7 +131,10 @@ public class MinimapIcon : MonoBehaviour
         iconRenderer = iconObject.AddComponent<SpriteRenderer>();
         iconRenderer.sprite = iconSprite != null ? iconSprite : GetDefaultIconSprite();
         iconRenderer.color = iconColor;
-        iconRenderer.sortingOrder = 100; // Render on top
+        // Every icon used a flat 100, so overlapping markers drew in arbitrary order — the
+        // player's arrow ended up hidden behind the bed's square, which is exactly backwards
+        // for the one marker the player looks for first.
+        iconRenderer.sortingOrder = SortingOrderFor(iconType);
 
         // Scale based on icon size
         iconObject.transform.localScale = Vector3.one * iconSize;
@@ -116,11 +147,43 @@ public class MinimapIcon : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Draws the marker for this icon type.
+    ///
+    /// This used to `return null` with a comment saying Unity would fall back to a white square.
+    /// It does not — a SpriteRenderer with no sprite draws nothing at all, so every icon whose
+    /// `iconSprite` was left unassigned (which was all of them) was simply invisible, with no
+    /// error. Three of the five icons in SampleScene had never rendered.
+    ///
+    /// Shapes are deliberately not the world art: a minimap is read at ~200px, where a detailed
+    /// character sprite reduces to unreadable confetti. Each type gets a distinct silhouette so
+    /// it survives at that size — the player a chevron, buildings a square, NPCs a diamond,
+    /// animals a small dot.
+    /// </summary>
     private Sprite GetDefaultIconSprite()
     {
-        // Create a simple default sprite if none is assigned
-        // For now, return null and Unity will use a white square
-        return null;
+        return MinimapIconSprites.ForType(iconType);
+    }
+
+    /// <summary>
+    /// Draw order for overlapping markers: the more urgent the marker, the higher it sits.
+    /// The player is always on top — losing your own position behind a building marker defeats
+    /// the point of the minimap.
+    /// </summary>
+    private static int SortingOrderFor(MinimapIconType type)
+    {
+        switch (type)
+        {
+            case MinimapIconType.Player:      return 130;
+            case MinimapIconType.Quest:       return 125;
+            case MinimapIconType.Enemy:       return 120;
+            case MinimapIconType.NPC:         return 115;
+            case MinimapIconType.SellBox:
+            case MinimapIconType.Bed:
+            case MinimapIconType.Building:
+            case MinimapIconType.CropField:   return 105;
+            default:                          return 100;
+        }
     }
 
     // ============================================================================

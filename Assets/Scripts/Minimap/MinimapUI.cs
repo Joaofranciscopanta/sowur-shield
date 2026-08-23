@@ -169,6 +169,11 @@ public class MinimapUI : MonoBehaviour
     {
         if (playerMarker != null && playerMarkerImage != null)
         {
+            // The marker's sprite was whatever the scene happened to carry — in SampleScene a
+            // frame of the character spritesheet, tinted flat green at 10x10px, which rendered
+            // as an indistinct smudge. A minimap marker needs a silhouette that survives being
+            // tiny, so it uses the same procedural chevron the world icons use.
+            playerMarkerImage.sprite = MinimapIconSprites.ForType(MinimapIconType.Player);
             playerMarkerImage.color = playerMarkerColor;
             playerMarker.sizeDelta = new Vector2(playerMarkerSize, playerMarkerSize);
             playerMarker.gameObject.SetActive(true);
