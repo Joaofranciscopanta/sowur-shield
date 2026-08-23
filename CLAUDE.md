@@ -173,6 +173,24 @@ the shop system was unreachable for months. `BuildingRow` — the working equiva
 its own file. **One MonoBehaviour per file, named after the class.** Plain classes, structs and
 enums can still share a file.
 
+### ⚠️ A Sliced sprite whose borders exceed the rect draws NOTHING
+
+`Image.Type.Sliced` never compresses its 9-slice borders. `button_danger` has 16px borders,
+so 16+16 = 32px of fixed art; put it in a 24x24 rect and Unity renders **nothing at all** —
+no error, no warning, and the Button still raycasts, so it stays clickable while invisible.
+
+That is why the save-slot **delete button was unusable for months**: it was present, wired,
+active and on top in the raycast, and simply never painted. The whole button kit is 5:1
+(600x120, 16px borders; `button_small_action` is 480x96 with 12px), so a square icon button
+cannot be built from it — give action buttons the art's own proportion and a text label.
+
+Two related traps measured in the same pass:
+- The painted pill fills only ~65% of its rect; the rest is letterboxing. Inset labels
+  against the **measured art**, not the rect, exactly like the panel frames.
+- A `HorizontalLayoutGroup` child ignores hand-set `offsetMin/Max` — setting them on
+  `StatsRow` collapsed the row to zero height. Use `LayoutElement.preferredWidth` and
+  turn off `childForceExpandWidth` instead.
+
 ### Architecture
 - Singletons: UIManager, InteractionManager, SaveManager, GameTimeController
 - Interfaces: IInteractable, IUIWindow (all UI windows), ISaveable

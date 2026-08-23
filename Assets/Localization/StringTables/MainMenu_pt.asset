@@ -210,6 +210,30 @@ MonoBehaviour:
     m_Localized: Idioma
     m_Metadata:
       m_Items: []
+  - m_Id: 22830650388897792
+    m_Localized: Apagar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646528
+    m_Localized: Renomear
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646529
+    m_Localized: "Renomear Espa\xE7o"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646530
+    m_Localized: "Nome do espa\xE7o..."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646531
+    m_Localized: OK
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646532
+    m_Localized: Cancelar
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

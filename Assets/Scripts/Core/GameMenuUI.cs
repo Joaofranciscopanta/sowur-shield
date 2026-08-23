@@ -47,6 +47,9 @@ public class GameMenuUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI saveSlotPanelTitle;
     [SerializeField] private Button saveSlotBackButton;
 
+    [Tooltip("Optional. Without it the rename button stays hidden and slots keep default names.")]
+    [SerializeField] private SowurShield.UI.SlotRenameDialog slotRenameDialog;
+
     [Header("Confirmation Dialog")]
     [SerializeField] private GameObject confirmationPanel;
     [SerializeField] private TextMeshProUGUI confirmationText;
@@ -238,6 +241,7 @@ public class GameMenuUI : MonoBehaviour
         saveSlotButtonPrefab = other.saveSlotButtonPrefab;
         saveSlotPanelTitle = other.saveSlotPanelTitle;
         saveSlotBackButton = other.saveSlotBackButton;
+        slotRenameDialog = other.slotRenameDialog;
 
         confirmationPanel = other.confirmationPanel;
         confirmationText = other.confirmationText;
@@ -724,8 +728,12 @@ public class GameMenuUI : MonoBehaviour
         if (saveSlotListParent == null || saveSlotButtonPrefab == null || SaveManager.Instance == null)
             return;
 
-        foreach (Transform child in saveSlotListParent)
-            Destroy(child.gameObject);
+        // Destroy() is deferred to end of frame, so a repopulate in the same frame -- which is
+        // exactly what a rename or delete triggers -- saw the old rows still parented and
+        // doubled the list. Measured: 3 slots became 6. Same trap already commented in
+        // RelationshipUI, SeedShopUI, ShopUI and WorldMapUiController.
+        for (int i = saveSlotListParent.childCount - 1; i >= 0; i--)
+            DestroyImmediate(saveSlotListParent.GetChild(i).gameObject);
 
         SaveSlotInfo[] slots = SaveManager.Instance.GetAllSlotInfos();
 
@@ -733,41 +741,63 @@ public class GameMenuUI : MonoBehaviour
         {
             string slotName = info.slotName;
 
-            if (currentInGameSlotMode == InGameSlotMode.Save)
-            {
-                // AutoSave is hidden entirely in the manual Save panel
-                if (info.isAutoSave) continue;
+            // AutoSave is hidden entirely in the manual Save panel
+            if (currentInGameSlotMode == InGameSlotMode.Save && info.isAutoSave) continue;
 
-                GameObject go = Instantiate(saveSlotButtonPrefab, saveSlotListParent);
-                SaveSlotButton btn = go.GetComponent<SaveSlotButton>();
-                if (btn == null) continue;
+            GameObject go = Instantiate(saveSlotButtonPrefab, saveSlotListParent);
+            SaveSlotButton btn = go.GetComponent<SaveSlotButton>();
+            if (btn == null) continue;
 
-                btn.Initialize(
-                    info,
-                    (Action)(() => OnInGameSaveSlotSelected(slotName)),
-                    null,
-                    false
-                );
-            }
-            else // Load
-            {
-                GameObject go = Instantiate(saveSlotButtonPrefab, saveSlotListParent);
-                SaveSlotButton btn = go.GetComponent<SaveSlotButton>();
-                if (btn == null) continue;
+            // Empty slots are only pickable in Save mode (there is nothing to load).
+            bool locked = currentInGameSlotMode == InGameSlotMode.Load && info.isEmpty;
 
-                bool locked = info.isEmpty;
-                Action deleteAction = info.isEmpty || info.isAutoSave
-                    ? null
-                    : (Action)(() => DeleteSlotAndRefreshInGame(slotName));
+            // Delete and rename apply to any real, non-AutoSave save in BOTH modes. The Save
+            // panel used to pass null here, which hid the delete button in the one screen a
+            // player would go to manage their saves — leaving overwrite as the only option.
+            bool manageable = !info.isEmpty && !info.isAutoSave;
+            string currentLabel = info.customName;
 
-                btn.Initialize(
-                    info,
-                    locked ? null : (Action)(() => OnInGameLoadSlotSelected(slotName)),
-                    deleteAction,
-                    locked
-                );
-            }
+            Action deleteAction = manageable
+                ? (Action)(() => DeleteSlotAndRefreshInGame(slotName))
+                : null;
+
+            Action renameAction = manageable && slotRenameDialog != null
+                ? (Action)(() => BeginInGameRename(slotName, currentLabel))
+                : null;
+
+            Action onClick = currentInGameSlotMode == InGameSlotMode.Save
+                ? (Action)(() => OnInGameSaveSlotSelected(slotName))
+                : (Action)(() => OnInGameLoadSlotSelected(slotName));
+
+            btn.Initialize(info, locked ? null : onClick, deleteAction, locked, renameAction);
         }
+    }
+
+    /// <summary>Opens the rename prompt for a slot, then repopulates the list in place.</summary>
+    private void BeginInGameRename(string slotName, string currentLabel)
+    {
+        if (slotRenameDialog == null) return;
+
+        Action<string> onConfirmed = null;
+        Action onCancelled = null;
+
+        onConfirmed = typed =>
+        {
+            slotRenameDialog.OnConfirmed -= onConfirmed;
+            slotRenameDialog.OnCancelled -= onCancelled;
+            SaveManager.Instance?.RenameSlot(slotName, typed);
+            PopulateInGameSlotPanel();
+        };
+
+        onCancelled = () =>
+        {
+            slotRenameDialog.OnConfirmed -= onConfirmed;
+            slotRenameDialog.OnCancelled -= onCancelled;
+        };
+
+        slotRenameDialog.OnConfirmed += onConfirmed;
+        slotRenameDialog.OnCancelled += onCancelled;
+        slotRenameDialog.Open(currentLabel);
     }
 
     private void DeleteSlotAndRefreshInGame(string slotName)

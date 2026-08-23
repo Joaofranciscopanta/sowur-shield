@@ -195,6 +195,30 @@ MonoBehaviour:
     m_Key: mainmenu.settings.language
     m_Metadata:
       m_Items: []
+  - m_Id: 22830650388897792
+    m_Key: mainmenu.saveslotbutton.delete
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646528
+    m_Key: mainmenu.saveslotbutton.rename
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646529
+    m_Key: mainmenu.slotrename.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646530
+    m_Key: mainmenu.slotrename.placeholder
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646531
+    m_Key: mainmenu.slotrename.confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22830650426646532
+    m_Key: mainmenu.slotrename.cancel
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

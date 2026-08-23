@@ -324,6 +324,68 @@ namespace SowurShield.Core
             return true;
         }
 
+        /// <summary>
+        /// Sets a slot's display label. The directory keeps its fixed name — GetAllSlotInfos()
+        /// enumerates Slot1..SlotN by path, so moving the folder would hide the slot entirely.
+        /// Passing null or blank clears the label back to the default "Slot N".
+        /// Returns false when the slot has no save to label, or for AutoSave.
+        /// </summary>
+        public bool RenameSlot(string slotName, string newName)
+        {
+            if (slotName == AUTO_SAVE_SLOT_NAME)
+            {
+                LogDebug("Cannot rename the AutoSave slot.");
+                return false;
+            }
+
+            if (!HasSaveFile(slotName))
+            {
+                LogDebug($"Cannot rename empty slot '{slotName}'.");
+                return false;
+            }
+
+            string metaPath = GetSlotMetaFilePath(slotName);
+            if (!File.Exists(metaPath))
+            {
+                LogDebug($"Cannot rename '{slotName}': no slot meta on disk.");
+                return false;
+            }
+
+            try
+            {
+                var info = ReadSlotMeta(slotName);
+                info.customName = SanitizeSlotName(newName);
+                File.WriteAllText(metaPath, JsonUtility.ToJson(info, true));
+                LogDebug($"Slot '{slotName}' renamed to '{info.customName}'.");
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                LogError($"Failed to rename slot '{slotName}': {e.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>Max characters accepted for a slot label.</summary>
+        public const int MaxSlotNameLength = 24;
+
+        /// <summary>
+        /// Trims a player-typed label and caps its length. Control characters are stripped
+        /// because the label is written into JSON and read back into a UI Text.
+        /// Returns an empty string for blank input, which means "use the default name".
+        /// </summary>
+        private static string SanitizeSlotName(string raw)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) return string.Empty;
+
+            var sb = new System.Text.StringBuilder(raw.Length);
+            foreach (char c in raw.Trim())
+                if (!char.IsControl(c)) sb.Append(c);
+
+            string clean = sb.ToString().Trim();
+            return clean.Length > MaxSlotNameLength ? clean.Substring(0, MaxSlotNameLength) : clean;
+        }
+
         public SaveSlotInfo GetSlotInfo(string slotName)
         {
             return ReadSlotMeta(slotName);
@@ -437,9 +499,16 @@ namespace SowurShield.Core
             try
             {
                 string slotDir = GetSlotDirectory(activeSlotName);
-                string backupFileName = $"{saveFileName}_backup_{System.DateTime.Now:yyyyMMdd_HHmmss}{saveFileExtension}";
-                string backupFilePath = Path.Combine(slotDir, backupFileName);
-                File.Copy(CurrentSaveFilePath, backupFilePath);
+                // The stamp is second-precision, so two saves inside the same second used to
+                // collide and throw "the file already exists". Add a counter suffix rather than
+                // widening the stamp: CleanOldBackups sorts these names lexicographically and a
+                // fractional part would break that ordering.
+                string stamp = System.DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                string backupFilePath = Path.Combine(slotDir, $"{saveFileName}_backup_{stamp}{saveFileExtension}");
+                for (int dup = 1; File.Exists(backupFilePath) && dup < 1000; dup++)
+                    backupFilePath = Path.Combine(slotDir, $"{saveFileName}_backup_{stamp}_{dup:D3}{saveFileExtension}");
+
+                File.Copy(CurrentSaveFilePath, backupFilePath, true);
                 CleanOldBackups();
             }
             catch (System.Exception e)
@@ -691,9 +760,14 @@ namespace SowurShield.Core
         {
             try
             {
+                // Saving rebuilds the meta from GameData, which has no notion of the player's
+                // label. Carry the existing one across or every save would silently wipe it.
+                string existingCustomName = ReadSlotMeta(slotName)?.customName;
+
                 var info = new SaveSlotInfo
                 {
                     slotName = slotName,
+                    customName = existingCustomName,
                     isAutoSave = slotName == AUTO_SAVE_SLOT_NAME,
                     isEmpty = false,
                     currentDay = data.timeData?.currentDay ?? 1,

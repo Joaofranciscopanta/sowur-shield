@@ -36,6 +36,9 @@ namespace SowurShield.UI
         [SerializeField] private Button backButton;
         [SerializeField] private TextMeshProUGUI titleText;
 
+        [Tooltip("Optional. Without it the rename button stays hidden and slots keep default names.")]
+        [SerializeField] private SlotRenameDialog renameDialog;
+
         /// <summary>The slot names the picker shows, in display order.</summary>
         public static readonly string[] SlotNames = { "AutoSave", "Slot1", "Slot2", "Slot3" };
 
@@ -47,6 +50,9 @@ namespace SowurShield.UI
 
         /// <summary>Raised after a slot's files were erased, so the caller can refresh dependent UI.</summary>
         public event Action OnSlotDeleted;
+
+        /// <summary>Raised after a slot was given a new label.</summary>
+        public event Action OnSlotRenamed;
 
         /// <summary>The mode the picker was last opened in.</summary>
         public SaveSlotPickerMode CurrentMode { get; private set; }
@@ -161,8 +167,10 @@ namespace SowurShield.UI
                 return;
 
             // Clear old rows
-            foreach (Transform child in slotListParent)
-                Destroy(child.gameObject);
+            // Destroy() is deferred to end of frame; a rename or delete repopulates in the same
+            // frame and would then see the old rows and double the list.
+            for (int i = slotListParent.childCount - 1; i >= 0; i--)
+                DestroyImmediate(slotListParent.GetChild(i).gameObject);
 
             foreach (var info in GetSlotInfos())
             {
@@ -180,11 +188,19 @@ namespace SowurShield.UI
                     ? null
                     : () => DeleteSlotAndRefresh(slotName);
 
+                // Renaming a slot is meaningful in either mode, and unlike picking it, it is
+                // still allowed while the row is locked for Load — a full slot is never locked.
+                string currentLabel = info.customName;
+                Action onRename = info.isEmpty || info.isAutoSave || renameDialog == null
+                    ? null
+                    : () => BeginRename(slotName, currentLabel);
+
                 btn.Initialize(
                     info,
                     locked ? null : (Action)(() => OnSlotChosen?.Invoke(slotName, CurrentMode)),
                     onDelete,
-                    locked
+                    locked,
+                    onRename
                 );
             }
         }
@@ -206,6 +222,70 @@ namespace SowurShield.UI
 
             Populate();
             OnSlotDeleted?.Invoke();
+        }
+
+        /// <summary>
+        /// Opens the rename prompt for one slot. The handler is re-subscribed per open and
+        /// removed on close, so a cancelled rename cannot leak into the next slot's dialog.
+        /// </summary>
+        private void BeginRename(string slotName, string currentLabel)
+        {
+            if (renameDialog == null) return;
+
+            Action<string> onConfirmed = null;
+            Action onCancelled = null;
+
+            onConfirmed = typed =>
+            {
+                renameDialog.OnConfirmed -= onConfirmed;
+                renameDialog.OnCancelled -= onCancelled;
+
+                if (SaveManager.Instance != null)
+                    SaveManager.Instance.RenameSlot(slotName, typed);
+                else
+                    RenameSlotOnDisk(slotName, typed);
+
+                Populate();
+                OnSlotRenamed?.Invoke();
+            };
+
+            onCancelled = () =>
+            {
+                renameDialog.OnConfirmed -= onConfirmed;
+                renameDialog.OnCancelled -= onCancelled;
+            };
+
+            renameDialog.OnConfirmed += onConfirmed;
+            renameDialog.OnCancelled += onCancelled;
+            renameDialog.Open(currentLabel);
+        }
+
+        /// <summary>
+        /// Writes the label straight to SlotMeta.json. SaveManager is not guaranteed to exist in
+        /// the MainMenu scene, which is exactly where the picker lives.
+        /// </summary>
+        private static void RenameSlotOnDisk(string slotName, string newName)
+        {
+            try
+            {
+                string metaPath = Path.Combine(
+                    Application.persistentDataPath, "Saves", slotName, "SlotMeta.json");
+                if (!File.Exists(metaPath)) return;
+
+                var info = JsonUtility.FromJson<SaveSlotInfo>(File.ReadAllText(metaPath));
+                if (info == null) return;
+
+                string clean = string.IsNullOrWhiteSpace(newName) ? string.Empty : newName.Trim();
+                if (clean.Length > SaveManager.MaxSlotNameLength)
+                    clean = clean.Substring(0, SaveManager.MaxSlotNameLength);
+
+                info.customName = clean;
+                File.WriteAllText(metaPath, JsonUtility.ToJson(info, true));
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[MainMenuSaveSlotController] Rename failed for '{slotName}': {e.Message}");
+            }
         }
 
         private void HandleBackClicked()
