@@ -28,6 +28,7 @@ public class SaveSlotButton : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button mainButton;
     [SerializeField] private Button deleteButton;
+    [SerializeField] private Button renameButton;
 
     [Header("Indicators")]
     [SerializeField] private GameObject lockedIndicator;
@@ -49,17 +50,17 @@ public class SaveSlotButton : MonoBehaviour
     /// <param name="onClickAction">Callback when the main button is pressed.</param>
     /// <param name="onDeleteAction">Callback when the delete button is pressed. Pass null to hide the button.</param>
     /// <param name="locked">If true, the slot is non-interactable (shows locked indicator).</param>
-    public void Initialize(SaveSlotInfo info, Action onClickAction, Action onDeleteAction = null, bool locked = false)
+    public void Initialize(SaveSlotInfo info, Action onClickAction, Action onDeleteAction = null,
+                           bool locked = false, Action onRenameAction = null)
     {
         // Slot name — format "Slot1" → "Slot 1", "AutoSave" → "Auto Save"
+        // A player-set label wins over the formatted directory name. GetDisplayName falls back
+        // to "Slot N" when customName is blank, so the localized strings still drive the default.
         if (slotNameText != null)
         {
-            if (info.isAutoSave)
-                slotNameText.text = autoSaveText.SafeGetLocalizedString();
-            else if (info.slotName.StartsWith("Slot") && info.slotName.Length > 4)
-                slotNameText.text = slotPrefixText.SafeGetLocalizedString() + info.slotName.Substring(4);
-            else
-                slotNameText.text = info.slotName;
+            slotNameText.text = info.GetDisplayName(
+                autoSaveText.SafeGetLocalizedString(),
+                slotPrefixText.SafeGetLocalizedString());
         }
 
         if (info.isEmpty)
@@ -133,6 +134,18 @@ public class SaveSlotButton : MonoBehaviour
             {
                 deleteButton.onClick.RemoveAllListeners();
                 deleteButton.onClick.AddListener(() => onDeleteAction());
+            }
+        }
+
+        // Rename button — same visibility rule as delete: a real, non-AutoSave save only.
+        if (renameButton != null)
+        {
+            bool showRename = !info.isAutoSave && onRenameAction != null && !info.isEmpty;
+            renameButton.gameObject.SetActive(showRename);
+            if (showRename)
+            {
+                renameButton.onClick.RemoveAllListeners();
+                renameButton.onClick.AddListener(() => onRenameAction());
             }
         }
 
