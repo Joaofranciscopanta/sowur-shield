@@ -91,13 +91,21 @@ public static class LocalizeStaticLabels
     // MAINMENU
     // ============================================================================
 
+    // The five main buttons (New Game / Continue / Load / Settings / Quit) were ALREADY wired
+    // before this pass — an earlier draft of this table guessed at "Canvas/MainPanel/..." paths
+    // that do not exist and would have reported them as missing. What was actually left is the
+    // slot-rename dialog, the confirmation prompt, and the slot picker title.
     private static readonly Binding[] MainMenuBindings =
     {
-        new Binding("Canvas/MainPanel/NewGameButton/Text (TMP)",  "MainMenu", "mainmenu.button.new_game"),
-        new Binding("Canvas/MainPanel/ContinueButton/Text (TMP)", "MainMenu", "mainmenu.button.continue"),
-        new Binding("Canvas/MainPanel/LoadGameButton/Text (TMP)", "MainMenu", "mainmenu.button.load_game"),
-        new Binding("Canvas/MainPanel/SettingsButton/Text (TMP)", "MainMenu", "mainmenu.button.settings"),
-        new Binding("Canvas/MainPanel/QuitButton/Text (TMP)",     "MainMenu", "mainmenu.button.quit"),
+        new Binding("MainMenuCanvas/SlotPickerPanel/TitleText",                 "MainMenu", "mainmenu.gamemenu.load_slot_title"),
+        new Binding("MainMenuCanvas/SlotRenamePanel/TitleText",                 "MainMenu", "mainmenu.saveslotbutton.rename"),
+        new Binding("MainMenuCanvas/SlotRenamePanel/ConfirmButton/Text (TMP)",  "UI_Common", "ui_common.ok"),
+        new Binding("MainMenuCanvas/SlotRenamePanel/CancelButton/Text (TMP)",   "UI_Common", "ui_common.cancel"),
+
+        // ConfirmationPanel/ConfirmationText is NOT here: GameMenuUI, MainMenuUI and
+        // QuitToMainMenuButton each write a different prompt into it (overwrite? load? quit?
+        // delete?), already localized via SafeGetLocalizedString. A fixed binding would pin it
+        // to one of those messages and show the wrong question for the other three.
     };
 
     /// <summary>
@@ -272,6 +280,11 @@ public static class LocalizeStaticLabels
         bool stretchesX = !Mathf.Approximately(rect.anchorMin.x, rect.anchorMax.x);
         bool stretchesY = !Mathf.Approximately(rect.anchorMin.y, rect.anchorMax.y);
         if (!stretchesX || !stretchesY) return;
+
+        // A parent inside a layout group can still report 0x0 at edit time, before the layout has
+        // been built. Insetting against that yields a negative rect just as surely as the
+        // point-anchor case did — measured: an 8x6 inset on a 0x0 parent gave -16x-12.
+        if (parent.rect.width <= 1f || parent.rect.height <= 1f) return;
 
         float insetX = parent.rect.width * ButtonHorizontalPadding;
         float insetY = parent.rect.height * ButtonVerticalPadding;
