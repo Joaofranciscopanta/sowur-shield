@@ -234,6 +234,30 @@ MonoBehaviour:
     m_Localized: Cancelar
     m_Metadata:
       m_Items: []
+  - m_Id: 22886586465902592
+    m_Localized: Menu do Jogo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457024
+    m_Localized: Continuar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457025
+    m_Localized: Salvar Jogo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457026
+    m_Localized: Menu Principal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457027
+    m_Localized: "Sair para a \xC1rea de Trabalho"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457028
+    m_Localized: Aplicar
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
