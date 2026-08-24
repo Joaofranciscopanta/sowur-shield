@@ -62,6 +62,11 @@ public class MinimapUI : MonoBehaviour
     private Tween sizeTween;
     private Tween opacityTween;
 
+    // Resolved once in Start rather than searched every frame (see UpdatePlayerMarker)
+    private MinimapCamera cachedMinimapCamera;
+    private Transform cachedPlayer;
+    private bool useCanvasPlayerMarker = true;
+
     private void Awake()
     {
         // Auto-find references if not assigned
@@ -116,6 +121,40 @@ public class MinimapUI : MonoBehaviour
     // INITIALIZATION
     // ============================================================================
 
+    /// <summary>
+    /// Pulls the map image inside the frame's *painted* area.
+    ///
+    /// frame_decorative_border is 512px of which the art occupies x[46..472], y[67..458] — roughly
+    /// 9-13% transparent padding, and not symmetrical. Border and map share the same rect, so the
+    /// map ran out past the visible frame and the padding showed as a black gutter between the
+    /// two. Measured from the art, not guessed, and expressed as fractions so it holds at both
+    /// 200px and 800px.
+    ///
+    /// This is the same class of trap as the panel frames: the rect is not the painted area.
+    /// </summary>
+    private void InsetMapInsideFrame()
+    {
+        if (minimapImage == null || borderImage == null) return;
+
+        var mapRect = minimapImage.rectTransform;
+
+        // Stretch to the panel, then pull each edge in by the frame's own padding plus a little
+        // of the frame's width so the map tucks under the moulding rather than butting against it.
+        mapRect.anchorMin = Vector2.zero;
+        mapRect.anchorMax = Vector2.one;
+
+        mapRect.anchorMin = new Vector2(FrameInsetLeft, FrameInsetBottom);
+        mapRect.anchorMax = new Vector2(1f - FrameInsetRight, 1f - FrameInsetTop);
+        mapRect.offsetMin = Vector2.zero;
+        mapRect.offsetMax = Vector2.zero;
+    }
+
+    // Fractions of the frame sprite taken up by transparent padding plus the moulding itself.
+    private const float FrameInsetLeft = 0.115f;
+    private const float FrameInsetRight = 0.105f;
+    private const float FrameInsetBottom = 0.155f;
+    private const float FrameInsetTop = 0.135f;
+
     private void SetupUI()
     {
         if (minimapPanel == null)
@@ -133,6 +172,8 @@ public class MinimapUI : MonoBehaviour
         // Set initial opacity
         if (canvasGroup != null)
             canvasGroup.alpha = 1f;
+
+        InsetMapInsideFrame();
     }
 
     private void ConnectToMinimapCamera()
@@ -167,7 +208,26 @@ public class MinimapUI : MonoBehaviour
 
     private void SetupPlayerMarker()
     {
-        if (playerMarker != null && playerMarkerImage != null)
+        cachedMinimapCamera = FindFirstObjectByType<MinimapCamera>();
+
+        var playerObj = GameObject.FindGameObjectWithTag("Player");
+        cachedPlayer = playerObj != null ? playerObj.transform : null;
+
+        // If the player already renders a world-space marker, this Canvas one would draw a second
+        // arrow on top of the first. Stand down and let the world icon do the job.
+        useCanvasPlayerMarker = playerObj == null
+                             || playerObj.GetComponentInChildren<MinimapIcon>(true) == null;
+
+        if (playerMarker == null)
+            return;
+
+        if (!useCanvasPlayerMarker)
+        {
+            playerMarker.gameObject.SetActive(false);
+            return;
+        }
+
+        if (playerMarkerImage != null)
         {
             // The marker's sprite was whatever the scene happened to carry — in SampleScene a
             // frame of the character spritesheet, tinted flat green at 10x10px, which rendered
@@ -387,36 +447,41 @@ public class MinimapUI : MonoBehaviour
     // PLAYER MARKER
     // ============================================================================
 
+    /// <summary>
+    /// Positions the Canvas-space player marker over the rendered map.
+    ///
+    /// Only runs when the player carries no world-space <see cref="MinimapIcon"/>. When it does —
+    /// which is the case in SampleScene — the camera already photographs a chevron at the
+    /// player's position, and drawing this one too put two arrows on the same spot, visibly
+    /// stacked. The world icon wins because it scales with zoom and sorts against other markers;
+    /// this one stays as the fallback for scenes that never set an icon up.
+    ///
+    /// The two per-frame Find calls it used to make are resolved once in Start instead.
+    /// </summary>
     private void UpdatePlayerMarker()
     {
-        if (playerMarker == null)
+        if (playerMarker == null || !useCanvasPlayerMarker)
             return;
 
-        // Get player position from minimap camera
-        var minimapCamera = FindFirstObjectByType<MinimapCamera>();
-        if (minimapCamera == null)
+        if (cachedMinimapCamera == null || cachedPlayer == null)
             return;
 
-        var player = GameObject.FindGameObjectWithTag("Player");
-        if (player == null)
-            return;
-
-        // Convert world position to minimap UI position
-        var camera = minimapCamera.GetCamera();
+        var camera = cachedMinimapCamera.GetCamera();
         if (camera == null)
             return;
 
-        Vector3 playerWorldPos = player.transform.position;
-        Vector3 viewportPos = camera.WorldToViewportPoint(playerWorldPos);
+        Vector3 viewportPos = camera.WorldToViewportPoint(cachedPlayer.position);
 
         // Check if player is within minimap view
         if (viewportPos.x < 0 || viewportPos.x > 1 || viewportPos.y < 0 || viewportPos.y > 1)
         {
-            playerMarker.gameObject.SetActive(false);
+            if (playerMarker.gameObject.activeSelf)
+                playerMarker.gameObject.SetActive(false);
             return;
         }
 
-        playerMarker.gameObject.SetActive(true);
+        if (!playerMarker.gameObject.activeSelf)
+            playerMarker.gameObject.SetActive(true);
 
         // Convert viewport to local position within minimap panel
         Vector2 localPos = new Vector2(
@@ -504,6 +569,16 @@ public class MinimapUI : MonoBehaviour
     }
 
     /// <summary>
+    /// The rect the map itself is drawn into — inset inside the decorative frame, so noticeably
+    /// smaller than the panel. Anything sizing against "how big is the map on screen" wants this,
+    /// not the panel.
+    /// </summary>
+    public RectTransform GetMapImageRect()
+    {
+        return minimapImage != null ? minimapImage.rectTransform : null;
+    }
+
+    /// <summary>
     /// Force reconnect to minimap camera (useful for debugging)
     /// </summary>
     [ContextMenu("Force Reconnect Camera")]
@@ -549,25 +624,37 @@ public class MinimapUI : MonoBehaviour
         TransitionToFullscreen(0.3f, Ease.InOutQuad);
     }
 
+    // These two were empty shells — `if (x) { }` with both branches blank, left behind when their
+    // Debug.Log calls were stripped. A menu item that reports nothing is worse than none, since it
+    // reads as "checked, all fine". They now actually print what they claim to check.
+
     [ContextMenu("Debug - Check Texture Connection")]
     private void DebugTextureConnection()
     {
         if (minimapImage == null)
         {
+            Debug.LogWarning("[MinimapUI] minimapImage is not assigned.", this);
             return;
         }
 
         if (minimapImage.texture == null)
-        {
-        }
+            Debug.LogWarning("[MinimapUI] RawImage has no texture — the minimap will be blank.", this);
         else
-        {
-        }
+            Debug.Log($"[MinimapUI] Connected to '{minimapImage.texture.name}' " +
+                      $"({minimapImage.texture.width}x{minimapImage.texture.height}).", this);
     }
 
     [ContextMenu("Debug - Check Size Settings")]
     private void DebugSizeSettings()
     {
+        if (minimapPanel == null)
+        {
+            Debug.LogWarning("[MinimapUI] minimapPanel is not assigned.", this);
+            return;
+        }
+
+        Debug.Log($"[MinimapUI] panel size={minimapPanel.sizeDelta} pos={minimapPanel.anchoredPosition} " +
+                  $"| normal={normalSize} fullscreen={fullscreenSize}", this);
     }
 
     [ContextMenu("Debug - Force Fullscreen Size")]

@@ -235,6 +235,30 @@ MonoBehaviour:
     m_Localized: Cancelar
     m_Metadata:
       m_Items: []
+  - m_Id: 22886586465902592
+    m_Localized: "Men\xFA del Juego"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457024
+    m_Localized: Continuar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457025
+    m_Localized: Guardar Partida
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457026
+    m_Localized: "Men\xFA Principal"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457027
+    m_Localized: Salir al Escritorio
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457028
+    m_Localized: Aplicar
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

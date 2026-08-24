@@ -366,24 +366,21 @@ follow-up logged there — add a `.gitattributes` and renormalize line endings �
 > made); sprite sheets and animation frames cannot.
 
 - Duck and Sparrow use chicken-baby placeholder sprites (`Assets/Resources/Animals/duck.asset`,
-  `Sparrow.asset` point at `Chicken_Baby*.png`). Note these are also the only two `AnimalData`
-  assets with a null `animatorController` — the same two gaps travel together
-- **Enemy sprites: 20 of 34 wired (Aug/1), 14 blocked on a naming mismatch — not on art.**
-  `Assets/Art/Enemies/` holds 32 sheets. Meadow/Forest/Cave files are named after their
-  `EnemyData` (`Cave Bat.png` → `CaveBat`), so those 20 were pure wiring and are now done.
-  Mountain/Volcano files are named `Enemy 19 — Snow Wolf`, `Enemy 25 — Fire Slime`, … and match
-  **no** `EnemyData`: `FrostDrake`, `IronGolem`, `Hellhound`, `ThunderEagle` and the other 10
-  have no sheet of their own.
-  **Correcting the earlier "no generation needed either way" claim (checked Aug/1):** there are
-  only **12** sheets across Mountain/Volcano for **14** `EnemyData`, and most are not a rename
-  away — `Harpy`, `ThunderEagle`, `RockHound`, `ArmoredBear` and `Hellhound` have no plausible
-  match among `Snow Wolf`, `Mountain Bandit`, `Ice Elemental`, `Stone Yeti` and the rest. Three
-  pair up cleanly (`Mountain Titan`→`MountainKing`, `Lord of Ashes`→`InfernoDragon`, and one of
-  `Frost Golem`→`IronGolem`/`FrostDrake`). The rest is a **content gap needing art**, which
-  matters because AI generation is unconfigured (see the note above).
-  Until then those 14 render as grey spheres via `CombatUnit.CreateSphereVisual()`.
-  Caveat: `EnemyData.sprite` takes a single `Sprite` while the sheets import as `Multiple`, so
-  Unity will never auto-assign these — each needs the `_0` slice picked explicitly.
+  `Sparrow.asset` point at `Chicken_Baby*.png`). Verified 2026-08-23: `duck.idleSprite` resolves to
+  `Chicken_Baby.png` and `Sparrow.idleSprite` to `Chicken_Baby_Brown.png` — the field is
+  `idleSprite`, not `sprite`. These are also the only two `AnimalData` assets with a null
+  `animatorController`, so the same two gaps travel together
+- **Enemy sprites: 32 of 34 wired — only `IronGolem` and `ObsidianGolem` are missing** (re-measured
+  2026-08-23 by scanning every `EnemyData` for `sprite: {fileID: 0}`).
+  **This entry previously said 14 were blocked.** That was written Aug/1 and someone wired the
+  Mountain/Volcano sheets afterwards without updating it — a doc that overstates a gap by 7x
+  misdirects planning, which is why it is called out rather than quietly edited.
+  All 12 Mountain/Volcano sheets are now assigned (`Frost Golem`→`FrostDrake`,
+  `Flame Colossus`→`VolcanicDrake`, and so on), so there is no spare art to reuse: the two
+  golems are a genuine content gap needing generation, which is still unconfigured (see above).
+  Until then those 2 render as grey spheres via `CombatUnit.CreateSphereVisual()`.
+  Caveat that still holds: `EnemyData.sprite` takes a single `Sprite` while the sheets import as
+  `Multiple`, so Unity will never auto-assign these — each needs the `_0` slice picked explicitly.
 - Stamina/energy icon; see [UI_ART_PLACEHOLDERS.md](UI_ART_PLACEHOLDERS.md) for the full list
 - **Combat animation clips** — no animal has attack/hurt/death art. Checked Aug/1: all 289
   AnimationClips in the project are Idle/Walk/Eat (plus player, NPC, tree, egg-hatch); not one

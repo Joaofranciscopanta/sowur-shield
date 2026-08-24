@@ -27,8 +27,11 @@ public class MinimapCamera : MonoBehaviour
     [Header("Zoom Settings")]
     [SerializeField] private float zoomTransitionDuration = 0.3f;
     [SerializeField] private Ease zoomEase = Ease.InOutQuad;
-    [SerializeField] private float minOrthographicSize = 5f;
-    [SerializeField] private float maxOrthographicSize = 30f;
+    [SerializeField] private float minOrthographicSize = 4f;
+    // Must exceed defaultOrthographicSize * the largest view scale, or the widest zoom step
+    // silently does nothing. At 16 default and a 3.5 top scale that needs 56; the old 30 clamped
+    // the 2.0 step (32) down to 30, so the last zoom-out was a no-op nobody noticed.
+    [SerializeField] private float maxOrthographicSize = 60f;
 
     [Header("Render Settings")]
     [SerializeField] private RenderTexture renderTexture;
@@ -50,6 +53,11 @@ public class MinimapCamera : MonoBehaviour
     private Vector3 panOffset = Vector3.zero;
     private float currentZoomLevel = 1f;
     private Tween currentZoomTween;
+
+    // Cached world extent (see TryGetWorldBounds)
+    private Bounds cachedWorldBounds;
+    private bool worldBoundsCached = false;
+    private bool worldBoundsValid = false;
 
     private void Awake()
     {
@@ -363,6 +371,84 @@ public class MinimapCamera : MonoBehaviour
     public Vector3 GetWorldPosition()
     {
         return new Vector3(transform.position.x, transform.position.y, 0);
+    }
+
+    /// <summary>Half-height the view scales multiply, before any zoom is applied.</summary>
+    public float DefaultOrthographicSize()
+    {
+        return defaultOrthographicSize;
+    }
+
+    /// <summary>Half-height of the current view, in world units.</summary>
+    public float CurrentOrthographicSize()
+    {
+        return minimapCam != null ? minimapCam.orthographicSize : defaultOrthographicSize;
+    }
+
+    /// <summary>Width/height ratio of the render target.</summary>
+    public float CurrentAspect()
+    {
+        return minimapCam != null && minimapCam.aspect > 0f ? minimapCam.aspect : 1f;
+    }
+
+    /// <summary>
+    /// Extent of the playable world, used to stop panning past the map's edge.
+    ///
+    /// Measured once from every SpriteRenderer and Tilemap that is not a minimap marker, then
+    /// cached — this walks the whole scene, so it must not run per-frame from a pan handler.
+    /// Markers are excluded because they sit on the minimap layer and would otherwise define the
+    /// bounds by themselves.
+    /// </summary>
+    public bool TryGetWorldBounds(out Bounds bounds)
+    {
+        if (worldBoundsCached)
+        {
+            bounds = cachedWorldBounds;
+            return worldBoundsValid;
+        }
+
+        worldBoundsCached = true;
+        worldBoundsValid = false;
+        cachedWorldBounds = new Bounds();
+
+        int iconLayer = LayerMask.NameToLayer(MinimapLayerName);
+        bool any = false;
+
+        int terrainLayer = LayerMask.NameToLayer(MinimapTerrainLayerName);
+
+        foreach (var sr in FindObjectsByType<SpriteRenderer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+        {
+            if (iconLayer >= 0 && sr.gameObject.layer == iconLayer) continue;
+
+            // The painted minimap ground is derived FROM these bounds and is deliberately padded
+            // beyond them, so measuring it here inflates the limit a little more every time —
+            // the pan clamp drifted out to 101 units around a 28-unit farm.
+            if (terrainLayer >= 0 && sr.gameObject.layer == terrainLayer) continue;
+
+            if (!any) { cachedWorldBounds = sr.bounds; any = true; }
+            else cachedWorldBounds.Encapsulate(sr.bounds);
+        }
+
+        // Tilemaps are deliberately NOT measured.
+        //
+        // SampleScene's DisplayTilemap is filled at runtime with 10,201 tiles spanning 101 world
+        // units, so counting tiles says "there is terrain here" — yet it renders nothing the
+        // minimap camera can see. Believing it put the pan limit 101 units around a farm that is
+        // 28 across, and made fullscreen open zoomed out onto empty space.
+        //
+        // The sprites ARE the visible world here, and they are what the player navigates by, so
+        // they alone define the bounds. If a project later paints terrain that genuinely draws,
+        // its own renderer bounds should be added back here explicitly.
+
+        worldBoundsValid = any;
+        bounds = cachedWorldBounds;
+        return any;
+    }
+
+    /// <summary>Drop the cached bounds, e.g. after the world changes size.</summary>
+    public void InvalidateWorldBounds()
+    {
+        worldBoundsCached = false;
     }
 
     // ============================================================================

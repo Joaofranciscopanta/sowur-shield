@@ -219,6 +219,30 @@ MonoBehaviour:
     m_Key: mainmenu.slotrename.cancel
     m_Metadata:
       m_Items: []
+  - m_Id: 22886586465902592
+    m_Key: mainmenu.gamemenu.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457024
+    m_Key: mainmenu.gamemenu.resume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457025
+    m_Key: mainmenu.gamemenu.save_game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457026
+    m_Key: mainmenu.gamemenu.quit_to_menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457027
+    m_Key: mainmenu.gamemenu.quit_to_desktop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457028
+    m_Key: mainmenu.settings.apply
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

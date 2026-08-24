@@ -234,6 +234,30 @@ MonoBehaviour:
     m_Localized: Cancel
     m_Metadata:
       m_Items: []
+  - m_Id: 22886586465902592
+    m_Localized: Game Menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457024
+    m_Localized: Resume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457025
+    m_Localized: Save Game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457026
+    m_Localized: Main Menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457027
+    m_Localized: Quit to Desktop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 22886586499457028
+    m_Localized: Apply
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

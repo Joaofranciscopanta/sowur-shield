@@ -2552,6 +2552,7 @@ GameObject:
   - component: {fileID: 147588277}
   - component: {fileID: 147588276}
   - component: {fileID: 147588275}
+  - component: {fileID: 147588278}
   m_Layer: 0
   m_Name: Label
   m_TagString: Untagged
@@ -2628,9 +2629,9 @@ MonoBehaviour:
   m_fontSize: 18
   m_fontSizeBase: 18
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 9
+  m_fontSizeMax: 18
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 4096
@@ -2698,6 +2699,46 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &147588278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 147588273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: MainMenu
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: mainmenu.settings.language
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 147588275}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &150953166
 GameObject:
   m_ObjectHideFlags: 0
@@ -4188,6 +4229,7 @@ GameObject:
   - component: {fileID: 243172128}
   - component: {fileID: 243172130}
   - component: {fileID: 243172129}
+  - component: {fileID: 243172131}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -4212,7 +4254,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -90, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &243172129
 MonoBehaviour:
@@ -4264,9 +4306,9 @@ MonoBehaviour:
   m_fontSize: 24
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 12
+  m_fontSizeMax: 24
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -4314,6 +4356,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 243172127}
   m_CullTransparentMesh: 1
+--- !u!114 &243172131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 243172127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: MainMenu
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: mainmenu.button.settings
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 243172129}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &244492454
 GameObject:
   m_ObjectHideFlags: 0
@@ -4666,6 +4748,7 @@ GameObject:
   - component: {fileID: 280032444}
   - component: {fileID: 280032446}
   - component: {fileID: 280032445}
+  - component: {fileID: 280032447}
   m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
@@ -4742,9 +4825,9 @@ MonoBehaviour:
   m_fontSize: 14
   m_fontSizeBase: 14
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0
-  m_fontSizeMax: 0
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 8
+  m_fontSizeMax: 14
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -4792,6 +4875,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 280032443}
   m_CullTransparentMesh: 1
+--- !u!114 &280032447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 280032443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: UI_Common
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: ui_common.close
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 280032445}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &288896437
 GameObject:
   m_ObjectHideFlags: 0
@@ -8258,6 +8381,7 @@ GameObject:
   - component: {fileID: 485939617}
   - component: {fileID: 485939619}
   - component: {fileID: 485939618}
+  - component: {fileID: 485939620}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -8334,9 +8458,9 @@ MonoBehaviour:
   m_fontSize: 14
   m_fontSizeBase: 14
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 8
+  m_fontSizeMax: 14
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -8350,7 +8474,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 1
+  m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -8384,6 +8508,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 485939616}
   m_CullTransparentMesh: 1
+--- !u!114 &485939620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 485939616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: MainMenu
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: mainmenu.settings.fullscreen
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 485939618}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &490476846
 GameObject:
   m_ObjectHideFlags: 0
@@ -8395,6 +8559,7 @@ GameObject:
   - component: {fileID: 490476847}
   - component: {fileID: 490476849}
   - component: {fileID: 490476848}
+  - component: {fileID: 490476850}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -8419,7 +8584,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -90, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &490476848
 MonoBehaviour:
@@ -8471,9 +8636,9 @@ MonoBehaviour:
   m_fontSize: 24
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 12
+  m_fontSizeMax: 24
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -8521,6 +8686,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 490476846}
   m_CullTransparentMesh: 1
+--- !u!114 &490476850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490476846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: MainMenu
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: mainmenu.gamemenu.quit_to_desktop
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 490476848}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &490554982
 GameObject:
   m_ObjectHideFlags: 0
@@ -9531,6 +9736,7 @@ GameObject:
   - component: {fileID: 565650675}
   - component: {fileID: 565650677}
   - component: {fileID: 565650676}
+  - component: {fileID: 565650678}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -9555,7 +9761,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -45, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &565650676
 MonoBehaviour:
@@ -9607,9 +9813,9 @@ MonoBehaviour:
   m_fontSize: 24
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 12
+  m_fontSizeMax: 24
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -9657,6 +9863,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 565650674}
   m_CullTransparentMesh: 1
+--- !u!114 &565650678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 565650674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: UI_Common
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: ui_common.no
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 565650676}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &571968673 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 37235439118089758, guid: c7f10dae47aa49da89e4a6aa1d81accc, type: 3}
@@ -10576,6 +10822,7 @@ GameObject:
   - component: {fileID: 605508238}
   - component: {fileID: 605508240}
   - component: {fileID: 605508239}
+  - component: {fileID: 605508241}
   m_Layer: 5
   m_Name: TitleText
   m_TagString: Untagged
@@ -10652,9 +10899,9 @@ MonoBehaviour:
   m_fontSize: 24
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 12
+  m_fontSizeMax: 24
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
@@ -10702,6 +10949,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 605508237}
   m_CullTransparentMesh: 1
+--- !u!114 &605508241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 605508237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: MainMenu
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: mainmenu.gamemenu.save_slot_title
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 605508239}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &609121912
 GameObject:
   m_ObjectHideFlags: 0
@@ -12088,7 +12375,7 @@ MonoBehaviour:
   iconType: 6
   iconSprite: {fileID: 0}
   iconColor: {r: 0.95, g: 0.6, b: 0.2, a: 1}
-  iconSize: 0.62
+  iconSize: 0.88
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -12127,11 +12414,10 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1009230488}
   - {fileID: 1149027847}
-  - {fileID: 1370788557}
   - {fileID: 42138624}
-  - {fileID: 1540013645}
+  - {fileID: 1009230488}
+  - {fileID: 1370788557}
   m_Father: {fileID: 328806570}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
@@ -12530,6 +12816,7 @@ GameObject:
   - component: {fileID: 703726487}
   - component: {fileID: 703726489}
   - component: {fileID: 703726488}
+  - component: {fileID: 703726490}
   m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
@@ -12606,9 +12893,9 @@ MonoBehaviour:
   m_fontSize: 14
   m_fontSizeBase: 14
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0
-  m_fontSizeMax: 0
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 8
+  m_fontSizeMax: 14
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -12656,6 +12943,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 703726486}
   m_CullTransparentMesh: 1
+--- !u!114 &703726490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703726486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: UI_Common
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: ui_common.close
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 703726488}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &703986527
 GameObject:
   m_ObjectHideFlags: 0
@@ -13842,6 +14169,7 @@ GameObject:
   - component: {fileID: 786966636}
   - component: {fileID: 786966638}
   - component: {fileID: 786966637}
+  - component: {fileID: 786966639}
   m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -13866,7 +14194,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -45, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &786966637
 MonoBehaviour:
@@ -13918,9 +14246,9 @@ MonoBehaviour:
   m_fontSize: 24
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 12
+  m_fontSizeMax: 24
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -13968,6 +14296,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 786966635}
   m_CullTransparentMesh: 1
+--- !u!114 &786966639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 786966635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: UI_Common
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: ui_common.ok
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 786966637}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &788005704
 GameObject:
   m_ObjectHideFlags: 0
@@ -14910,6 +15278,7 @@ GameObject:
   - component: {fileID: 836163316}
   - component: {fileID: 836163318}
   - component: {fileID: 836163317}
+  - component: {fileID: 836163319}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -14986,9 +15355,9 @@ MonoBehaviour:
   m_fontSize: 18
   m_fontSizeBase: 18
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 9
+  m_fontSizeMax: 18
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -15036,6 +15405,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 836163315}
   m_CullTransparentMesh: 1
+--- !u!114 &836163319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 836163315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: UI_Common
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: ui_common.back
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 836163317}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &846438876
 GameObject:
   m_ObjectHideFlags: 0
@@ -17013,6 +17422,7 @@ GameObject:
   - component: {fileID: 952847572}
   - component: {fileID: 952847574}
   - component: {fileID: 952847573}
+  - component: {fileID: 952847575}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -17089,9 +17499,9 @@ MonoBehaviour:
   m_fontSize: 14
   m_fontSizeBase: 14
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 8
+  m_fontSizeMax: 14
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -17105,7 +17515,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 1
+  m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -17139,6 +17549,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 952847571}
   m_CullTransparentMesh: 1
+--- !u!114 &952847575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 952847571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: MainMenu
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: mainmenu.settings.master_volume
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 952847573}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &960439200
 GameObject:
   m_ObjectHideFlags: 0
@@ -18225,6 +18675,7 @@ GameObject:
   - component: {fileID: 1034351284}
   - component: {fileID: 1034351286}
   - component: {fileID: 1034351285}
+  - component: {fileID: 1034351287}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -18301,9 +18752,9 @@ MonoBehaviour:
   m_fontSize: 14
   m_fontSizeBase: 14
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 8
+  m_fontSizeMax: 14
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -18317,7 +18768,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 1
+  m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -18351,6 +18802,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1034351283}
   m_CullTransparentMesh: 1
+--- !u!114 &1034351287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1034351283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: MainMenu
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: mainmenu.settings.music_volume
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1034351285}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1054705958
 GameObject:
   m_ObjectHideFlags: 0
@@ -18362,6 +18853,10 @@ GameObject:
   - component: {fileID: 1054705961}
   - component: {fileID: 1054705960}
   - component: {fileID: 1054705959}
+  - component: {fileID: 1054705963}
+  - component: {fileID: 1054705962}
+  - component: {fileID: 1054705965}
+  - component: {fileID: 1054705964}
   m_Layer: 6
   m_Name: MinimapController
   m_TagString: Untagged
@@ -18388,7 +18883,7 @@ MonoBehaviour:
   normalSize: {x: 200, y: 200}
   fullscreenSize: {x: 800, y: 800}
   borderColor: {r: 1, g: 1, b: 1, a: 1}
-  borderImage: {fileID: 1540013646}
+  borderImage: {fileID: 1009230489}
   infoPanel: {fileID: 1370788556}
   zoomText: {fileID: 1662979509}
   coordinatesText: {fileID: 0}
@@ -18452,10 +18947,11 @@ MonoBehaviour:
   panRightAction: {fileID: -2045870584044699795, guid: 3590b91b4603b465dbb4216d601bff33, type: 3}
   currentState: 0
   semiTransparentOpacity: 0.25
-  zoomLevels:
+  viewScales:
   - 0.5
   - 1
   - 2
+  - 3.5
   currentZoomIndex: 1
   panSpeed: 10
   mousePanSensitivity: 1
@@ -18477,6 +18973,88 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1703771085}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1054705962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1054705958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba4917a48f6d1b1428bee5186b18b418, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapIconClusterer
+  mergeDistancePixels: 18
+  neverCluster: 010000000800000007000000
+  maxClusterScale: 1.45
+  scaleSaturationCount: 8
+  updateInterval: 0.25
+  hudPanelPixels: 144
+--- !u!114 &1054705963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1054705958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05fb408fd6ae45646a1ac3ea8f40010f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapTerrainPainter
+  textureResolution: 512
+  worldPadding: 1.5
+  featureSpread: 2.1
+  minFeatureRadius: 0.9
+  grassColor: {r: 0.6, g: 0.73, b: 0.4, a: 1}
+  grassVariantColor: {r: 0.55, g: 0.69, b: 0.36, a: 1}
+  treeColor: {r: 0.29, g: 0.46, b: 0.24, a: 1}
+  waterColor: {r: 0.36, g: 0.58, b: 0.75, a: 1}
+  structureColor: {r: 0.55, g: 0.42, b: 0.3, a: 1}
+  scrubColor: {r: 0.52, g: 0.65, b: 0.35, a: 1}
+  soilColor: {r: 0.48, g: 0.36, b: 0.24, a: 1}
+  groundSortingOrder: 0
+  deferToAuthoredTerrain: 0
+--- !u!114 &1054705964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1054705958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f69482ad3d268e44e8c7234910537074, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapPinManager
+  allowPlacement: 1
+  removeRadius: 1.2
+  maxPins: 64
+  pinColor: {r: 0.98, g: 0.85, b: 0.3, a: 1}
+  pinSize: 0.95
+  controller: {fileID: 0}
+  minimapUI: {fileID: 0}
+  minimapCamera: {fileID: 0}
+--- !u!114 &1054705965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1054705958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3399f445b7acbd44c899f623a4f78220, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Minimap.MinimapFogOfWar
+  fogEnabled: 1
+  revealRadius: 7
+  edgeSoftness: 0.45
+  revealInterval: 0.15
+  fogColor: {r: 0.13, g: 0.15, b: 0.17, a: 1}
+  maskResolution: 128
+  fogSortingOrder: 50
 --- !u!1 &1063727264 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4383182597930209328, guid: d9b11ab7cd474dc1b117624a2dfd3120, type: 3}
@@ -20421,6 +20999,7 @@ GameObject:
   - component: {fileID: 1186476196}
   - component: {fileID: 1186476198}
   - component: {fileID: 1186476197}
+  - component: {fileID: 1186476199}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -20497,9 +21076,9 @@ MonoBehaviour:
   m_fontSize: 14
   m_fontSizeBase: 14
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 8
+  m_fontSizeMax: 14
   m_fontStyle: 0
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
@@ -20513,7 +21092,7 @@ MonoBehaviour:
   m_charWidthMaxAdj: 0
   m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
-  m_overflowMode: 1
+  m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
   m_enableKerning: 0
@@ -20547,6 +21126,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1186476195}
   m_CullTransparentMesh: 1
+--- !u!114 &1186476199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1186476195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: MainMenu
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: mainmenu.settings.sfx_volume
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1186476197}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1198438572
 GameObject:
   m_ObjectHideFlags: 0
@@ -21203,7 +21822,7 @@ MonoBehaviour:
   iconType: 1
   iconSprite: {fileID: 0}
   iconColor: {r: 0.15, g: 0.85, b: 0.25, a: 1}
-  iconSize: 0.85
+  iconSize: 1.1
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -24402,7 +25021,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -24430,7 +25049,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -25610,6 +26229,7 @@ GameObject:
   - component: {fileID: 1507937163}
   - component: {fileID: 1507937165}
   - component: {fileID: 1507937164}
+  - component: {fileID: 1507937166}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -25634,7 +26254,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -90, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1507937164
 MonoBehaviour:
@@ -25686,9 +26306,9 @@ MonoBehaviour:
   m_fontSize: 24
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 12
+  m_fontSizeMax: 24
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -25736,6 +26356,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1507937162}
   m_CullTransparentMesh: 1
+--- !u!114 &1507937166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1507937162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: MainMenu
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: mainmenu.gamemenu.save_game
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1507937164}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1518477760
 GameObject:
   m_ObjectHideFlags: 0
@@ -26987,81 +27647,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1539282374}
   m_CullTransparentMesh: 1
---- !u!1 &1540013644
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1540013645}
-  - component: {fileID: 1540013647}
-  - component: {fileID: 1540013646}
-  m_Layer: 0
-  m_Name: BorderFrame
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1540013645
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1540013644}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 667828790}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 230, y: 230}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1540013646
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1540013644}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8721fe76781549dabcef35871b5bb6bf, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 1
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &1540013647
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1540013644}
-  m_CullTransparentMesh: 1
 --- !u!1 &1572310085
 GameObject:
   m_ObjectHideFlags: 0
@@ -27553,6 +28138,7 @@ GameObject:
   - component: {fileID: 1586298735}
   - component: {fileID: 1586298737}
   - component: {fileID: 1586298736}
+  - component: {fileID: 1586298738}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -27577,7 +28163,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -90, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1586298736
 MonoBehaviour:
@@ -27629,9 +28215,9 @@ MonoBehaviour:
   m_fontSize: 24
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 12
+  m_fontSizeMax: 24
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -27679,6 +28265,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1586298734}
   m_CullTransparentMesh: 1
+--- !u!114 &1586298738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1586298734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: MainMenu
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: mainmenu.gamemenu.resume
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1586298736}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1586546967
 GameObject:
   m_ObjectHideFlags: 0
@@ -27690,6 +28316,7 @@ GameObject:
   - component: {fileID: 1586546968}
   - component: {fileID: 1586546970}
   - component: {fileID: 1586546969}
+  - component: {fileID: 1586546971}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -27714,7 +28341,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -48, y: -9}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1586546969
 MonoBehaviour:
@@ -27768,9 +28395,9 @@ MonoBehaviour:
   m_fontSize: 24
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 12
+  m_fontSizeMax: 24
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -27818,6 +28445,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1586546967}
   m_CullTransparentMesh: 1
+--- !u!114 &1586546971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1586546967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: UI_Common
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: ui_common.back
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1586546969}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!4 &1586592898 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8252753446736170098, guid: 42cbc7d01d17c1a41bac2753d982d062, type: 3}
@@ -29744,6 +30411,7 @@ GameObject:
   - component: {fileID: 1679415677}
   - component: {fileID: 1679415679}
   - component: {fileID: 1679415678}
+  - component: {fileID: 1679415680}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -29768,7 +30436,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -45, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1679415678
 MonoBehaviour:
@@ -29820,9 +30488,9 @@ MonoBehaviour:
   m_fontSize: 24
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 12
+  m_fontSizeMax: 24
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -29870,6 +30538,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1679415676}
   m_CullTransparentMesh: 1
+--- !u!114 &1679415680
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1679415676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: UI_Common
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: ui_common.yes
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1679415678}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1682617334 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3862485980763262710, guid: 96f88dd17df5428783ee3f6daa037f94, type: 3}
@@ -30229,6 +30937,7 @@ GameObject:
   - component: {fileID: 1703926176}
   - component: {fileID: 1703926178}
   - component: {fileID: 1703926177}
+  - component: {fileID: 1703926179}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -30253,7 +30962,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -90, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1703926177
 MonoBehaviour:
@@ -30305,9 +31014,9 @@ MonoBehaviour:
   m_fontSize: 24
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 12
+  m_fontSizeMax: 24
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -30355,6 +31064,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1703926175}
   m_CullTransparentMesh: 1
+--- !u!114 &1703926179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1703926175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: MainMenu
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: mainmenu.gamemenu.quit_to_menu
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1703926177}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1711224299 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1450212734838952641, guid: 8d882921beef4834aabb63b2f12edaa4, type: 3}
@@ -30535,6 +31284,7 @@ GameObject:
   - component: {fileID: 1730966907}
   - component: {fileID: 1730966909}
   - component: {fileID: 1730966908}
+  - component: {fileID: 1730966910}
   m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
@@ -30611,9 +31361,9 @@ MonoBehaviour:
   m_fontSize: 14
   m_fontSizeBase: 14
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0
-  m_fontSizeMax: 0
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 8
+  m_fontSizeMax: 14
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -30661,6 +31411,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1730966906}
   m_CullTransparentMesh: 1
+--- !u!114 &1730966910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1730966906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: UI_Common
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: ui_common.close
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1730966908}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1735170474 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3820323058700499694, guid: c0c16908bdfb4716b12a939a428e8abe, type: 3}
@@ -30904,7 +31694,7 @@ MonoBehaviour:
   iconType: 3
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 1, b: 0, a: 1}
-  iconSize: 0.62
+  iconSize: 0.88
   alwaysVisible: 1
   visibilityRange: 100
   rotateWithObject: 0
@@ -30923,6 +31713,7 @@ GameObject:
   - component: {fileID: 1747495594}
   - component: {fileID: 1747495596}
   - component: {fileID: 1747495595}
+  - component: {fileID: 1747495597}
   m_Layer: 5
   m_Name: MenuTitle
   m_TagString: Untagged
@@ -31049,6 +31840,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1747495593}
   m_CullTransparentMesh: 1
+--- !u!114 &1747495597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1747495593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: MainMenu
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: mainmenu.gamemenu.title
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1747495595}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1749558647
 GameObject:
   m_ObjectHideFlags: 0
@@ -31256,6 +32087,7 @@ GameObject:
   - component: {fileID: 1756036623}
   - component: {fileID: 1756036625}
   - component: {fileID: 1756036624}
+  - component: {fileID: 1756036626}
   m_Layer: 5
   m_Name: SettingsTitle
   m_TagString: Untagged
@@ -31334,9 +32166,9 @@ MonoBehaviour:
   m_fontSize: 24
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 12
+  m_fontSizeMax: 24
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -31384,6 +32216,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1756036622}
   m_CullTransparentMesh: 1
+--- !u!114 &1756036626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1756036622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: MainMenu
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: mainmenu.settings.title
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1756036624}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1758508220
 GameObject:
   m_ObjectHideFlags: 0
@@ -32580,6 +33452,7 @@ GameObject:
   - component: {fileID: 1846841505}
   - component: {fileID: 1846841507}
   - component: {fileID: 1846841506}
+  - component: {fileID: 1846841508}
   m_Layer: 0
   m_Name: TitleText
   m_TagString: Untagged
@@ -32656,9 +33529,9 @@ MonoBehaviour:
   m_fontSize: 24
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 12
+  m_fontSizeMax: 24
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -32706,6 +33579,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1846841504}
   m_CullTransparentMesh: 1
+--- !u!114 &1846841508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1846841504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: MainMenu
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: mainmenu.saveslotbutton.rename
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1846841506}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1852866817
 GameObject:
   m_ObjectHideFlags: 0
@@ -33742,6 +34655,7 @@ GameObject:
   - component: {fileID: 1914999641}
   - component: {fileID: 1914999643}
   - component: {fileID: 1914999642}
+  - component: {fileID: 1914999644}
   m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -33766,7 +34680,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -45, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1914999642
 MonoBehaviour:
@@ -33818,9 +34732,9 @@ MonoBehaviour:
   m_fontSize: 24
   m_fontSizeBase: 24
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 12
+  m_fontSizeMax: 24
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -33868,6 +34782,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1914999640}
   m_CullTransparentMesh: 1
+--- !u!114 &1914999644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1914999640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: UI_Common
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: ui_common.cancel
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1914999642}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1918569687
 GameObject:
   m_ObjectHideFlags: 0
@@ -34166,7 +35120,7 @@ MonoBehaviour:
   iconType: 4
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.2901961, b: 0, a: 1}
-  iconSize: 0.62
+  iconSize: 0.88
   alwaysVisible: 1
   visibilityRange: 100
   rotateWithObject: 0
@@ -34365,6 +35319,7 @@ GameObject:
   - component: {fileID: 1966663381}
   - component: {fileID: 1966663383}
   - component: {fileID: 1966663382}
+  - component: {fileID: 1966663384}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -34441,9 +35396,9 @@ MonoBehaviour:
   m_fontSize: 18
   m_fontSizeBase: 18
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 9
+  m_fontSizeMax: 18
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -34491,6 +35446,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1966663380}
   m_CullTransparentMesh: 1
+--- !u!114 &1966663384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1966663380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: MainMenu
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: mainmenu.settings.apply
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1966663382}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1976966066
 GameObject:
   m_ObjectHideFlags: 0
@@ -36243,6 +37238,7 @@ GameObject:
   - component: {fileID: 2099294253}
   - component: {fileID: 2099294255}
   - component: {fileID: 2099294254}
+  - component: {fileID: 2099294256}
   m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
@@ -36319,9 +37315,9 @@ MonoBehaviour:
   m_fontSize: 14
   m_fontSizeBase: 14
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0
-  m_fontSizeMax: 0
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 8
+  m_fontSizeMax: 14
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -36369,6 +37365,46 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2099294252}
   m_CullTransparentMesh: 1
+--- !u!114 &2099294256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2099294252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Components.LocalizeStringEvent
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: UI_Common
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: ui_common.close
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2099294254}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: SetText
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &2100000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -37030,8 +38066,8 @@ MonoBehaviour:
   followOffset: {x: 0, y: 0, z: 0}
   zoomTransitionDuration: 0.3
   zoomEase: 7
-  minOrthographicSize: 5
-  maxOrthographicSize: 30
+  minOrthographicSize: 4
+  maxOrthographicSize: 60
   renderTexture: {fileID: 0}
   renderTextureSize: 1024
   backgroundColor: {r: 0.62, g: 0.74, b: 0.42, a: 1}
@@ -37046,7 +38082,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_BackGroundColor: {r: 0.62, g: 0.74, b: 0.42, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -37067,15 +38103,15 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.1
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
-  orthographic size: 8
+  orthographic: 1
+  orthographic size: 16
   m_Depth: 10
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 320
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -37096,7 +38132,7 @@ Transform:
   m_GameObject: {fileID: 2135538198}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -2.7842102, y: 2.91246, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -41284,7 +42320,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -41440,7 +42476,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -41468,7 +42504,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -41496,7 +42532,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -41645,7 +42681,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -41858,7 +42894,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -41886,7 +42922,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -41914,7 +42950,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -42134,7 +43170,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -42347,7 +43383,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -42624,7 +43660,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -42652,7 +43688,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -42680,7 +43716,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -42708,7 +43744,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -42850,7 +43886,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -42878,7 +43914,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -42906,7 +43942,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0
@@ -43247,7 +44283,7 @@ MonoBehaviour:
   iconType: 10
   iconSprite: {fileID: 0}
   iconColor: {r: 1, g: 0.95, b: 0.82, a: 1}
-  iconSize: 0.34
+  iconSize: 0.55
   alwaysVisible: 1
   visibilityRange: 50
   rotateWithObject: 0

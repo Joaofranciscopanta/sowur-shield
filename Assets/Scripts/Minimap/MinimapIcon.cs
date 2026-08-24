@@ -37,6 +37,39 @@ public class MinimapIcon : MonoBehaviour
     private int minimapLayer;
     private bool isInitialized = false;
 
+    // Clustering state (driven by MinimapIconClusterer)
+    private int clusterCount = 1;
+    private float clusterScale = 1f;
+    private bool hiddenByCluster = false;
+
+    /// <summary>What this marker represents. Read by the clusterer to group like with like.</summary>
+    public MinimapIconType IconType => iconType;
+
+    /// <summary>
+    /// How many markers this one currently stands for. 1 means itself alone; higher means it is
+    /// the visible representative of a cluster.
+    /// </summary>
+    public int ClusterCount => clusterCount;
+
+    /// <summary>
+    /// Applied by <see cref="MinimapIconClusterer"/>. A count of 0 means "you were absorbed into
+    /// another marker, hide"; 1 or more means "you represent this many", drawn at the given scale.
+    /// </summary>
+    public void ApplyClusterState(int count, float scale = 1f)
+    {
+        clusterCount = Mathf.Max(count, 0);
+        clusterScale = scale;
+        hiddenByCluster = count == 0;
+
+        if (iconObject != null)
+            iconObject.transform.localScale = Vector3.one * (iconSize * clusterScale);
+
+        // Visibility is settled in UpdateVisibility so range-limiting and clustering cannot
+        // fight over the renderer's enabled flag.
+        if (iconRenderer != null && hiddenByCluster && iconRenderer.enabled)
+            iconRenderer.enabled = false;
+    }
+
     private void Awake()
     {
         minimapLayer = LayerMask.NameToLayer(minimapLayerName);
@@ -59,6 +92,13 @@ public class MinimapIcon : MonoBehaviour
     private void HideMinimapLayerFromGameplayCameras()
     {
         if (minimapLayer < 0) return;
+
+        // The sweep is identical for every icon, but it ran in each one's Awake — 35 icons in
+        // SampleScene meant 35 full passes over Camera.allCameras during load. One pass fixes
+        // every camera, so the rest are pure waste.
+        if (layerHiddenFromCameras) return;
+        layerHiddenFromCameras = true;
+
         int bit = 1 << minimapLayer;
 
         foreach (var cam in Camera.allCameras)
@@ -68,6 +108,28 @@ public class MinimapIcon : MonoBehaviour
             if ((cam.cullingMask & bit) == 0) continue;
             cam.cullingMask &= ~bit;
         }
+    }
+
+    /// <summary>
+    /// Static state survives both scene loads and (with domain reload disabled) entering Play
+    /// Mode, so it is re-armed on each. A camera belonging to the next scene has its own culling
+    /// mask and would never be stripped if this stayed latched from the previous one.
+    /// </summary>
+    private static bool layerHiddenFromCameras = false;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics()
+    {
+        layerHiddenFromCameras = false;
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoadedResetSweep;
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoadedResetSweep;
+    }
+
+    private static void OnSceneLoadedResetSweep(
+        UnityEngine.SceneManagement.Scene scene,
+        UnityEngine.SceneManagement.LoadSceneMode mode)
+    {
+        layerHiddenFromCameras = false;
     }
 
     private void Start()
@@ -192,6 +254,15 @@ public class MinimapIcon : MonoBehaviour
 
     private void UpdateVisibility()
     {
+        // A marker absorbed into a cluster stays hidden regardless of range: another marker is
+        // already standing for it, and showing both would double-count.
+        if (hiddenByCluster)
+        {
+            if (iconRenderer.enabled)
+                iconRenderer.enabled = false;
+            return;
+        }
+
         if (alwaysVisible)
         {
             if (!iconRenderer.enabled)
@@ -259,7 +330,9 @@ public class MinimapIcon : MonoBehaviour
         iconSize = size;
         if (iconObject != null)
         {
-            iconObject.transform.localScale = Vector3.one * size;
+            // Keep any active cluster scale folded in, or resizing an icon would silently reset
+            // a cluster back to single-marker size.
+            iconObject.transform.localScale = Vector3.one * (size * clusterScale);
         }
     }
 
