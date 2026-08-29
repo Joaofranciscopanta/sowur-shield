@@ -265,8 +265,8 @@ que resta.
 | **Trocar a arte do tileset** | ✅ **recolorido** (retiling ainda é de artista) | `0ce489c` |
 | Padronizar canvases em 1920x1080 | ❌ **não era bug** — ver abaixo | — |
 | Retratos de diálogo (sprite nulo com alpha 1) | ❌ **falso positivo** — ver abaixo | — |
-| Consolidar a HUD em 2 grupos | ⏳ **pendente — confirmado real** (15 filhos soltos) | — |
-| Estados visuais de slot (hover/selected/disabled) | ⏳ **pendente — confirmado real** (sem `Button`) | — |
+| Consolidar a HUD em 2 grupos | ✅ feito — 19 filhos → 12, grupo `HUD` | `9bb5aaa` |
+| Estados visuais de slot (hover/selected/disabled) | ✅ feito — faltava o sprite, não o código | `e956085` |
 
 ### ⚠️ Reverificação em Play Mode (2026-08-29, sessão 2)
 
@@ -303,8 +303,27 @@ algo a improvisar por script.
 > mantendo a estrutura e os 16 recortes. O retiling completo continua sendo trabalho de
 > artista, mas deixou de ser bloqueio visual. Ver `HANDOFF_LUCAS.md` item 1.
 
-**Fase 3 — Polimento**: floating text, microanimações, ícones no minimapa, ordenação por Y,
-sorting no inventário, indicador de seleção na hotbar.
+**Fase 3 — Polimento** — parcialmente concluída
+
+| Item | Estado | Commit |
+|---|---|---|
+| **Ordenação por Y** | ✅ feito — dá para andar atrás de árvore | `dfc5de6` |
+| Indicador de seleção na hotbar | ✅ feito (mesmo commit dos slots) | `e956085` |
+| Floating text de dano/ganho | ⏳ pendente | — |
+| Microanimações | ⏳ pendente | — |
+| Ícones no minimapa | ⏳ pendente | — |
+| Sorting no inventário | ⏳ pendente | — |
+
+**A ordenação por Y era o maior buraco restante.** Todos os 144 sprites estavam na layer
+`Default` com ordem fixa de 0 a 5 — o jogador em 3 era desenhado *debaixo* de toda árvore em
+5, independente de quem estivesse na frente. As 8 sorting layers criadas na Fase 1 nunca
+tinham sido atribuídas a nada.
+
+`YSortSprite` converte posição em `sortingOrder`, por objeto e não pela câmera — trocar a
+câmera para `CustomAxis` reordenaria também os ícones do minimapa (100-130) e o fog (50), que
+dependem da pilha fixa. Ordena por `bounds.min.y`, não por `transform.position.y`: a cena
+mistura pivôs (NPCs nos pés, jogador/árvores/animais no centro), então ordenar pelo transform
+faria uma árvore de 2 unidades ser ranqueada por um ponto a um metro do chão.
 
 **Fase 4 — Premium** (bloqueado por arte): sprites de inimigos, cenário de combate,
 iluminação, tutorial, acessibilidade, gamepad.
