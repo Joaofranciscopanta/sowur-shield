@@ -309,10 +309,24 @@ algo a improvisar por script.
 |---|---|---|
 | **Ordenação por Y** | ✅ feito — dá para andar atrás de árvore | `dfc5de6` |
 | Indicador de seleção na hotbar | ✅ feito (mesmo commit dos slots) | `e956085` |
-| Floating text de dano/ganho | ⏳ pendente | — |
+| Sorting no inventário | ✅ feito — a lógica existia, faltava o botão | `22a161e` |
+| Ícones no minimapa | ❌ **não era pendência** — 33 ícones ativos na cena | — |
+| Floating text de dano/ganho | ⏳ pendente (existe no combate, não na fazenda) | — |
 | Microanimações | ⏳ pendente | — |
-| Ícones no minimapa | ⏳ pendente | — |
-| Sorting no inventário | ⏳ pendente | — |
+
+**Sorting**: `Inventory.SortInventory()` já estava pronto e correto — agrupa por tipo, depois
+por nome, compacta para o início do armazém e não toca no hotbar. **Nada conseguia chamá-lo.**
+O `InventoryUIManager` declara quatro botões de sort e os liga, mas esse componente **não está
+na cena**, então os 36 slots foram publicados sem nenhum controle de ordenação.
+
+⚠️ **Descoberta ao posicionar o botão: a grade de 36 slots transborda o interior pintado do
+painel em todos os lados** — 46px acima, 112px abaixo, 199px à direita. Qualquer botão dentro
+do painel cai na madeira ou nos slots. Por isso o botão ficou *acima* da moldura. Refazer o
+layout da grade é uma mudança maior e continua em aberto.
+
+**Ícones do minimapa**: a auditoria listou como pendente, mas há **5 scripts dedicados**
+(`MinimapIcon`, `MinimapIconClusterer`, `MinimapIconSprites`, `MinimapPinManager`,
+`MinimapTerrainPainter`) e **33 ícones ativos** rodando na cena. Item obsoleto.
 
 **A ordenação por Y era o maior buraco restante.** Todos os 144 sprites estavam na layer
 `Default` com ordem fixa de 0 a 5 — o jogador em 3 era desenhado *debaixo* de toda árvore em
