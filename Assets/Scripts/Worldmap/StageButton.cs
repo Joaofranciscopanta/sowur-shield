@@ -16,6 +16,13 @@ public class StageButton : MonoBehaviour
     [SerializeField] private Color lockedColor = new Color(0.4f, 0.4f, 0.4f);
     [SerializeField] private Color unlockedColor = Color.white;
 
+    [Header("Panel art")]
+    [Tooltip("Plaque art for a playable stage. Falls back to whatever the template carries.")]
+    [SerializeField] private Sprite unlockedSprite;
+
+    [Tooltip("Plaque art for a locked stage.")]
+    [SerializeField] private Sprite lockedSprite;
+
     // Locked stage names were unreadable, but not for the reason the field names suggest.
     // lockedColor above never reaches the screen: Unity's Button tints the same Image on top
     // of it, and its disabledColor is (0.784, 0.784, 0.784, 0.502) — half transparent. A
@@ -68,7 +75,18 @@ public class StageButton : MonoBehaviour
         // applying lockedColor here as well would double-darken the panel back to mud.
         // lockedColor/unlockedColor are kept only for callers that drive the visual directly.
         if (buttonImage != null)
+        {
             buttonImage.color = unlockedColor;
+
+            // Swap the plaque art rather than only tinting it. These buttons used to be
+            // Unity's default UISprite — a flat grey rectangle — and twenty-five of them
+            // covered 40% of a painted map with placeholder chrome. Gold reads as "go here",
+            // cream as "not yet", which is legible at a glance without relying on the
+            // disabled tint alone.
+            Sprite wanted = locked ? lockedSprite : unlockedSprite;
+            if (wanted != null && buttonImage.sprite != wanted)
+                buttonImage.sprite = wanted;
+        }
 
         // Clones are instantiated before Awake runs on them in some paths, so re-resolve
         // rather than trusting the cache to be populated.

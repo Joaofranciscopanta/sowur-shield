@@ -201,8 +201,15 @@ public class WorldMapUIController : MonoBehaviour, IUIWindow
     // map area is 1890x1080 and the grid is 5 biomes x 5 stages, so the old 140x60 cells with
     // 20px gaps packed everything into the top-left ~800x400 and overlapped every label.
 
+    // 350x70 keeps the plaque art's own 5:1 ratio (the kit is 600x120). The previous 300x110
+    // was 2.7:1, which stretched the nine-slice frame corners — the same mismatch that made
+    // the save-slot delete button unusable.
+    //
+    // Width is set by the longest label, not by taste: the painted centre is only 71% of the
+    // rect, so 350px leaves 260px of usable plaque for "Núcleo de Magma — Chefe Final".
+    // Five columns still fit — 5 x 350 + 4 x 30 = 1870 inside an 1890px map.
     [Tooltip("Pixel size (width, height) of each generated stage button in the flat layout.")]
-    [SerializeField] private Vector2 flatButtonCellSize = new Vector2(300f, 110f);
+    [SerializeField] private Vector2 flatButtonCellSize = new Vector2(350f, 70f);
 
     [Tooltip("Horizontal/vertical spacing between generated stage buttons.")]
     [SerializeField] private Vector2 flatButtonSpacing = new Vector2(50f, 40f);
@@ -270,6 +277,21 @@ public class WorldMapUIController : MonoBehaviour, IUIWindow
             ? -Mathf.Max(flatLayoutOrigin.y * -1f, (parentRect.rect.height - gridHeight) * 0.5f)
             : flatLayoutOrigin.y;
 
+        // Centre horizontally too, for the same reason the vertical origin is computed rather
+        // than fixed. With wider buttons the fixed 70px left origin pushed the fifth column
+        // 34px past the right edge of the screen; a hard-coded start cannot survive a change
+        // in cell size.
+        int widestRow = 0;
+        foreach (List<StageData> list in byTheme.Values)
+            widestRow = Mathf.Max(widestRow, list.Count);
+
+        float gridWidth = widestRow > 0
+            ? widestRow * flatButtonCellSize.x + (widestRow - 1) * flatButtonSpacing.x
+            : 0f;
+        float originX = parentRect != null && gridWidth > 0f
+            ? Mathf.Max(0f, (parentRect.rect.width - gridWidth) * 0.5f)
+            : flatLayoutOrigin.x;
+
         int row = 0;
         foreach (StageTheme theme in themesInOrder)
         {
@@ -284,7 +306,7 @@ public class WorldMapUIController : MonoBehaviour, IUIWindow
                 if (!isFirst)
                     buttonGO.name = GeneratedButtonPrefix + stage.stageName;
 
-                ConfigureFlatStageButton(buttonGO, stage, row, col, originY);
+                ConfigureFlatStageButton(buttonGO, stage, row, col, originY, originX);
             }
 
             row++;
@@ -296,7 +318,7 @@ public class WorldMapUIController : MonoBehaviour, IUIWindow
     /// its stageName, label text, and WorldMap reference.
     /// </summary>
     private void ConfigureFlatStageButton(GameObject buttonGO, StageData stage, int row, int col,
-                                          float originY)
+                                          float originY, float originX)
     {
         RectTransform rect = buttonGO.GetComponent<RectTransform>();
         if (rect != null)
@@ -305,7 +327,7 @@ public class WorldMapUIController : MonoBehaviour, IUIWindow
             rect.anchorMax = new Vector2(0f, 1f);
             rect.pivot = new Vector2(0f, 1f);
 
-            float x = flatLayoutOrigin.x + col * (flatButtonCellSize.x + flatButtonSpacing.x);
+            float x = originX + col * (flatButtonCellSize.x + flatButtonSpacing.x);
             float y = originY - row * (flatButtonCellSize.y + flatButtonSpacing.y);
             rect.anchoredPosition = new Vector2(x, y);
             rect.sizeDelta = flatButtonCellSize;
@@ -338,12 +360,21 @@ public class WorldMapUIController : MonoBehaviour, IUIWindow
             // set to Overflow, so the long ones spilled out of their button and over their
             // neighbours. Auto-sizing plus wrapping keeps every label inside its own cell.
             label.enableAutoSizing = true;
-            label.fontSizeMin = 12f;
-            label.fontSizeMax = 22f;
+            label.fontSizeMin = 11f;
+            // 17, not 22. The buttons now carry the game's plaque art instead of a flat
+            // rectangle, and that art paints a wooden frame around a narrower cream centre —
+            // so the usable width is well under the rect. At 22pt "Salão das Estalactites —
+            // Chefe" measured 294px against 267px of plaque and ran onto the wood.
+            label.fontSizeMax = 17f;
             label.textWrappingMode = TMPro.TextWrappingModes.Normal;
             label.overflowMode = TMPro.TextOverflowModes.Truncate;
             label.alignment = TMPro.TextAlignmentOptions.Center;
-            label.margin = new Vector4(8f, 4f, 8f, 4f);
+            // Margin, not offsets: the rect has to stay stretched for auto-sizing to measure
+            // against the button. 45px each side, sampled from the art rather than guessed —
+            // button_secondary's cream centre starts 88px into a 600px sprite, so the plaque
+            // is 71% of its rect, not the ~86% a glance suggests. A first pass used 26px and
+            // three of the longest names still clipped on the wooden frame.
+            label.margin = new Vector4(45f, 6f, 45f, 6f);
 
             // The label must fill its button, or auto-sizing measures against whatever size
             // the template happened to have.
