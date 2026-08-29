@@ -158,6 +158,7 @@ public static class RestyleWorldMapButtons
         titleRect.anchoredPosition = new Vector2(0f, -18f);
 
         var title = titleGO.AddComponent<TextMeshProUGUI>();
+        ApplyProjectFont(title);
         title.text = "Mapa-Múndi";
         title.fontSize = 34f;
         title.fontStyle = FontStyles.Bold;
@@ -166,8 +167,7 @@ public static class RestyleWorldMapButtons
         // Cream on the map's dark foliage, with an outline so it holds over the lighter
         // path running down the middle of the illustration.
         title.color = new Color(0.969f, 0.949f, 0.910f);
-        title.outlineWidth = 0.22f;
-        title.outlineColor = new Color32(40, 30, 20, 255);
+        TrySetOutline(title, 0.22f, new Color32(40, 30, 20, 255));
         AddLocalizeEvent(title.gameObject, title, "ui_common.world_map_title");
 
         // Back button: bottom-centre, below the grid.
@@ -207,6 +207,7 @@ public static class RestyleWorldMapButtons
         labelRect.offsetMax = new Vector2(-30f, -6f);
 
         var label = labelGO.AddComponent<TextMeshProUGUI>();
+        ApplyProjectFont(label);
         label.text = "Fechar";
         label.fontSize = 18f;
         label.alignment = TextAlignmentOptions.Center;
@@ -216,6 +217,47 @@ public static class RestyleWorldMapButtons
         label.fontSizeMin = 13f;
         label.fontSizeMax = 18f;
         AddLocalizeEvent(label.gameObject, label, "ui_common.close");
+    }
+
+    /// <summary>
+    /// Sets the outline if TMP will accept one, and shrugs if it will not.
+    /// SetOutlineThickness reaches into the material, which a TextMeshProUGUI created from an
+    /// editor script does not have until it has run OnEnable — not in this frame. Left
+    /// unguarded it throws mid-method and takes the rest of BuildChrome with it, which is
+    /// exactly how the back button went missing on 2026-08-29. The outline is decoration; the
+    /// cream on dark foliage already carries the title, so losing it must not cost the button.
+    /// </summary>
+    private static void TrySetOutline(TMP_Text label, float width, Color32 color)
+    {
+        try
+        {
+            label.outlineWidth = width;
+            label.outlineColor = color;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning("[RestyleWorldMapButtons] Could not outline '" + label.name
+                             + "'; it keeps its flat colour. " + e.GetType().Name);
+        }
+    }
+
+    /// <summary>
+    /// Assigns the project font before anything touches the material.
+    /// A TextMeshProUGUI added from code has no font asset yet, so its material is null, and
+    /// setting outlineWidth calls SetOutlineThickness -> new Material(null), which throws
+    /// ArgumentNullException. That killed BuildChrome halfway through on 2026-08-29: the
+    /// title survived without its outline and the back button was never created at all.
+    /// Nunito is also the only atlas in the project carrying accents, which the PT/ES
+    /// strings on both of these labels need.
+    /// </summary>
+    private static void ApplyProjectFont(TMP_Text label)
+    {
+        var font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/Fonts/Nunito SDF.asset");
+        if (font != null)
+            label.font = font;
+        else
+            Debug.LogWarning("[RestyleWorldMapButtons] Nunito SDF not found; the label keeps " +
+                             "the TMP default, which has no accents.");
     }
 
     /// <summary>
