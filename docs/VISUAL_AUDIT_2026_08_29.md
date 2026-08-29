@@ -262,11 +262,33 @@ que resta.
 | `VersionText` trazido para dentro da tela + contraste | ✅ feito | `7cd6329` |
 | Placeholders do tooltip traduzidos, typo corrigido | ✅ feito | `69b9981` |
 | Botões de idioma | ❌ **não era bug** — ver correções acima | — |
-| **Trocar a arte do tileset** | ⏳ **pendente — precisa de artista** | — |
-| Padronizar canvases em 1920x1080 | ⏳ pendente | — |
-| Retratos de diálogo (sprite nulo com alpha 1) | ⏳ pendente | — |
-| Consolidar a HUD em 2 grupos | ⏳ pendente | — |
-| Estados visuais de slot (hover/selected/disabled) | ⏳ pendente | — |
+| **Trocar a arte do tileset** | ✅ **recolorido** (retiling ainda é de artista) | `0ce489c` |
+| Padronizar canvases em 1920x1080 | ❌ **não era bug** — ver abaixo | — |
+| Retratos de diálogo (sprite nulo com alpha 1) | ❌ **falso positivo** — ver abaixo | — |
+| Consolidar a HUD em 2 grupos | ⏳ **pendente — confirmado real** (15 filhos soltos) | — |
+| Estados visuais de slot (hover/selected/disabled) | ⏳ **pendente — confirmado real** (sem `Button`) | — |
+
+### ⚠️ Reverificação em Play Mode (2026-08-29, sessão 2)
+
+Rodei o jogo e conferi os 5 pendentes um a um. **Dois não eram bugs** — ambos pelo mesmo
+motivo que já custou caro antes: medir um valor em repouso não é observar o comportamento.
+
+**"Canvases fora do padrão 1920x1080" — não era bug.** Os dois canvases em `ConstantPixelSize`
+800x600 são `NPCs/chicken/Canvas` e `NPCs/generic_npc/Canvas`: **World Space e inativos**, com
+um único `Text UI` de balão de fala. `referenceResolution` **não faz nada** em World Space.
+Todos os 20 canvases de tela já estão em 1920x1080.
+
+**"Retratos nulos com alpha 1" — falso positivo.** Abri um diálogo real (Joana): o
+`LeftPortrait` carrega `portrait_joana` corretamente, e o `RightPortrait` de fato tem sprite
+nulo com `Image.color.a = 1`. **Mas ele não desenha nada** — tem um `CanvasGroup` com
+`alpha = 0`, então o alpha efetivo é 0. A auditoria leu o alpha da `Image` isolado e ignorou o
+`CanvasGroup` acima dela. Confirmado por screenshot: não há caixa branca no diálogo.
+
+**Os outros dois são reais**, medidos com o jogo rodando:
+- **HUD**: o canvas `UI` tem **15 filhos diretos** (StaminaBarBG, StaminaIcon, StaminaSlider,
+  MoneyPanelBG, MoneyText, TopCenterPanelBG, Days, TimeText, Inventory, …) em vez de 2 grupos.
+- **Slots**: `InventorySlot` **não tem componente `Button`**, então não existe transição de
+  hover/selected/disabled para configurar — precisa ser implementado, não ajustado.
 
 **O bloqueio do terreno**: a estrutura agora está certa (pátio, curral, caminhos, bordas
 resolvidas pelo dual-grid), mas `TilesDemo.png` é a **arte de demonstração do plugin** —
