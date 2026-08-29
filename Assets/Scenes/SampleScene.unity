@@ -414,6 +414,11 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &8180329 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5125436803187734263, guid: adf53fe974e84b9bb670e04961788f25, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000200}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8224920 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 749233578676966313, guid: f56b4abf0cec4b06853cba2cc963a2d5, type: 3}
@@ -517,6 +522,11 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &18078526 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8252955529186804938, guid: 0122e4466ddc4d6ba065294b11eb3af2, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000020}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &18267929
 GameObject:
   m_ObjectHideFlags: 0
@@ -1258,6 +1268,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &57075627 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2550849079902425951, guid: 9dad8f49a1d34330b4dd5b3c96a79682, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000100}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &58568425
 GameObject:
   m_ObjectHideFlags: 0
@@ -1490,6 +1505,7 @@ GameObject:
   - component: {fileID: 104627022}
   - component: {fileID: 104627021}
   - component: {fileID: 104627025}
+  - component: {fileID: 104627026}
   m_Layer: 0
   m_Name: Joana
   m_TagString: Untagged
@@ -1721,7 +1737,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 300
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: e346a5b700b5db14cb2e45ace616f1ab, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -1772,6 +1788,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &104627026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 104627020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &106570219
 GameObject:
   m_ObjectHideFlags: 0
@@ -2064,6 +2095,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3662259963544833590, guid: f08eaf8fd4269084f9c3c85e1b1388f1, type: 3}
+      propertyPath: m_SortingOrder
+      value: 189
+      objectReference: {fileID: 0}
     - target: {fileID: 5539115819171669321, guid: f08eaf8fd4269084f9c3c85e1b1388f1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.5228157
@@ -2111,7 +2146,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7095900865275510176, guid: f08eaf8fd4269084f9c3c85e1b1388f1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 934528744}
   m_SourcePrefab: {fileID: 100100000, guid: f08eaf8fd4269084f9c3c85e1b1388f1, type: 3}
 --- !u!1 &135074741
 GameObject:
@@ -3086,6 +3124,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 155379742}
   m_CullTransparentMesh: 1
+--- !u!1 &156904145 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6100000000000000001, guid: ed0affcb51842c9480bac9aec55e55ee, type: 3}
+  m_PrefabInstance: {fileID: 6100000000000009001}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &160584205
 GameObject:
   m_ObjectHideFlags: 0
@@ -3722,6 +3765,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 205826187}
   m_CullTransparentMesh: 1
+--- !u!1 &209108818 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3377342995123367980, guid: eb57263382334c32ae8672bd12bfe759, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000320}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &211684439
 GameObject:
   m_ObjectHideFlags: 0
@@ -3863,6 +3911,11 @@ CanvasRenderer:
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3518258184039755209, guid: 341e81fb324a4859b4853647e8c57bb9, type: 3}
   m_PrefabInstance: {fileID: 3822276161171119584}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &222452349 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5036097478597089010, guid: d93230a00f434293bc5df0883218cce2, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000070}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &228169069
 GameObject:
@@ -4858,6 +4911,31 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 268822677}
   m_CullTransparentMesh: 1
+--- !u!1 &269607097 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2973660538320195140, guid: b2be64bea274b874892b5af3a3c5448b, type: 3}
+  m_PrefabInstance: {fileID: 552798369}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &271481632 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1964539309473328131, guid: 9bca37d551ee430d815319805f698a9c, type: 3}
+  m_PrefabInstance: {fileID: 956314799389161821}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &271481636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 271481632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1 &280032443
 GameObject:
   m_ObjectHideFlags: 0
@@ -5100,6 +5178,11 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &300592158 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4398648021899457482, guid: 7f8ab0fbf6534cfb81567373df4a5a98, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000330}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &305444235
 GameObject:
   m_ObjectHideFlags: 0
@@ -6076,6 +6159,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GroundBread
       objectReference: {fileID: 0}
+    - target: {fileID: 4585188684810215785, guid: be24c3080b21f71459aace7cc3eb23a5, type: 3}
+      propertyPath: m_SortingOrder
+      value: 217
+      objectReference: {fileID: 0}
     - target: {fileID: 8939045739383451387, guid: be24c3080b21f71459aace7cc3eb23a5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -552.42523
@@ -6546,6 +6633,7 @@ GameObject:
   - component: {fileID: 372578045}
   - component: {fileID: 372578044}
   - component: {fileID: 372578048}
+  - component: {fileID: 372578049}
   m_Layer: 0
   m_Name: Rui
   m_TagString: Untagged
@@ -6776,7 +6864,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 600
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 53d4aa0d6bcd96949933ac99b4f2bbd5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -6827,6 +6915,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &372578049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 372578043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &376229797
 GameObject:
   m_ObjectHideFlags: 0
@@ -6921,6 +7024,7 @@ GameObject:
   - component: {fileID: 382205512}
   - component: {fileID: 382205511}
   - component: {fileID: 382205515}
+  - component: {fileID: 382205516}
   m_Layer: 0
   m_Name: "Tom\xE1s"
   m_TagString: Untagged
@@ -7152,7 +7256,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: -500
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 701a7b5a54f9f3c4c83d69a80f28c885, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -7203,6 +7307,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &382205516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 382205510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &382224942
 GameObject:
   m_ObjectHideFlags: 0
@@ -8337,6 +8456,26 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!1 &420409486 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1000000000000001, guid: aee7e1400cfb43a1af1e7eaae312fbec, type: 3}
+  m_PrefabInstance: {fileID: 5500000000000005}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &420409491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 420409486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &432917180
 GameObject:
   m_ObjectHideFlags: 0
@@ -9066,7 +9205,7 @@ PrefabInstance:
       objectReference: {fileID: -1110549121211988791, guid: d1075b8b782910e42a8a5d9e18d14a9d, type: 3}
     - target: {fileID: 8505863255294207253, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
       propertyPath: m_SortingOrder
-      value: 1
+      value: -457
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9075,6 +9214,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4120043978955368178, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
       insertIndex: -1
       addedObject: {fileID: 970776234}
+    - targetCorrespondingSourceObject: {fileID: 4120043978955368178, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 970776239}
   m_SourcePrefab: {fileID: 100100000, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
 --- !u!1 &485939616
 GameObject:
@@ -9526,6 +9668,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1661888711}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &498086046 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3117564915927355382, guid: 998fd6c8ee6a4329802fa9ebe965dd26, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000110}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &507693511
 GameObject:
   m_ObjectHideFlags: 0
@@ -9678,6 +9825,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!1 &509951233 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3301569175584732266, guid: 06415c5c8bc04a5380b8d6c1e5f1fef0, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000180}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -10261,12 +10413,15 @@ PrefabInstance:
       objectReference: {fileID: -4990882527033520353, guid: 8b07b838e32f0434a86046e5013e33d6, type: 3}
     - target: {fileID: 5521692754248599066, guid: b2be64bea274b874892b5af3a3c5448b, type: 3}
       propertyPath: m_SortingOrder
-      value: 2
+      value: 214
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2973660538320195140, guid: b2be64bea274b874892b5af3a3c5448b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 696671206}
   m_SourcePrefab: {fileID: 100100000, guid: b2be64bea274b874892b5af3a3c5448b, type: 3}
 --- !u!1 &556723552
 GameObject:
@@ -11816,6 +11971,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds: []
+--- !u!1 &605734243 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2973660538320195140, guid: b2be64bea274b874892b5af3a3c5448b, type: 3}
+  m_PrefabInstance: {fileID: 793918838}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &609121912
 GameObject:
   m_ObjectHideFlags: 0
@@ -12040,6 +12200,11 @@ MonoBehaviour:
   m_FlexibleWidth: 1
   m_FlexibleHeight: 0
   m_LayoutPriority: 1
+--- !u!1 &642203962 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4038902700509994471, guid: 120e7f837f0c4a80b843b59a9f0c05c4, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000310}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &650249419
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12054,7 +12219,7 @@ PrefabInstance:
       objectReference: {fileID: 6831267193280381010, guid: 126139c2252e820458b01a8da81596e1, type: 3}
     - target: {fileID: 3118525807847323642, guid: b1905f53ac38c9e448166686136d1b6e, type: 3}
       propertyPath: m_SortingOrder
-      value: 2
+      value: 372
       objectReference: {fileID: 0}
     - target: {fileID: 3588026922416221992, guid: b1905f53ac38c9e448166686136d1b6e, type: 3}
       propertyPath: item
@@ -12118,7 +12283,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7444709658499273698, guid: b1905f53ac38c9e448166686136d1b6e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 696671202}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7951315822792807267, guid: b1905f53ac38c9e448166686136d1b6e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2012342182}
   m_SourcePrefab: {fileID: 100100000, guid: b1905f53ac38c9e448166686136d1b6e, type: 3}
 --- !u!1 &650413208
 GameObject:
@@ -12180,6 +12348,11 @@ MonoBehaviour:
   m_Spacing: {x: 10, y: 10}
   m_Constraint: 1
   m_ConstraintCount: 8
+--- !u!1 &651368166 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3547133471118502406, guid: 807fb25bbc0544bfaa1b3a153e795e4c, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000240}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &651925279
 GameObject:
   m_ObjectHideFlags: 0
@@ -12257,6 +12430,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 651925279}
   m_CullTransparentMesh: 0
+--- !u!1 &656097532 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3601395168009570677, guid: a1e17099cb6548db85cd284d5fd6d08a, type: 3}
+  m_PrefabInstance: {fileID: 1685464650766730969}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &656097536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 656097532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1 &656421844
 GameObject:
   m_ObjectHideFlags: 0
@@ -12899,6 +13092,7 @@ GameObject:
   - component: {fileID: 667461106}
   - component: {fileID: 667461105}
   - component: {fileID: 667461109}
+  - component: {fileID: 667461110}
   m_Layer: 0
   m_Name: Clara
   m_TagString: Untagged
@@ -13131,7 +13325,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: -600
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 8e6dfa237f14e1542bf4613b1be0f9ec, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -13182,6 +13376,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &667461110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 667461104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &667490744 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6127428680552932189, guid: 4b6f73fa056ef7b46973cb5301b77ce8, type: 3}
@@ -13210,6 +13419,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &667490754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 667490744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1 &667828789
 GameObject:
   m_ObjectHideFlags: 0
@@ -13565,6 +13789,21 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3266797506068593820, guid: b2be64bea274b874892b5af3a3c5448b, type: 3}
   m_PrefabInstance: {fileID: 552798369}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &696671206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 269607097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &697878924
 GameObject:
   m_ObjectHideFlags: 0
@@ -13991,6 +14230,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 715460687}
   m_CullTransparentMesh: 1
+--- !u!1 &716332234 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1145628922907835685, guid: 0c3aa9ebabd1473c833853d81c56b063, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000280}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &718100932
 GameObject:
   m_ObjectHideFlags: 0
@@ -14392,6 +14636,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 751552011}
   m_CullTransparentMesh: 1
+--- !u!1 &752390681 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5343021985228488698, guid: 88ded2d9459b44c2b4784571c2b2fa25, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000300}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &755383780
 GameObject:
   m_ObjectHideFlags: 0
@@ -14529,6 +14778,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 755383780}
   m_CullTransparentMesh: 1
+--- !u!1 &760186007 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6146652737653809025, guid: 68b098486cec4108a0b9eb883215b03c, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000160}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &767276559
 GameObject:
   m_ObjectHideFlags: 0
@@ -14575,6 +14829,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &767779662 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8022583976421765445, guid: 9cfb39eef39649768621a4fe5a99bfc2, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000120}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &769478540
 GameObject:
   m_ObjectHideFlags: 0
@@ -14816,6 +15075,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &771936652 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3539480814175781015, guid: 8d0a3fc392fa4c068c536afd45e0a2ff, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000080}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &772678704
 GameObject:
   m_ObjectHideFlags: 0
@@ -15549,12 +15813,15 @@ PrefabInstance:
       objectReference: {fileID: -4990882527033520353, guid: 8b07b838e32f0434a86046e5013e33d6, type: 3}
     - target: {fileID: 5521692754248599066, guid: b2be64bea274b874892b5af3a3c5448b, type: 3}
       propertyPath: m_SortingOrder
-      value: 2
+      value: 190
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2973660538320195140, guid: b2be64bea274b874892b5af3a3c5448b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1354984681}
   m_SourcePrefab: {fileID: 100100000, guid: b2be64bea274b874892b5af3a3c5448b, type: 3}
 --- !u!1 &801316461
 GameObject:
@@ -16650,6 +16917,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds: []
+--- !u!1 &840341475 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5506818409131222027, guid: 7c7b81ca64be461a925bd5af98eddba7, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000060}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &846438876
 GameObject:
   m_ObjectHideFlags: 0
@@ -16805,6 +17077,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 848161575}
   m_CullTransparentMesh: 1
+--- !u!1 &852495335 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4355422374716705612, guid: 841b313813584bb5b3e49f14df1658a9, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000170}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &854636005
 GameObject:
   m_ObjectHideFlags: 0
@@ -17849,6 +18126,11 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &902624398 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7077849902298612432, guid: fe519989f342771e4603edbbc46e135a, type: 3}
+  m_PrefabInstance: {fileID: 6100000000000009101}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &906783087 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5522219693077281312, guid: 60252a25a2bc00c589a40bc9a549da73, type: 3}
@@ -17929,6 +18211,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 907462415}
   m_CullTransparentMesh: 1
+--- !u!1 &908686120 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4687981358391866373, guid: fab05f8a76a041238cbb996805722e41, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000190}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &909871595
 GameObject:
   m_ObjectHideFlags: 0
@@ -18321,6 +18608,26 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3186371052809057053, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
   m_PrefabInstance: {fileID: 484233441}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &934528739 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7095900865275510176, guid: f08eaf8fd4269084f9c3c85e1b1388f1, type: 3}
+  m_PrefabInstance: {fileID: 131507817}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &934528744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 934528739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &937696230
 GameObject:
   m_ObjectHideFlags: 0
@@ -18873,6 +19180,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 960439200}
   m_CullTransparentMesh: 1
+--- !u!1 &968670643 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7077849902298612432, guid: 8b9d5063d4277ce4498bb56742da7b30, type: 3}
+  m_PrefabInstance: {fileID: 8591407110630346020}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &968670647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968670643}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &969227870
 GameObject:
   m_ObjectHideFlags: 0
@@ -19038,6 +19365,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &970776239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 970776230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &981122901
 GameObject:
   m_ObjectHideFlags: 0
@@ -19327,6 +19669,11 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &990558220 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8427253024353356751, guid: 3702ba01c37149d6ac994cfc05766a0c, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000010}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1002288617
 GameObject:
   m_ObjectHideFlags: 0
@@ -19418,6 +19765,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1002288617}
   m_CullTransparentMesh: 1
+--- !u!1 &1002409568 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3540004173933781548, guid: dc21c5e7b9b54f72a899234883c01476, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000270}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1003670361
 GameObject:
   m_ObjectHideFlags: 0
@@ -20327,6 +20679,11 @@ MonoBehaviour:
   fogColor: {r: 0.13, g: 0.15, b: 0.17, a: 1}
   maskResolution: 128
   fogSortingOrder: 50
+--- !u!1 &1061785111 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8530203652151691833, guid: a23507f53937421bb1b0cbdef3db0135, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000140}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1063727264 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4383182597930209328, guid: d9b11ab7cd474dc1b117624a2dfd3120, type: 3}
@@ -20410,6 +20767,16 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1076084195}
   m_CullTransparentMesh: 1
+--- !u!1 &1079671582 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5696002732921031392, guid: b10e737b936f49c7892d9d8df591f647, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000150}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1082308746 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9146257042364587570, guid: f963600c29744692a578da0bcadb3724, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000090}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1082522543
 GameObject:
   m_ObjectHideFlags: 0
@@ -20856,6 +21223,7 @@ GameObject:
   - component: {fileID: 1118328934}
   - component: {fileID: 1118328933}
   - component: {fileID: 1118328937}
+  - component: {fileID: 1118328938}
   m_Layer: 0
   m_Name: Bento
   m_TagString: Untagged
@@ -21086,7 +21454,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 800
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: f6bc4c1d7bd8b4c4e845c1c8adbea8db, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -21137,6 +21505,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &1118328938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1118328932}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &1137548870
 GameObject:
   m_ObjectHideFlags: 0
@@ -22600,6 +22983,7 @@ GameObject:
   - component: {fileID: 1203825686}
   - component: {fileID: 1203825693}
   - component: {fileID: 1203825694}
+  - component: {fileID: 1203825695}
   m_Layer: 0
   m_Name: Bunny
   m_TagString: Player
@@ -23018,7 +23402,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 3
+  m_SortingOrder: -298
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7595986285605212588, guid: ce5acadeea6b2484692086623f08bcb8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -23104,6 +23488,26 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &1203825695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203825683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
+--- !u!1 &1205405205 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 274179908449973401, guid: 42cbc7d01d17c1a41bac2753d982d062, type: 3}
+  m_PrefabInstance: {fileID: 5352230356748431498}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1209724436
 GameObject:
   m_ObjectHideFlags: 0
@@ -23289,6 +23693,7 @@ GameObject:
   - component: {fileID: 1221556194}
   - component: {fileID: 1221556193}
   - component: {fileID: 1221556192}
+  - component: {fileID: 1221556196}
   m_Layer: 0
   m_Name: BuildingShopNPC
   m_TagString: Untagged
@@ -23403,7 +23808,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 257
   m_MaskInteraction: 0
   m_Sprite: {fileID: 41262119404659051, guid: 85703410b0933d24bbec1473554e52f1, type: 3}
   m_Color: {r: 0.7, g: 0.55, b: 0.3, a: 1}
@@ -23430,6 +23835,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1221556196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1221556191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &1225764931
 GameObject:
   m_ObjectHideFlags: 0
@@ -126504,6 +126924,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1284454450}
   m_CullTransparentMesh: 1
+--- !u!1 &1285445300 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1268676509140089155, guid: 6149971f405048819dda9e77c01b510e, type: 3}
+  m_PrefabInstance: {fileID: 3520057295650859963}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1285445304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1285445300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1 &1291758471
 GameObject:
   m_ObjectHideFlags: 0
@@ -127501,6 +127941,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1328069288}
   m_CullTransparentMesh: 1
+--- !u!1 &1339753146 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4487017788558338748, guid: 4eb373b4d344404f9bd56bc8a1c63c8a, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000250}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1352810280
 GameObject:
   m_ObjectHideFlags: 0
@@ -127648,6 +128093,21 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3266797506068593820, guid: b2be64bea274b874892b5af3a3c5448b, type: 3}
   m_PrefabInstance: {fileID: 793918838}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1354984681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 605734243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &1355262497
 GameObject:
   m_ObjectHideFlags: 0
@@ -128389,6 +128849,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &1388240793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 906783087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!4 &1388248064 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2140981987456499093, guid: 1ada5cb7cb773264e8d4634d28ce21ef, type: 3}
@@ -128417,6 +128892,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &1388248080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1375241320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &1398386443
 GameObject:
   m_ObjectHideFlags: 0
@@ -128517,6 +129007,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1398386443}
   m_CullTransparentMesh: 1
+--- !u!1 &1400351953 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 126049044655844054, guid: 96a9123c65004616a606ae798bddbae4, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000210}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1407847254
 GameObject:
   m_ObjectHideFlags: 0
@@ -128638,6 +129133,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1427868611 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2608946839150596299, guid: 16910a20601f439abfeb28858c359359, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000220}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1450331942
 GameObject:
   m_ObjectHideFlags: 0
@@ -128674,6 +129174,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -4, y: -4}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1450527141 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1939416372352274201, guid: 2982955a2cfe44bf9b1ea779412d2509, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000130}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1460566880
 GameObject:
   m_ObjectHideFlags: 0
@@ -128970,6 +129475,7 @@ GameObject:
   - component: {fileID: 1482121134}
   - component: {fileID: 1482121133}
   - component: {fileID: 1482121132}
+  - component: {fileID: 1482121136}
   m_Layer: 0
   m_Name: AnimalMarketNPC
   m_TagString: Untagged
@@ -129085,7 +129591,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 5
+  m_SortingOrder: 338
   m_MaskInteraction: 0
   m_Sprite: {fileID: 8794332673144172688, guid: 1e927db6a1092d84b9828e60ba08ad4b, type: 3}
   m_Color: {r: 0.55, g: 0.75, b: 0.55, a: 1}
@@ -129112,6 +129618,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1482121136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1482121131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &1487560756
 GameObject:
   m_ObjectHideFlags: 0
@@ -129578,6 +130099,26 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 90
   m_TargetDisplay: 0
+--- !u!1 &1507318299 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5351471566771300243, guid: f50e9c9193fda5847b7cf06f5dffacb9, type: 3}
+  m_PrefabInstance: {fileID: 5828497649052131104}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1507318303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1507318299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &1507937162
 GameObject:
   m_ObjectHideFlags: 0
@@ -129756,6 +130297,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds: []
+--- !u!1 &1513845190 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2301135167081205033, guid: ee4c0db6c165498ab3686f2d034139ca, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000000}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1518477760
 GameObject:
   m_ObjectHideFlags: 0
@@ -130166,6 +130712,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!1 &1526348024 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1471902135300223061, guid: 225119752e7149b391dd5d9c2c5ceb0b, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000260}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1526481661
 GameObject:
   m_ObjectHideFlags: 0
@@ -130179,6 +130730,7 @@ GameObject:
   - component: {fileID: 1526481663}
   - component: {fileID: 1526481662}
   - component: {fileID: 1526481666}
+  - component: {fileID: 1526481667}
   m_Layer: 0
   m_Name: Isabela
   m_TagString: Untagged
@@ -130410,7 +130962,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: -200
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 0766cde0f960e0d4e93139e85b5cf703, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -130461,6 +131013,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &1526481667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1526481661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &1527073469
 GameObject:
   m_ObjectHideFlags: 0
@@ -131178,6 +131745,31 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1574404408}
   m_CullTransparentMesh: 1
+--- !u!1 &1577674670 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 683178774089460914, guid: 51c7ae0f3833430ab9446da4ae20d533, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000030}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1583164386 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2085760234090377875, guid: a6e8b62e422f489f9a7067bf9611b89f, type: 3}
+  m_PrefabInstance: {fileID: 4067545289236582760}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1583164390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1583164386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1 &1585185859
 GameObject:
   m_ObjectHideFlags: 0
@@ -131191,6 +131783,7 @@ GameObject:
   - component: {fileID: 1585185861}
   - component: {fileID: 1585185860}
   - component: {fileID: 1585185864}
+  - component: {fileID: 1585185865}
   m_Layer: 0
   m_Name: Maren
   m_TagString: Untagged
@@ -131436,7 +132029,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: -300
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: c99909fc122201546b5ca49f38ab0113, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -131487,6 +132080,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &1585185865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1585185859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &1586298734
 GameObject:
   m_ObjectHideFlags: 0
@@ -131850,6 +132458,21 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8252753446736170098, guid: 42cbc7d01d17c1a41bac2753d982d062, type: 3}
   m_PrefabInstance: {fileID: 5352230356748431498}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1586592902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1205405205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &1586760347
 GameObject:
   m_ObjectHideFlags: 0
@@ -135075,6 +135698,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1610642639}
   m_CullTransparentMesh: 1
+--- !u!1 &1623780715 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 237854156022896868, guid: c71f8416f92445d3901e3ac84e34f5bf, type: 3}
+  m_PrefabInstance: {fileID: 2567698056743946580}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1623780719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623780715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!4 &1627056299 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3186371052809057053, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
@@ -135103,6 +135746,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &1627056308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 82705930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &1627936727 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2042305433374018968, guid: 07df1bd62512496fa96663ed993e5654, type: 3}
@@ -135362,6 +136020,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1634820656}
   m_CullTransparentMesh: 1
+--- !u!1 &1635022196 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7772319062312526944, guid: 09f7e139890948a59f337958a53afa98, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000040}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1641408509
 GameObject:
   m_ObjectHideFlags: 0
@@ -135867,6 +136530,11 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1653181225 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2749150256876335032, guid: 97fae257d2bc4110a3f142464991bead, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000050}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1655710463
 GameObject:
   m_ObjectHideFlags: 0
@@ -138953,6 +139621,16 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &1781588705 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7198305433217163408, guid: 7987b5952d3e4e979422fa123c002923, type: 3}
+  m_PrefabInstance: {fileID: 9900000000000230}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1782235652 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 912353830770310061, guid: 18bf7844ae3e405bad6af714f68ecd63, type: 3}
+  m_PrefabInstance: {fileID: 8800000000000000}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1807173723
 GameObject:
   m_ObjectHideFlags: 0
@@ -139093,6 +139771,7 @@ GameObject:
   - component: {fileID: 1816704877}
   - component: {fileID: 1816704876}
   - component: {fileID: 1816704880}
+  - component: {fileID: 1816704881}
   m_Layer: 0
   m_Name: Nara
   m_TagString: Untagged
@@ -139323,7 +140002,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: -300
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 174a636dd41e4fd4f97f66c6ada924a3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -139374,6 +140053,26 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &1816704881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1816704875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
+--- !u!1 &1821764090 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1089162109752511984, guid: 240967cc445e4154bb909506063dd38c, type: 3}
+  m_PrefabInstance: {fileID: 8800000000000010}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1824821715
 GameObject:
   m_ObjectHideFlags: 0
@@ -141900,6 +142599,11 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!1 &1993677207 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4312976116730279851, guid: b1b715fd880d4be3b44fbb66e93c1a4c, type: 3}
+  m_PrefabInstance: {fileID: 8800000000000030}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2007414271
 GameObject:
   m_ObjectHideFlags: 0
@@ -142058,6 +142762,31 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &2012342178 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7951315822792807267, guid: b1905f53ac38c9e448166686136d1b6e, type: 3}
+  m_PrefabInstance: {fileID: 650249419}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2012342182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2012342178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
+--- !u!1 &2023210727 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7095900865275510176, guid: f08eaf8fd4269084f9c3c85e1b1388f1, type: 3}
+  m_PrefabInstance: {fileID: 8241399767349458991}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2030827427
 GameObject:
   m_ObjectHideFlags: 0
@@ -142496,6 +143225,26 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2104492053052722648, guid: ff0e3894f19848c2afa8fff56bf08611, type: 3}
   m_PrefabInstance: {fileID: 247187766013670800}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2056938374 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 326582626316427175, guid: 89dddf207d6d4a71b42fda3043bf7ff1, type: 3}
+  m_PrefabInstance: {fileID: 2882865572390531794}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2056938378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2056938374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1 &2060384449
 GameObject:
   m_ObjectHideFlags: 0
@@ -144206,6 +144955,11 @@ MonoBehaviour:
   menuOpenSound: {fileID: 0}
   menuCloseSound: {fileID: 0}
   audioSource: {fileID: 0}
+--- !u!1 &2112082731 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4439156563455486950, guid: 7a9087d18f5447f9a307c3dc0c87bcca, type: 3}
+  m_PrefabInstance: {fileID: 8800000000000020}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2129273842
 GameObject:
   m_ObjectHideFlags: 0
@@ -144563,6 +145317,7 @@ GameObject:
   - component: {fileID: 2138437088}
   - component: {fileID: 2138437087}
   - component: {fileID: 2138437091}
+  - component: {fileID: 2138437092}
   m_Layer: 0
   m_Name: Elias
   m_TagString: Untagged
@@ -144791,7 +145546,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 400
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: ea0285f928c391248bfb9ff3cedb0d98, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -144842,6 +145597,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &2138437092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2138437086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1 &2141346929
 GameObject:
   m_ObjectHideFlags: 0
@@ -145228,6 +145998,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ChickRed
       objectReference: {fileID: 0}
+    - target: {fileID: 4435404080205499274, guid: d9b11ab7cd474dc1b117624a2dfd3120, type: 3}
+      propertyPath: m_SortingOrder
+      value: 354
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -145235,6 +146009,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4383182597930209328, guid: d9b11ab7cd474dc1b117624a2dfd3120, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1702216779771361268}
+    - targetCorrespondingSourceObject: {fileID: 4383182597930209328, guid: d9b11ab7cd474dc1b117624a2dfd3120, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1702216779771361276}
   m_SourcePrefab: {fileID: 100100000, guid: d9b11ab7cd474dc1b117624a2dfd3120, type: 3}
 --- !u!1001 &5500000000000001
 PrefabInstance:
@@ -145318,10 +146095,17 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1000000000000003, guid: aee7e1400cfb43a1af1e7eaae312fbec, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1400
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1000000000000001, guid: aee7e1400cfb43a1af1e7eaae312fbec, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 420409491}
   m_SourcePrefab: {fileID: 100100000, guid: aee7e1400cfb43a1af1e7eaae312fbec, type: 3}
 --- !u!1001 &8800000000000000
 PrefabInstance:
@@ -145349,11 +146133,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 912353830770310062, guid: 18bf7844ae3e405bad6af714f68ecd63, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 13.0
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 912353830770310062, guid: 18bf7844ae3e405bad6af714f68ecd63, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 912353830770310062, guid: 18bf7844ae3e405bad6af714f68ecd63, type: 3}
       propertyPath: m_LocalPosition.z
@@ -145387,16 +146171,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 912353830770310063, guid: 18bf7844ae3e405bad6af714f68ecd63, type: 3}
+      propertyPath: m_SortingOrder
+      value: -327
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 912353830770310061, guid: 18bf7844ae3e405bad6af714f68ecd63, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8800000000000005}
   m_SourcePrefab: {fileID: 100100000, guid: 18bf7844ae3e405bad6af714f68ecd63, type: 3}
 --- !u!4 &8800000000000001 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 912353830770310062, guid: 18bf7844ae3e405bad6af714f68ecd63, type: 3}
   m_PrefabInstance: {fileID: 8800000000000000}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8800000000000005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1782235652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &8800000000000010
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -145427,7 +146233,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1089162109752511985, guid: 240967cc445e4154bb909506063dd38c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 1089162109752511985, guid: 240967cc445e4154bb909506063dd38c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -145461,16 +146267,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1089162109752511986, guid: 240967cc445e4154bb909506063dd38c, type: 3}
+      propertyPath: m_SortingOrder
+      value: -327
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1089162109752511984, guid: 240967cc445e4154bb909506063dd38c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8800000000000015}
   m_SourcePrefab: {fileID: 100100000, guid: 240967cc445e4154bb909506063dd38c, type: 3}
 --- !u!4 &8800000000000011 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1089162109752511985, guid: 240967cc445e4154bb909506063dd38c, type: 3}
   m_PrefabInstance: {fileID: 8800000000000010}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8800000000000015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1821764090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &8800000000000020
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -145497,7 +146325,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4439156563455486951, guid: 7a9087d18f5447f9a307c3dc0c87bcca, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 13.0
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 4439156563455486951, guid: 7a9087d18f5447f9a307c3dc0c87bcca, type: 3}
       propertyPath: m_LocalPosition.y
@@ -145535,16 +146363,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4439156563455486952, guid: 7a9087d18f5447f9a307c3dc0c87bcca, type: 3}
+      propertyPath: m_SortingOrder
+      value: -77
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4439156563455486950, guid: 7a9087d18f5447f9a307c3dc0c87bcca, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8800000000000025}
   m_SourcePrefab: {fileID: 100100000, guid: 7a9087d18f5447f9a307c3dc0c87bcca, type: 3}
 --- !u!4 &8800000000000021 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4439156563455486951, guid: 7a9087d18f5447f9a307c3dc0c87bcca, type: 3}
   m_PrefabInstance: {fileID: 8800000000000020}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8800000000000025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2112082731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &8800000000000030
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -145609,16 +146459,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4312976116730279853, guid: b1b715fd880d4be3b44fbb66e93c1a4c, type: 3}
+      propertyPath: m_SortingOrder
+      value: -77
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4312976116730279851, guid: b1b715fd880d4be3b44fbb66e93c1a4c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8800000000000035}
   m_SourcePrefab: {fileID: 100100000, guid: b1b715fd880d4be3b44fbb66e93c1a4c, type: 3}
 --- !u!4 &8800000000000031 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4312976116730279852, guid: b1b715fd880d4be3b44fbb66e93c1a4c, type: 3}
   m_PrefabInstance: {fileID: 8800000000000030}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8800000000000035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1993677207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000000
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -145645,11 +146517,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1895723379408803426, guid: ee4c0db6c165498ab3686f2d034139ca, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.0
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 1895723379408803426, guid: ee4c0db6c165498ab3686f2d034139ca, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1895723379408803426, guid: ee4c0db6c165498ab3686f2d034139ca, type: 3}
       propertyPath: m_LocalPosition.z
@@ -145687,16 +146559,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: WorkStation
       objectReference: {fileID: 0}
+    - target: {fileID: 6921114224530442826, guid: ee4c0db6c165498ab3686f2d034139ca, type: 3}
+      propertyPath: m_SortingOrder
+      value: -857
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2301135167081205033, guid: ee4c0db6c165498ab3686f2d034139ca, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000003}
   m_SourcePrefab: {fileID: 100100000, guid: ee4c0db6c165498ab3686f2d034139ca, type: 3}
 --- !u!4 &9900000000000001 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1895723379408803426, guid: ee4c0db6c165498ab3686f2d034139ca, type: 3}
   m_PrefabInstance: {fileID: 9900000000000000}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1513845190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000010
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -145761,6 +146655,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7567889906590513980, guid: 3702ba01c37149d6ac994cfc05766a0c, type: 3}
+      propertyPath: m_SortingOrder
+      value: -982
+      objectReference: {fileID: 0}
     - target: {fileID: 8427253024353356751, guid: 3702ba01c37149d6ac994cfc05766a0c, type: 3}
       propertyPath: m_Name
       value: WaterWell
@@ -145768,13 +146666,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8427253024353356751, guid: 3702ba01c37149d6ac994cfc05766a0c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000013}
   m_SourcePrefab: {fileID: 100100000, guid: 3702ba01c37149d6ac994cfc05766a0c, type: 3}
 --- !u!4 &9900000000000011 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5532674187046552707, guid: 3702ba01c37149d6ac994cfc05766a0c, type: 3}
   m_PrefabInstance: {fileID: 9900000000000010}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 990558220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000020
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -145783,6 +146699,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2082245846}
     m_Modifications:
+    - target: {fileID: 1229747309206106337, guid: 0122e4466ddc4d6ba065294b11eb3af2, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1193
+      objectReference: {fileID: 0}
     - target: {fileID: 5909218656351468579, guid: 0122e4466ddc4d6ba065294b11eb3af2, type: 3}
       propertyPath: m_RootOrder
       value: 32
@@ -145801,11 +146721,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5909218656351468579, guid: 0122e4466ddc4d6ba065294b11eb3af2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5909218656351468579, guid: 0122e4466ddc4d6ba065294b11eb3af2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.0
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5909218656351468579, guid: 0122e4466ddc4d6ba065294b11eb3af2, type: 3}
       propertyPath: m_LocalPosition.z
@@ -145846,13 +146766,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8252955529186804938, guid: 0122e4466ddc4d6ba065294b11eb3af2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000023}
   m_SourcePrefab: {fileID: 100100000, guid: 0122e4466ddc4d6ba065294b11eb3af2, type: 3}
 --- !u!4 &9900000000000021 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5909218656351468579, guid: 0122e4466ddc4d6ba065294b11eb3af2, type: 3}
   m_PrefabInstance: {fileID: 9900000000000020}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 18078526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000030
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -145921,16 +146859,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8462849728804318973, guid: 51c7ae0f3833430ab9446da4ae20d533, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1235
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 683178774089460914, guid: 51c7ae0f3833430ab9446da4ae20d533, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000033}
   m_SourcePrefab: {fileID: 100100000, guid: 51c7ae0f3833430ab9446da4ae20d533, type: 3}
 --- !u!4 &9900000000000031 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2932494625792817503, guid: 51c7ae0f3833430ab9446da4ae20d533, type: 3}
   m_PrefabInstance: {fileID: 9900000000000030}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577674670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000040
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -145957,11 +146917,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1650274553840622506, guid: 09f7e139890948a59f337958a53afa98, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 1650274553840622506, guid: 09f7e139890948a59f337958a53afa98, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.0
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1650274553840622506, guid: 09f7e139890948a59f337958a53afa98, type: 3}
       propertyPath: m_LocalPosition.z
@@ -145995,6 +146955,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3770976038145631319, guid: 09f7e139890948a59f337958a53afa98, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1196
+      objectReference: {fileID: 0}
     - target: {fileID: 7772319062312526944, guid: 09f7e139890948a59f337958a53afa98, type: 3}
       propertyPath: m_Name
       value: Flower_Purple
@@ -146002,13 +146966,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7772319062312526944, guid: 09f7e139890948a59f337958a53afa98, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000043}
   m_SourcePrefab: {fileID: 100100000, guid: 09f7e139890948a59f337958a53afa98, type: 3}
 --- !u!4 &9900000000000041 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1650274553840622506, guid: 09f7e139890948a59f337958a53afa98, type: 3}
   m_PrefabInstance: {fileID: 9900000000000040}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1635022196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000050
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -146077,16 +147059,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6497041035034746965, guid: 97fae257d2bc4110a3f142464991bead, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1235
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2749150256876335032, guid: 97fae257d2bc4110a3f142464991bead, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000053}
   m_SourcePrefab: {fileID: 100100000, guid: 97fae257d2bc4110a3f142464991bead, type: 3}
 --- !u!4 &9900000000000051 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5689955097739050788, guid: 97fae257d2bc4110a3f142464991bead, type: 3}
   m_PrefabInstance: {fileID: 9900000000000050}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1653181225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000060
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -146098,6 +147102,10 @@ PrefabInstance:
     - target: {fileID: 5506818409131222027, guid: 7c7b81ca64be461a925bd5af98eddba7, type: 3}
       propertyPath: m_Name
       value: Flower_Red
+      objectReference: {fileID: 0}
+    - target: {fileID: 6487679398923037202, guid: 7c7b81ca64be461a925bd5af98eddba7, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1285
       objectReference: {fileID: 0}
     - target: {fileID: 8625246277679824231, guid: 7c7b81ca64be461a925bd5af98eddba7, type: 3}
       propertyPath: m_RootOrder
@@ -146117,11 +147125,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8625246277679824231, guid: 7c7b81ca64be461a925bd5af98eddba7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8625246277679824231, guid: 7c7b81ca64be461a925bd5af98eddba7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.0
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8625246277679824231, guid: 7c7b81ca64be461a925bd5af98eddba7, type: 3}
       propertyPath: m_LocalPosition.z
@@ -146158,13 +147166,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5506818409131222027, guid: 7c7b81ca64be461a925bd5af98eddba7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000063}
   m_SourcePrefab: {fileID: 100100000, guid: 7c7b81ca64be461a925bd5af98eddba7, type: 3}
 --- !u!4 &9900000000000061 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8625246277679824231, guid: 7c7b81ca64be461a925bd5af98eddba7, type: 3}
   m_PrefabInstance: {fileID: 9900000000000060}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 840341475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000070
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -146191,11 +147217,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 586693038234815556, guid: d93230a00f434293bc5df0883218cce2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -9.0
+      value: -9
       objectReference: {fileID: 0}
     - target: {fileID: 586693038234815556, guid: d93230a00f434293bc5df0883218cce2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 586693038234815556, guid: d93230a00f434293bc5df0883218cce2, type: 3}
       propertyPath: m_LocalPosition.z
@@ -146233,16 +147259,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mushroom_Pink
       objectReference: {fileID: 0}
+    - target: {fileID: 5132294060868193046, guid: d93230a00f434293bc5df0883218cce2, type: 3}
+      propertyPath: m_SortingOrder
+      value: -890
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5036097478597089010, guid: d93230a00f434293bc5df0883218cce2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000073}
   m_SourcePrefab: {fileID: 100100000, guid: d93230a00f434293bc5df0883218cce2, type: 3}
 --- !u!4 &9900000000000071 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 586693038234815556, guid: d93230a00f434293bc5df0883218cce2, type: 3}
   m_PrefabInstance: {fileID: 9900000000000070}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 222452349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000080
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -146273,11 +147321,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4156345132437452453, guid: 8d0a3fc392fa4c068c536afd45e0a2ff, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.0
+      value: -8
       objectReference: {fileID: 0}
     - target: {fileID: 4156345132437452453, guid: 8d0a3fc392fa4c068c536afd45e0a2ff, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4156345132437452453, guid: 8d0a3fc392fa4c068c536afd45e0a2ff, type: 3}
       propertyPath: m_LocalPosition.z
@@ -146311,16 +147359,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5162249787538239410, guid: 8d0a3fc392fa4c068c536afd45e0a2ff, type: 3}
+      propertyPath: m_SortingOrder
+      value: -782
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3539480814175781015, guid: 8d0a3fc392fa4c068c536afd45e0a2ff, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000083}
   m_SourcePrefab: {fileID: 100100000, guid: 8d0a3fc392fa4c068c536afd45e0a2ff, type: 3}
 --- !u!4 &9900000000000081 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4156345132437452453, guid: 8d0a3fc392fa4c068c536afd45e0a2ff, type: 3}
   m_PrefabInstance: {fileID: 9900000000000080}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 771936652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000090
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -146329,6 +147399,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2082245846}
     m_Modifications:
+    - target: {fileID: 813719259360746519, guid: f963600c29744692a578da0bcadb3724, type: 3}
+      propertyPath: m_SortingOrder
+      value: -976
+      objectReference: {fileID: 0}
     - target: {fileID: 7431506885555954722, guid: f963600c29744692a578da0bcadb3724, type: 3}
       propertyPath: m_RootOrder
       value: 39
@@ -146347,11 +147421,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7431506885555954722, guid: f963600c29744692a578da0bcadb3724, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -10.0
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 7431506885555954722, guid: f963600c29744692a578da0bcadb3724, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7431506885555954722, guid: f963600c29744692a578da0bcadb3724, type: 3}
       propertyPath: m_LocalPosition.z
@@ -146392,13 +147466,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 9146257042364587570, guid: f963600c29744692a578da0bcadb3724, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000093}
   m_SourcePrefab: {fileID: 100100000, guid: f963600c29744692a578da0bcadb3724, type: 3}
 --- !u!4 &9900000000000091 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7431506885555954722, guid: f963600c29744692a578da0bcadb3724, type: 3}
   m_PrefabInstance: {fileID: 9900000000000090}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1082308746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000100
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -146410,6 +147502,10 @@ PrefabInstance:
     - target: {fileID: 2550849079902425951, guid: 9dad8f49a1d34330b4dd5b3c96a79682, type: 3}
       propertyPath: m_Name
       value: Mushroom_Group
+      objectReference: {fileID: 0}
+    - target: {fileID: 5575315306568447903, guid: 9dad8f49a1d34330b4dd5b3c96a79682, type: 3}
+      propertyPath: m_SortingOrder
+      value: -940
       objectReference: {fileID: 0}
     - target: {fileID: 9164777178623134903, guid: 9dad8f49a1d34330b4dd5b3c96a79682, type: 3}
       propertyPath: m_RootOrder
@@ -146470,13 +147566,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2550849079902425951, guid: 9dad8f49a1d34330b4dd5b3c96a79682, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000103}
   m_SourcePrefab: {fileID: 100100000, guid: 9dad8f49a1d34330b4dd5b3c96a79682, type: 3}
 --- !u!4 &9900000000000101 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9164777178623134903, guid: 9dad8f49a1d34330b4dd5b3c96a79682, type: 3}
   m_PrefabInstance: {fileID: 9900000000000100}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 57075627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000110
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -146503,11 +147617,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1423262797219694392, guid: 998fd6c8ee6a4329802fa9ebe965dd26, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.0
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 1423262797219694392, guid: 998fd6c8ee6a4329802fa9ebe965dd26, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1423262797219694392, guid: 998fd6c8ee6a4329802fa9ebe965dd26, type: 3}
       propertyPath: m_LocalPosition.z
@@ -146545,16 +147659,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stone_Small1
       objectReference: {fileID: 0}
+    - target: {fileID: 8007030659403516176, guid: 998fd6c8ee6a4329802fa9ebe965dd26, type: 3}
+      propertyPath: m_SortingOrder
+      value: -696
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3117564915927355382, guid: 998fd6c8ee6a4329802fa9ebe965dd26, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000113}
   m_SourcePrefab: {fileID: 100100000, guid: 998fd6c8ee6a4329802fa9ebe965dd26, type: 3}
 --- !u!4 &9900000000000111 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1423262797219694392, guid: 998fd6c8ee6a4329802fa9ebe965dd26, type: 3}
   m_PrefabInstance: {fileID: 9900000000000110}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 498086046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000120
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -146581,11 +147717,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3126831719047788030, guid: 9cfb39eef39649768621a4fe5a99bfc2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3126831719047788030, guid: 9cfb39eef39649768621a4fe5a99bfc2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3126831719047788030, guid: 9cfb39eef39649768621a4fe5a99bfc2, type: 3}
       propertyPath: m_LocalPosition.z
@@ -146623,16 +147759,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stone_Small2
       objectReference: {fileID: 0}
+    - target: {fileID: 8219291503712536432, guid: 9cfb39eef39649768621a4fe5a99bfc2, type: 3}
+      propertyPath: m_SortingOrder
+      value: -793
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8022583976421765445, guid: 9cfb39eef39649768621a4fe5a99bfc2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000123}
   m_SourcePrefab: {fileID: 100100000, guid: 9cfb39eef39649768621a4fe5a99bfc2, type: 3}
 --- !u!4 &9900000000000121 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3126831719047788030, guid: 9cfb39eef39649768621a4fe5a99bfc2, type: 3}
   m_PrefabInstance: {fileID: 9900000000000120}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 767779662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000130
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -146641,6 +147799,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2082245846}
     m_Modifications:
+    - target: {fileID: 1390001119012876802, guid: 2982955a2cfe44bf9b1ea779412d2509, type: 3}
+      propertyPath: m_SortingOrder
+      value: -398
+      objectReference: {fileID: 0}
     - target: {fileID: 1939416372352274201, guid: 2982955a2cfe44bf9b1ea779412d2509, type: 3}
       propertyPath: m_Name
       value: Stone_Large1
@@ -146663,11 +147825,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3873528776328721319, guid: 2982955a2cfe44bf9b1ea779412d2509, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.0
+      value: -8
       objectReference: {fileID: 0}
     - target: {fileID: 3873528776328721319, guid: 2982955a2cfe44bf9b1ea779412d2509, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 3873528776328721319, guid: 2982955a2cfe44bf9b1ea779412d2509, type: 3}
       propertyPath: m_LocalPosition.z
@@ -146704,13 +147866,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1939416372352274201, guid: 2982955a2cfe44bf9b1ea779412d2509, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000133}
   m_SourcePrefab: {fileID: 100100000, guid: 2982955a2cfe44bf9b1ea779412d2509, type: 3}
 --- !u!4 &9900000000000131 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3873528776328721319, guid: 2982955a2cfe44bf9b1ea779412d2509, type: 3}
   m_PrefabInstance: {fileID: 9900000000000130}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1450527141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000140
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -146719,6 +147899,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2082245846}
     m_Modifications:
+    - target: {fileID: 1737609576284335177, guid: a23507f53937421bb1b0cbdef3db0135, type: 3}
+      propertyPath: m_SortingOrder
+      value: -898
+      objectReference: {fileID: 0}
     - target: {fileID: 2879291678548739389, guid: a23507f53937421bb1b0cbdef3db0135, type: 3}
       propertyPath: m_RootOrder
       value: 44
@@ -146737,11 +147921,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2879291678548739389, guid: a23507f53937421bb1b0cbdef3db0135, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 13.0
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 2879291678548739389, guid: a23507f53937421bb1b0cbdef3db0135, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2879291678548739389, guid: a23507f53937421bb1b0cbdef3db0135, type: 3}
       propertyPath: m_LocalPosition.z
@@ -146782,13 +147966,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8530203652151691833, guid: a23507f53937421bb1b0cbdef3db0135, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000143}
   m_SourcePrefab: {fileID: 100100000, guid: a23507f53937421bb1b0cbdef3db0135, type: 3}
 --- !u!4 &9900000000000141 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2879291678548739389, guid: a23507f53937421bb1b0cbdef3db0135, type: 3}
   m_PrefabInstance: {fileID: 9900000000000140}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1061785111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000150
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -146815,11 +148017,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 210241168980930137, guid: b10e737b936f49c7892d9d8df591f647, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.0
+      value: -7
       objectReference: {fileID: 0}
     - target: {fileID: 210241168980930137, guid: b10e737b936f49c7892d9d8df591f647, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.0
+      value: -3
       objectReference: {fileID: 0}
     - target: {fileID: 210241168980930137, guid: b10e737b936f49c7892d9d8df591f647, type: 3}
       propertyPath: m_LocalPosition.z
@@ -146857,16 +148059,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bush_Green1
       objectReference: {fileID: 0}
+    - target: {fileID: 6436814817404462770, guid: b10e737b936f49c7892d9d8df591f647, type: 3}
+      propertyPath: m_SortingOrder
+      value: -285
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5696002732921031392, guid: b10e737b936f49c7892d9d8df591f647, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000153}
   m_SourcePrefab: {fileID: 100100000, guid: b10e737b936f49c7892d9d8df591f647, type: 3}
 --- !u!4 &9900000000000151 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 210241168980930137, guid: b10e737b936f49c7892d9d8df591f647, type: 3}
   m_PrefabInstance: {fileID: 9900000000000150}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1079671582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000160
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -146935,16 +148159,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bush_Green2
       objectReference: {fileID: 0}
+    - target: {fileID: 8309185343610348013, guid: 68b098486cec4108a0b9eb883215b03c, type: 3}
+      propertyPath: m_SortingOrder
+      value: -326
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6146652737653809025, guid: 68b098486cec4108a0b9eb883215b03c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000163}
   m_SourcePrefab: {fileID: 100100000, guid: 68b098486cec4108a0b9eb883215b03c, type: 3}
 --- !u!4 &9900000000000161 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3092455531501630313, guid: 68b098486cec4108a0b9eb883215b03c, type: 3}
   m_PrefabInstance: {fileID: 9900000000000160}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 760186007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000170
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -146956,6 +148202,10 @@ PrefabInstance:
     - target: {fileID: 4355422374716705612, guid: 841b313813584bb5b3e49f14df1658a9, type: 3}
       propertyPath: m_Name
       value: Bush_Clover
+      objectReference: {fileID: 0}
+    - target: {fileID: 6978343680895588389, guid: 841b313813584bb5b3e49f14df1658a9, type: 3}
+      propertyPath: m_SortingOrder
+      value: -446
       objectReference: {fileID: 0}
     - target: {fileID: 8520978795532957879, guid: 841b313813584bb5b3e49f14df1658a9, type: 3}
       propertyPath: m_RootOrder
@@ -146975,7 +148225,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8520978795532957879, guid: 841b313813584bb5b3e49f14df1658a9, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.0
+      value: -6
       objectReference: {fileID: 0}
     - target: {fileID: 8520978795532957879, guid: 841b313813584bb5b3e49f14df1658a9, type: 3}
       propertyPath: m_LocalPosition.y
@@ -147016,13 +148266,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4355422374716705612, guid: 841b313813584bb5b3e49f14df1658a9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000173}
   m_SourcePrefab: {fileID: 100100000, guid: 841b313813584bb5b3e49f14df1658a9, type: 3}
 --- !u!4 &9900000000000171 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8520978795532957879, guid: 841b313813584bb5b3e49f14df1658a9, type: 3}
   m_PrefabInstance: {fileID: 9900000000000170}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 852495335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000180
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -147091,16 +148359,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_HeartFruit
       objectReference: {fileID: 0}
+    - target: {fileID: 7038292442482706211, guid: 06415c5c8bc04a5380b8d6c1e5f1fef0, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1024
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3301569175584732266, guid: 06415c5c8bc04a5380b8d6c1e5f1fef0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000183}
   m_SourcePrefab: {fileID: 100100000, guid: 06415c5c8bc04a5380b8d6c1e5f1fef0, type: 3}
 --- !u!4 &9900000000000181 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3241205075911220257, guid: 06415c5c8bc04a5380b8d6c1e5f1fef0, type: 3}
   m_PrefabInstance: {fileID: 9900000000000180}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509951233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000190
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -147169,16 +148459,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tree_OrangeFruit
       objectReference: {fileID: 0}
+    - target: {fileID: 6599883544491601033, guid: fab05f8a76a041238cbb996805722e41, type: 3}
+      propertyPath: m_SortingOrder
+      value: -718
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4687981358391866373, guid: fab05f8a76a041238cbb996805722e41, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000193}
   m_SourcePrefab: {fileID: 100100000, guid: fab05f8a76a041238cbb996805722e41, type: 3}
 --- !u!4 &9900000000000191 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4455526317253899150, guid: fab05f8a76a041238cbb996805722e41, type: 3}
   m_PrefabInstance: {fileID: 9900000000000190}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 908686120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000200
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -147187,6 +148499,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2082245846}
     m_Modifications:
+    - target: {fileID: 2434213857541638375, guid: adf53fe974e84b9bb670e04961788f25, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1118
+      objectReference: {fileID: 0}
     - target: {fileID: 5125436803187734263, guid: adf53fe974e84b9bb670e04961788f25, type: 3}
       propertyPath: m_Name
       value: Tree_PearFruit
@@ -147250,13 +148566,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5125436803187734263, guid: adf53fe974e84b9bb670e04961788f25, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000203}
   m_SourcePrefab: {fileID: 100100000, guid: adf53fe974e84b9bb670e04961788f25, type: 3}
 --- !u!4 &9900000000000201 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6992259015361201557, guid: adf53fe974e84b9bb670e04961788f25, type: 3}
   m_PrefabInstance: {fileID: 9900000000000200}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8180329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000210
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -147325,16 +148659,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8755748905993649988, guid: 96a9123c65004616a606ae798bddbae4, type: 3}
+      propertyPath: m_SortingOrder
+      value: 39
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 126049044655844054, guid: 96a9123c65004616a606ae798bddbae4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000213}
   m_SourcePrefab: {fileID: 100100000, guid: 96a9123c65004616a606ae798bddbae4, type: 3}
 --- !u!4 &9900000000000211 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8591915897203683274, guid: 96a9123c65004616a606ae798bddbae4, type: 3}
   m_PrefabInstance: {fileID: 9900000000000210}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1400351953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000220
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -147346,6 +148702,10 @@ PrefabInstance:
     - target: {fileID: 2608946839150596299, guid: 16910a20601f439abfeb28858c359359, type: 3}
       propertyPath: m_Name
       value: Bush_Berry2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3201361702253491789, guid: 16910a20601f439abfeb28858c359359, type: 3}
+      propertyPath: m_SortingOrder
+      value: 107
       objectReference: {fileID: 0}
     - target: {fileID: 4109375996555510228, guid: 16910a20601f439abfeb28858c359359, type: 3}
       propertyPath: m_RootOrder
@@ -147406,13 +148766,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2608946839150596299, guid: 16910a20601f439abfeb28858c359359, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000223}
   m_SourcePrefab: {fileID: 100100000, guid: 16910a20601f439abfeb28858c359359, type: 3}
 --- !u!4 &9900000000000221 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4109375996555510228, guid: 16910a20601f439abfeb28858c359359, type: 3}
   m_PrefabInstance: {fileID: 9900000000000220}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1427868611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000230
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -147421,6 +148799,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2082245846}
     m_Modifications:
+    - target: {fileID: 704742125148218443, guid: 7987b5952d3e4e979422fa123c002923, type: 3}
+      propertyPath: m_SortingOrder
+      value: 39
+      objectReference: {fileID: 0}
     - target: {fileID: 7198305433217163408, guid: 7987b5952d3e4e979422fa123c002923, type: 3}
       propertyPath: m_Name
       value: Bush_Berry3
@@ -147484,13 +148866,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7198305433217163408, guid: 7987b5952d3e4e979422fa123c002923, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000233}
   m_SourcePrefab: {fileID: 100100000, guid: 7987b5952d3e4e979422fa123c002923, type: 3}
 --- !u!4 &9900000000000231 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7451534962115339851, guid: 7987b5952d3e4e979422fa123c002923, type: 3}
   m_PrefabInstance: {fileID: 9900000000000230}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781588705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000240
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -147499,6 +148899,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2082245846}
     m_Modifications:
+    - target: {fileID: 2044242901492629478, guid: 807fb25bbc0544bfaa1b3a153e795e4c, type: 3}
+      propertyPath: m_SortingOrder
+      value: -530
+      objectReference: {fileID: 0}
     - target: {fileID: 3547133471118502406, guid: 807fb25bbc0544bfaa1b3a153e795e4c, type: 3}
       propertyPath: m_Name
       value: Stump_Small
@@ -147562,13 +148966,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3547133471118502406, guid: 807fb25bbc0544bfaa1b3a153e795e4c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000243}
   m_SourcePrefab: {fileID: 100100000, guid: 807fb25bbc0544bfaa1b3a153e795e4c, type: 3}
 --- !u!4 &9900000000000241 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6690500733163731519, guid: 807fb25bbc0544bfaa1b3a153e795e4c, type: 3}
   m_PrefabInstance: {fileID: 9900000000000240}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 651368166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000250
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -147637,16 +149059,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stump_Large
       objectReference: {fileID: 0}
+    - target: {fileID: 7845276630131266156, guid: 4eb373b4d344404f9bd56bc8a1c63c8a, type: 3}
+      propertyPath: m_SortingOrder
+      value: -911
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4487017788558338748, guid: 4eb373b4d344404f9bd56bc8a1c63c8a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000253}
   m_SourcePrefab: {fileID: 100100000, guid: 4eb373b4d344404f9bd56bc8a1c63c8a, type: 3}
 --- !u!4 &9900000000000251 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3781041989124593350, guid: 4eb373b4d344404f9bd56bc8a1c63c8a, type: 3}
   m_PrefabInstance: {fileID: 9900000000000250}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1339753146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000260
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -147658,6 +149102,10 @@ PrefabInstance:
     - target: {fileID: 1471902135300223061, guid: 225119752e7149b391dd5d9c2c5ceb0b, type: 3}
       propertyPath: m_Name
       value: Tree_Big
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661724697650438911, guid: 225119752e7149b391dd5d9c2c5ceb0b, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1005
       objectReference: {fileID: 0}
     - target: {fileID: 8391088200034334175, guid: 225119752e7149b391dd5d9c2c5ceb0b, type: 3}
       propertyPath: m_RootOrder
@@ -147718,13 +149166,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1471902135300223061, guid: 225119752e7149b391dd5d9c2c5ceb0b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000263}
   m_SourcePrefab: {fileID: 100100000, guid: 225119752e7149b391dd5d9c2c5ceb0b, type: 3}
 --- !u!4 &9900000000000261 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8391088200034334175, guid: 225119752e7149b391dd5d9c2c5ceb0b, type: 3}
   m_PrefabInstance: {fileID: 9900000000000260}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1526348024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000270
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -147733,6 +149199,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2082245846}
     m_Modifications:
+    - target: {fileID: 2586203138386046869, guid: dc21c5e7b9b54f72a899234883c01476, type: 3}
+      propertyPath: m_SortingOrder
+      value: 754
+      objectReference: {fileID: 0}
     - target: {fileID: 3540004173933781548, guid: dc21c5e7b9b54f72a899234883c01476, type: 3}
       propertyPath: m_Name
       value: Boat_Small
@@ -147755,11 +149225,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4525814728163435402, guid: dc21c5e7b9b54f72a899234883c01476, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4525814728163435402, guid: dc21c5e7b9b54f72a899234883c01476, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -13.0
+      value: -13
       objectReference: {fileID: 0}
     - target: {fileID: 4525814728163435402, guid: dc21c5e7b9b54f72a899234883c01476, type: 3}
       propertyPath: m_LocalPosition.z
@@ -147796,13 +149266,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3540004173933781548, guid: dc21c5e7b9b54f72a899234883c01476, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000273}
   m_SourcePrefab: {fileID: 100100000, guid: dc21c5e7b9b54f72a899234883c01476, type: 3}
 --- !u!4 &9900000000000271 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4525814728163435402, guid: dc21c5e7b9b54f72a899234883c01476, type: 3}
   m_PrefabInstance: {fileID: 9900000000000270}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000273
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002409568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000280
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -147829,11 +149317,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 626114698760279641, guid: 0c3aa9ebabd1473c833853d81c56b063, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6.0
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 626114698760279641, guid: 0c3aa9ebabd1473c833853d81c56b063, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -12.0
+      value: -12
       objectReference: {fileID: 0}
     - target: {fileID: 626114698760279641, guid: 0c3aa9ebabd1473c833853d81c56b063, type: 3}
       propertyPath: m_LocalPosition.z
@@ -147867,6 +149355,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1138801465969715674, guid: 0c3aa9ebabd1473c833853d81c56b063, type: 3}
+      propertyPath: m_SortingOrder
+      value: 629
+      objectReference: {fileID: 0}
     - target: {fileID: 1145628922907835685, guid: 0c3aa9ebabd1473c833853d81c56b063, type: 3}
       propertyPath: m_Name
       value: Boat_Large
@@ -147874,13 +149366,31 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1145628922907835685, guid: 0c3aa9ebabd1473c833853d81c56b063, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000283}
   m_SourcePrefab: {fileID: 100100000, guid: 0c3aa9ebabd1473c833853d81c56b063, type: 3}
 --- !u!4 &9900000000000281 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 626114698760279641, guid: 0c3aa9ebabd1473c833853d81c56b063, type: 3}
   m_PrefabInstance: {fileID: 9900000000000280}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 716332234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000290
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -148027,16 +149537,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: PiknikBasket
       objectReference: {fileID: 0}
+    - target: {fileID: 7824991310633548166, guid: 88ded2d9459b44c2b4784571c2b2fa25, type: 3}
+      propertyPath: m_SortingOrder
+      value: 276
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5343021985228488698, guid: 88ded2d9459b44c2b4784571c2b2fa25, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000303}
   m_SourcePrefab: {fileID: 100100000, guid: 88ded2d9459b44c2b4784571c2b2fa25, type: 3}
 --- !u!4 &9900000000000301 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1200783755983894723, guid: 88ded2d9459b44c2b4784571c2b2fa25, type: 3}
   m_PrefabInstance: {fileID: 9900000000000300}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 752390681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000310
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -148067,7 +149599,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6493622841569205089, guid: 120e7f837f0c4a80b843b59a9f0c05c4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 6493622841569205089, guid: 120e7f837f0c4a80b843b59a9f0c05c4, type: 3}
       propertyPath: m_LocalPosition.y
@@ -148105,16 +149637,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6852287906849909387, guid: 120e7f837f0c4a80b843b59a9f0c05c4, type: 3}
+      propertyPath: m_SortingOrder
+      value: -492
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4038902700509994471, guid: 120e7f837f0c4a80b843b59a9f0c05c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000313}
   m_SourcePrefab: {fileID: 100100000, guid: 120e7f837f0c4a80b843b59a9f0c05c4, type: 3}
 --- !u!4 &9900000000000311 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6493622841569205089, guid: 120e7f837f0c4a80b843b59a9f0c05c4, type: 3}
   m_PrefabInstance: {fileID: 9900000000000310}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 642203962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000320
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -148141,7 +149695,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2323128204794300237, guid: eb57263382334c32ae8672bd12bfe759, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 2323128204794300237, guid: eb57263382334c32ae8672bd12bfe759, type: 3}
       propertyPath: m_LocalPosition.y
@@ -148183,16 +149737,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: Sign_Fruit
       objectReference: {fileID: 0}
+    - target: {fileID: 3960499505880379918, guid: eb57263382334c32ae8672bd12bfe759, type: 3}
+      propertyPath: m_SortingOrder
+      value: -492
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3377342995123367980, guid: eb57263382334c32ae8672bd12bfe759, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000323}
   m_SourcePrefab: {fileID: 100100000, guid: eb57263382334c32ae8672bd12bfe759, type: 3}
 --- !u!4 &9900000000000321 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2323128204794300237, guid: eb57263382334c32ae8672bd12bfe759, type: 3}
   m_PrefabInstance: {fileID: 9900000000000320}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 209108818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &9900000000000330
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -148223,7 +149799,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5206859377055321563, guid: 7f8ab0fbf6534cfb81567373df4a5a98, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5206859377055321563, guid: 7f8ab0fbf6534cfb81567373df4a5a98, type: 3}
       propertyPath: m_LocalPosition.y
@@ -148261,16 +149837,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5889224162492320623, guid: 7f8ab0fbf6534cfb81567373df4a5a98, type: 3}
+      propertyPath: m_SortingOrder
+      value: -492
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4398648021899457482, guid: 7f8ab0fbf6534cfb81567373df4a5a98, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9900000000000333}
   m_SourcePrefab: {fileID: 100100000, guid: 7f8ab0fbf6534cfb81567373df4a5a98, type: 3}
 --- !u!4 &9900000000000331 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5206859377055321563, guid: 7f8ab0fbf6534cfb81567373df4a5a98, type: 3}
   m_PrefabInstance: {fileID: 9900000000000330}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9900000000000333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 300592158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &10271094110795414
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -148397,6 +149995,10 @@ PrefabInstance:
       propertyPath: assignedZone
       value: 
       objectReference: {fileID: 490554983}
+    - target: {fileID: 1589797667244215478, guid: 5c969a73bde54560b85f37fe46aa13d5, type: 3}
+      propertyPath: m_SortingOrder
+      value: 514
+      objectReference: {fileID: 0}
     - target: {fileID: 2667027066378554312, guid: 5c969a73bde54560b85f37fe46aa13d5, type: 3}
       propertyPath: m_Name
       value: CalfBrown
@@ -148448,6 +150050,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2667027066378554312, guid: 5c969a73bde54560b85f37fe46aa13d5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 964362210293726557}
+    - targetCorrespondingSourceObject: {fileID: 2667027066378554312, guid: 5c969a73bde54560b85f37fe46aa13d5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 964362210293726565}
   m_SourcePrefab: {fileID: 100100000, guid: 5c969a73bde54560b85f37fe46aa13d5, type: 3}
 --- !u!1001 &247187766013670800
 PrefabInstance:
@@ -148497,6 +150102,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1793360154585513520, guid: ff0e3894f19848c2afa8fff56bf08611, type: 3}
+      propertyPath: m_SortingOrder
+      value: -240
+      objectReference: {fileID: 0}
     - target: {fileID: 2104492053052722648, guid: ff0e3894f19848c2afa8fff56bf08611, type: 3}
       propertyPath: m_Name
       value: ChickenGreen
@@ -148512,6 +150121,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2104492053052722648, guid: ff0e3894f19848c2afa8fff56bf08611, type: 3}
       insertIndex: -1
       addedObject: {fileID: 719194590303157637}
+    - targetCorrespondingSourceObject: {fileID: 2104492053052722648, guid: ff0e3894f19848c2afa8fff56bf08611, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 719194590303157645}
   m_SourcePrefab: {fileID: 100100000, guid: ff0e3894f19848c2afa8fff56bf08611, type: 3}
 --- !u!1001 &252585951133911936
 PrefabInstance:
@@ -148598,6 +150210,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &338891131517632866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 557183104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1001 &432409592727303774
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -148606,6 +150233,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2082245846}
     m_Modifications:
+    - target: {fileID: 1177094268146911205, guid: 63bd1b735271480b85779335e8c7648a, type: 3}
+      propertyPath: m_SortingOrder
+      value: 514
+      objectReference: {fileID: 0}
     - target: {fileID: 1179770615292351749, guid: 63bd1b735271480b85779335e8c7648a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 11
@@ -148661,6 +150292,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2913577777649586777, guid: 63bd1b735271480b85779335e8c7648a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2789758287852816024}
+    - targetCorrespondingSourceObject: {fileID: 2913577777649586777, guid: 63bd1b735271480b85779335e8c7648a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2789758287852816032}
   m_SourcePrefab: {fileID: 100100000, guid: 63bd1b735271480b85779335e8c7648a, type: 3}
 --- !u!1001 &483692108816296143
 PrefabInstance:
@@ -148670,6 +150304,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2082245846}
     m_Modifications:
+    - target: {fileID: 339137301606265977, guid: 19bb7ffbce1b4d35b420681311a65f17, type: 3}
+      propertyPath: m_SortingOrder
+      value: 614
+      objectReference: {fileID: 0}
     - target: {fileID: 1739725826480762175, guid: 19bb7ffbce1b4d35b420681311a65f17, type: 3}
       propertyPath: m_LocalPosition.x
       value: 10
@@ -148725,6 +150363,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2526262328728684302, guid: 19bb7ffbce1b4d35b420681311a65f17, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2196436409478320730}
+    - targetCorrespondingSourceObject: {fileID: 2526262328728684302, guid: 19bb7ffbce1b4d35b420681311a65f17, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2196436409478320738}
   m_SourcePrefab: {fileID: 100100000, guid: 19bb7ffbce1b4d35b420681311a65f17, type: 3}
 --- !u!4 &611405416849852403 stripped
 Transform:
@@ -148754,6 +150395,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &611405416849852419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1947797358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!4 &703493033699129254 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2378429455154854949, guid: c7f10dae47aa49da89e4a6aa1d81accc, type: 3}
@@ -148782,6 +150438,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &703493033699129270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 571968673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!4 &719194590303157629 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 786585759640530399, guid: ff0e3894f19848c2afa8fff56bf08611, type: 3}
@@ -148810,6 +150481,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &719194590303157645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2049333594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1001 &948864149298424816
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -148866,6 +150552,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3731992484424216295, guid: 41bc174e7f634738b14630fa4eca9680, type: 3}
+      propertyPath: m_SortingOrder
+      value: 254
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -148873,6 +150563,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1015530346471570137, guid: 41bc174e7f634738b14630fa4eca9680, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3751012722821907240}
+    - targetCorrespondingSourceObject: {fileID: 1015530346471570137, guid: 41bc174e7f634738b14630fa4eca9680, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3751012722821907248}
   m_SourcePrefab: {fileID: 100100000, guid: 41bc174e7f634738b14630fa4eca9680, type: 3}
 --- !u!1001 &956314799389161821
 PrefabInstance:
@@ -148884,7 +150577,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 198099165880019977, guid: 9bca37d551ee430d815319805f698a9c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.0
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 198099165880019977, guid: 9bca37d551ee430d815319805f698a9c, type: 3}
       propertyPath: m_LocalPosition.y
@@ -148922,6 +150615,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 417956515884073489, guid: 9bca37d551ee430d815319805f698a9c, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1470
+      objectReference: {fileID: 0}
     - target: {fileID: 1964539309473328131, guid: 9bca37d551ee430d815319805f698a9c, type: 3}
       propertyPath: m_Name
       value: EggGreen
@@ -148929,7 +150626,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1964539309473328131, guid: 9bca37d551ee430d815319805f698a9c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 271481636}
   m_SourcePrefab: {fileID: 100100000, guid: 9bca37d551ee430d815319805f698a9c, type: 3}
 --- !u!4 &964362210293726549 stripped
 Transform:
@@ -148959,6 +150659,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &964362210293726565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 590027075}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1001 &1049453081043179343
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -148970,6 +150685,10 @@ PrefabInstance:
     - target: {fileID: 749233578676966313, guid: f56b4abf0cec4b06853cba2cc963a2d5, type: 3}
       propertyPath: m_Name
       value: ChickGreen
+      objectReference: {fileID: 0}
+    - target: {fileID: 1491691709364314533, guid: f56b4abf0cec4b06853cba2cc963a2d5, type: 3}
+      propertyPath: m_SortingOrder
+      value: 354
       objectReference: {fileID: 0}
     - target: {fileID: 1769353545089039666, guid: f56b4abf0cec4b06853cba2cc963a2d5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -149022,6 +150741,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 749233578676966313, guid: f56b4abf0cec4b06853cba2cc963a2d5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3650617076694230035}
+    - targetCorrespondingSourceObject: {fileID: 749233578676966313, guid: f56b4abf0cec4b06853cba2cc963a2d5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3650617076694230043}
   m_SourcePrefab: {fileID: 100100000, guid: f56b4abf0cec4b06853cba2cc963a2d5, type: 3}
 --- !u!1001 &1489867014780315827
 PrefabInstance:
@@ -149038,6 +150760,10 @@ PrefabInstance:
     - target: {fileID: 1443399726490648096, guid: 262e7419827f4ea5886a0df9d0ddada6, type: 3}
       propertyPath: m_Name
       value: ChickenBrown
+      objectReference: {fileID: 0}
+    - target: {fileID: 2428457191740501074, guid: 262e7419827f4ea5886a0df9d0ddada6, type: 3}
+      propertyPath: m_SortingOrder
+      value: -340
       objectReference: {fileID: 0}
     - target: {fileID: 4510302732231568207, guid: 262e7419827f4ea5886a0df9d0ddada6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -149086,6 +150812,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1443399726490648096, guid: 262e7419827f4ea5886a0df9d0ddada6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1830427403424503849}
+    - targetCorrespondingSourceObject: {fileID: 1443399726490648096, guid: 262e7419827f4ea5886a0df9d0ddada6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1830427403424503857}
   m_SourcePrefab: {fileID: 100100000, guid: 262e7419827f4ea5886a0df9d0ddada6, type: 3}
 --- !u!1001 &1685464650766730969
 PrefabInstance:
@@ -149095,13 +150824,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 902975703398509652, guid: a1e17099cb6548db85cd284d5fd6d08a, type: 3}
+      propertyPath: m_SortingOrder
+      value: -432
+      objectReference: {fileID: 0}
     - target: {fileID: 3601395168009570677, guid: a1e17099cb6548db85cd284d5fd6d08a, type: 3}
       propertyPath: m_Name
       value: HomeTreeDecor
       objectReference: {fileID: 0}
     - target: {fileID: 3906758536333650312, guid: a1e17099cb6548db85cd284d5fd6d08a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3906758536333650312, guid: a1e17099cb6548db85cd284d5fd6d08a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -149142,7 +150875,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3601395168009570677, guid: a1e17099cb6548db85cd284d5fd6d08a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 656097536}
   m_SourcePrefab: {fileID: 100100000, guid: a1e17099cb6548db85cd284d5fd6d08a, type: 3}
 --- !u!4 &1702216779771361260 stripped
 Transform:
@@ -149172,6 +150908,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &1702216779771361276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1063727264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!4 &1830427403424503841 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4510302732231568207, guid: 262e7419827f4ea5886a0df9d0ddada6, type: 3}
@@ -149200,6 +150951,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &1830427403424503857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1943181358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!4 &1900201302583332084 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3984300888905625373, guid: 341e81fb324a4859b4853647e8c57bb9, type: 3}
@@ -149228,6 +150994,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &1900201302583332100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 220029486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1001 &2005028703608251296
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -149236,6 +151017,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2082245846}
     m_Modifications:
+    - target: {fileID: 775526171183459647, guid: c0c16908bdfb4716b12a939a428e8abe, type: 3}
+      propertyPath: m_SortingOrder
+      value: 304
+      objectReference: {fileID: 0}
     - target: {fileID: 2017250532525273450, guid: c0c16908bdfb4716b12a939a428e8abe, type: 3}
       propertyPath: assignedZone
       value: 
@@ -149291,6 +151076,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3820323058700499694, guid: c0c16908bdfb4716b12a939a428e8abe, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3169651166295129173}
+    - targetCorrespondingSourceObject: {fileID: 3820323058700499694, guid: c0c16908bdfb4716b12a939a428e8abe, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3169651166295129181}
   m_SourcePrefab: {fileID: 100100000, guid: c0c16908bdfb4716b12a939a428e8abe, type: 3}
 --- !u!1001 &2037471928975492022
 PrefabInstance:
@@ -149300,6 +151088,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2082245846}
     m_Modifications:
+    - target: {fileID: 1643951126794595677, guid: 96f88dd17df5428783ee3f6daa037f94, type: 3}
+      propertyPath: m_SortingOrder
+      value: -290
+      objectReference: {fileID: 0}
     - target: {fileID: 2483966549485666684, guid: 96f88dd17df5428783ee3f6daa037f94, type: 3}
       propertyPath: m_LocalPosition.x
       value: 10.5
@@ -149355,6 +151147,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3862485980763262710, guid: 96f88dd17df5428783ee3f6daa037f94, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3380322079348340372}
+    - targetCorrespondingSourceObject: {fileID: 3862485980763262710, guid: 96f88dd17df5428783ee3f6daa037f94, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3380322079348340380}
   m_SourcePrefab: {fileID: 100100000, guid: 96f88dd17df5428783ee3f6daa037f94, type: 3}
 --- !u!1001 &2108151728132177433
 PrefabInstance:
@@ -149412,6 +151207,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CalfPink
       objectReference: {fileID: 0}
+    - target: {fileID: 1947177382200732187, guid: 8d882921beef4834aabb63b2f12edaa4, type: 3}
+      propertyPath: m_SortingOrder
+      value: 614
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -149419,6 +151218,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1450212734838952641, guid: 8d882921beef4834aabb63b2f12edaa4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4338556122532156506}
+    - targetCorrespondingSourceObject: {fileID: 1450212734838952641, guid: 8d882921beef4834aabb63b2f12edaa4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4338556122532156514}
   m_SourcePrefab: {fileID: 100100000, guid: 8d882921beef4834aabb63b2f12edaa4, type: 3}
 --- !u!4 &2196436409478320722 stripped
 Transform:
@@ -149448,6 +151250,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &2196436409478320738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615015419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1001 &2281098958484010904
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -149456,6 +151273,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2082245846}
     m_Modifications:
+    - target: {fileID: 612141959937241455, guid: ea6c470fa434404aad5175a1d7a87f0c, type: 3}
+      propertyPath: m_SortingOrder
+      value: 564
+      objectReference: {fileID: 0}
     - target: {fileID: 3360347654601080501, guid: ea6c470fa434404aad5175a1d7a87f0c, type: 3}
       propertyPath: assignedZone
       value: 
@@ -149511,6 +151332,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3692823190808146296, guid: ea6c470fa434404aad5175a1d7a87f0c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3149294118518512878}
+    - targetCorrespondingSourceObject: {fileID: 3692823190808146296, guid: ea6c470fa434404aad5175a1d7a87f0c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3149294118518512886}
   m_SourcePrefab: {fileID: 100100000, guid: ea6c470fa434404aad5175a1d7a87f0c, type: 3}
 --- !u!1001 &2567698056743946580
 PrefabInstance:
@@ -149530,7 +151354,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1938858150163186175, guid: c71f8416f92445d3901e3ac84e34f5bf, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -14.0
+      value: -14
       objectReference: {fileID: 0}
     - target: {fileID: 1938858150163186175, guid: c71f8416f92445d3901e3ac84e34f5bf, type: 3}
       propertyPath: m_LocalPosition.z
@@ -149564,10 +151388,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2370314385671120437, guid: c71f8416f92445d3901e3ac84e34f5bf, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1420
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 237854156022896868, guid: c71f8416f92445d3901e3ac84e34f5bf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1623780719}
   m_SourcePrefab: {fileID: 100100000, guid: c71f8416f92445d3901e3ac84e34f5bf, type: 3}
 --- !u!1001 &2772597589367211756
 PrefabInstance:
@@ -149585,6 +151416,10 @@ PrefabInstance:
       propertyPath: assignedZone
       value: 
       objectReference: {fileID: 490554983}
+    - target: {fileID: 380487599386677244, guid: a72a411140384a1585fcf7b7002f86bd, type: 3}
+      propertyPath: m_SortingOrder
+      value: -390
+      objectReference: {fileID: 0}
     - target: {fileID: 1935787475740395243, guid: a72a411140384a1585fcf7b7002f86bd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 11
@@ -149632,6 +151467,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3597338933758414, guid: a72a411140384a1585fcf7b7002f86bd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 611405416849852411}
+    - targetCorrespondingSourceObject: {fileID: 3597338933758414, guid: a72a411140384a1585fcf7b7002f86bd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 611405416849852419}
   m_SourcePrefab: {fileID: 100100000, guid: a72a411140384a1585fcf7b7002f86bd, type: 3}
 --- !u!4 &2789758287852816016 stripped
 Transform:
@@ -149661,6 +151499,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &2789758287852816032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 112669270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1001 &2882865572390531794
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -149671,7 +151524,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 324819826892133027, guid: 89dddf207d6d4a71b42fda3043bf7ff1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 10.0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 324819826892133027, guid: 89dddf207d6d4a71b42fda3043bf7ff1, type: 3}
       propertyPath: m_LocalPosition.y
@@ -149713,10 +151566,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: EggRed
       objectReference: {fileID: 0}
+    - target: {fileID: 4280446926768836508, guid: 89dddf207d6d4a71b42fda3043bf7ff1, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1470
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 326582626316427175, guid: 89dddf207d6d4a71b42fda3043bf7ff1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2056938378}
   m_SourcePrefab: {fileID: 100100000, guid: 89dddf207d6d4a71b42fda3043bf7ff1, type: 3}
 --- !u!1001 &2925542859164953645
 PrefabInstance:
@@ -149729,6 +151589,10 @@ PrefabInstance:
     - target: {fileID: 1738917068596766384, guid: 5196a7479be640f2b3aad0fbbaaa430e, type: 3}
       propertyPath: m_Name
       value: CowLight
+      objectReference: {fileID: 0}
+    - target: {fileID: 2003657933493239763, guid: 5196a7479be640f2b3aad0fbbaaa430e, type: 3}
+      propertyPath: m_SortingOrder
+      value: 72
       objectReference: {fileID: 0}
     - target: {fileID: 3869215514718909153, guid: 5196a7479be640f2b3aad0fbbaaa430e, type: 3}
       propertyPath: assignedZone
@@ -149781,6 +151645,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1738917068596766384, guid: 5196a7479be640f2b3aad0fbbaaa430e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 338891131517632858}
+    - targetCorrespondingSourceObject: {fileID: 1738917068596766384, guid: 5196a7479be640f2b3aad0fbbaaa430e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 338891131517632866}
   m_SourcePrefab: {fileID: 100100000, guid: 5196a7479be640f2b3aad0fbbaaa430e, type: 3}
 --- !u!1001 &3024074362188930777
 PrefabInstance:
@@ -149834,6 +151701,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bessie
       objectReference: {fileID: 0}
+    - target: {fileID: 7660131167417581413, guid: 60252a25a2bc00c589a40bc9a549da73, type: 3}
+      propertyPath: m_SortingOrder
+      value: -78
+      objectReference: {fileID: 0}
     - target: {fileID: 8977272190102080542, guid: 60252a25a2bc00c589a40bc9a549da73, type: 3}
       propertyPath: assignedZone
       value: 
@@ -149845,6 +151716,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5522219693077281312, guid: 60252a25a2bc00c589a40bc9a549da73, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1388240785}
+    - targetCorrespondingSourceObject: {fileID: 5522219693077281312, guid: 60252a25a2bc00c589a40bc9a549da73, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1388240793}
   m_SourcePrefab: {fileID: 100100000, guid: 60252a25a2bc00c589a40bc9a549da73, type: 3}
 --- !u!1001 &3024074362188938321
 PrefabInstance:
@@ -149898,6 +151772,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Clucky
       objectReference: {fileID: 0}
+    - target: {fileID: 7660131167417581413, guid: 1ada5cb7cb773264e8d4634d28ce21ef, type: 3}
+      propertyPath: m_SortingOrder
+      value: -390
+      objectReference: {fileID: 0}
     - target: {fileID: 8977272190102080542, guid: 1ada5cb7cb773264e8d4634d28ce21ef, type: 3}
       propertyPath: assignedZone
       value: 
@@ -149909,6 +151787,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5522219693077281312, guid: 1ada5cb7cb773264e8d4634d28ce21ef, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1388248072}
+    - targetCorrespondingSourceObject: {fileID: 5522219693077281312, guid: 1ada5cb7cb773264e8d4634d28ce21ef, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1388248080}
   m_SourcePrefab: {fileID: 100100000, guid: 1ada5cb7cb773264e8d4634d28ce21ef, type: 3}
 --- !u!4 &3149294118518512870 stripped
 Transform:
@@ -149938,6 +151819,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &3149294118518512886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1148919180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!4 &3169651166295129165 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2682919887137586881, guid: c0c16908bdfb4716b12a939a428e8abe, type: 3}
@@ -149966,6 +151862,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &3169651166295129181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1735170474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!4 &3380322079348340364 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2483966549485666684, guid: 96f88dd17df5428783ee3f6daa037f94, type: 3}
@@ -149994,6 +151905,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &3380322079348340380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1682617334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!4 &3471329427369814232 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3655733499632568837, guid: 212d9a2db9d3444a8975bc18c674c0d5, type: 3}
@@ -150022,6 +151948,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &3471329427369814248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 44084638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1001 &3517489215541726548
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -150091,13 +152032,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: EggDefault
       objectReference: {fileID: 0}
+    - target: {fileID: 2098907363144844014, guid: 6149971f405048819dda9e77c01b510e, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1420
+      objectReference: {fileID: 0}
     - target: {fileID: 3229876961832205897, guid: 6149971f405048819dda9e77c01b510e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8.5
       objectReference: {fileID: 0}
     - target: {fileID: 3229876961832205897, guid: 6149971f405048819dda9e77c01b510e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -14.0
+      value: -14
       objectReference: {fileID: 0}
     - target: {fileID: 3229876961832205897, guid: 6149971f405048819dda9e77c01b510e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -150134,7 +152079,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1268676509140089155, guid: 6149971f405048819dda9e77c01b510e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1285445304}
   m_SourcePrefab: {fileID: 100100000, guid: 6149971f405048819dda9e77c01b510e, type: 3}
 --- !u!4 &3650617076694230027 stripped
 Transform:
@@ -150164,6 +152112,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &3650617076694230043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8224920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!4 &3713625050177847996 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3732291291501366203, guid: 07df1bd62512496fa96663ed993e5654, type: 3}
@@ -150192,6 +152155,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &3713625050177848012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1627936727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!4 &3751012722821907232 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2582331041020273098, guid: 41bc174e7f634738b14630fa4eca9680, type: 3}
@@ -150220,6 +152198,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &3751012722821907248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 477526630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1001 &3822276161171119584
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -150228,6 +152221,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2082245846}
     m_Modifications:
+    - target: {fileID: 1383296947942059491, guid: 341e81fb324a4859b4853647e8c57bb9, type: 3}
+      propertyPath: m_SortingOrder
+      value: 122
+      objectReference: {fileID: 0}
     - target: {fileID: 1690987077737097674, guid: 341e81fb324a4859b4853647e8c57bb9, type: 3}
       propertyPath: assignedZone
       value: 
@@ -150283,6 +152280,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3518258184039755209, guid: 341e81fb324a4859b4853647e8c57bb9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1900201302583332092}
+    - targetCorrespondingSourceObject: {fileID: 3518258184039755209, guid: 341e81fb324a4859b4853647e8c57bb9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1900201302583332100}
   m_SourcePrefab: {fileID: 100100000, guid: 341e81fb324a4859b4853647e8c57bb9, type: 3}
 --- !u!1001 &3876745739826890243
 PrefabInstance:
@@ -150299,6 +152299,10 @@ PrefabInstance:
     - target: {fileID: 2042305433374018968, guid: 07df1bd62512496fa96663ed993e5654, type: 3}
       propertyPath: m_Name
       value: ChickDefault
+      objectReference: {fileID: 0}
+    - target: {fileID: 2863920442225035640, guid: 07df1bd62512496fa96663ed993e5654, type: 3}
+      propertyPath: m_SortingOrder
+      value: 254
       objectReference: {fileID: 0}
     - target: {fileID: 3732291291501366203, guid: 07df1bd62512496fa96663ed993e5654, type: 3}
       propertyPath: m_LocalPosition.x
@@ -150347,6 +152351,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2042305433374018968, guid: 07df1bd62512496fa96663ed993e5654, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3713625050177848004}
+    - targetCorrespondingSourceObject: {fileID: 2042305433374018968, guid: 07df1bd62512496fa96663ed993e5654, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3713625050177848012}
   m_SourcePrefab: {fileID: 100100000, guid: 07df1bd62512496fa96663ed993e5654, type: 3}
 --- !u!1001 &4026150107940698465
 PrefabInstance:
@@ -150359,6 +152366,10 @@ PrefabInstance:
     - target: {fileID: 37235439118089758, guid: c7f10dae47aa49da89e4a6aa1d81accc, type: 3}
       propertyPath: m_Name
       value: CowPink
+      objectReference: {fileID: 0}
+    - target: {fileID: 1634096862338374359, guid: c7f10dae47aa49da89e4a6aa1d81accc, type: 3}
+      propertyPath: m_SortingOrder
+      value: 22
       objectReference: {fileID: 0}
     - target: {fileID: 2378429455154854949, guid: c7f10dae47aa49da89e4a6aa1d81accc, type: 3}
       propertyPath: m_LocalPosition.x
@@ -150411,6 +152422,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 37235439118089758, guid: c7f10dae47aa49da89e4a6aa1d81accc, type: 3}
       insertIndex: -1
       addedObject: {fileID: 703493033699129262}
+    - targetCorrespondingSourceObject: {fileID: 37235439118089758, guid: c7f10dae47aa49da89e4a6aa1d81accc, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 703493033699129270}
   m_SourcePrefab: {fileID: 100100000, guid: c7f10dae47aa49da89e4a6aa1d81accc, type: 3}
 --- !u!1001 &4026501120924639565
 PrefabInstance:
@@ -150420,6 +152434,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2082245846}
     m_Modifications:
+    - target: {fileID: 316763837859849772, guid: 212d9a2db9d3444a8975bc18c674c0d5, type: 3}
+      propertyPath: m_SortingOrder
+      value: -28
+      objectReference: {fileID: 0}
     - target: {fileID: 2457634641800672012, guid: 212d9a2db9d3444a8975bc18c674c0d5, type: 3}
       propertyPath: m_Name
       value: CowGreen
@@ -150475,6 +152493,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2457634641800672012, guid: 212d9a2db9d3444a8975bc18c674c0d5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3471329427369814240}
+    - targetCorrespondingSourceObject: {fileID: 2457634641800672012, guid: 212d9a2db9d3444a8975bc18c674c0d5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3471329427369814248}
   m_SourcePrefab: {fileID: 100100000, guid: 212d9a2db9d3444a8975bc18c674c0d5, type: 3}
 --- !u!1001 &4067545289236582760
 PrefabInstance:
@@ -150490,7 +152511,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2075507992397463206, guid: a6e8b62e422f489f9a7067bf9611b89f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -14.0
+      value: -14
       objectReference: {fileID: 0}
     - target: {fileID: 2075507992397463206, guid: a6e8b62e422f489f9a7067bf9611b89f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -150528,10 +152549,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: EggBlue
       objectReference: {fileID: 0}
+    - target: {fileID: 3604454606453753451, guid: a6e8b62e422f489f9a7067bf9611b89f, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1420
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2085760234090377875, guid: a6e8b62e422f489f9a7067bf9611b89f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1583164390}
   m_SourcePrefab: {fileID: 100100000, guid: a6e8b62e422f489f9a7067bf9611b89f, type: 3}
 --- !u!4 &4338556122532156498 stripped
 Transform:
@@ -150561,6 +152589,21 @@ MonoBehaviour:
   iconObject: {fileID: 0}
   iconRenderer: {fileID: 0}
   enableDebugLogs: 0
+--- !u!114 &4338556122532156514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1711224299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1001 &5352230356748431498
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -150621,10 +152664,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8440971217569262803, guid: 42cbc7d01d17c1a41bac2753d982d062, type: 3}
+      propertyPath: m_SortingOrder
+      value: 250
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 274179908449973401, guid: 42cbc7d01d17c1a41bac2753d982d062, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1586592902}
   m_SourcePrefab: {fileID: 100100000, guid: 42cbc7d01d17c1a41bac2753d982d062, type: 3}
 --- !u!1001 &5368916688261412387
 PrefabInstance:
@@ -150673,6 +152723,10 @@ PrefabInstance:
     - target: {fileID: 1009727512784170163, guid: 4b6f73fa056ef7b46973cb5301b77ce8, type: 3}
       propertyPath: troughStatusText.m_TableReference.m_TableCollectionName
       value: Animals
+      objectReference: {fileID: 0}
+    - target: {fileID: 5546641833692187797, guid: 4b6f73fa056ef7b46973cb5301b77ce8, type: 3}
+      propertyPath: m_SortingOrder
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 6127428680552932189, guid: 4b6f73fa056ef7b46973cb5301b77ce8, type: 3}
       propertyPath: m_Name
@@ -150725,6 +152779,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6127428680552932189, guid: 4b6f73fa056ef7b46973cb5301b77ce8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 667490749}
+    - targetCorrespondingSourceObject: {fileID: 6127428680552932189, guid: 4b6f73fa056ef7b46973cb5301b77ce8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 667490754}
   m_SourcePrefab: {fileID: 100100000, guid: 4b6f73fa056ef7b46973cb5301b77ce8, type: 3}
 --- !u!1001 &5828497649052131104
 PrefabInstance:
@@ -150778,10 +152835,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: GroundShovel
       objectReference: {fileID: 0}
+    - target: {fileID: 9073027013173692647, guid: f50e9c9193fda5847b7cf06f5dffacb9, type: 3}
+      propertyPath: m_SortingOrder
+      value: 533
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5351471566771300243, guid: f50e9c9193fda5847b7cf06f5dffacb9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1507318303}
   m_SourcePrefab: {fileID: 100100000, guid: f50e9c9193fda5847b7cf06f5dffacb9, type: 3}
 --- !u!1001 &5872621931923648988
 PrefabInstance:
@@ -150905,7 +152969,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8505863255294207253, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
       propertyPath: m_SortingOrder
-      value: 1
+      value: -352
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -150914,6 +152978,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4120043978955368178, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1627056303}
+    - targetCorrespondingSourceObject: {fileID: 4120043978955368178, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1627056308}
   m_SourcePrefab: {fileID: 100100000, guid: 9f8a23f0d4f099f4e896f9d989af5780, type: 3}
 --- !u!1001 &6100000000000009001
 PrefabInstance:
@@ -150937,11 +153004,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6100000000000000002, guid: ed0affcb51842c9480bac9aec55e55ee, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.0
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 6100000000000000002, guid: ed0affcb51842c9480bac9aec55e55ee, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6100000000000000002, guid: ed0affcb51842c9480bac9aec55e55ee, type: 3}
       propertyPath: m_LocalPosition.z
@@ -150963,16 +153030,38 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6100000000000000003, guid: ed0affcb51842c9480bac9aec55e55ee, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1019
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6100000000000000001, guid: ed0affcb51842c9480bac9aec55e55ee, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6100000000000009007}
   m_SourcePrefab: {fileID: 100100000, guid: ed0affcb51842c9480bac9aec55e55ee, type: 3}
 --- !u!4 &6100000000000009002 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6100000000000000002, guid: ed0affcb51842c9480bac9aec55e55ee, type: 3}
   m_PrefabInstance: {fileID: 6100000000000009001}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6100000000000009007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 156904145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 0
+  yOffset: 0
 --- !u!1001 &6100000000000009101
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -150981,13 +153070,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2082245846}
     m_Modifications:
+    - target: {fileID: 2346175425285952271, guid: fe519989f342771e4603edbbc46e135a, type: 3}
+      propertyPath: m_SortingOrder
+      value: -909
+      objectReference: {fileID: 0}
     - target: {fileID: 5866141757813495293, guid: fe519989f342771e4603edbbc46e135a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4.0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5866141757813495293, guid: fe519989f342771e4603edbbc46e135a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5866141757813495293, guid: fe519989f342771e4603edbbc46e135a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -151016,18 +153109,51 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7077849902298612432, guid: fe519989f342771e4603edbbc46e135a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6100000000000009106}
   m_SourcePrefab: {fileID: 100100000, guid: fe519989f342771e4603edbbc46e135a, type: 3}
 --- !u!4 &6100000000000009102 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5866141757813495293, guid: fe519989f342771e4603edbbc46e135a, type: 3}
   m_PrefabInstance: {fileID: 6100000000000009101}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6100000000000009106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 902624398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!4 &7444709659407886178 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5539115819171669321, guid: f08eaf8fd4269084f9c3c85e1b1388f1, type: 3}
   m_PrefabInstance: {fileID: 8241399767349458991}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7444709659407886182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023210727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf908cee0c2832b41a934604b6e60f44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.YSortSprite
+  precision: 100
+  continuous: 1
+  yOffset: 0
 --- !u!1001 &8241399767349458991
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -151036,6 +153162,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1758508221}
     m_Modifications:
+    - target: {fileID: 3662259963544833590, guid: f08eaf8fd4269084f9c3c85e1b1388f1, type: 3}
+      propertyPath: m_SortingOrder
+      value: 318
+      objectReference: {fileID: 0}
     - target: {fileID: 5539115819171669321, guid: f08eaf8fd4269084f9c3c85e1b1388f1, type: 3}
       propertyPath: m_LocalPosition.x
       value: -552.5939
@@ -151083,7 +153213,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7095900865275510176, guid: f08eaf8fd4269084f9c3c85e1b1388f1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7444709659407886182}
   m_SourcePrefab: {fileID: 100100000, guid: f08eaf8fd4269084f9c3c85e1b1388f1, type: 3}
 --- !u!1001 &8591407110630346020
 PrefabInstance:
@@ -151120,6 +153253,10 @@ PrefabInstance:
     - target: {fileID: 2346175425285952271, guid: 8b9d5063d4277ce4498bb56742da7b30, type: 3}
       propertyPath: m_Color.r
       value: 0.6509434
+      objectReference: {fileID: 0}
+    - target: {fileID: 2346175425285952271, guid: 8b9d5063d4277ce4498bb56742da7b30, type: 3}
+      propertyPath: m_SortingOrder
+      value: 260
       objectReference: {fileID: 0}
     - target: {fileID: 5866141757813495293, guid: 8b9d5063d4277ce4498bb56742da7b30, type: 3}
       propertyPath: m_LocalScale.x
@@ -151176,7 +153313,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7077849902298612432, guid: 8b9d5063d4277ce4498bb56742da7b30, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 968670647}
   m_SourcePrefab: {fileID: 100100000, guid: 8b9d5063d4277ce4498bb56742da7b30, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
