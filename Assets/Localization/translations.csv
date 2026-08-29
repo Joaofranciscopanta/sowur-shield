@@ -1,4 +1,5 @@
 Table,Key,en,pt,es
+UI_Common,ui_common.sort,Sort,Organizar,Ordenar
 UI_Common,ui_common.yes,Yes,Sim,Sí
 UI_Common,ui_common.no,No,Não,No
 UI_Common,ui_common.ok,OK,OK,OK
