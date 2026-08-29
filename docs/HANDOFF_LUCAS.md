@@ -101,18 +101,61 @@ Causa: eu havia setado `textureCompression = Uncompressed` em 530 texturas no pa
 pixel art. Já revertido (`86bdbf1`) — o Point filter, que é o que preserva a arte, foi
 mantido.
 
-**O risco que permanece**: mesmo saudável, o build está apertado.
+**O risco que permanece**: mesmo saudável, o build está apertado. Medido em 2026-08-29
+(sessão 2) direto nos arquivos de `docs/Build/`:
 
 | Arquivo | Tamanho | Limite |
 |---|---|---|
-| `Default WebGL.data` | ~71 MB | 100 MB (hard) |
-| `Default WebGL.wasm` | ~54,5 MB | 50 MB (warning) — **já passa do aviso** |
+| `Default WebGL.data` | **79,07 MB** | 100 MB (hard) — **79% do teto** |
+| `Default WebGL.wasm` | 54,53 MB | 50 MB (warning) — **já passa do aviso** |
 
-**O que fazer**: nada urgente, mas **qualquer adição grande de arte ou áudio pode estourar
-de novo** — e o build pago roda antes do push ser recusado, então o dinheiro é gasto à toa.
-Quando for adicionar muitos assets, me peça para medir antes. Se quiser resolver de vez, as
-saídas são compressão de áudio, Addressables para conteúdo pesado, ou hospedar o build fora
-do GitHub Pages.
+⚠️ **A nota anterior dizia ~71 MB para o `.data`. Estava desatualizada** — são 79,07 MB. A
+margem real é de ~21 MB, não ~29 MB.
+
+### Onde estão os bytes (medido, não estimado)
+
+O build puxa **746 assets, 62,7 MB de fonte** — resolvido por `GetDependencies` das 3 cenas
+do Build Settings mais tudo em `Resources/`. Em memória de runtime as texturas somam
+**76,2 MB**.
+
+**Falso alarme que investiguei e descartei**: `Assets/Screenshots/` tem 66 MB dos meus
+screenshots de debug. Como está dentro de `Assets/`, parecia estar indo para o build (o
+`.gitignore` não exclui nada de build). **Não vai**: verifiquei os 87 arquivos e **zero** são
+alcançáveis pelas cenas do build, e nenhum está sob `Resources/`. Unity só empacota o que é
+referenciado. Custam disco e tempo de upload para o Cloud Build, não bytes do `.data`.
+
+### O desperdício real: 8 texturas acima de 1024px
+
+Todas ainda no default `maxTextureSize = 2048` do Unity, sem override de WebGL:
+
+| Textura | Runtime | Importada | Realmente desenhada como |
+|---|---|---|---|
+| `Art/ThirdParty/heart_particle.png` | 3,00 MB | 1536x1024 | sprite de **190x190** (1,9 tiles) |
+| `Art/Portraits/Wolf.png` | 3,00 MB | 1024x1536 | retrato, exibido grande |
+| `Art/Portraits/Brandi.png` | 3,00 MB | 1024x1536 | retrato, exibido grande |
+| `Art/ThirdParty/feeding-trough-for-farm-2.png` | 2,86 MB | 2048x696 | **fonte é 5120x1740** |
+| `Texture/Dialogue Box 2.png` | 2,65 MB | 1500x800 | moldura de UI |
+| `.../Trees_animation.png` | 1,32 MB | 576x1040 | — |
+| `Art/Characters/Premium Charakter Spritesheet.png` | 0,99 MB | 384x1152 | — |
+
+O caso mais claro é o `heart_particle`: paga 3 MB para desenhar um coração fatiado em
+190x190. O comedouro tem arte-fonte de **5120x1740** num jogo de pixel art a 16 PPU.
+
+**Economia estimada**: capar os não-retratos em 1024 tira **~13 MB** de memória de textura.
+É só `maxTextureSize` no importer — **nenhuma arte é alterada e é reversível**.
+
+### 🚫 Decisão do Lucas (2026-08-29): NÃO fazer agora
+
+Levantei isso e ele decidiu **documentar e não mexer**. Não é bloqueio: o build passa hoje.
+**Não executar sem ele pedir.**
+
+Os retratos eu deixaria em 2048 de qualquer forma — são exibidos grandes no diálogo, e 8 dos
+9 vão ser substituídos por arte real (item 3).
+
+**O que continua valendo**: **qualquer adição grande de arte ou áudio pode estourar o teto** —
+e o build pago roda **antes** do push ser recusado, então o dinheiro é gasto à toa. Quando for
+adicionar muitos assets, me peça para medir antes. Saídas definitivas, se um dia estourar:
+cortar as texturas acima, compressão de áudio, Addressables, ou hospedar fora do GitHub Pages.
 
 ---
 
