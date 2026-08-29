@@ -7531,7 +7531,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Item stacks
+  m_text: x1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b62e2695d81908546a11dc1dda72d368, type: 2}
   m_sharedMaterial: {fileID: -3744009808465392072, guid: b62e2695d81908546a11dc1dda72d368, type: 2}
@@ -17311,7 +17311,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Item Descrption
+  m_text: "Descri\xE7\xE3o do item"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b62e2695d81908546a11dc1dda72d368, type: 2}
   m_sharedMaterial: {fileID: -3744009808465392072, guid: b62e2695d81908546a11dc1dda72d368, type: 2}
@@ -127458,7 +127458,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Item Name
+  m_text: Nome do item
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b62e2695d81908546a11dc1dda72d368, type: 2}
   m_sharedMaterial: {fileID: -3744009808465392072, guid: b62e2695d81908546a11dc1dda72d368, type: 2}
