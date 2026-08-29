@@ -33,7 +33,7 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   theme: 4
-  backgroundSprite: {fileID: 0}
+  backgroundSprite: {fileID: -8998564347762464585, guid: 553ba7d8c8dcef94eb06dba41c645fca, type: 3}
   ambientColor: {r: 0.2, g: 0.2, b: 0.3, a: 1}
   difficulty: 5
   recommendedTeamSize: 2
@@ -59,3 +59,6 @@ MonoBehaviour:
   unlockedByDefault: 0
   weatherEffect: None
   timeOfDay: Day
+  references:
+    version: 2
+    RefIds: []
