@@ -248,8 +248,19 @@ Números medidos, em duas passadas:
 
 Resultado: 0 de 25 labels vazando, 0 botões fora da tela, área caiu de 40% para 30%.
 
-**Ainda sem título e sem botão de voltar** — fecha com ESC, mas nada na tela diz isso. Se
-quiser, adiciono.
+**Título e botão de voltar: código pronto, falta 1 clique** (`f8e93c3`). O `BuildChrome`
+cria o título "Mapa-Múndi" e a placa "Fechar" ligada ao `CloseMap`, ambos com
+`LocalizeStringEvent` nos 3 idiomas. **Não cheguei a rodar na cena** — a ponte do Unity MCP
+parou de responder no fim da sessão. Para aplicar:
+
+*Menu* → **Sowur Shield → UI → Restyle World Map Buttons**, depois salvar a cena.
+
+É idempotente: destrói e recria o chrome a cada execução, então rodar de novo não duplica.
+
+⚠️ **Não rode o importador de CSV de localização sem conferir.** Rodei para adicionar
+`ui_common.world_map_title` e ele **reverteu duas traduções do MainMenu** — PT "Espaço "
+voltou para "Slot ", ES "Ranura " perdeu o espaço final. O CSV está atrás das tabelas nessas
+chaves. Descartei as reversões, mas o problema segue lá.
 
 ---
 
