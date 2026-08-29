@@ -5,6 +5,28 @@
 > leitura de código. Relatório formatado:
 > https://claude.ai/code/artifact/027f7f38-0804-4e75-9d7e-46512a40be5a
 
+## ⚠️ Correções à auditoria (feitas ao implementar a Fase 1)
+
+Cinco afirmações deste relatório estavam **erradas** e são corrigidas aqui. Ficam
+registradas porque o erro de método é reutilizável.
+
+| Afirmação original | Realidade | Como o erro aconteceu |
+|---|---|---|
+| #13 "Dinheiro alto vaza 90px para fora da tela" | **Falso.** `MoneyText` tem `autoSize` e encolhe 19,7 → 12,7pt; cabe em 128px com `$999999999` | Medi `preferredWidth`, que ignora o auto-size |
+| "`FloatingText` a 3pt com alpha 0.30, dano invisível" | **Falso.** É `TextMeshPro` world-space (3 = unidades de mundo) e o alpha 0.30 era um frame do meio do fade | Peguei um frame no meio da coroutine de fade |
+| "`fontSize=400` em rect de 1x1 é absurdo" | **Falso.** World Space Canvas com scale 0,01 — 400 × 0,0006 dá tamanho normal | Li os world corners, que já vêm escalados |
+| "Loja vazia + gold dessincronizado + título em inglês" (3 itens) | **Um único bug**, no `ItemDatabase`, não três | Tratei sintomas como causas distintas |
+| "`DisplayTilemap` na `MinimapTerrain` é acoplamento acidental" | **Falso.** É deliberado e documentado em `MinimapCamera.cs` — separa "chão" de "props" | Não li o comentário antes de concluir |
+
+O bug real por trás da loja: `ItemDatabase.Instance` só chamava `Initialize()` dentro do
+`if (instance == null)`, então uma primeira chamada prematura cacheava um dicionário vazio
+para a sessão inteira. Corrigido em `86e4f3e`, com testes de regressão provados vermelhos
+em `d5c1c35`.
+
+**A lição de método**: medir um valor não é o mesmo que observar o comportamento. Quatro
+dos cinco erros vieram de ler um número intermediário (`preferredWidth`, world corners, um
+frame de animação) em vez de olhar o resultado renderizado.
+
 ## Veredito
 
 Nota geral **3.5/10**. Maturidade **2/5 (vertical slice inicial)**.
@@ -187,15 +209,27 @@ estouros medidos em 1080p são proporcionalmente piores lá.
 
 ## Roadmap
 
-**Fase 1 — Crítico** (quase tudo é configuração, não código; melhor relação esforço/impacto)
-- Mover `MinimapFog`/`MinimapGround` para a layer `Minimap (6)`
-- Separar `DisplayTilemap` do subsistema do minimapa
-- Passe de import: Point filter + PPU único + Compression None
-- Criar pilha de sorting layers e reatribuir renderers
-- Corrigir sobreposição de textos do combate e os `fontSize=400`
-- Preencher catálogo da loja e sincronizar gold
-- `StorageContainer` 196 -> 255px
-- Auto-size no `MoneyText`
+**Fase 1 — Crítico** — ✅ **CONCLUÍDA** (branch `fix/visual-audit-phase1`)
+
+| Item | Estado | Commit |
+|---|---|---|
+| `MinimapFog`/`MinimapGround` para a layer `Minimap (6)` | ✅ feito | `85b0837` |
+| Pilha de 8 sorting layers criada | ✅ feito | `85b0837` |
+| Passe de import: Point + no compression + no mipmaps (530 sprites) | ✅ feito | `2d90a87` |
+| Loja vazia / gold / título — bug do `ItemDatabase` | ✅ feito | `86e4f3e` |
+| Sobreposição de textos do combate (banner y=-40 → -110) | ✅ feito | `86e4f3e` |
+| `StorageContainer` 196 → 255px + alinhamento com a moldura | ✅ feito | `15150bf` |
+| `MoneyText` 128 → 200px (folga, não overflow) | ✅ feito | `15150bf` |
+| Testes de regressão, provados vermelhos primeiro | ✅ feito | `d5c1c35` |
+| Separar `DisplayTilemap` do minimapa | ❌ **cancelado** — é design deliberado, ver correções acima | — |
+| PPU único | ❌ **não aplicado** — o importer já usa 100 de forma consistente; os PPU estranhos eram de sprites fatiados | — |
+
+Resultado: 834 EditMode + 73 PlayMode, zero falhas.
+
+**O que a Fase 1 NÃO resolveu**: o terreno continua sendo 1 tile repetido 10.201 vezes. A
+infraestrutura DualGrid está completa (16 tiles de regra + placeholders de grama e terra),
+então isso é trabalho de *design de nível*, não correção de bug — e é o maior ganho visual
+que resta.
 
 **Fase 2 — Importante**: tilemap real com variação, padronizar canvases em 1920x1080,
 botões de idioma, retratos de diálogo, traduzir strings, contraste do minimapa,
