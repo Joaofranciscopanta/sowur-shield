@@ -64,12 +64,22 @@ public class BattleHudOverlay : MonoBehaviour
         // raycastTarget = false so they never swallow clicks meant for the battlefield.
         gameObject.AddComponent<GraphicRaycaster>();
 
-        // y = -110, not -40. The status top bar (turn counter, team counts) occupies the first
-        // ~80px of the screen, so a banner at -40 was drawn straight through "Your Team: n/n" —
-        // 241px of direct overlap, with both strings legible only as a smear. Clearing the bar
-        // costs nothing here because the banner is transient and the space below it is empty.
-        modifierText = CreateText("ModifierBanner", new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0, -110), 28, FontStyles.Bold);
-        modifierText.alignment = TextAlignmentOptions.Center;
+        // The status top bar (turn counter, team counts) is 42px tall and anchored to the very
+        // top, so this banner has to clear it. At the original y = -40 the two drew straight
+        // through each other — 241px of overlap, leaving both strings as a smear.
+        //
+        // -110 was still not enough: the banner is 500px wide and its text is long enough to
+        // wrap ("O dano causado e recebido é dobrado!"), and a second line grows *downwards*
+        // from a top pivot while the first line still started level with the bar. Widening it
+        // to 900 keeps these strings on one line.
+        //
+        // The offset is -90, measured rather than guessed. The rect is 60px tall against
+        // ~38px of text, so the box overhangs the glyphs; at -64 its top edge still landed at
+        // y=1016 while the status bar's underside sits at y=998 — 18px of overlap that read
+        // as the two strings touching. -90 puts the top edge at 990, clearing the bar by 8px.
+        modifierText = CreateText("ModifierBanner", new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0, -90), 28, FontStyles.Bold);
+        modifierText.rectTransform.sizeDelta = new Vector2(900, 60);
+        modifierText.alignment = TextAlignmentOptions.Top;
         modifierText.color = new Color(1f, 0.95f, 0.6f);
         AddTextOutline(modifierText);
         modifierText.gameObject.SetActive(false);
