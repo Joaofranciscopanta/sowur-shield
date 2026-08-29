@@ -49,9 +49,20 @@ public class ItemDatabase : ScriptableObject
                     instance = CreateInstance<ItemDatabase>();
                     instance.autoLoadFromResources = true;
                 }
-
-                instance.Initialize();
             }
+
+            // Initialize on every access, not only when the instance was just created.
+            // Initialize() already early-outs once the lookup holds live items, so this is
+            // cheap — but it is what lets an empty lookup recover.
+            //
+            // Without it a single early call poisoned the whole session: the first caller
+            // built `instance`, Initialize() ran before the Resources items were loadable and
+            // produced an empty dictionary, and because `instance` was then non-null nothing
+            // ever called Initialize() again. GetItem() returned null for every name for the
+            // rest of the run. That is why the shops opened empty — clara_Shop asks for
+            // Medicine, CarrotSeed, CabbageSeed and RadishSeed, all of which exist with
+            // exactly those itemNames, and all four were logged as "not found in ItemDatabase".
+            instance.Initialize();
             return instance;
         }
     }
@@ -68,6 +79,9 @@ public class ItemDatabase : ScriptableObject
 
         itemLookup.Clear();
         List<Item> allItems = new List<Item>();
+
+        // An empty load is not a successful initialization. Leaving isInitialized false here
+        // means the next caller retries instead of caching the empty result for the session.
 
         if (autoLoadFromResources)
         {
@@ -96,7 +110,10 @@ public class ItemDatabase : ScriptableObject
             itemLookup[item.itemName] = item;
         }
 
-        isInitialized = true;
+        // Only latch initialized when something actually loaded. An empty result means the
+        // call came too early (Resources not ready yet), and marking it done would freeze
+        // that emptiness in place for the rest of the session.
+        isInitialized = itemLookup.Count > 0;
 
         if (duplicateCount > 0)
             Debug.LogWarning($"[ItemDatabase] Skipped {duplicateCount} item(s) with duplicate names during Initialize().");

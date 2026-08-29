@@ -64,7 +64,11 @@ public class BattleHudOverlay : MonoBehaviour
         // raycastTarget = false so they never swallow clicks meant for the battlefield.
         gameObject.AddComponent<GraphicRaycaster>();
 
-        modifierText = CreateText("ModifierBanner", new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0, -40), 28, FontStyles.Bold);
+        // y = -110, not -40. The status top bar (turn counter, team counts) occupies the first
+        // ~80px of the screen, so a banner at -40 was drawn straight through "Your Team: n/n" —
+        // 241px of direct overlap, with both strings legible only as a smear. Clearing the bar
+        // costs nothing here because the banner is transient and the space below it is empty.
+        modifierText = CreateText("ModifierBanner", new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0, -110), 28, FontStyles.Bold);
         modifierText.alignment = TextAlignmentOptions.Center;
         modifierText.color = new Color(1f, 0.95f, 0.6f);
         AddTextOutline(modifierText);
