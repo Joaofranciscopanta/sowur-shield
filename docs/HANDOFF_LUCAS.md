@@ -231,19 +231,25 @@ mais bem resolvida do jogo)?
 
 ---
 
-## 🟡 9. WorldMap: os 25 stages sobre botões cinza padrão
+## ✅ 9. WorldMap — RESOLVIDO (`9bacd34`)
 
-**Estado**: funciona — 25 stages nomeados em PT, progressão clara (só o primeiro
-desbloqueado), fecha com ESC.
+Os 25 botões usavam `UISprite`, o retângulo cinza padrão do Unity, cobrindo **40% da tela**
+sobre o mapa pintado. Agora usam a placa de madeira do jogo: **dourada** para stage
+desbloqueado, **creme** para bloqueado.
 
-**O que está feio** (medido):
-- Os 25 botões usam `UISprite`, o **retângulo cinza padrão do Unity**, não arte do jogo
-- Cobrem **40% da tela**, tapando o mapa pintado que está por baixo
-- **Sem título e sem botão de voltar** — o `WorldMap` tem só `MapImage` com 25 filhos.
-  Fecha com ESC, mas nada na tela diz isso.
+Números medidos, em duas passadas:
+- **350x70** mantém a proporção 5:1 da arte (o kit é 600x120). O antigo 300x110 era 2.7:1 e
+  esticava os cantos do 9-slice.
+- **Margem de 45px** por lado, amostrada do sprite: o centro creme começa a 88px de 600px,
+  ou seja a placa é **71% do rect**, não os ~86% que parece. Na primeira tentativa usei 26px
+  e três nomes longos ainda vazavam para a madeira.
+- **Origem horizontal centralizada** — a vertical já era. Com botões mais largos, o início
+  fixo em 70px jogava a quinta coluna 34px para fora da tela.
 
-**Decisão sua**: quer botões com a moldura de madeira do resto do jogo, menores, deixando o
-mapa aparecer? É trabalho de UI que eu consigo fazer, mas muda a cara da tela.
+Resultado: 0 de 25 labels vazando, 0 botões fora da tela, área caiu de 40% para 30%.
+
+**Ainda sem título e sem botão de voltar** — fecha com ESC, mas nada na tela diz isso. Se
+quiser, adiciono.
 
 ---
 
