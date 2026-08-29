@@ -545,6 +545,12 @@ namespace SowurShield.Dialogue
             // appear inside the dialogue menu instead of as floating screen buttons.
             dialogueUI.SetExtraStartNodeChoices(BuildExtraChoices());
 
+            // Hand over this NPC's face for nodes that carry no portrait of their own.
+            // Only 8 of the project's 66 dialogue nodes set speakerPortrait, so without this
+            // the frame stayed empty for almost every conversation even though all nine
+            // villagers have portrait art in Resources/Portraits.
+            dialogueUI.SetDefaultSpeakerPortrait(GetPortrait(), SpeakerPosition.Left);
+
             // Start the dialogue
             dialogueUI.StartDialogue(dialogueToShow);
 
