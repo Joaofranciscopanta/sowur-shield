@@ -175,6 +175,12 @@ public class MinimapCamera : MonoBehaviour
     private const string MinimapLayerName = "Minimap";
 
     /// <summary>
+    /// Layer holding the minimap's own sprites — icons, painted ground, fog. Rendered by the
+    /// minimap camera *only*, so anything here is invisible in the world view.
+    /// </summary>
+    public const string MinimapIconLayerName = MinimapLayerName;
+
+    /// <summary>
     /// Layer holding the ground tilemaps. Rendered by the minimap camera *and* the main camera —
     /// it exists to separate "ground" from "props", not to hide anything from the player.
     /// </summary>

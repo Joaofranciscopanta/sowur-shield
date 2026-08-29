@@ -423,9 +423,13 @@ public class MinimapTerrainPainter : MonoBehaviour
             groundObject = new GameObject("MinimapGround");
             groundObject.transform.SetParent(transform, false);
 
-            int terrainLayer = LayerMask.NameToLayer(MinimapCamera.MinimapTerrainLayerName);
-            if (terrainLayer >= 0)
-                groundObject.layer = terrainLayer;
+            // The icon layer, NOT MinimapTerrain — same reason as the fog in MinimapFogOfWar.
+            // MinimapTerrain is shared with the main camera, so this painted approximation of the
+            // ground was being drawn over the actual world. It read as the world's terrain, which
+            // is why the real DisplayTilemap being nearly featureless went unnoticed.
+            int iconLayer = LayerMask.NameToLayer(MinimapCamera.MinimapIconLayerName);
+            if (iconLayer >= 0)
+                groundObject.layer = iconLayer;
 
             groundRenderer = groundObject.AddComponent<SpriteRenderer>();
         }

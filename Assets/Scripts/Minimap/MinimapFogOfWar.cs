@@ -171,8 +171,14 @@ public class MinimapFogOfWar : MonoBehaviour, ISaveable
             fogObject = new GameObject("MinimapFog");
             fogObject.transform.SetParent(transform, false);
 
-            int terrainLayer = LayerMask.NameToLayer(MinimapCamera.MinimapTerrainLayerName);
-            if (terrainLayer >= 0) fogObject.layer = terrainLayer;
+            // The icon layer, NOT MinimapTerrain. MinimapTerrain is deliberately shared with the
+            // main camera so the ground reads on both (see MinimapCamera.MinimapTerrainLayerName);
+            // putting the fog there meant the main camera drew it too, and a ~30x31 unit dark
+            // sprite at sortingOrder 50 covered most of the play area. It looked like night
+            // lighting, so nothing was ever reported as broken. Fog is a minimap artefact and
+            // belongs on the layer only the minimap camera renders.
+            int iconLayer = LayerMask.NameToLayer(MinimapCamera.MinimapIconLayerName);
+            if (iconLayer >= 0) fogObject.layer = iconLayer;
 
             fogRenderer = fogObject.AddComponent<SpriteRenderer>();
         }

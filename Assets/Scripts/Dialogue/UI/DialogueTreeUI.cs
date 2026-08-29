@@ -58,6 +58,10 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
     // list for the current conversation. Set via SetExtraStartNodeChoices() before
     // StartDialogue() is called; cleared when the dialogue ends.
     private List<DialogueChoice> extraStartNodeChoices = new List<DialogueChoice>();
+
+    // Fallback portrait for nodes with none of their own — see SetDefaultSpeakerPortrait.
+    private Sprite defaultSpeakerPortrait;
+    private SpeakerPosition defaultSpeakerPosition = SpeakerPosition.Left;
     
     // Animation tracking
     private Coroutine currentDialogueCoroutine;
@@ -276,10 +280,16 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
             speakerNameText.text = node.GetSpeakerDisplayName();
         }
         
-        // Handle portrait
-        if (portraitManager != null && node.speakerPortrait != null)
+        // Handle portrait. A node's own portrait wins; otherwise fall back to the speaker's
+        // face supplied by whoever started the conversation, so villagers with art in
+        // Resources/Portraits actually appear.
+        if (portraitManager != null)
         {
-            portraitManager.ShowPortrait(node.speakerPortrait, node.speakerPosition, true);
+            Sprite portrait = node.speakerPortrait != null ? node.speakerPortrait : defaultSpeakerPortrait;
+            SpeakerPosition position = node.speakerPortrait != null ? node.speakerPosition : defaultSpeakerPosition;
+
+            if (portrait != null)
+                portraitManager.ShowPortrait(portrait, position, true);
         }
         
         // Start dialogue coroutine
@@ -435,6 +445,23 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
         extraStartNodeChoices.Clear();
         if (choices != null)
             extraStartNodeChoices.AddRange(choices);
+    }
+
+    /// <summary>
+    /// Portrait to show for nodes that do not carry one of their own. Cleared when the
+    /// dialogue ends, like the extra choices above.
+    ///
+    /// Only 8 of 66 dialogue nodes set speakerPortrait, so without this the portrait frame
+    /// stayed empty for 88% of the game's dialogue — including every villager who has art
+    /// sitting in Resources/Portraits. The nine portraits were drawn and effectively never
+    /// shown. NPCDialogueInteractable already resolves its own face for the codex
+    /// (GetPortrait(), which falls back through Resources by npc id); this lets the
+    /// conversation use the same answer.
+    /// </summary>
+    public void SetDefaultSpeakerPortrait(Sprite portrait, SpeakerPosition position)
+    {
+        defaultSpeakerPortrait = portrait;
+        defaultSpeakerPosition = position;
     }
     
     private IEnumerator HandleEventNode(DialogueNode node)
@@ -620,6 +647,7 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
         currentDialogueTree = null;
         currentNode = null;
         extraStartNodeChoices.Clear();
+        defaultSpeakerPortrait = null;
 
         // Notify UIManager that dialogue has ended
         if (UIManager.Instance != null)
