@@ -136,8 +136,16 @@ namespace SowurShield.Core
                 if (GameTimeController.instance != null)
                     GameTimeController.instance.ResetForNewGame();
 
-                currentGameData = new GameData();
+                currentGameData = CreateNewGameData();
                 initializeNewGameAfterLoad = false;
+
+                // Push the fresh data into everything already registered. A new game never
+                // goes through LoadGame(), so without this nothing ever reads currentGameData
+                // and the starting tools would sit in the data unseen — then get wiped by the
+                // first SaveData(), which clears inventoryItems and rewrites it from the
+                // (empty) live inventory.
+                ReapplyLoadedDataToRegisteredObjects();
+
                 LogDebug("New game initialized successfully");
 
                 // Start tutorial for new games
@@ -150,7 +158,15 @@ namespace SowurShield.Core
             }
             else
             {
-                currentGameData = new GameData();
+                currentGameData = CreateNewGameData();
+
+                // Same reason as the new-game branch above: nothing else pushes this data
+                // into the registered objects, so without it the starting tools never reach
+                // the inventory. This branch is the one that actually runs when the player
+                // picks an empty slot — initializeNewGameAfterLoad is consumed before the
+                // scene's SaveManager exists, so it arrives here with no save file instead.
+                ReapplyLoadedDataToRegisteredObjects();
+
                 LogDebug("No save file found. Created new game data.");
             }
 
@@ -680,6 +696,52 @@ namespace SowurShield.Core
         // ============================================================================
         // UTILITY METHODS
         // ============================================================================
+
+        /// <summary>
+        /// Fresh save data, including the starting tools.
+        ///
+        /// A new game used to be a bare `new GameData()`, which left the hotbar empty at 0/9.
+        /// Without a hoe and a watering can the player cannot till or water, so the farming
+        /// loop — the point of the game — was unreachable from a new save. The tools existed
+        /// in the ItemDatabase the whole time; nothing handed them over.
+        ///
+        /// Seeding the data rather than calling Inventory.AddItem keeps this out of any
+        /// ordering race: Inventory.LoadData already builds the hotbar from
+        /// inventoryData.inventoryItems, so the kit arrives through the same path a saved
+        /// game does.
+        /// </summary>
+        private static GameData CreateNewGameData()
+        {
+            var data = new GameData();
+
+            // Slot 0 and 1, so both land on the hotbar and answer to keys 1 and 2.
+            //
+            // Assign by index rather than Add(): GameData already ships inventoryItems
+            // pre-filled with empty entries, so appending put the tools at index 38-39 —
+            // past the hotbar, past inventorySize, and dropped by LoadData's
+            // Min(Count, inventorySize) loop without a word.
+            SetStartingItem(data, 0, StartingToolHoe);
+            SetStartingItem(data, 1, StartingToolWateringCan);
+
+            return data;
+        }
+
+        private static void SetStartingItem(GameData data, int slotIndex, string itemName)
+        {
+            var items = data.inventoryData.inventoryItems;
+
+            while (items.Count <= slotIndex)
+                items.Add(new InventoryGameData.ItemStackData());
+
+            items[slotIndex] = new InventoryGameData.ItemStackData(itemName, 1);
+        }
+
+        // Names as keyed in the ItemDatabase — the lookup is by Item.itemName, not by asset
+        // file name, and a mismatch here fails silently (the slot simply stays empty).
+        // Public so the regression test can assert against these rather than re-typing the
+        // strings; the test assembly is separate, so internal would not reach it.
+        public const string StartingToolHoe = "Hoe";
+        public const string StartingToolWateringCan = "WateringCan";
 
         public bool HasSaveFile() => HasSaveFile(activeSlotName);
 
