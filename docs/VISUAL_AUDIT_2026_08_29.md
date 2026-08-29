@@ -7,12 +7,14 @@
 
 ## ⚠️ Correções à auditoria (feitas ao implementar a Fase 1)
 
-Cinco afirmações deste relatório estavam **erradas** e são corrigidas aqui. Ficam
+Sete afirmações deste relatório estavam **erradas** e são corrigidas aqui. Ficam
 registradas porque o erro de método é reutilizável.
 
 | Afirmação original | Realidade | Como o erro aconteceu |
 |---|---|---|
 | #13 "Dinheiro alto vaza 90px para fora da tela" | **Falso.** `MoneyText` tem `autoSize` e encolhe 19,7 → 12,7pt; cabe em 128px com `$999999999` | Medi `preferredWidth`, que ignora o auto-size |
+| #9 "3 botões de idioma com largura 0 no mesmo pixel" | **Falso.** O `VerticalLayoutGroup` os dispõe a 372×44 quando o painel é ativado | Li o `sizeDelta` serializado de um painel **inativo**, cujo layout nunca rodou |
+| #20 "Placeholder `Item Descrption` visível ao jogador" | **Falso.** `ItemTooltip` sobrescreve os 3 textos antes de exibir | Vi o valor de design-time na cena e presumi que chegava à tela |
 | "`FloatingText` a 3pt com alpha 0.30, dano invisível" | **Falso.** É `TextMeshPro` world-space (3 = unidades de mundo) e o alpha 0.30 era um frame do meio do fade | Peguei um frame no meio da coroutine de fade |
 | "`fontSize=400` em rect de 1x1 é absurdo" | **Falso.** World Space Canvas com scale 0,01 — 400 × 0,0006 dá tamanho normal | Li os world corners, que já vêm escalados |
 | "Loja vazia + gold dessincronizado + título em inglês" (3 itens) | **Um único bug**, no `ItemDatabase`, não três | Tratei sintomas como causas distintas |
@@ -23,9 +25,11 @@ O bug real por trás da loja: `ItemDatabase.Instance` só chamava `Initialize()`
 para a sessão inteira. Corrigido em `86e4f3e`, com testes de regressão provados vermelhos
 em `d5c1c35`.
 
-**A lição de método**: medir um valor não é o mesmo que observar o comportamento. Quatro
-dos cinco erros vieram de ler um número intermediário (`preferredWidth`, world corners, um
-frame de animação) em vez de olhar o resultado renderizado.
+**A lição de método**: medir um valor não é o mesmo que observar o comportamento. Seis dos
+sete erros vieram de ler um número em repouso — `preferredWidth` antes do auto-size, world
+corners já escalados, um frame no meio de um fade, o `sizeDelta` de um painel cujo layout
+nunca rodou, o texto de design-time de um label sobrescrito em runtime — em vez de olhar o
+que de fato renderizou na tela.
 
 ## Veredito
 
@@ -231,9 +235,28 @@ infraestrutura DualGrid está completa (16 tiles de regra + placeholders de gram
 então isso é trabalho de *design de nível*, não correção de bug — e é o maior ganho visual
 que resta.
 
-**Fase 2 — Importante**: tilemap real com variação, padronizar canvases em 1920x1080,
-botões de idioma, retratos de diálogo, traduzir strings, contraste do minimapa,
-consolidar HUD, estados visuais de slot.
+**Fase 2 — Importante** — parcialmente concluída
+
+| Item | Estado | Commit |
+|---|---|---|
+| Terreno pintado (14 tiles distintos, era 1) | ✅ feito | `6e0933f` |
+| Contraste do minimapa (branco/branco → creme/madeira) | ✅ feito | `7cd6329` |
+| `VersionText` trazido para dentro da tela + contraste | ✅ feito | `7cd6329` |
+| Placeholders do tooltip traduzidos, typo corrigido | ✅ feito | `69b9981` |
+| Botões de idioma | ❌ **não era bug** — ver correções acima | — |
+| **Trocar a arte do tileset** | ⏳ **pendente — precisa de artista** | — |
+| Padronizar canvases em 1920x1080 | ⏳ pendente | — |
+| Retratos de diálogo (sprite nulo com alpha 1) | ⏳ pendente | — |
+| Consolidar a HUD em 2 grupos | ⏳ pendente | — |
+| Estados visuais de slot (hover/selected/disabled) | ⏳ pendente | — |
+
+**O bloqueio do terreno**: a estrutura agora está certa (pátio, curral, caminhos, bordas
+resolvidas pelo dual-grid), mas `TilesDemo.png` é a **arte de demonstração do plugin** —
+verde-limão contra roxo-vinho. Existe tileset de fazenda real em
+`Assets/Art/ThirdParty/Sprout Lands .../ground tiles/New tiles/` (`Grass_tiles_v2.png` e
+`Darker_Soil_Ground_Tiles.png`), mas são 176x112 com layout misto, não a grade 4x4 de 16
+tiles que o dual-grid espera. **Refatiar isso é trabalho de artista no Sprite Editor**, não
+algo a improvisar por script.
 
 **Fase 3 — Polimento**: floating text, microanimações, ícones no minimapa, ordenação por Y,
 sorting no inventário, indicador de seleção na hotbar.
