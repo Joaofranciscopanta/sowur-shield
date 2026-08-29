@@ -7,14 +7,17 @@
 
 ## ⚠️ Correções à auditoria (feitas ao implementar a Fase 1)
 
-Sete afirmações deste relatório estavam **erradas** e são corrigidas aqui. Ficam
-registradas porque o erro de método é reutilizável.
+**Dez** afirmações deste relatório estavam **erradas** e são corrigidas aqui. Ficam
+registradas porque o erro de método é reutilizável — e porque metade da nota que dei ao
+jogo veio de defeitos que não existiam.
 
 | Afirmação original | Realidade | Como o erro aconteceu |
 |---|---|---|
 | #13 "Dinheiro alto vaza 90px para fora da tela" | **Falso.** `MoneyText` tem `autoSize` e encolhe 19,7 → 12,7pt; cabe em 128px com `$999999999` | Medi `preferredWidth`, que ignora o auto-size |
 | #9 "3 botões de idioma com largura 0 no mesmo pixel" | **Falso.** O `VerticalLayoutGroup` os dispõe a 372×44 quando o painel é ativado | Li o `sizeDelta` serializado de um painel **inativo**, cujo layout nunca rodou |
 | #20 "Placeholder `Item Descrption` visível ao jogador" | **Falso.** `ItemTooltip` sobrescreve os 3 textos antes de exibir | Vi o valor de design-time na cena e presumi que chegava à tela |
+| #15 "Retratos nulos = quadrados brancos 136×136" | **Falso.** `PortraitManager` zera o `CanvasGroup.alpha`; medido 0,00 em runtime | Li `sprite=NULL` + `color.a=1` e não conferi o CanvasGroup |
+| **#7 "Inimigos são bolinhas vermelhas sem sprite"** | **Falso.** 32 PNGs existem, 32 de 34 `EnemyData` têm sprite, 25 de 25 stages têm inimigos | **Abri a `CombatScene` direto, sem WorldMap — auditei o modo de fallback achando que era o jogo** |
 | "`FloatingText` a 3pt com alpha 0.30, dano invisível" | **Falso.** É `TextMeshPro` world-space (3 = unidades de mundo) e o alpha 0.30 era um frame do meio do fade | Peguei um frame no meio da coroutine de fade |
 | "`fontSize=400` em rect de 1x1 é absurdo" | **Falso.** World Space Canvas com scale 0,01 — 400 × 0,0006 dá tamanho normal | Li os world corners, que já vêm escalados |
 | "Loja vazia + gold dessincronizado + título em inglês" (3 itens) | **Um único bug**, no `ItemDatabase`, não três | Tratei sintomas como causas distintas |
@@ -25,15 +28,30 @@ O bug real por trás da loja: `ItemDatabase.Instance` só chamava `Initialize()`
 para a sessão inteira. Corrigido em `86e4f3e`, com testes de regressão provados vermelhos
 em `d5c1c35`.
 
-**A lição de método**: medir um valor não é o mesmo que observar o comportamento. Seis dos
-sete erros vieram de ler um número em repouso — `preferredWidth` antes do auto-size, world
-corners já escalados, um frame no meio de um fade, o `sizeDelta` de um painel cujo layout
-nunca rodou, o texto de design-time de um label sobrescrito em runtime — em vez de olhar o
-que de fato renderizou na tela.
+**A lição de método**, em duas partes:
+
+1. **Ler um valor em repouso não é observar o comportamento.** `preferredWidth` antes do
+   auto-size, world corners já escalados, um frame no meio de um fade, o `sizeDelta` de um
+   painel cujo layout nunca rodou, o texto de design-time de um label sobrescrito em
+   runtime — todos "medidos" e todos falsos.
+
+2. **Abrir uma cena direto pula a inicialização que o jogo faz.** O erro mais caro foi o
+   combate: entrei na `CombatScene` sem passar pelo WorldMap, peguei o modo de fallback e
+   descrevi como se fosse o produto. Os logs do Console diziam exatamente isso
+   (`No stage selected — using fallback test enemies`) e eu não os li.
+
+   Isso também explica a observação do usuário de que "às vezes os assets não carregam no
+   Play Mode mas aparecem na build": não é o Editor falhando, é a cena sendo aberta fora do
+   fluxo. **Sempre conferir o Console antes de chamar algo de defeito.**
 
 ## Veredito
 
-Nota geral **3.5/10**. Maturidade **2/5 (vertical slice inicial)**.
+> ⚠️ **Nota revisada após implementar as correções.** A nota original era **3.5/10 /
+> maturidade 2/5**. Com dez achados desmentidos — incluindo o combate inteiro, que eu
+> auditei em modo de fallback — a avaliação honesta é **5.5/10, maturidade 3/5 (indie em
+> desenvolvimento)**. O jogo estava consistentemente melhor do que eu reportei.
+
+Nota geral **5.5/10** (era 3.5). Maturidade **3/5 (indie em desenvolvimento)**.
 
 O problema central **não é falta de features** — é o pipeline de arte 2D e a ausência de
 composição de tela. Farming, animais, diálogo com memória, missões, relacionamento, 4 slots
@@ -45,16 +63,16 @@ não ausência.
 
 ## Notas
 
-| Dimensão | Nota |
-|---|---|
-| Geral | 3.5 |
-| Visual | 3 |
-| UI | 4 |
-| UX | 4 |
-| Polimento | 2 |
-| Coerência | 3 |
-| Legibilidade | 4 |
-| Apresentação profissional | 2 |
+| Dimensão | Original | Revisada | Por quê |
+|---|---|---|---|
+| Geral | 3.5 | **5.5** | 10 dos 20 achados eram falsos |
+| Visual | 3 | **5** | O combate tem cenário pintado; a arte estava lá |
+| UI | 4 | **5** | Layouts que julguei quebrados funcionavam |
+| UX | 4 | **5** | Fallbacks são deliberados e logados, não bugs |
+| Polimento | 2 | **4** | Retratos, portraits e estados já existiam |
+| Coerência | 3 | 3 | Mantida: PPU e escalas seguem inconsistentes |
+| Legibilidade | 4 | 4 | Mantida: contraste do minimapa era real |
+| Apresentação profissional | 2 | **4** | O fluxo real se apresenta bem melhor |
 
 As dimensões "Visual", "Coerência" e "Apresentação" são julgamento subjetivo de direção de
 arte. As afirmações factuais abaixo são todas medidas, com a evidência numérica junto.

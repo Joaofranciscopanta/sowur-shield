@@ -38,23 +38,66 @@ problema visual.
 
 ---
 
-## 🔴 2. Decidir sobre o combate — BLOQUEADO POR ARTE
+## 🟠 2. Combate — ~~bloqueado por arte~~ **ERRO MEU, está muito melhor**
 
-**Estado**: mecanicamente funciona; visualmente é protótipo de debug.
+**Correção importante**: a auditoria dizia que os inimigos não tinham sprite e que o
+combate era "protótipo de debug". **Isso estava errado.** Eu abri a `CombatScene`
+diretamente pelo MCP, sem passar pelo WorldMap, e auditei o **modo de fallback** achando
+que era o jogo.
 
-**O que está faltando**:
-- Inimigos **não têm sprite** — renderizam como bolinhas vermelhas
-- O único personagem com arte é `Chicken (Test)`, um placeholder, **com escala negativa (-5,33)**
-- Grid de combate são retângulos chapados vermelho/verde, sem arte de terreno
-- Fundo cinza-azulado liso, sem cenário
-- `"Turno: 2/500"` expõe um limite de debug ao jogador
+Rodando pelo fluxo real (time montado + stage selecionado), o combate tem cenário pintado
+completo, inimigos com sprite (`Slime`), o time com arte real, e o painel de ação em
+português. **Zero esferas placeholder.** Ver `Assets/Screenshots/combat_real_flow.png`.
 
-**Por que não fiz**: são 14 sprites de inimigos + cenário de fundo. É produção de arte.
-O brief já existe em `docs/PLACEHOLDER_ASSET_BRIEF.md`.
+Os logs diziam isso o tempo todo e eu não li:
+```
+[EnemySpawner] No stage selected — using fallback test enemies.
+[CombatUnit] 'Enemy_1' has no sprite; falling back to placeholder sphere.
+```
 
-**Decisão que preciso de você**: o combate entra na próxima demo pública ou fica escondido
-até ter arte? Se ficar escondido, dá para desabilitar a entrada pelo WorldMap em 5 minutos
-e o jogo para de parecer inacabado nesse ponto.
+**Números reais**: 32 PNGs de inimigos em `Assets/Art/Enemies/`, 32 dos 34 `EnemyData` com
+sprite atribuído (só `IronGolem` e `ObsidianGolem` faltam), 25 de 25 stages com inimigos
+configurados.
+
+**O que sobra de verdade**:
+- **20 dos 25 stages não têm `backgroundSprite`** — só 5 têm. Sem fundo, a batalha roda
+  sobre cinza liso. *Decisão sua*: reaproveito os 5 fundos existentes por bioma (imediato,
+  sem arte nova) ou fica marcado para a Isabella fazer fundos próprios?
+- `"Turno: 2/500"` expõe um limite de debug ao jogador.
+
+**Lição de método** (vale para você também): se abrir uma cena direto no Editor e algo
+parecer vazio, **olhe o Console antes de concluir**. Este projeto loga o fallback toda vez.
+É a mesma razão pela qual "às vezes os assets não carregam no Play Mode mas aparecem na
+build" — entrar direto numa cena pula a inicialização que o fluxo do jogo faz.
+
+---
+
+## 🟠 2b. ⚠️ O build está perto do teto de 100 MB do GitHub
+
+**Aconteceu em 2026-08-29**: o deploy do build #33 foi **rejeitado**:
+
+```
+File docs/Build/Default WebGL.data is 144.65 MB; this exceeds GitHub's file size
+limit of 100.00 MB
+! [remote rejected] main -> main (pre-receive hook declined)
+```
+
+Causa: eu havia setado `textureCompression = Uncompressed` em 530 texturas no passe de
+pixel art. Já revertido (`86bdbf1`) — o Point filter, que é o que preserva a arte, foi
+mantido.
+
+**O risco que permanece**: mesmo saudável, o build está apertado.
+
+| Arquivo | Tamanho | Limite |
+|---|---|---|
+| `Default WebGL.data` | ~71 MB | 100 MB (hard) |
+| `Default WebGL.wasm` | ~54,5 MB | 50 MB (warning) — **já passa do aviso** |
+
+**O que fazer**: nada urgente, mas **qualquer adição grande de arte ou áudio pode estourar
+de novo** — e o build pago roda antes do push ser recusado, então o dinheiro é gasto à toa.
+Quando for adicionar muitos assets, me peça para medir antes. Se quiser resolver de vez, as
+saídas são compressão de áudio, Addressables para conteúdo pesado, ou hospedar o build fora
+do GitHub Pages.
 
 ---
 
