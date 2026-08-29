@@ -3,6 +3,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using SowurShield.Worldmap;
 
 namespace SowurShield.Editor
@@ -116,11 +117,129 @@ public static class RestyleWorldMapButtons
         }
 
         EditorUtility.SetDirty(template);
+        BuildChrome(template.transform.parent, controller);
+
         EditorSceneManager.MarkSceneDirty(template.gameObject.scene);
 
         Debug.Log($"[RestyleWorldMapButtons] Template restyled to {ButtonSize.x}x{ButtonSize.y} " +
                   "with plaque art. The other 24 clone it at runtime. Save the scene.");
     }
+
+    /// <summary>
+    /// Adds the map's title and a visible way out.
+    ///
+    /// The screen had neither: twenty-five plaques over an illustration, and nothing saying
+    /// what it was or how to leave. ESC did close it — WorldMapUIController.CanCloseWithEsc
+    /// is true — but a player has no way to know that, and a full-screen window with no exit
+    /// control reads as a soft lock.
+    ///
+    /// Both are rebuilt from scratch each run so re-running the tool cannot stack duplicates.
+    /// </summary>
+    private static void BuildChrome(Transform parent, WorldMapUIController controller)
+    {
+        if (parent == null) return;
+
+        foreach (string name in new[] { ChromeTitleName, ChromeBackName })
+        {
+            Transform existing = parent.Find(name);
+            if (existing != null) Undo.DestroyObjectImmediate(existing.gameObject);
+        }
+
+        // Title: top-centre, over the illustration's empty sky band.
+        var titleGO = new GameObject(ChromeTitleName, typeof(RectTransform));
+        Undo.RegisterCreatedObjectUndo(titleGO, "Create world map title");
+        titleGO.transform.SetParent(parent, false);
+
+        var titleRect = titleGO.GetComponent<RectTransform>();
+        titleRect.anchorMin = new Vector2(0.5f, 1f);
+        titleRect.anchorMax = new Vector2(0.5f, 1f);
+        titleRect.pivot     = new Vector2(0.5f, 1f);
+        titleRect.sizeDelta = new Vector2(520f, 64f);
+        titleRect.anchoredPosition = new Vector2(0f, -18f);
+
+        var title = titleGO.AddComponent<TextMeshProUGUI>();
+        title.text = "Mapa-Múndi";
+        title.fontSize = 34f;
+        title.fontStyle = FontStyles.Bold;
+        title.alignment = TextAlignmentOptions.Center;
+        title.raycastTarget = false;
+        // Cream on the map's dark foliage, with an outline so it holds over the lighter
+        // path running down the middle of the illustration.
+        title.color = new Color(0.969f, 0.949f, 0.910f);
+        title.outlineWidth = 0.22f;
+        title.outlineColor = new Color32(40, 30, 20, 255);
+        AddLocalizeEvent(title.gameObject, title, "ui_common.world_map_title");
+
+        // Back button: bottom-centre, below the grid.
+        var backGO = new GameObject(ChromeBackName, typeof(RectTransform));
+        Undo.RegisterCreatedObjectUndo(backGO, "Create world map back button");
+        backGO.transform.SetParent(parent, false);
+
+        var backRect = backGO.GetComponent<RectTransform>();
+        backRect.anchorMin = new Vector2(0.5f, 0f);
+        backRect.anchorMax = new Vector2(0.5f, 0f);
+        backRect.pivot     = new Vector2(0.5f, 0f);
+        backRect.sizeDelta = new Vector2(240f, 48f); // 5:1, matching the plaque art
+        backRect.anchoredPosition = new Vector2(0f, 26f);
+
+        var backImage = backGO.AddComponent<Image>();
+        backImage.sprite = LoadSprite(LockedPath);
+        backImage.type = Image.Type.Sliced;
+
+        var backButton = backGO.AddComponent<Button>();
+        backButton.targetGraphic = backImage;
+        if (controller != null)
+        {
+            // Persistent listener, so the wiring survives in the scene file rather than
+            // needing to be re-added at runtime.
+            UnityEditor.Events.UnityEventTools.AddPersistentListener(
+                backButton.onClick, controller.CloseMap);
+        }
+
+        var labelGO = new GameObject("Label", typeof(RectTransform));
+        labelGO.transform.SetParent(backGO.transform, false);
+        var labelRect = labelGO.GetComponent<RectTransform>();
+        labelRect.anchorMin = Vector2.zero;
+        labelRect.anchorMax = Vector2.one;
+        // 45px per side would swallow a 240px button; the plaque's 71% still leaves room at
+        // 30 for a single short word.
+        labelRect.offsetMin = new Vector2(30f, 6f);
+        labelRect.offsetMax = new Vector2(-30f, -6f);
+
+        var label = labelGO.AddComponent<TextMeshProUGUI>();
+        label.text = "Fechar";
+        label.fontSize = 18f;
+        label.alignment = TextAlignmentOptions.Center;
+        label.color = new Color(0.176f, 0.165f, 0.149f);
+        label.raycastTarget = false;
+        label.enableAutoSizing = true;
+        label.fontSizeMin = 13f;
+        label.fontSizeMax = 18f;
+        AddLocalizeEvent(label.gameObject, label, "ui_common.close");
+    }
+
+    /// <summary>
+    /// Binds a label to the UI_Common table, matching how the rest of the project's static
+    /// text is localized (see Editor/LocalizeStaticLabels).
+    /// </summary>
+    private static void AddLocalizeEvent(GameObject target, TMP_Text label, string key)
+    {
+        var evt = target.AddComponent<UnityEngine.Localization.Components.LocalizeStringEvent>();
+
+        var so = new SerializedObject(evt);
+        SerializedProperty reference = so.FindProperty("m_StringReference");
+        reference.FindPropertyRelative("m_TableReference")
+                 .FindPropertyRelative("m_TableCollectionName").stringValue = "UI_Common";
+        reference.FindPropertyRelative("m_TableEntryReference")
+                 .FindPropertyRelative("m_Key").stringValue = key;
+        so.ApplyModifiedProperties();
+
+        UnityEditor.Events.UnityEventTools.AddPersistentListener(
+            evt.OnUpdateString, new UnityEngine.Events.UnityAction<string>(label.SetText));
+    }
+
+    private const string ChromeTitleName = "WorldMapTitle";
+    private const string ChromeBackName  = "WorldMapBackButton";
 
     private static Sprite LoadSprite(string path)
     {

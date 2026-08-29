@@ -102,6 +102,10 @@ MonoBehaviour:
     m_Localized: Vender
     m_Metadata:
       m_Items: []
+  - m_Id: 25012585760546816
+    m_Localized: Mapa Mundial
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

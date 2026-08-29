@@ -359,6 +359,7 @@ UI_Common,ui_common.season.summer,Summer,Verão,Verano
 UI_Common,ui_common.season.fall,Fall,Outono,Otoño
 UI_Common,ui_common.season.winter,Winter,Inverno,Invierno
 UI_Common,ui_common.day_label,Day {0},Dia {0},Día {0}
+UI_Common,ui_common.world_map_title,World Map,Mapa-Múndi,Mapa Mundial
 Worldmap,worldmap.biome_completed,{0}/{1} completed,{0}/{1} completo,{0}/{1} completado
 LoadingTips,loadingtips.tip01,Tip: Water your crops regularly to prevent them from dying!,Dica: Regue suas plantações regularmente para evitar que morram!,Consejo: ¡Riega tus cultivos regularmente para evitar que se marchiten!
 LoadingTips,loadingtips.tip02,Tip: Use the SellBox to automatically sell items when you sleep.,Dica: Use a Caixa de Venda para vender itens automaticamente quando você dormir.,Consejo: Usa la Caja de Venta para vender artículos automáticamente cuando duermas.
