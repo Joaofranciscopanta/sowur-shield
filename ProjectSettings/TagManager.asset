@@ -40,8 +40,29 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 1101210001
+    locked: 0
+  - name: Ground
+    uniqueID: 1101210002
+    locked: 0
+  - name: GroundDecor
+    uniqueID: 1101210003
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Objects
+    uniqueID: 1101210004
+    locked: 0
+  - name: Characters
+    uniqueID: 1101210005
+    locked: 0
+  - name: Foreground
+    uniqueID: 1101210006
+    locked: 0
+  - name: WorldUI
+    uniqueID: 1101210007
     locked: 0
   m_RenderingLayers:
   - Default
