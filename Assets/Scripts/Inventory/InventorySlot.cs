@@ -238,6 +238,16 @@ namespace SowurShield.Inventory
                 borderRect.offsetMax = new Vector2(4, 4);
             }
 
+            // Without a sprite this draws nothing at all, so selecting a slot flipped
+            // IsSelected and changed the screen in no way.
+            //
+            // It has to be a hollow outline. The other slot sprites are filled backgrounds --
+            // tinting slot_grid_empty gold painted a solid gold square over the slot instead
+            // of framing it, which reads as a bug rather than a selection.
+            if (selectionBorder.sprite == null)
+                selectionBorder.sprite =
+                    Resources.Load<Sprite>("Sprites/UI/Slots/slot_selection_outline");
+
             selectionBorder.color = selectedColor;
             selectionBorder.type = Image.Type.Sliced;
             selectionBorder.raycastTarget = false;
