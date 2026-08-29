@@ -82,7 +82,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -120,7 +120,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -523,14 +523,6 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Bunny_WaterSide_Right_0: 161913588784333451
-      Bunny_WaterSide_Right_1: 810191359232520692
-      Bunny_WaterSide_Right_2: 366047424757129977
-      Bunny_WaterSide_Right_3: 896430734877740764
-      Bunny_WaterSide_Right_4: 1110454476989427025
-      Bunny_WaterSide_Right_5: 389102786399325646
-      Bunny_WaterSide_Right_6: 857922074791680577
-      Bunny_WaterSide_Right_7: 1152649358574085727
       Bunny_WaterSide_Left_0: 809162585010585036
       Bunny_WaterSide_Left_1: 157576371214044772
       Bunny_WaterSide_Left_2: 881064016617599092
@@ -539,6 +531,14 @@ TextureImporter:
       Bunny_WaterSide_Left_5: 41941969517730414
       Bunny_WaterSide_Left_6: 476261221282481035
       Bunny_WaterSide_Left_7: 860993223164079398
+      Bunny_WaterSide_Right_0: 161913588784333451
+      Bunny_WaterSide_Right_1: 810191359232520692
+      Bunny_WaterSide_Right_2: 366047424757129977
+      Bunny_WaterSide_Right_3: 896430734877740764
+      Bunny_WaterSide_Right_4: 1110454476989427025
+      Bunny_WaterSide_Right_5: 389102786399325646
+      Bunny_WaterSide_Right_6: 857922074791680577
+      Bunny_WaterSide_Right_7: 1152649358574085727
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
