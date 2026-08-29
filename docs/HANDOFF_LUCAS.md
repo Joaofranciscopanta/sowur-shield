@@ -8,33 +8,39 @@ Ordenado por impacto. Cada item diz **por que parei** e **o que exatamente decid
 
 ---
 
-## 🔴 1. Trocar a arte do tileset do terreno — PRECISA DE ARTISTA
+## 🟡 1. Tileset do terreno — ✅ roxo morto, retiling real ainda é de artista
 
-**Estado**: a estrutura do terreno está pronta e funcionando (pátio, curral, caminhos,
-bordas resolvidas pelo dual-grid — 14 tiles distintos onde antes havia 1). O que está
-errado é a **paleta**.
+**Feito (`0ce489c`)**: `TilesDemo.png` foi **recolorido** com a paleta do próprio jogo. O
+verde-limão contra roxo-vinho da arte de demo do plugin acabou — agora é grama contra terra,
+e o chão parou de brigar com os sprites da Sprout Lands que ficam em cima dele.
 
-**O problema**: `Assets/DualGridSystem/Tiles/Grass/TilesDemo.png` é a **arte de
-demonstração do plugin dual-grid** — verde-limão contra roxo-vinho. Não é arte de fazenda.
+Era um swap de 4 cores. As substituições foram **amostradas dos tilesets que o jogo já tem**,
+não inventadas: a grama pegou os dois tons dominantes de `Grass_tiles_v2.png`, a terra os de
+`Darker_Soil_Ground_Tiles.png`. Descoberta útil: a grama da demo era `#C0DB67` contra a real
+`#C0D470` — o autor do plugin amostrou o mesmo pack. **O roxo era o problema inteiro.**
 
-**Por que não fiz**: existe tileset real em
-`Assets/Art/ThirdParty/Sprout Lands - Sprites - premium pack/Tilesets/ground tiles/New tiles/`
-(`Grass_tiles_v2.png` e `Darker_Soil_Ground_Tiles.png`), mas eles são **176x112 com layout
-misto** (grama + bordas + encostas juntas), enquanto o dual-grid exige uma **grade 4x4 de
-16 tiles** numa ordem específica. Refatiar exige julgamento visual de qual recorte vira
-qual das 16 regras — trabalho de Sprite Editor, não de script. Improvisar isso entregaria
-algo pior que o placeholder atual.
+Um julgamento que precisei fazer: o pixel de borda foi para o tom médio-escuro da terra
+(`#9D866F`), não para a segunda cor dela. Mapeando ao pé da letra, grama e terra ficavam
+quase do mesmo valor e o contorno que separa as duas sumia.
 
-**O que fazer** (você ou a Isabella):
+Estrutura intacta (64x64, 4 cores, mesma contagem de pixels), então os 16 recortes e Tiles
+continuam válidos. Verificado em Play Mode: 14 tiles distintos em 10.201 células.
+Antes/depois em `Assets/Screenshots/terrain_recolor_clean.png`.
+
+**O que ainda é trabalho de artista** (opcional, não bloqueia nada): a *estrutura* dos tiles
+continua sendo a da demo — formas orgânicas arredondadas, sem textura, sem variação. Um
+tileset de verdade teria pedrinhas, tufos e transições próprias. Se quiser isso:
+
 1. Abrir `Grass_tiles_v2.png` e `Darker_Soil_Ground_Tiles.png` no Sprite Editor
-2. Montar uma textura 64x64 no mesmo layout de `TilesDemo.png` (4x4, células de 16px)
+2. Montar uma textura 64x64 no layout de `TilesDemo.png` (4x4, células de 16px)
 3. A ordem das 16 regras está em `Assets/Scripts/DualGridTilemap/DualGridTilemap.cs:35-52`
-   — os índices `tiles[0]` a `tiles[15]` mapeiam cada combinação de 4 vizinhos
-4. Criar os 16 assets `Tile` e arrastar para o array `tiles` do `DualGridTilemap` na cena
+   — `tiles[0]` a `tiles[15]` mapeiam cada combinação de 4 vizinhos (`tiles[6]` = tudo grama,
+   `tiles[12]` = tudo terra)
+4. Os 16 assets `Tile` já existem e estão ligados na cena — **basta substituir a textura**,
+   não precisa recriar nada
 
-**Alternativa mais barata**: se quiser só matar o roxo agora, dá para recolorir
-`TilesDemo.png` num editor de imagem mantendo a estrutura — 10 minutos, resolve 80% do
-problema visual.
+O backup da arte original está fora do repo, mas `git show 0ce489c^:Assets/DualGridSystem/Tiles/Grass/TilesDemo.png`
+recupera se precisar comparar.
 
 ---
 

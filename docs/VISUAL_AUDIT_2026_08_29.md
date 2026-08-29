@@ -276,6 +276,11 @@ verde-limão contra roxo-vinho. Existe tileset de fazenda real em
 tiles que o dual-grid espera. **Refatiar isso é trabalho de artista no Sprite Editor**, não
 algo a improvisar por script.
 
+> **✅ Resolvido depois desta auditoria (`0ce489c`)**: o roxo foi morto por **recoloração** —
+> swap de 4 cores amostradas de `Grass_tiles_v2.png` e `Darker_Soil_Ground_Tiles.png`,
+> mantendo a estrutura e os 16 recortes. O retiling completo continua sendo trabalho de
+> artista, mas deixou de ser bloqueio visual. Ver `HANDOFF_LUCAS.md` item 1.
+
 **Fase 3 — Polimento**: floating text, microanimações, ícones no minimapa, ordenação por Y,
 sorting no inventário, indicador de seleção na hotbar.
 
