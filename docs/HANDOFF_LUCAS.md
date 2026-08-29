@@ -205,6 +205,64 @@ Me diga quais desses você quer e eu faço.
 
 ---
 
+## 🔴 8. O tutorial existe, está traduzido, e NUNCA rodou
+
+**Estado**: `TutorialManager.cs` (288 linhas) implementa um tutorial de **6 passos** — arar,
+plantar, regar, acariciar animal, dormir, colher — com `LocalizedString` para cada título e
+descrição. As **13 entradas estão traduzidas em EN/PT/ES** em `translations.csv`, com
+formatação rica (negrito nos nomes das ferramentas).
+
+**O problema**: `TutorialManager.Instance` é **NULL**. Não existe nenhum GameObject nem
+prefab com esse componente — só o script. O `SaveManager` chama
+`TutorialManager.Instance?.StartTutorial()` num jogo novo, e o `?.` engole a chamada em
+silêncio.
+
+**Por que não liguei**: instanciar exige criar o painel de UI (`tutorialPanel`, `stepText`,
+`stepCountText`, `skipButton`, `nextButton` são todos `[SerializeField]` sem referência).
+Montar isso é decisão de design — onde o painel aparece, que tamanho tem, se bloqueia o
+jogo. Fazer às cegas provavelmente ficaria pior que não ter.
+
+**Vale muito a pena**: o primeiro passo já diz *"Equipe a **Enxada** da sua barra de itens"*
+— e a enxada agora está lá desde o início (corrigido nesta sessão). O tutorial e o kit
+inicial foram feitos para funcionar juntos.
+
+**Decisão sua**: quer que eu monte o painel seguindo o estilo do menu de pausa (a peça de UI
+mais bem resolvida do jogo)?
+
+---
+
+## 🟡 9. WorldMap: os 25 stages sobre botões cinza padrão
+
+**Estado**: funciona — 25 stages nomeados em PT, progressão clara (só o primeiro
+desbloqueado), fecha com ESC.
+
+**O que está feio** (medido):
+- Os 25 botões usam `UISprite`, o **retângulo cinza padrão do Unity**, não arte do jogo
+- Cobrem **40% da tela**, tapando o mapa pintado que está por baixo
+- **Sem título e sem botão de voltar** — o `WorldMap` tem só `MapImage` com 25 filhos.
+  Fecha com ESC, mas nada na tela diz isso.
+
+**Decisão sua**: quer botões com a moldura de madeira do resto do jogo, menores, deixando o
+mapa aparecer? É trabalho de UI que eu consigo fazer, mas muda a cara da tela.
+
+---
+
+## ✅ Verificado no fluxo real e SEM defeitos
+
+Percorri MainMenu → Novo Jogo → slot → fazenda → SellBox → dormir → WorldMap:
+
+- **SellBox**: "Caixa de Venda" em PT, grid 4x3, "Valor Total: 0 moedas". Painel bem
+  proporcionado. *(Cheguei a reportar que não abria — era distância: 5,66 unidades contra
+  alcance de 1,4.)*
+- **Dormir**: painel informativo com dia/hora e resumo da Caixa de Venda, avança o dia
+  corretamente (1 → 2), HUD atualiza. Uma correção aplicada: a linha do autosave era ciano
+  sobre creme, 1,12:1 (`167c360`).
+- **Áudio**: 17 SFX cobrindo arar, regar, plantar, colher, cavar, petting, hit e morte; 3
+  faixas de música com troca por cena. *(A auditoria dizia "feedback praticamente ausente" —
+  estava errada.)*
+
+---
+
 ## ✅ O que já está resolvido (não precisa de você)
 
 Branch `fix/visual-audit-phase1`, 907 testes verdes:
