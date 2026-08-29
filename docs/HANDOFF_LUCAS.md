@@ -248,14 +248,24 @@ Números medidos, em duas passadas:
 
 Resultado: 0 de 25 labels vazando, 0 botões fora da tela, área caiu de 40% para 30%.
 
-**Título e botão de voltar: código pronto, falta 1 clique** (`f8e93c3`). O `BuildChrome`
-cria o título "Mapa-Múndi" e a placa "Fechar" ligada ao `CloseMap`, ambos com
-`LocalizeStringEvent` nos 3 idiomas. **Não cheguei a rodar na cena** — a ponte do Unity MCP
-parou de responder no fim da sessão. Para aplicar:
+**Título e botão de voltar: ✅ aplicados na cena** (`5ae149d`). O título "Mapa-Múndi" e a
+placa "Fechar" ligada ao `CloseMap` estão salvos na SampleScene, ambos com
+`LocalizeStringEvent` nos 3 idiomas. Verificado em Play Mode: o mapa abre com título no topo,
+botão de sair embaixo e as 25 placas.
 
-*Menu* → **Sowur Shield → UI → Restyle World Map Buttons**, depois salvar a cena.
+Rodar o tool de novo é seguro — é idempotente: destrói e recria o chrome a cada execução.
 
-É idempotente: destrói e recria o chrome a cada execução, então rodar de novo não duplica.
+⚠️ **Por que a tentativa anterior parou no meio.** Um `TextMeshProUGUI` criado por script de
+editor não tem font asset, então o material dele é null; setar `outlineWidth` chama
+`SetOutlineThickness`, que clona esse material e lança. O título ficava criado sem outline e
+o botão de voltar **nunca era alcançado** — sem erro visível, o menu só "não fazia nada".
+Agora a fonte (Nunito, a única com acentos) é atribuída antes, e o outline degrada para um
+warning em vez de derrubar o resto. O título ficou sem outline: creme sobre folhagem escura
+segura sozinho.
+
+**Gosto, não defeito:** o botão "Fechar" tem 240x48px em 1920x1080 — funciona, mas é
+discreto. Se quiser mais presença, é só aumentar `backRect.sizeDelta` em
+`RestyleWorldMapButtons.cs` mantendo a proporção 5:1 da arte.
 
 ⚠️ **Não rode o importador de CSV de localização sem conferir.** Rodei para adicionar
 `ui_common.world_map_title` e ele **reverteu duas traduções do MainMenu** — PT "Espaço "
