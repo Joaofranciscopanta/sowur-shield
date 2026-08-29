@@ -330,15 +330,20 @@ public class SleepConfirmationPanel : MonoBehaviour
     {
         if (saveInfoText != null)
         {
+            // Not Color.cyan / Color.yellow. Both are near-white against the panel's cream
+            // interior: cyan measured 1.12:1 against a 4.5:1 minimum, so the line telling the
+            // player their game is about to be saved was effectively invisible. These are the
+            // UITheme status tones, dark enough to read on cream while still reading as
+            // "fine" and "careful".
             if (SaveManager.Instance != null)
             {
                 saveInfoText.text = autosaveOnText.SafeGetLocalizedString();
-                saveInfoText.color = Color.cyan;
+                saveInfoText.color = new Color(0.180f, 0.420f, 0.220f); // deep green, 5.74:1
             }
             else
             {
                 saveInfoText.text = autosaveOffText.SafeGetLocalizedString();
-                saveInfoText.color = Color.yellow;
+                saveInfoText.color = new Color(0.600f, 0.240f, 0.020f); // burnt orange, 6.22:1
             }
         }
     }
