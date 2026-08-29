@@ -2,7 +2,7 @@
 
 > Lista viva do que **eu não posso resolver sozinho** e por quê. Atualizada em 2026-08-29.
 > Companion da [auditoria visual](VISUAL_AUDIT_2026_08_29.md).
-> Branch atual: `fix/visual-audit-phase1` (não pusheada — nenhum Cloud Build disparado).
+> As correções estão em `main` (PR #40 mergeado).
 
 Ordenado por impacto. Cada item diz **por que parei** e **o que exatamente decidir/fazer**.
 
@@ -60,10 +60,19 @@ sprite atribuído (só `IronGolem` e `ObsidianGolem` faltam), 25 de 25 stages co
 configurados.
 
 **O que sobra de verdade**:
-- **20 dos 25 stages não têm `backgroundSprite`** — só 5 têm. Sem fundo, a batalha roda
-  sobre cinza liso. *Decisão sua*: reaproveito os 5 fundos existentes por bioma (imediato,
-  sem arte nova) ou fica marcado para a Isabella fazer fundos próprios?
-- `"Turno: 2/500"` expõe um limite de debug ao jogador.
+- ~~20 dos 25 stages sem fundo~~ → **RESOLVIDO** (`329394c`). Não precisava de artista: os
+  26 fundos já estavam desenhados em `Assets/Art/Maps`, só nunca foram atribuídos. Agora
+  são **25 de 25**. Uma conferida por olho: `Stage_013_EchoChamber` pegou "Mine Tunnels 2"
+  porque dois arquivos compartilham o número — troque por "Mine Tunnels" se preferir.
+- **`"Turno: 2/500"`** — *decisão sua, não mexi*. O `maxActions = 500` em `TurnManager.cs:32`
+  não é debug: é o limite anti-loop que encerra a batalha em empate. O incômodo é **exibir**
+  isso. A string é `combat.status.turn_counter` = `"Turno: {0}/{1}"` em
+  `Assets/Localization/translations.csv:150`, nos 3 idiomas. Opções:
+  **(a)** `"Turno: {0}"` — some com o `/500`, mas o jogador perde a noção de que há limite;
+  **(b)** manter, mas baixar `maxActions` para algo plausível como 50, e aí `2/50` lê como
+  informação de ritmo em vez de número mágico;
+  **(c)** deixar como está.
+  Eu não escolho por você porque muda a UI nos 3 idiomas e afeta o balanceamento.
 
 **Lição de método** (vale para você também): se abrir uma cena direto no Editor e algo
 parecer vazio, **olhe o Console antes de concluir**. Este projeto loga o fallback toda vez.
@@ -212,3 +221,6 @@ Branch `fix/visual-audit-phase1`, 907 testes verdes:
 - **Retratos nunca apareciam no diálogo** → ligados (falta só a arte, item 3)
 - Menu principal 40% maior que o jogo → referência padronizada sem mudar o visual
 - Placeholders em inglês + typo "Item Descrption" → traduzidos
+- **20 stages de combate sem fundo** → ligados aos 26 que já existiam no disco
+- Sobreposição de texto no combate → 241px → 0px, medido
+- Compressão de textura que estourou o deploy → revertida, Point filter mantido
