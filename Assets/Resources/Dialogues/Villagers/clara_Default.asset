@@ -82,7 +82,13 @@ MonoBehaviour:
     nextNodeId: 
     autoAdvanceDelay: 0
     displayConditions: []
-    nodeEffects: []
+    nodeEffects:
+    - effectType: 7
+      effectKey: clara_remedy
+      effectValue: 
+      numericValue: 0
+      description: 'Offer ''clara_remedy''. Cabbage and radish: the farming loop.
+        StartQuest is a no-op if already active or done.'
     voiceClip: {fileID: 0}
     ambientSound: {fileID: 0}
     editorNote: 

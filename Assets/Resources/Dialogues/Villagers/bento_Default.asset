@@ -82,7 +82,13 @@ MonoBehaviour:
     nextNodeId: 
     autoAdvanceDelay: 0
     displayConditions: []
-    nodeEffects: []
+    nodeEffects:
+    - effectType: 7
+      effectKey: egg_collector
+      effectValue: 
+      numericValue: 0
+      description: Offer 'egg_collector'. Overlaps Isabela's egg objective. StartQuest
+        is a no-op if already active or done.
     voiceClip: {fileID: 0}
     ambientSound: {fileID: 0}
     editorNote: 

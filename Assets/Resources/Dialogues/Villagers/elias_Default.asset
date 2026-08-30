@@ -82,7 +82,13 @@ MonoBehaviour:
     nextNodeId: 
     autoAdvanceDelay: 0
     displayConditions: []
-    nodeEffects: []
+    nodeEffects:
+    - effectType: 7
+      effectKey: clear_sunny_fields
+      effectValue: 
+      numericValue: 0
+      description: Offer 'clear_sunny_fields'. The way into combat; gated on first_harvest.
+        StartQuest is a no-op if already active or done.
     voiceClip: {fileID: 0}
     ambientSound: {fileID: 0}
     editorNote: 

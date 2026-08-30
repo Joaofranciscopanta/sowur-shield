@@ -82,7 +82,13 @@ MonoBehaviour:
     nextNodeId: 
     autoAdvanceDelay: 0
     displayConditions: []
-    nodeEffects: []
+    nodeEffects:
+    - effectType: 7
+      effectKey: meet_the_village
+      effectValue: 
+      numericValue: 0
+      description: Offer 'meet_the_village'. Sends the player round the village.
+        StartQuest is a no-op if already active or done.
     voiceClip: {fileID: 0}
     ambientSound: {fileID: 0}
     editorNote: 
