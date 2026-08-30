@@ -9744,7 +9744,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 2.6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -9769,7 +9769,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.7, y: 3.37, z: -10}
+  m_LocalPosition: {x: 7, y: -2.5, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -23037,7 +23037,7 @@ Transform:
   m_GameObject: {fileID: 1203825683}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.05, y: 3.46, z: 0}
+  m_LocalPosition: {x: 7.6, y: -3, z: 0}
   m_LocalScale: {x: 6, y: 6, z: 0}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -128989,6 +128989,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1422269432}
   - component: {fileID: 1422269431}
+  - component: {fileID: 1422269433}
   m_Layer: 0
   m_Name: InteractionManager
   m_TagString: Untagged
@@ -129025,6 +129026,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1422269433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1422269430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53b4ef24e6c217a4a885dec86caf34e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Core.InteractionPromptUI
+  heightAbove: 1.15
+  fontSize: 3.2
+  textColor: {r: 0.15, g: 0.13, b: 0.11, a: 1}
+  badgeColor: {r: 0.98, g: 0.84, b: 0.35, a: 0.95}
 --- !u!1 &1427868611 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2608946839150596299, guid: 16910a20601f439abfeb28858c359359, type: 3}
