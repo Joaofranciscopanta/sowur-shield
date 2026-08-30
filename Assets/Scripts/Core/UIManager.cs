@@ -153,6 +153,10 @@ public class UIManager : MonoBehaviour
         openWindowStack.Push(window);
         window.OpenWindow();
 
+        // Every UI window opens through here, so one call covers inventory, shops, the quest
+        // log, the codex and the feeding trough rather than needing a hook in each of them.
+        SFXManager.Play("MenuOpen");
+
         LogDebug($"Opened window: {window.WindowName} (Priority: {window.WindowPriority})");
 
         // Ensure cursor is visible for UI interaction
@@ -174,6 +178,7 @@ public class UIManager : MonoBehaviour
         {
             openWindowStack.Pop();
             window.CloseWindow();
+            SFXManager.Play("MenuClose");
             LogDebug($"Closed window: {window.WindowName}");
             return true;
         }

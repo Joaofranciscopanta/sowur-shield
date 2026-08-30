@@ -502,7 +502,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             playerInventory.Remove(seedItem, 1);
 
             PlayEffect(plantEffect);
-            PlaySound(plantSound);
+            PlaySound(plantSound, "PlantSeed");
 
             UpdateStatusIndicator();
             UpdateStatusText();
@@ -673,7 +673,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
         currentState = SoilState.Regular;
         UpdateAppearance();
         PlayEffect(shovelEffect);
-        PlaySound(shovelSound);
+        PlaySound(shovelSound, "ShovelDig");
         hasShownEmptyPlotIndicator = false;
         HideStatusText();
         UpdateStatusIndicator();

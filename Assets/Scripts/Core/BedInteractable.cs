@@ -161,9 +161,13 @@ public class BedInteractable : MonoBehaviour, IInteractable
         playerControls = FindFirstObjectByType<PlayerMove>();
         playerControls?.DisableMovement();
 
-        // Som de dormir
+        // Som de dormir. sleepSound is null in SampleScene, and PlayClipAtPoint builds a 3D
+        // source that the listener rarely hears — so this was silent twice over. SFXManager
+        // resolves sfx_sleep.wav itself and plays it 2D. An assigned clip still wins.
         if (sleepSound != null)
-            AudioSource.PlayClipAtPoint(sleepSound, transform.position);
+            SFXManager.Play(sleepSound);
+        else
+            SFXManager.Play("Sleep");
 
         // Start sleep fade transition
         bool fadeComplete = false;
@@ -223,9 +227,10 @@ public class BedInteractable : MonoBehaviour, IInteractable
             yield return new WaitUntil(() => fadeInComplete);
         }
 
-        // Som de acordar
+        // Som de acordar. Same fix as the sleep clip above; there is no generated wake-up
+        // sound yet, so an unassigned wakeUpSound simply stays quiet rather than guessing.
         if (wakeUpSound != null)
-            AudioSource.PlayClipAtPoint(wakeUpSound, transform.position);
+            SFXManager.Play(wakeUpSound);
 
         yield return new WaitForSeconds(1.0f);
 
