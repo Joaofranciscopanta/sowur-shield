@@ -104,6 +104,7 @@ public class FarmBuildingManager : MonoBehaviour, ISaveable
 
         SpawnWorldObject(data);
 
+        SFXManager.Play("Build");
         OnBuildingConstructed?.Invoke(data.buildingType);
         return true;
     }

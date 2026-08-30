@@ -123,13 +123,13 @@ public class SaveGameUI : MonoBehaviour
         if (success)
         {
             ShowNotification("Game saved! Sweet dreams...", successColor, notificationDuration);
-            PlaySound(saveSuccessSound);
+            PlaySound(saveSuccessSound, "SaveSuccess");
             UpdateSaveFileInfo();
         }
         else
         {
             ShowNotification("Failed to save game!", errorColor, notificationDuration * 1.5f);
-            PlaySound(saveErrorSound);
+            PlaySound(saveErrorSound, "Denied");
         }
     }
     
@@ -311,11 +311,21 @@ public class SaveGameUI : MonoBehaviour
     // AUDIO
     // ============================================================================
     
-    private void PlaySound(AudioClip clip)
+    /// <summary>
+    /// Both clip fields are unassigned, so saving happened in silence. Falls back to a
+    /// shared SFXManager key; an assigned clip still takes precedence.
+    /// </summary>
+    private void PlaySound(AudioClip clip, string sfxKey = null)
     {
         if (clip != null && audioSource != null)
         {
             audioSource.PlayOneShot(clip);
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(sfxKey))
+        {
+            SFXManager.Play(sfxKey);
         }
     }
     

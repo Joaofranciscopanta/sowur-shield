@@ -215,13 +215,18 @@ public class BattleResultsUI : MonoBehaviour
         lastSurvivingPlayers = playerUnitsAlive;
         lastSurvivingEnemies = enemyUnitsAlive;
 
+        // The sting plays here rather than inside ShowVictory/ShowDefeat: those two are also
+        // re-run when the language changes (see HandleLanguageChanged), which would replay the
+        // fanfare over an already-open results screen.
         switch (result)
         {
             case TurnManager.BattleResult.Victory:
+                SowurShield.Core.SFXManager.Play("Victory");
                 ShowVictory(playerUnitsAlive, enemyUnitsAlive);
                 break;
 
             case TurnManager.BattleResult.Defeat:
+                SowurShield.Core.SFXManager.Play("Defeat");
                 ShowDefeat(playerUnitsAlive, enemyUnitsAlive);
                 break;
 

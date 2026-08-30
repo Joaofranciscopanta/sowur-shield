@@ -480,6 +480,7 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
         }
 
         foodEatenToday++;
+        SowurShield.Core.SFXManager.Play("FeedAnimal");
         ModifyHappiness(balance != null ? balance.feedHappinessBonus : 3f);
 
         // Check if daily requirements are met
@@ -576,6 +577,8 @@ public class Animal : MonoBehaviour, IInteractable, ISaveable
     private void SpawnProduce(int amount)
     {
         if (amount <= 0) return;
+
+        SowurShield.Core.SFXManager.Play("AnimalProduce");
 
         // Look up the item from the database
         Item produceItem = ItemDatabase.GetItem(animalData.produceItemName);

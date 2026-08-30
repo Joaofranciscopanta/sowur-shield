@@ -476,6 +476,7 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
                 if (!cropData.IsValidSeason(currentSeason))
                 {
                     wrongSeasonText.Arguments = new object[] { cropData.GetDisplayName(), currentSeason };
+                    SFXManager.Play("Denied");
                     ShowWorldFeedback(wrongSeasonText.SafeGetLocalizedString());
                     return;
                 }

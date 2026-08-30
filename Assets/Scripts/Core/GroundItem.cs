@@ -470,7 +470,9 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
             }
             else
             {
-                // Inventory full - item stays on ground
+                // Inventory full - item stays on ground. Previously this was refused with no
+                // feedback at all, so a full bag looked like a broken pickup.
+                SFXManager.Play("Denied");
             }
         }
     }

@@ -268,6 +268,8 @@ public class PlayerStats : MonoBehaviour, ISaveable
         experience -= experienceToNextLevel;
         playerLevel++;
 
+        SFXManager.Play("LevelUp");
+
         // Increase stats on level up
         maxHealth += 10;
         maxEnergy += 5;

@@ -145,6 +145,7 @@ public class UIManager : MonoBehaviour
         {
             var topWindow = openWindowStack.Peek();
             LogDebug($"Window '{window.WindowName}' blocked by '{topWindow.WindowName}'");
+            SFXManager.Play("Denied");
             window.OnWindowBlocked(topWindow.WindowName);
             return false;
         }
