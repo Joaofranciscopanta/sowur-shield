@@ -113,8 +113,13 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 296476693
-    m_Localized: Delete Save File?\n\nThis action cannot be undone.\nAll your progress
-      will be permanently lost!
+    m_Localized: 'Delete Save File?
+
+
+      This action cannot be undone.
+
+      All
+      your progress will be permanently lost!'
     m_Metadata:
       m_Items: []
   - m_Id: 296476694

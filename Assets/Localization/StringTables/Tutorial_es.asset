@@ -23,9 +23,9 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 313253888
-    m_Localized: "\xA1Bienvenido a tu granja!\\n\\nEquipa la <b>Azada</b> desde tu
-      barra de acceso r\xE1pido, luego haz <b>clic izquierdo</b> en una parcela de
-      tierra para ararla."
+    m_Localized: "\xA1Bienvenido a tu granja! Equipa la <b>Azada</b> desde tu barra
+      de acceso r\xE1pido, luego haz <b>clic izquierdo</b> en una parcela de tierra
+      para ararla."
     m_Metadata:
       m_Items: []
   - m_Id: 313253889

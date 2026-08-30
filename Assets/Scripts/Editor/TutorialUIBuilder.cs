@@ -19,18 +19,29 @@ namespace SowurShield.Editor
 /// new game. Its first step reads "equip the Hoe from your hotbar", which only became true
 /// when new saves started shipping with one.
 ///
-/// The panel deliberately copies the pause menu's look — wood frame, cream interior, gold
-/// button — because that is the most resolved piece of UI in the game and the tutorial is
-/// the first thing a new player sees.
+/// The panel is a slim bar above the hotbar, built from the HUD's own topbar_background so
+/// it reads as part of the interface rather than a window laid over it.
 ///
-/// Placement is bottom-centre, above the hotbar (which occupies y 2..62) and clear of the
-/// dialogue box, so it never covers what it is telling the player to click.
+/// It began as a 980x470 wooden window copying the pause menu. That covered 22% of the
+/// screen and its band (y 76..546) swallowed the player (y 482..598), so a tutorial whose
+/// first instruction is "click a soil block" stood in front of both the soil and the
+/// character. The frame art was most of the problem: panel_wood_generic paints 236px of
+/// vertical border before any content fits.
 ///
 /// Menu: Sowur Shield > UI > Build Tutorial UI
 /// </summary>
 public static class TutorialUIBuilder
 {
     private const string CanvasName = "TutorialCanvas";
+
+    // A single row, sized against the real strings rather than a placeholder. The longest
+    // step is 154 characters; measured in play mode it wraps to two lines needing 70px of
+    // text height, so 92px covers that plus padding. The HUD's own bars are 46-50px, so this
+    // still reads as the same family rather than as a window.
+    private const float BarHeight = 92f;
+    private const float StepLabelWidth = 118f;   // "Passo 1 de 6" / "Step 1 of 6" / "Paso 1 de 6"
+    private const float NextWidth = 150f;        // 5:1-ish against the 40px height
+    private const float SkipWidth = 110f;
 
     [MenuItem("Sowur Shield/UI/Build Tutorial UI")]
     public static void Build() => Build(showDialogs: true);
@@ -71,81 +82,87 @@ public static class TutorialUIBuilder
 
         canvasGO.AddComponent<GraphicRaycaster>();
 
-        // ── Panel: bottom-centre, clear of the hotbar ────────────────────────────
+        // ── Panel: a slim bar above the hotbar ───────────────────────────────────
+        //
+        // This replaces a 980x470 wooden window. That panel covered 22% of the screen and,
+        // measured in play mode, its band (y 76..546) swallowed the player (y 482..598) --
+        // so a tutorial whose first step is "click a soil block" stood in front of the soil
+        // and the character. Lucas reported it as "can't see the player, it's weird".
+        //
+        // Two things forced the old size, and both are avoided here rather than tuned:
+        // panel_wood_generic paints 236px of vertical frame (86 top + 150 bottom) before any
+        // content fits, and the title, body and two buttons were stacked vertically.
+        // topbar_background is the HUD's own bar art -- 99% interior, almost no frame -- and
+        // the row is laid out horizontally, so the whole thing fits in 72px.
         var panel = new GameObject("TutorialPanel", typeof(RectTransform));
         panel.transform.SetParent(canvasGO.transform, false);
         var panelRect = panel.GetComponent<RectTransform>();
         panelRect.anchorMin = new Vector2(0.5f, 0f);
         panelRect.anchorMax = new Vector2(0.5f, 0f);
         panelRect.pivot     = new Vector2(0.5f, 0f);
-        // 86 + 150 = 236px of vertical frame art alone, so a 200px panel had no interior at
-        // all — everything drew on the wood. Height covers the frame plus room for a title,
-        // three lines of body text and a button row.
-        // 86 top + 44 title + 12 + ~76 body (4 lines at the 14pt auto-size floor) + 16 +
-        // 44 buttons + 150 bottom = 428 minimum; 470 leaves room for the longer steps
-        // rather than sitting exactly on the limit.
-        panelRect.sizeDelta = new Vector2(980f, 470f);
-        panelRect.anchoredPosition = new Vector2(0f, 76f); // hotbar tops out at y=62
+        panelRect.sizeDelta = new Vector2(1120f, BarHeight);
+        // The hotbar occupies y 6..54, so this clears it with a small gap.
+        panelRect.anchoredPosition = new Vector2(0f, 68f);
 
         var frame = panel.AddComponent<Image>();
-        frame.sprite = LoadSprite("Assets/Resources/Sprites/UI/Panels/panel_wood_generic.png");
+        frame.sprite = LoadSprite("Assets/Resources/Sprites/UI/Bars/topbar_background.png");
         frame.type = Image.Type.Sliced;
 
-        // The painted border is far wider than the 32px 9-slice value, and it is not
-        // symmetric. Sampling panel_wood_generic's interior gives where the cream actually
-        // starts: 82px left, 113px right, 86px top, 150px bottom of a 512px sprite. Sliced
-        // keeps borders at fixed pixel size, so these carry over directly.
-        //
-        // A first pass used a flat 46px and the text visibly ran onto the wood on both
-        // sides — the rect was never the problem, the art inside it was.
-        // A few px past the measured edge on each side: the sampled value is where the cream
-        // begins, and text starting exactly there still reads as touching the wood.
-        const float InsetLeft   = 92f;
-        const float InsetRight  = 125f;
-        const float InsetTop    = 86f;
-        const float InsetBottom = 150f;
+        // The bar art has essentially no painted frame (measured: 99% interior), unlike
+        // panel_wood_generic. A small uniform breathing margin is all that is needed.
+        const float PadX = 22f;
+        const float PadY = 10f;
 
+        // Title and body share one line: "Passo 1 de 6" as a lead-in, then the instruction.
+        // Stacking them was part of what made the old panel tall.
         var title = CreateText(panel.transform, "StepCountText",
-            "Passo 1 de 6 — Are o solo", 22, FontStyles.Bold, textDark,
-            TextAlignmentOptions.Top);
+            "Passo 1 de 6", 17, FontStyles.Bold, cream, TextAlignmentOptions.Left);
         var titleRect = title.rectTransform;
-        titleRect.anchorMin = new Vector2(0f, 1f);
-        titleRect.anchorMax = new Vector2(1f, 1f);
-        titleRect.pivot     = new Vector2(0.5f, 1f);
-        titleRect.offsetMin = new Vector2(InsetLeft, -(InsetTop + 44f));
-        titleRect.offsetMax = new Vector2(-InsetRight, -InsetTop);
+        titleRect.anchorMin = new Vector2(0f, 0f);
+        titleRect.anchorMax = new Vector2(0f, 1f);
+        titleRect.pivot     = new Vector2(0f, 0.5f);
+        titleRect.offsetMin = new Vector2(PadX, PadY);
+        titleRect.offsetMax = new Vector2(PadX + StepLabelWidth, -PadY);
+        title.textWrappingMode = TextWrappingModes.NoWrap;
 
         var body = CreateText(panel.transform, "StepText",
             "Equipe a Enxada e clique com o botão esquerdo em um bloco de terra.",
-            18, FontStyles.Normal, textDark, TextAlignmentOptions.Top);
+            17, FontStyles.Normal, cream, TextAlignmentOptions.Left);
         var bodyRect = body.rectTransform;
         bodyRect.anchorMin = new Vector2(0f, 0f);
         bodyRect.anchorMax = new Vector2(1f, 1f);
-        bodyRect.offsetMin = new Vector2(InsetLeft, InsetBottom + 64f);   // clears the button row
-        bodyRect.offsetMax = new Vector2(-InsetRight, -(InsetTop + 52f)); // clears the title
-        body.enableWordWrapping = true;
-        // Descriptions vary a lot in length across the six steps; shrink rather than clip.
+        bodyRect.offsetMin = new Vector2(PadX + StepLabelWidth + 14f, PadY);
+        bodyRect.offsetMax = new Vector2(-(PadX + NextWidth + SkipWidth + 24f), -PadY);
+        body.textWrappingMode = TextWrappingModes.Normal;
+        // Two lines at most in a 52px interior; the longest step still has to fit.
         body.enableAutoSizing = true;
-        body.fontSizeMin = 14f;
-        body.fontSizeMax = 18f;
+        body.fontSizeMin = 13f;
+        body.fontSizeMax = 17f;
 
-        var skip = CreateButton(panel.transform, "SkipButton", "Pular tutorial",
-            "Assets/Resources/Sprites/UI/Buttons/button_secondary.png", textDark);
-        var skipRect = skip.GetComponent<RectTransform>();
-        skipRect.anchorMin = new Vector2(0f, 0f);
-        skipRect.anchorMax = new Vector2(0f, 0f);
-        skipRect.pivot     = new Vector2(0f, 0f);
-        skipRect.sizeDelta = new Vector2(210f, 44f);
-        skipRect.anchoredPosition = new Vector2(InsetLeft, InsetBottom + 8f);
-
+        // Buttons sit on the right of the same row, smaller than the old 210x44 pair.
         var next = CreateButton(panel.transform, "NextButton", "Entendi",
             "Assets/Resources/Sprites/UI/Buttons/button_primary.png", textDark);
         var nextRect = next.GetComponent<RectTransform>();
-        nextRect.anchorMin = new Vector2(1f, 0f);
-        nextRect.anchorMax = new Vector2(1f, 0f);
-        nextRect.pivot     = new Vector2(1f, 0f);
-        nextRect.sizeDelta = new Vector2(210f, 44f);
-        nextRect.anchoredPosition = new Vector2(-InsetRight, InsetBottom + 8f);
+        nextRect.anchorMin = new Vector2(1f, 0.5f);
+        nextRect.anchorMax = new Vector2(1f, 0.5f);
+        nextRect.pivot     = new Vector2(1f, 0.5f);
+        nextRect.sizeDelta = new Vector2(NextWidth, 40f);
+        nextRect.anchoredPosition = new Vector2(-PadX, 0f);
+
+        var skip = CreateButton(panel.transform, "SkipButton", "Pular",
+            "Assets/Resources/Sprites/UI/Buttons/button_secondary.png", textDark);
+        var skipRect = skip.GetComponent<RectTransform>();
+        skipRect.anchorMin = new Vector2(1f, 0.5f);
+        skipRect.anchorMax = new Vector2(1f, 0.5f);
+        skipRect.pivot     = new Vector2(1f, 0.5f);
+        skipRect.sizeDelta = new Vector2(SkipWidth, 40f);
+        skipRect.anchoredPosition = new Vector2(-(PadX + NextWidth + 10f), 0f);
+
+        // TutorialManager rewrites the step text and the counter every step but never the
+        // button captions, so without this they stay in whatever language is baked in here.
+        // The old panel had the same gap; it is worth closing while the buttons are moving.
+        LocalizeLabel(next, "ui_common.got_it");
+        LocalizeLabel(skip, "ui_common.skip");
 
         panel.SetActive(false); // StartTutorial turns it on
 
@@ -184,6 +201,30 @@ public static class TutorialUIBuilder
     /// Points a LocalizedString field at the "Tutorial" table by key. Assigning through
     /// SerializedObject rather than code keeps it identical to an Inspector-set reference.
     /// </summary>
+    /// <summary>
+    /// Binds a button's caption to the UI_Common table, matching how the rest of the
+    /// project's static text is localized.
+    /// </summary>
+    private static void LocalizeLabel(GameObject button, string key)
+    {
+        var label = button.GetComponentInChildren<TMP_Text>(true);
+        if (label == null) return;
+
+        var evt = label.gameObject
+            .AddComponent<UnityEngine.Localization.Components.LocalizeStringEvent>();
+
+        var so = new SerializedObject(evt);
+        SerializedProperty reference = so.FindProperty("m_StringReference");
+        reference.FindPropertyRelative("m_TableReference")
+                 .FindPropertyRelative("m_TableCollectionName").stringValue = "UI_Common";
+        reference.FindPropertyRelative("m_TableEntryReference")
+                 .FindPropertyRelative("m_Key").stringValue = key;
+        so.ApplyModifiedProperties();
+
+        UnityEditor.Events.UnityEventTools.AddPersistentListener(
+            evt.OnUpdateString, new UnityEngine.Events.UnityAction<string>(label.SetText));
+    }
+
     private static void WireLocalizedString(SerializedObject so, string fieldName, string key)
     {
         SerializedProperty prop = so.FindProperty(fieldName);

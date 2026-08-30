@@ -1,4 +1,6 @@
 Table,Key,en,pt,es
+UI_Common,ui_common.got_it,Got it,Entendi,Entendido
+UI_Common,ui_common.skip,Skip,Pular,Saltar
 UI_Common,ui_common.sort,Sort,Organizar,Ordenar
 UI_Common,ui_common.yes,Yes,Sim,Sí
 UI_Common,ui_common.no,No,Não,No

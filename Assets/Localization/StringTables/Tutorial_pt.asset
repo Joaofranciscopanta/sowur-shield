@@ -23,9 +23,9 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 313253888
-    m_Localized: "Bem-vindo \xE0 sua fazenda!\\n\\nEquipe a <b>Enxada</b> da sua
-      barra de itens e, em seguida, <b>clique com o bot\xE3o esquerdo</b> em um bloco
-      de terra para arar."
+    m_Localized: "Bem-vindo \xE0 sua fazenda! Equipe a <b>Enxada</b> da sua barra
+      de itens e, em seguida, <b>clique com o bot\xE3o esquerdo</b> em um bloco de
+      terra para arar."
     m_Metadata:
       m_Items: []
   - m_Id: 313253889

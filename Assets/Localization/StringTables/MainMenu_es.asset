@@ -114,8 +114,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 296476693
-    m_Localized: "\xBFEliminar archivo de guardado?\\n\\nEsta acci\xF3n no se puede
-      deshacer.\\n\xA1Todo tu progreso se perder\xE1 permanentemente!"
+    m_Localized: "\xBFEliminar archivo de guardado?\n\nEsta acci\xF3n no se puede
+      deshacer.\n\xA1Todo tu progreso se perder\xE1 permanentemente!"
     m_Metadata:
       m_Items: []
   - m_Id: 296476694

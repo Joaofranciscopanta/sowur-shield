@@ -23,8 +23,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 313253888
-    m_Localized: Welcome to your farm!\n\nEquip the <b>Hoe</b> from your hotbar,
-      then <b>left-click</b> on a soil tile to till it.
+    m_Localized: Welcome to your farm! Equip the <b>Hoe</b> from your hotbar, then
+      <b>left-click</b> on a soil tile to till it.
     m_Metadata:
       m_Items: []
   - m_Id: 313253889
