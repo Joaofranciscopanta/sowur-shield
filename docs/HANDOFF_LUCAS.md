@@ -32,6 +32,28 @@ Estrutura intacta (64x64, 4 cores, mesma contagem de pixels), então os 16 recor
 continuam válidos. Verificado em Play Mode: 14 tiles distintos em 10.201 células.
 Antes/depois em `Assets/Screenshots/terrain_recolor_clean.png`.
 
+### ❌ Tentei o retiling automático e não deu — não repetir do mesmo jeito
+
+Montei a grade 4x4 a partir da arte Sprout Lands e **ficou pior que o atual**. Renderizei os
+dois lado a lado antes de commitar; nada chegou ao projeto.
+
+O que aprendi medindo, para quem tentar de novo:
+
+- **`Darker_Soil_Ground_Tiles.png` não serve sozinho.** Nenhuma célula dele tem menos de 60%
+  de terra — é um conjunto de *ilha* de terra, não de mistura. Os 8 casos "quase toda grama"
+  que o dual-grid exige simplesmente não existem lá, e espelhar não cria.
+- **`Grass_Tile_Layers.png` cobre 14 dos 16 padrões** (só faltam as duas diagonais, que
+  nenhum autotile traz — dá para compor de dois cantos).
+- **Mesmo assim não fecha.** As peças são desenhadas para ilhas isoladas sobre um fundo, não
+  para costurar terreno contínuo. Renderizado como mapa, sai em faixas horizontais com
+  emendas visíveis, enquanto o tileset atual faz cruzamentos limpos.
+
+A ordem das 16 regras eu confirmei **medindo o tileset atual** (quais quadrantes são terra em
+cada célula), não lendo os nomes — os nomes `OUTER_*`/`INNER_*` não batem com a intuição.
+
+Conclusão: isto precisa de alguém desenhando as 16 células para o dual-grid, não de recorte
+de arte existente.
+
 **O que ainda é trabalho de artista** (opcional, não bloqueia nada): a *estrutura* dos tiles
 continua sendo a da demo — formas orgânicas arredondadas, sem textura, sem variação. Um
 tileset de verdade teria pedrinhas, tufos e transições próprias. Se quiser isso:
