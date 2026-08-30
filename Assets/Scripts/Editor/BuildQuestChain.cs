@@ -33,9 +33,27 @@ namespace SowurShield.Editor
 /// <item><b>market_day</b> — 8 pumpkins, the slowest crop, for the largest farming payout.</item>
 /// <item><b>proving_grounds</b> — clear Whispering Woods. The second combat stage, gated
 /// behind the whole farming ladder.</item>
-/// <item><b>valley_keeper</b> — clear Ancient Forest and talk to every villager. The capstone:
-/// it cannot be finished without having engaged with both halves of the game.</item>
+/// <item><b>valley_keeper</b> — clear Ancient Forest and talk to every villager. Once the
+/// capstone; now the midpoint.</item>
 /// </list>
+///
+/// <para>A later pass added eight more. Four continue the ladder past valley_keeper, which used
+/// to be the end: Cave, Mountain and Volcano had no quest pointing at them and not one of the
+/// five bosses was ever named, so the back half of the combat content was invisible. Four more
+/// hang off the side as optional branches, covering fishing, the axe, and the four villagers
+/// who never asked the player for anything.</para>
+///
+/// <list type="bullet">
+/// <item><b>quiet_water</b> → <b>the_one_that_stayed</b> — fishing, for Joana.</item>
+/// <item><b>timber</b> — chopping, for Rui.</item>
+/// <item><b>a_word_with_everyone</b> — the remaining four villagers.</item>
+/// <item><b>first_fang</b> → <b>into_the_dark</b> → <b>above_the_clouds</b> →
+/// <b>ash_and_ember</b> — one boss per biome, ending on the final dragon.</item>
+/// </list>
+///
+/// <para>Counts on the side branches are kept low on purpose: CollectItem tracks the item count
+/// currently held, not a running total, so selling the fish before turning the quest in walks
+/// the progress backwards. Twelve wood is a chore; forty would be a trap.</para>
 ///
 /// Menu: Sowur Shield > Quests > Build Quest Chain
 /// </summary>
@@ -53,6 +71,12 @@ public static class BuildQuestChain
         public (string en, string pt, string es) Desc;
         public List<(QuestObjectiveType type, string target, int count,
                      string en, string pt, string es)> Objectives = new();
+
+        /// <summary>Item payouts, by ItemDatabase name. Empty for a gold-only quest.</summary>
+        public List<(string item, int qty)> ItemRewards = new();
+
+        /// <summary>Relationship gains, by NPC id — the reward for quests given by a villager.</summary>
+        public List<(string npc, float amount)> RelationshipRewards = new();
     }
 
     private static List<Step> Chain() => new()
@@ -125,6 +149,133 @@ public static class BuildQuestChain
                  "Tell Maren", "Conte para a Maren", "Cuéntaselo a Maren"),
             }
         },
+
+        // ── Side branches ─────────────────────────────────────────────
+        // These hang off the main ladder rather than extending it, so a player who wants a
+        // break from farming has somewhere to go. Each is built on a system that had no quest
+        // at all before: fishing, the axe, and the four villagers who never asked for anything.
+
+        new Step {
+            Id = "quiet_water", Prereq = "settling_in", Gold = 90,
+            Title = ("Quiet Water", "Água Parada", "Agua Quieta"),
+            Desc  = ("Joana says the river gives to those who wait. Go and wait.",
+                     "A Joana diz que o rio dá a quem sabe esperar. Vá esperar.",
+                     "Joana dice que el río da a quien sabe esperar. Ve a esperar."),
+            Objectives = {
+                (QuestObjectiveType.CollectItem, "Fish", 4,
+                 "Catch 4 fish", "Pesque 4 peixes", "Pesca 4 peces"),
+                (QuestObjectiveType.TalkToNPC, "joana_default", 1,
+                 "Show Joana", "Mostre para a Joana", "Muéstraselo a Joana"),
+            },
+            RelationshipRewards = { ("joana", 10f) }
+        },
+        new Step {
+            Id = "the_one_that_stayed", Prereq = "quiet_water", Gold = 220,
+            Title = ("The One That Stayed", "O Que Não Escapou", "El Que No Escapó"),
+            Desc  = ("Every fisher has a story about the big one. Joana wants proof.",
+                     "Todo pescador tem a história do peixe grande. A Joana quer prova.",
+                     "Todo pescador tiene la historia del pez grande. Joana quiere pruebas."),
+            Objectives = { (QuestObjectiveType.CollectItem, "RareFish", 1,
+                            "Catch a rare fish", "Pesque um peixe raro", "Pesca un pez raro") },
+            RelationshipRewards = { ("joana", 15f) }
+        },
+        new Step {
+            Id = "timber", Prereq = "settling_in", Gold = 110,
+            Title = ("Timber", "Madeira", "Madera"),
+            Desc  = ("Rui needs planks and has no axe arm left. You have both.",
+                     "O Rui precisa de tábuas e não tem mais braço pra machado. Você tem os dois.",
+                     "Rui necesita tablas y ya no tiene brazo para el hacha. Tú tienes ambos."),
+            Objectives = {
+                (QuestObjectiveType.CollectItem, "Wood", 12,
+                 "Chop 12 wood", "Corte 12 madeiras", "Corta 12 maderas"),
+                (QuestObjectiveType.TalkToNPC, "rui_default", 1,
+                 "Deliver to Rui", "Entregue ao Rui", "Entrégaselo a Rui"),
+            },
+            RelationshipRewards = { ("rui", 10f) }
+        },
+        new Step {
+            Id = "a_word_with_everyone", Prereq = "meet_the_village", Gold = 180,
+            Title = ("A Word With Everyone", "Uma Palavra com Cada Um", "Una Palabra con Cada Uno"),
+            Desc  = ("You have met three. There are more, and they have noticed.",
+                     "Você conheceu três. Tem mais gente, e eles repararam.",
+                     "Has conocido a tres. Hay más, y se han dado cuenta."),
+            Objectives = {
+                (QuestObjectiveType.TalkToNPC, "clara_default", 1,
+                 "Talk to Clara", "Fale com a Clara", "Habla con Clara"),
+                (QuestObjectiveType.TalkToNPC, "elias_default", 1,
+                 "Talk to Elias", "Fale com o Elias", "Habla con Elías"),
+                (QuestObjectiveType.TalkToNPC, "nara_default", 1,
+                 "Talk to Nara", "Fale com a Nara", "Habla con Nara"),
+                (QuestObjectiveType.TalkToNPC, "rui_default", 1,
+                 "Talk to Rui", "Fale com o Rui", "Habla con Rui"),
+            },
+            RelationshipRewards = { ("clara", 5f), ("elias", 5f), ("nara", 5f), ("rui", 5f) }
+        },
+
+        // ── The ladder continues past valley_keeper ────────────────────────
+        // The old chain ended there, leaving three whole biomes -- Cave, Mountain and Volcano --
+        // with no quest pointing at them, and not one of the five bosses ever named. These four
+        // carry the player through them and finish on the final boss.
+
+        new Step {
+            Id = "first_fang", Prereq = "valley_keeper", Gold = 400,
+            Title = ("First Fang", "Primeira Presa", "Primer Colmillo"),
+            Desc  = ("Something big has been circling the pasture. End it.",
+                     "Algo grande anda rondando o pasto. Acabe com isso.",
+                     "Algo grande ronda el pastizal. Acaba con ello."),
+            Objectives = { (QuestObjectiveType.CompleteBattle, "Peaceful Pasture — Boss", 1,
+                            "Defeat the Meadow Wolf", "Derrote o Lobo da Pradaria",
+                            "Derrota al Lobo de la Pradera") },
+            ItemRewards = { ("Medicine", 2) }
+        },
+        new Step {
+            Id = "into_the_dark", Prereq = "first_fang", Gold = 480,
+            Title = ("Into the Dark", "Rumo ao Escuro", "Hacia la Oscuridad"),
+            Desc  = ("The caves under the ridge were sealed for a reason. That reason is awake.",
+                     "As cavernas sob a serra foram seladas por um motivo. O motivo acordou.",
+                     "Las cuevas bajo la sierra fueron selladas por algo. Ese algo despertó."),
+            Objectives = {
+                (QuestObjectiveType.CompleteBattle, "Crystal Cavern", 1,
+                 "Clear Crystal Cavern", "Limpe a Caverna de Cristal",
+                 "Despeja la Caverna de Cristal"),
+                (QuestObjectiveType.CompleteBattle, "Stalactite Hall — Boss", 1,
+                 "Defeat the Cave Troll", "Derrote o Troll da Caverna",
+                 "Derrota al Troll de la Cueva"),
+            },
+            ItemRewards = { ("Medicine", 3) }
+        },
+        new Step {
+            Id = "above_the_clouds", Prereq = "into_the_dark", Gold = 600,
+            Title = ("Above the Clouds", "Acima das Nuvens", "Sobre las Nubes"),
+            Desc  = ("The mountain does not care that you have come this far.",
+                     "A montanha não está nem aí pra onde você já chegou.",
+                     "A la montaña no le importa lo lejos que hayas llegado."),
+            Objectives = {
+                (QuestObjectiveType.CompleteBattle, "Cloud Ridge", 1,
+                 "Clear Cloud Ridge", "Limpe a Crista das Nuvens",
+                 "Despeja la Cresta de las Nubes"),
+                (QuestObjectiveType.CompleteBattle, "Frozen Summit — Boss", 1,
+                 "Defeat the Mountain King", "Derrote o Rei da Montanha",
+                 "Derrota al Rey de la Montaña"),
+            },
+            ItemRewards = { ("Medicine", 3) }
+        },
+        new Step {
+            Id = "ash_and_ember", Prereq = "above_the_clouds", Gold = 1000,
+            Title = ("Ash and Ember", "Cinza e Brasa", "Ceniza y Brasa"),
+            Desc  = ("It began with one carrot. It ends in the mouth of a volcano.",
+                     "Começou com uma cenoura. Termina na boca de um vulcão.",
+                     "Empezó con una zanahoria. Termina en la boca de un volcán."),
+            Objectives = {
+                (QuestObjectiveType.CompleteBattle, "Magma Core — Final Boss", 1,
+                 "Defeat the Inferno Dragon", "Derrote o Dragão do Inferno",
+                 "Derrota al Dragón del Infierno"),
+                (QuestObjectiveType.TalkToNPC, "maren_default", 1,
+                 "Go home to Maren", "Volte para a Maren", "Vuelve con Maren"),
+            },
+            ItemRewards = { ("Medicine", 5) },
+            RelationshipRewards = { ("maren", 20f) }
+        },
     };
 
     [MenuItem("Sowur Shield/Quests/Build Quest Chain")]
@@ -192,6 +343,14 @@ public static class BuildQuestChain
                 requiredCount = o.count,
             });
         }
+
+        quest.rewardItems = step.ItemRewards
+            .Select(r => new QuestItemReward { itemName = r.item, quantity = r.qty })
+            .ToList();
+
+        quest.rewardRelationships = step.RelationshipRewards
+            .Select(r => new QuestRelationshipReward { npcId = r.npc, amount = r.amount })
+            .ToList();
 
         EditorUtility.SetDirty(quest);
         return isNew;

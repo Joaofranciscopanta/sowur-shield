@@ -391,7 +391,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 2630369990664198
-    m_Localized: ' and bring in your first harvest.'
+    m_Localized: Cultiva la tierra, planta una semilla de Zanahoria y trae tu primera
+      cosecha.
     m_Metadata:
       m_Items: []
   - m_Id: 2630369990664199
@@ -1280,6 +1281,135 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 25256626603417603
     m_Localized: Completa misiones para llenar tu diario.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267777923964928
+    m_Localized: Agua Quieta
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267777944936448
+    m_Localized: "Joana dice que el r\xEDo da a quien sabe esperar. Ve a esperar."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267777944936449
+    m_Localized: Pesca 4 peces
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267777944936450
+    m_Localized: "Mu\xE9straselo a Joana"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778691522560
+    m_Localized: "El Que No Escap\xF3"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778691522561
+    m_Localized: Todo pescador tiene la historia del pez grande. Joana quiere pruebas.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778691522562
+    m_Localized: Pesca un pez raro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778825740288
+    m_Localized: Madera
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778825740289
+    m_Localized: "Rui necesita tablas y ya no tiene brazo para el hacha. T\xFA tienes
+      ambos."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778825740290
+    m_Localized: Corta 12 maderas
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778825740291
+    m_Localized: "Entr\xE9gaselo a Rui"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735232
+    m_Localized: Una Palabra con Cada Uno
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735233
+    m_Localized: "Has conocido a tres. Hay m\xE1s, y se han dado cuenta."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735234
+    m_Localized: Habla con Clara
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735235
+    m_Localized: "Habla con El\xEDas"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735236
+    m_Localized: Habla con Nara
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735237
+    m_Localized: Habla con Rui
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779110952960
+    m_Localized: Primer Colmillo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779110952961
+    m_Localized: Algo grande ronda el pastizal. Acaba con ello.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779110952962
+    m_Localized: Derrota al Lobo de la Pradera
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779257753600
+    m_Localized: Hacia la Oscuridad
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779257753601
+    m_Localized: "Las cuevas bajo la sierra fueron selladas por algo. Ese algo despert\xF3."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779257753602
+    m_Localized: Despeja la Caverna de Cristal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779257753603
+    m_Localized: Derrota al Troll de la Cueva
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779396165632
+    m_Localized: Sobre las Nubes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779396165633
+    m_Localized: "A la monta\xF1a no le importa lo lejos que hayas llegado."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779396165634
+    m_Localized: Despeja la Cresta de las Nubes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779396165635
+    m_Localized: "Derrota al Rey de la Monta\xF1a"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779538771968
+    m_Localized: Ceniza y Brasa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779538771969
+    m_Localized: "Empez\xF3 con una zanahoria. Termina en la boca de un volc\xE1n."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779538771970
+    m_Localized: "Derrota al Drag\xF3n del Infierno"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779538771971
+    m_Localized: Vuelve con Maren
     m_Metadata:
       m_Items: []
   references:

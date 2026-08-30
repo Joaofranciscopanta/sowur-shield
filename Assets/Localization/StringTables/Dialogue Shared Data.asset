@@ -1175,6 +1175,134 @@ MonoBehaviour:
     m_Key: dialogue.quests.empty_completed
     m_Metadata:
       m_Items: []
+  - m_Id: 25267777923964928
+    m_Key: quest.quiet_water.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267777944936448
+    m_Key: quest.quiet_water.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267777944936449
+    m_Key: quest.quiet_water.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267777944936450
+    m_Key: quest.quiet_water.objective1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778691522560
+    m_Key: quest.the_one_that_stayed.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778691522561
+    m_Key: quest.the_one_that_stayed.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778691522562
+    m_Key: quest.the_one_that_stayed.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778825740288
+    m_Key: quest.timber.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778825740289
+    m_Key: quest.timber.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778825740290
+    m_Key: quest.timber.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778825740291
+    m_Key: quest.timber.objective1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735232
+    m_Key: quest.a_word_with_everyone.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735233
+    m_Key: quest.a_word_with_everyone.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735234
+    m_Key: quest.a_word_with_everyone.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735235
+    m_Key: quest.a_word_with_everyone.objective1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735236
+    m_Key: quest.a_word_with_everyone.objective2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735237
+    m_Key: quest.a_word_with_everyone.objective3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779110952960
+    m_Key: quest.first_fang.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779110952961
+    m_Key: quest.first_fang.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779110952962
+    m_Key: quest.first_fang.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779257753600
+    m_Key: quest.into_the_dark.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779257753601
+    m_Key: quest.into_the_dark.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779257753602
+    m_Key: quest.into_the_dark.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779257753603
+    m_Key: quest.into_the_dark.objective1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779396165632
+    m_Key: quest.above_the_clouds.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779396165633
+    m_Key: quest.above_the_clouds.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779396165634
+    m_Key: quest.above_the_clouds.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779396165635
+    m_Key: quest.above_the_clouds.objective1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779538771968
+    m_Key: quest.ash_and_ember.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779538771969
+    m_Key: quest.ash_and_ember.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779538771970
+    m_Key: quest.ash_and_ember.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779538771971
+    m_Key: quest.ash_and_ember.objective1
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

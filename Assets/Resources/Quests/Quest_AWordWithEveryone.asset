@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c65f8e0d472f014dbf96907bc1b7296, type: 3}
+  m_Name: Quest_AWordWithEveryone
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Dialogue.QuestData
+  questId: a_word_with_everyone
+  questTitle:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: quest.a_word_with_everyone.title
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  questDescription:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: quest.a_word_with_everyone.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  objectives:
+  - description:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: quest.a_word_with_everyone.objective0
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    type: 1
+    targetId: clara_default
+    requiredCount: 1
+  - description:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: quest.a_word_with_everyone.objective1
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    type: 1
+    targetId: elias_default
+    requiredCount: 1
+  - description:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: quest.a_word_with_everyone.objective2
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    type: 1
+    targetId: nara_default
+    requiredCount: 1
+  - description:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: quest.a_word_with_everyone.objective3
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    type: 1
+    targetId: rui_default
+    requiredCount: 1
+  prerequisiteQuestIds:
+  - meet_the_village
+  rewardGold: 180
+  rewardItems: []
+  rewardRelationships:
+  - npcId: clara
+    amount: 5
+  - npcId: elias
+    amount: 5
+  - npcId: nara
+    amount: 5
+  - npcId: rui
+    amount: 5
+  references:
+    version: 2
+    RefIds: []
