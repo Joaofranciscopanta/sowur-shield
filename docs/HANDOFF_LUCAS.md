@@ -13,6 +13,30 @@ Ordenado por impacto. Cada item diz **por que parei** e **o que exatamente decid
 
 ---
 
+## ▶ PRÓXIMA SESSÃO — lista que você pediu em 2026-08-30
+
+Nada aqui depende de arte nem de decisão sua; é tudo trabalho meu.
+
+1. **Mais quests** — a cadeia sai de `Assets/Scripts/Editor/BuildQuestChain.cs`: editar a
+   lista `Chain()` e rodar *Sowur Shield → Quests → Build Quest Chain*. Gera asset + as 3
+   traduções de uma vez.
+2. **Sons adicionais** — faltam plantar, passos, abrir/fechar menu, dormir e **pegar item**
+   (o `sfx_pickup_item.wav` já existe e não tem quem o chame). Basta
+   `SFXManager.Play("Chave")`; o clipe é achado sozinho em `Resources/Audio/SFX/`.
+3. **Polimento e UI** — achar rodando.
+4. **Revisar o codex** — o de personagens (`RelationshipUI.cs`) e o de missões
+   (`QuestsUI.cs`, `QuestActiveRow.cs`, `QuestCompletedRow.cs`).
+5. **Botão de voltar no relacionamento** — ✅ **já diagnostiquei**: o `CloseButton` existe
+   (508x44, texto "Fechar", fonte certa), mas o **`sprite` do Image é NULL**, então não há
+   placa pintada e sobra só texto escuro sobre o painel. A correção é atribuir
+   `button_small_action.png`. Conferir se o `QuestsUI` sofre do mesmo.
+
+⚠️ **Padrão recorrente**: sprite NULL mata o desenho sem erro nenhum. Mordeu três vezes na
+sessão de 30/08 — borda de seleção do slot, barra de progresso (`Image.Filled` sem sprite
+ignora o `fillAmount`) e este botão.
+
+---
+
 ## 🟡 1. Tileset do terreno — ✅ roxo morto, retiling real ainda é de artista
 
 **Feito (`0ce489c`)**: `TilesDemo.png` foi **recolorido** com a paleta do próprio jogo. O
