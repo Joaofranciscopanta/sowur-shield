@@ -4,6 +4,19 @@
 > do jogo**, para você encontrar o que os testes automatizados não encontram.
 > Você já achou 2 bugs em minutos que 842 testes passaram batido.
 
+## ✅ Rodei este roteiro em 2026-08-30 — resultado
+
+**16 dos 17 passos passam.** O único que falha é o **17 (troca de idioma)**, e a causa é
+antiga: só 2 labels têm `LocalizeStringEvent` e retraduzem sozinhos; os outros 19 são escritos
+por script e só mudam quando o script reescreve. Não é regressão, é lacuna de arquitetura.
+
+Três bugs foram achados e corrigidos rodando o roteiro:
+- Jogo novo não iniciava quest nenhuma — o `SaveManager` tem **três** ramos e eu tinha ligado
+  no que não roda numa sessão nova.
+- O tracker não aparecia para uma quest que começou antes dele se inscrever.
+- **Fazer amizade com a Maren travava a quest dela para sempre** — o efeito estava só na
+  árvore `Default`, e a partir de ~40 de relacionamento ela usa `Friend`/`Beloved`.
+
 ## Como funciona agora
 
 Um jogo novo começa com a quest **Primeira Colheita** ativa e o tutorial de 6 passos
@@ -49,5 +62,4 @@ Coisas que mexi e que só você julga:
 - **8 dos 9 retratos** são silhuetas sem rosto, então o diálogo usa o **sprite do NPC**.
   Quando um retrato real for desenhado, apagar o nome de `PlaceholderPortraits` em
   `NPCDialogueInteractable.cs` e ele volta a mandar.
-- A quest da Maren sai de um **tópico**, não da saudação — é assim que foi escrita.
 - O terreno tem a paleta certa, mas a **estrutura** dos tiles ainda é a da demo.
