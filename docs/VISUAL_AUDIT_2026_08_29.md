@@ -311,18 +311,26 @@ algo a improvisar por script.
 | Indicador de seleção na hotbar | ✅ feito (mesmo commit dos slots) | `e956085` |
 | Sorting no inventário | ✅ feito — a lógica existia, faltava o botão | `22a161e` |
 | Ícones no minimapa | ❌ **não era pendência** — 33 ícones ativos na cena | — |
-| Floating text de dano/ganho | ⏳ pendente (existe no combate, não na fazenda) | — |
-| Microanimações | ⏳ pendente | — |
+| Floating text de dano/ganho | ✅ feito na fazenda (já existia no combate) | `ebe34a4` |
+| Microanimações | ⏳ pendente — único item aberto da Fase 3 | — |
 
 **Sorting**: `Inventory.SortInventory()` já estava pronto e correto — agrupa por tipo, depois
 por nome, compacta para o início do armazém e não toca no hotbar. **Nada conseguia chamá-lo.**
 O `InventoryUIManager` declara quatro botões de sort e os liga, mas esse componente **não está
 na cena**, então os 36 slots foram publicados sem nenhum controle de ordenação.
 
-⚠️ **Descoberta ao posicionar o botão: a grade de 36 slots transborda o interior pintado do
-painel em todos os lados** — 46px acima, 112px abaixo, 199px à direita. Qualquer botão dentro
-do painel cai na madeira ou nos slots. Por isso o botão ficou *acima* da moldura. Refazer o
-layout da grade é uma mudança maior e continua em aberto.
+⚠️ **Descoberta ao posicionar o botão: a grade de 36 slots transbordava o interior pintado do
+painel em todos os lados** — 46px acima, 112px abaixo, 199px à direita.
+
+✅ **Corrigido (`bd6dca1`).** A causa era um `localScale` de **1,74** no `StorageContainer`
+enquanto o painel atrás estava em 1: o rect de 604x255 desenhava a 1052x444. O mesmo scale
+fazia o inventário discordar de si mesmo — um slot do armazém renderizava a ~104px contra os
+48px do hotbar, mais que o dobro, para os mesmos 45 slots.
+
+Em scale 1 a grade mede 580x271 e o interior pintado é 678x285, então cabe com folga. O
+container também foi recentralizado: `panel_wood_generic` é **assimétrico** (~82/113/86/150 de
+512px), então o centro da *área pintada* fica ~33px à esquerda e ~33px acima do centro do rect.
+Resultado: margens de 49/49/15/15 e slots de 60px contra os 48px do hotbar.
 
 **Ícones do minimapa**: a auditoria listou como pendente, mas há **5 scripts dedicados**
 (`MinimapIcon`, `MinimapIconClusterer`, `MinimapIconSprites`, `MinimapPinManager`,
