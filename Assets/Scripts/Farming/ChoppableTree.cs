@@ -76,6 +76,7 @@ namespace SowurShield.Farming
             }
 
             hitsTaken++;
+            SowurShield.Core.SFXManager.Play("AxeChop");
             StopAllCoroutines();
             StartCoroutine(ShakeThenDrop());
 
@@ -113,6 +114,7 @@ namespace SowurShield.Farming
         private void Fell()
         {
             felled = true;
+            SowurShield.Core.SFXManager.Play("TreeFall");
 
             if (bodyCollider != null)
                 bodyCollider.enabled = false;

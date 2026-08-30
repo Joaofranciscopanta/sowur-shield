@@ -232,7 +232,7 @@ Combat,stage.CrystalCavern.description,The crystals glow faintly. Bats dive from
 Combat,stage.ShadowDepths.name,Shadow Depths,Profundezas Sombrias,Profundidades Sombrías
 Combat,stage.ShadowDepths.description,Dark Spiders spin webs across every passage.,Aranhas Sombrias tecem teias em todas as passagens.,Las Arañas Oscuras tejen telarañas en cada pasaje.
 Combat,stage.EchoChamber.name,Echo Chamber,Câmara do Eco,Cámara del Eco
-Combat,stage.EchoChamber.description,The Stone Golem barely moves, but it barely flinches either.,O Golem de Pedra quase não se move, mas também quase não vacila.,El Gólem de Piedra apenas se mueve, pero tampoco se inmuta.
+Combat,stage.EchoChamber.description,"The Stone Golem barely moves, but it barely flinches either.","O Golem de Pedra quase não se move, mas também quase não vacila.","El Gólem de Piedra apenas se mueve, pero tampoco se inmuta."
 Combat,stage.UndergroundLake.name,Underground Lake,Lago Subterrâneo,Lago Subterráneo
 Combat,stage.UndergroundLake.description,Something fast moves in the shadows. Don't let it reach your back line.,Algo rápido se move nas sombras. Não deixe que alcance sua linha de trás.,Algo rápido se mueve en las sombras. No dejes que llegue a tu línea trasera.
 Combat,stage.StalactiteHallBoss.name,Stalactite Hall — Boss,Salão das Estalactites — Chefe,Salón de Estalactitas — Jefe
@@ -264,7 +264,7 @@ Dialogue,quest.egg_collector.title,Egg Collector,Colecionador de Ovos,Coleccioni
 Dialogue,quest.egg_collector.description,Your chickens are laying — collect a few eggs for the pantry.,Suas galinhas estão pondo ovos — colete alguns para a despensa.,Tus gallinas están poniendo huevos — recolecta algunos para la despensa.
 Dialogue,quest.egg_collector.objective0,Collect Eggs,Coletar Ovos,Recolectar Huevos
 Dialogue,quest.first_harvest.title,First Harvest,Primeira Colheita,Primera Cosecha
-Dialogue,quest.first_harvest.description,Till some soil, plant a Carrot seed, and bring in your first harvest.,Lavre a terra, plante uma semente de Cenoura e traga sua primeira colheita.,Cultiva la tierra, planta una semilla de Zanahoria y trae tu primera cosecha.
+Dialogue,quest.first_harvest.description,"Till some soil, plant a Carrot seed, and bring in your first harvest.","Lavre a terra, plante uma semente de Cenoura e traga sua primeira colheita.","Cultiva la tierra, planta una semilla de Zanahoria y trae tu primera cosecha."
 Dialogue,quest.first_harvest.objective0,Harvest a Carrot,Colher uma Cenoura,Cosechar una Zanahoria
 Dialogue,quest.get_to_know_maren.title,Getting to Know Maren,Conhecendo a Maren,Conociendo a Maren
 Dialogue,quest.get_to_know_maren.description,Maren's new in town too. Stop by and say hello.,Maren também é nova na cidade. Passe por lá e diga olá.,Maren también es nueva en el pueblo. Pasa a saludarla.
@@ -432,3 +432,11 @@ Dialogue,dialogue.choice.give_gift,"Give a gift","Dar um presente","Dar un regal
 Dialogue,dialogue.choice.give_gift_already_today,"Give a gift (already gifted today)","Dar um presente (já presenteou hoje)","Dar un regalo (ya regalado hoy)"
 Dialogue,dialogue.choice.view_relationship,"View relationship","Ver relacionamento","Ver relación"
 Dialogue,dialogue.choice.browse_seeds,"Browse seeds","Ver sementes","Ver semillas"
+Dialogue,dialogue.quests.title,Quests,Missões,Misiones
+Dialogue,dialogue.quests.tab_active,Active,Ativas,Activas
+Dialogue,dialogue.quests.tab_completed,Completed,Concluídas,Completadas
+Dialogue,dialogue.quests.empty_active,No active quests yet.,Nenhuma missão ativa ainda.,Aún no hay misiones activas.
+Dialogue,dialogue.quests.empty_completed,Complete quests to fill your journal.,Conclua missões para preencher seu diário.,Completa misiones para llenar tu diario.
+Inventory,item.Fish.name,Fish,Peixe,Pez
+Inventory,item.RareFish.name,Rare Fish,Peixe Raro,Pez Raro
+Tutorial,tutorial.step_counter,Step {0}/{1},Passo {0}/{1},Paso {0}/{1}

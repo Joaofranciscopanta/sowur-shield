@@ -196,9 +196,13 @@ public class ChoiceButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         
         AnimateToState(targetColor, targetScale);
         
-        if (highlighted && hoverSound != null && audioSource != null)
+        // hoverSound/clickSound are null on every ChoiceButton in the project, so these
+        // fell through to silence. SFXManager resolves the shared UI clips from Resources;
+        // an assigned clip still wins, keeping the per-button override available.
+        if (highlighted)
         {
-            audioSource.PlayOneShot(hoverSound);
+            if (hoverSound != null && audioSource != null) audioSource.PlayOneShot(hoverSound);
+            else SowurShield.Core.SFXManager.Play("UiHover");
         }
     }
     
@@ -240,9 +244,9 @@ public class ChoiceButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         
         // Play click sound
         if (clickSound != null && audioSource != null)
-        {
             audioSource.PlayOneShot(clickSound);
-        }
+        else
+            SowurShield.Core.SFXManager.Play("UiClick");
         
         // Animate click
         AnimateClick();
@@ -297,6 +301,8 @@ public class ChoiceButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         
         if (hoverSound != null && audioSource != null)
             audioSource.PlayOneShot(hoverSound);
+        else
+            SowurShield.Core.SFXManager.Play("UiHover");
     }
     
     public void OnPointerExit(PointerEventData eventData)

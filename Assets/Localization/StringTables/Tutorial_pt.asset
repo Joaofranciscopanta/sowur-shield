@@ -77,6 +77,10 @@ MonoBehaviour:
     m_Localized: 'Passo {0}/{1}: {2}'
     m_Metadata:
       m_Items: []
+  - m_Id: 25272196182827008
+    m_Localized: Passo {0}/{1}
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

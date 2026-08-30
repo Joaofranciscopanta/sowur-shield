@@ -470,7 +470,9 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
             }
             else
             {
-                // Inventory full - item stays on ground
+                // Inventory full - item stays on ground. Previously this was refused with no
+                // feedback at all, so a full bag looked like a broken pickup.
+                SFXManager.Play("Denied");
             }
         }
     }
@@ -505,11 +507,17 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
             Destroy(effect, 2f);
         }
 
-        // Pickup sound effect
-        if (pickupSound != null && playerTransform != null)
-        {
-            AudioSource.PlayClipAtPoint(pickupSound, playerTransform.position);
-        }
+        // Pickup sound. Routed through SFXManager rather than the pickupSound field: that
+        // field is null on every GroundItem prefab in the project, so this never made a sound,
+        // and PlayClipAtPoint creates a 3D source that is inaudible when the listener is not
+        // right on top of it. SFXManager's pooled sources are 2D and it resolves the clip from
+        // Resources/Audio/SFX/sfx_pickup_item.wav on its own, with no inspector wiring.
+        //
+        // An explicitly assigned pickupSound still wins, so a per-item override remains possible.
+        if (pickupSound != null)
+            SFXManager.Play(pickupSound);
+        else
+            SFXManager.Play("PickupItem");
     }
 
     // Item icons are imported at whatever native pixel size their source art uses (inventory

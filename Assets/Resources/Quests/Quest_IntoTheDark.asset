@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c65f8e0d472f014dbf96907bc1b7296, type: 3}
+  m_Name: Quest_IntoTheDark
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Dialogue.QuestData
+  questId: into_the_dark
+  questTitle:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: quest.into_the_dark.title
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  questDescription:
+    m_TableReference:
+      m_TableCollectionName: Dialogue
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: quest.into_the_dark.description
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  objectives:
+  - description:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: quest.into_the_dark.objective0
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    type: 3
+    targetId: Crystal Cavern
+    requiredCount: 1
+  - description:
+      m_TableReference:
+        m_TableCollectionName: Dialogue
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: quest.into_the_dark.objective1
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    type: 3
+    targetId: "Stalactite Hall \u2014 Boss"
+    requiredCount: 1
+  prerequisiteQuestIds:
+  - first_fang
+  rewardGold: 480
+  rewardItems:
+  - itemName: Medicine
+    quantity: 3
+  rewardRelationships: []
+  references:
+    version: 2
+    RefIds: []

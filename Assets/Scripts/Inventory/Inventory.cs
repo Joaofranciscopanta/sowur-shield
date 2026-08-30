@@ -686,7 +686,7 @@ public class Inventory : MonoBehaviour, ISaveable
     {
         CheckHotbarAutoRefill(slotIndex);
         UpdateSlot(slotIndex);
-        PlaySound(dropSound);
+        PlaySound(dropSound, "DropItem");
     }
 
     /// <summary>Per-index slot access, used by InventorySceneSnapshot to preserve layout.</summary>
@@ -699,11 +699,24 @@ public class Inventory : MonoBehaviour, ISaveable
         return container.GetItemsByType(itemType);
     }
 
-    private void PlaySound(AudioClip clip)
+    /// <summary>
+    /// These clip fields are unassigned everywhere, and PlayClipAtPoint builds a 3D source
+    /// besides, so the clip-only path was doubly silent. Falls back to an SFXManager key.
+    ///
+    /// AddItem deliberately passes no key: GroundItem already plays PickupItem when an item
+    /// is collected, and AddItem runs on that same path — keying it here would double it.
+    /// </summary>
+    private void PlaySound(AudioClip clip, string sfxKey = null)
     {
         if (clip != null)
         {
-            AudioSource.PlayClipAtPoint(clip, Camera.main.transform.position);
+            SowurShield.Core.SFXManager.Play(clip);
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(sfxKey))
+        {
+            SowurShield.Core.SFXManager.Play(sfxKey);
         }
     }
 

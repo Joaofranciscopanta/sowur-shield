@@ -15,10 +15,10 @@ MonoBehaviour:
   itemName: Fish
   displayName:
     m_TableReference:
-      m_TableCollectionName:
+      m_TableCollectionName: Inventory
     m_TableEntryReference:
       m_KeyId: 0
-      m_Key:
+      m_Key: item.Fish.name
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
@@ -38,3 +38,7 @@ MonoBehaviour:
   isConsumable: 1
   baseValue: 15
   canBeSold: 1
+  giftAffinityValue: 0
+  references:
+    version: 2
+    RefIds: []

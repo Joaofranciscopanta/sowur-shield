@@ -257,6 +257,11 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
     {
         Color backgroundDark = theme != null ? theme.woodDark : new Color(0.08f, 0.06f, 0.1f);
         Color textCream = theme != null ? theme.backgroundCream : Color.white;
+        // Headings sit on the panel's CREAM interior, so they take headingOnLight rather
+        // than highlightGold — see UITheme, where gold measures 1.28:1 on cream.
+        Color headingGold = theme != null ? theme.headingOnLight : new Color(0.478f, 0.306f, 0.071f);
+        // The relationship bar's fill is the one gold element here that sits on DARK wood
+        // (its track is woodDark), so it keeps the bright highlight.
         Color highlightGold = theme != null ? theme.highlightGold : new Color(0.96f, 0.83f, 0.37f);
 
         // Root panel — VerticalLayoutGroup drives height; fixed width 520px
@@ -371,9 +376,9 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         nameText.fontSize  = FontH2;
         nameText.fontStyle = FontStyles.Bold;
         nameText.alignment = TextAlignmentOptions.TopLeft;
-        // Gold on the wood panel: the NPC's name is the panel's heading and should read as
-        // one. Cream is kept for the body text below, where gold would be lower contrast.
-        nameText.color = theme != null ? theme.highlightGold : new Color(0.96f, 0.83f, 0.37f);
+        // The name is the panel's heading, but it sits on the cream interior, not on wood —
+        // highlightGold measured 1.28:1 there. headingOnLight keeps the amber at 6.43:1.
+        nameText.color = theme != null ? theme.headingOnLight : new Color(0.478f, 0.306f, 0.071f);
         // Heights track the type scale: this was 30 for a 22px name and would clip the
         // 24px one, the same overflow this file already fixed for the bio and lore rows.
         SetPreferredHeight(nameText, 34);
@@ -445,7 +450,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         loreTitleHeader = CreateLabel(panelObj.transform, codexHeaderText.SafeGetLocalizedString());
         loreTitleHeader.fontSize  = FontSmall;
         loreTitleHeader.fontStyle = FontStyles.Bold;
-        loreTitleHeader.color     = highlightGold;
+        loreTitleHeader.color     = headingGold;
         loreTitleHeader.alignment = TextAlignmentOptions.TopLeft;
         SetPreferredHeight(loreTitleHeader, 22);
         loreTitleHeader.gameObject.SetActive(false);
@@ -483,6 +488,10 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         GameObject closeButtonObj = new GameObject("CloseButton");
         closeButtonObj.transform.SetParent(panelObj.transform, false);
         closeButtonObj.AddComponent<LayoutElement>().preferredHeight = 44;
+
+        // The Image must exist before the Button: a Button with no Graphic paints nothing
+        // and is not raycastable, so the close button was both invisible and unclickable.
+        closeButtonObj.AddComponent<Image>();
 
         Button closeButton = closeButtonObj.AddComponent<Button>();
         closeButton.onClick.AddListener(OnCloseButtonClicked);
@@ -702,8 +711,10 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         // panel_wood_generic has a LIGHT (cream) interior, not a dark one — the wood is only
         // the border. Cream body text on it measured ~1.1 and was invisible; the same mistake
         // BattleResultsUI made on its light panels Jul/26. Body text is textDark (~12:1 on the
-        // cream field) and headings keep gold, which still clears the bar for large bold text.
-        Color gold  = theme != null ? theme.highlightGold : new Color(0.9f, 0.8f, 0.5f);
+        // cream field). Headings were left on highlightGold with the note that it "still
+        // clears the bar for large bold text" — measured, it is 1.28:1, so every codex
+        // heading was invisible too. headingOnLight is the same amber at 6.43:1.
+        Color gold  = theme != null ? theme.headingOnLight : new Color(0.478f, 0.306f, 0.071f);
         Color body  = theme != null ? theme.textDark : new Color(0.18f, 0.16f, 0.15f);
 
         // Locked rows are dimmed rather than recoloured, so they read as inactive without
@@ -798,7 +809,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         headerTmp.text = tastesHeaderText.SafeGetLocalizedString();
         headerTmp.fontSize = FontSmall;
         headerTmp.fontStyle = FontStyles.Bold;
-        headerTmp.color = theme != null ? theme.highlightGold : new Color(0.9f, 0.8f, 0.5f);
+        headerTmp.color = theme != null ? theme.headingOnLight : new Color(0.478f, 0.306f, 0.071f);
         headerTmp.textWrappingMode = TMPro.TextWrappingModes.Normal;
         headerObj.AddComponent<LayoutElement>().preferredHeight = 22;
 
@@ -827,7 +838,7 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         switch (reaction)
         {
             case GiftReaction.Loved:
-                c = theme != null ? theme.highlightGold : new Color(0.96f, 0.83f, 0.37f);
+                c = theme != null ? theme.headingOnLight : new Color(0.478f, 0.306f, 0.071f);
                 label = lovedGiftText.SafeGetLocalizedString();
                 break;
             case GiftReaction.Liked:

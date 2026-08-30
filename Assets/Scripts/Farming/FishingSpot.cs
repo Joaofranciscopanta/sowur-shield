@@ -79,6 +79,7 @@ namespace SowurShield.Farming
         private IEnumerator FishingRoutine(PlayerMove playerMove)
         {
             isFishing = true;
+            SowurShield.Core.SFXManager.Play("FishCast");
 
             Vector3 playerPos = playerMove != null
                 ? playerMove.transform.position
@@ -126,6 +127,7 @@ namespace SowurShield.Farming
             DestroyStatusText();
 
             // --- FASE 3: Peixe mordeu! ---
+            SowurShield.Core.SFXManager.Play("FishBite");
             // Bobber afunda rapidamente
             if (bobberObject != null)
             {
@@ -156,6 +158,7 @@ namespace SowurShield.Farming
             bool caught = Random.value <= catchChance;
             if (caught)
             {
+                SowurShield.Core.SFXManager.Play("FishCatch");
                 bool isRare = Random.value <= rareFishChance;
                 SpawnFish(playerMove, isRare);
 
@@ -165,6 +168,9 @@ namespace SowurShield.Farming
             }
             else
             {
+                // The fish getting away is a small denial, so it shares the denied sting
+                // rather than needing a clip of its own.
+                SowurShield.Core.SFXManager.Play("Denied");
                 ShowFloatingText(playerPos + Vector3.up * 0.9f,
                     "Escapou...", new Color(0.8f, 0.4f, 0.4f));
             }

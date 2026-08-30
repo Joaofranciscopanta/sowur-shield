@@ -192,7 +192,7 @@ public class SleepConfirmationPanel : MonoBehaviour
         PauseGameState();
         
         // Play sound effect
-        PlaySound(panelOpenSound);
+        PlaySound(panelOpenSound, "MenuOpen");
         
         // Fade in animation
         if (fadeCoroutine != null)
@@ -350,14 +350,14 @@ public class SleepConfirmationPanel : MonoBehaviour
     
     private void OnConfirmClicked()
     {
-        PlaySound(confirmSound);
+        PlaySound(confirmSound, "Confirm");
         HideConfirmation();
         OnSleepConfirmed?.Invoke();
     }
 
     private void OnCancelClicked()
     {
-        PlaySound(cancelSound);
+        PlaySound(cancelSound, "Cancel");
         HideConfirmation();
         OnSleepCancelled?.Invoke();
     }
@@ -384,11 +384,22 @@ public class SleepConfirmationPanel : MonoBehaviour
         fadeCoroutine = null;
     }
     
-    private void PlaySound(AudioClip clip)
+    /// <summary>
+    /// panelOpenSound / confirmSound / cancelSound are unassigned in every scene, so the
+    /// clip-only path was silent. Falls back to a shared SFXManager key; an assigned clip
+    /// still takes precedence.
+    /// </summary>
+    private void PlaySound(AudioClip clip, string sfxKey = null)
     {
         if (clip != null && audioSource != null)
         {
             audioSource.PlayOneShot(clip);
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(sfxKey))
+        {
+            SFXManager.Play(sfxKey);
         }
     }
     

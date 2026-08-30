@@ -390,7 +390,8 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 2630369990664198
-    m_Localized: ' plant a Carrot seed'
+    m_Localized: Lavre a terra, plante uma semente de Cenoura e traga sua primeira
+      colheita.
     m_Metadata:
       m_Items: []
   - m_Id: 2630369990664199
@@ -1259,6 +1260,155 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 25127366437888002
     m_Localized: Conte para a Maren
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25256626574057472
+    m_Localized: "Miss\xF5es"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25256626603417600
+    m_Localized: Ativas
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25256626603417601
+    m_Localized: "Conclu\xEDdas"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25256626603417602
+    m_Localized: "Nenhuma miss\xE3o ativa ainda."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25256626603417603
+    m_Localized: "Conclua miss\xF5es para preencher seu di\xE1rio."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267777923964928
+    m_Localized: "\xC1gua Parada"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267777944936448
+    m_Localized: "A Joana diz que o rio d\xE1 a quem sabe esperar. V\xE1 esperar."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267777944936449
+    m_Localized: Pesque 4 peixes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267777944936450
+    m_Localized: Mostre para a Joana
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778691522560
+    m_Localized: "O Que N\xE3o Escapou"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778691522561
+    m_Localized: "Todo pescador tem a hist\xF3ria do peixe grande. A Joana quer prova."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778691522562
+    m_Localized: Pesque um peixe raro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778825740288
+    m_Localized: Madeira
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778825740289
+    m_Localized: "O Rui precisa de t\xE1buas e n\xE3o tem mais bra\xE7o pra machado.
+      Voc\xEA tem os dois."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778825740290
+    m_Localized: Corte 12 madeiras
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778825740291
+    m_Localized: Entregue ao Rui
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735232
+    m_Localized: Uma Palavra com Cada Um
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735233
+    m_Localized: "Voc\xEA conheceu tr\xEAs. Tem mais gente, e eles repararam."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735234
+    m_Localized: Fale com a Clara
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735235
+    m_Localized: Fale com o Elias
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735236
+    m_Localized: Fale com a Nara
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735237
+    m_Localized: Fale com o Rui
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779110952960
+    m_Localized: Primeira Presa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779110952961
+    m_Localized: Algo grande anda rondando o pasto. Acabe com isso.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779110952962
+    m_Localized: Derrote o Lobo da Pradaria
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779257753600
+    m_Localized: Rumo ao Escuro
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779257753601
+    m_Localized: As cavernas sob a serra foram seladas por um motivo. O motivo acordou.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779257753602
+    m_Localized: Limpe a Caverna de Cristal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779257753603
+    m_Localized: Derrote o Troll da Caverna
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779396165632
+    m_Localized: Acima das Nuvens
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779396165633
+    m_Localized: "A montanha n\xE3o est\xE1 nem a\xED pra onde voc\xEA j\xE1 chegou."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779396165634
+    m_Localized: Limpe a Crista das Nuvens
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779396165635
+    m_Localized: Derrote o Rei da Montanha
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779538771968
+    m_Localized: Cinza e Brasa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779538771969
+    m_Localized: "Come\xE7ou com uma cenoura. Termina na boca de um vulc\xE3o."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779538771970
+    m_Localized: "Derrote o Drag\xE3o do Inferno"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779538771971
+    m_Localized: Volte para a Maren
     m_Metadata:
       m_Items: []
   references:

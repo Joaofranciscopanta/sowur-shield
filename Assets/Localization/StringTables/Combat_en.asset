@@ -378,7 +378,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 2630370347180095
-    m_Localized: The Stone Golem barely moves
+    m_Localized: The Stone Golem barely moves, but it barely flinches either.
     m_Metadata:
       m_Items: []
   - m_Id: 2630370347180096

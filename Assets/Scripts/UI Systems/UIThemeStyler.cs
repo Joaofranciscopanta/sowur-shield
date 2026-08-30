@@ -52,18 +52,37 @@ public static class UIThemeStyler
     /// <summary>
     /// Apply a themed sprite to a button and darken its TMP label so it stays
     /// readable on the gold/wood button art (see ConsumableBattleUI for rationale).
+    ///
+    /// If the button has no Image, one is added — same as StylePanel. A Button with no
+    /// Graphic paints nothing AND cannot be raycast, so it is invisible *and* dead rather
+    /// than merely unstyled; RelationshipUI's close button shipped that way. Adding the
+    /// Image here fixes every caller instead of one.
     /// </summary>
     public static void StyleButton(Button button, UITheme theme, string spritePath = ButtonPrimaryPath)
     {
         if (button == null) return;
 
         Image img = button.GetComponent<Image>();
+        if (img == null) img = button.gameObject.AddComponent<Image>();
+        if (button.targetGraphic == null) button.targetGraphic = img;
         Sprite sprite = Resources.Load<Sprite>(spritePath);
         if (img != null && sprite != null)
         {
             img.sprite = sprite;
             img.type = Image.Type.Sliced;
             img.color = Color.white;
+
+            // A ColorTint button multiplies its colour block over the sprite, so a builder's
+            // flat tint survives being given gold art and repaints it — the quests close button
+            // stayed dark red under the gold plaque, with textDark on it unreadable. Setting the
+            // Image white is not enough; the tint block has to be neutralised too. Kept as
+            // ColorTint (not None) so the button still responds to hover and press.
+            var colors = button.colors;
+            colors.normalColor = Color.white;
+            colors.highlightedColor = new Color(0.92f, 0.92f, 0.92f, 1f);
+            colors.pressedColor = new Color(0.80f, 0.80f, 0.80f, 1f);
+            colors.selectedColor = Color.white;
+            button.colors = colors;
 
             var label = button.GetComponentInChildren<TextMeshProUGUI>(true);
             if (label != null)

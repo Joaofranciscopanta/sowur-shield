@@ -386,7 +386,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 2630369990664198
-    m_Localized: Till some soil
+    m_Localized: Till some soil, plant a Carrot seed, and bring in your first harvest.
     m_Metadata:
       m_Items: []
   - m_Id: 2630369990664199
@@ -1258,6 +1258,155 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 25127366437888002
     m_Localized: Tell Maren
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25256626574057472
+    m_Localized: Quests
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25256626603417600
+    m_Localized: Active
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25256626603417601
+    m_Localized: Completed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25256626603417602
+    m_Localized: No active quests yet.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25256626603417603
+    m_Localized: Complete quests to fill your journal.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267777923964928
+    m_Localized: Quiet Water
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267777944936448
+    m_Localized: Joana says the river gives to those who wait. Go and wait.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267777944936449
+    m_Localized: Catch 4 fish
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267777944936450
+    m_Localized: Show Joana
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778691522560
+    m_Localized: The One That Stayed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778691522561
+    m_Localized: Every fisher has a story about the big one. Joana wants proof.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778691522562
+    m_Localized: Catch a rare fish
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778825740288
+    m_Localized: Timber
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778825740289
+    m_Localized: Rui needs planks and has no axe arm left. You have both.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778825740290
+    m_Localized: Chop 12 wood
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778825740291
+    m_Localized: Deliver to Rui
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735232
+    m_Localized: A Word With Everyone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735233
+    m_Localized: You have met three. There are more, and they have noticed.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735234
+    m_Localized: Talk to Clara
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735235
+    m_Localized: Talk to Elias
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735236
+    m_Localized: Talk to Nara
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267778976735237
+    m_Localized: Talk to Rui
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779110952960
+    m_Localized: First Fang
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779110952961
+    m_Localized: Something big has been circling the pasture. End it.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779110952962
+    m_Localized: Defeat the Meadow Wolf
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779257753600
+    m_Localized: Into the Dark
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779257753601
+    m_Localized: The caves under the ridge were sealed for a reason. That reason
+      is awake.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779257753602
+    m_Localized: Clear Crystal Cavern
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779257753603
+    m_Localized: Defeat the Cave Troll
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779396165632
+    m_Localized: Above the Clouds
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779396165633
+    m_Localized: The mountain does not care that you have come this far.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779396165634
+    m_Localized: Clear Cloud Ridge
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779396165635
+    m_Localized: Defeat the Mountain King
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779538771968
+    m_Localized: Ash and Ember
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779538771969
+    m_Localized: It began with one carrot. It ends in the mouth of a volcano.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779538771970
+    m_Localized: Defeat the Inferno Dragon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25267779538771971
+    m_Localized: Go home to Maren
     m_Metadata:
       m_Items: []
   references:

@@ -72,6 +72,35 @@ public class PlayerMove : MonoBehaviour
 animator.SetBool("isWalking", moveInput != Vector2.zero);
 animator.SetBool("isRunning", isSprinting && moveInput != Vector2.zero);
 
+        UpdateFootsteps();
+    }
+
+    [Header("Footsteps")]
+    [Tooltip("Seconds between footstep sounds while walking. Sprinting uses a shorter gap.")]
+    [SerializeField] private float walkStepInterval = 0.42f;
+    [SerializeField] private float sprintStepInterval = 0.28f;
+
+    private float _stepTimer;
+
+    /// <summary>
+    /// Plays a footstep on a cadence rather than per frame. The timer is reset (not just
+    /// paused) when the player stops, so the first step after standing still lands
+    /// immediately instead of whenever the previous interval happened to expire.
+    /// </summary>
+    private void UpdateFootsteps()
+    {
+        bool walking = movementEnabled && moveInput != Vector2.zero;
+        if (!walking)
+        {
+            _stepTimer = 0f;
+            return;
+        }
+
+        _stepTimer -= Time.deltaTime;
+        if (_stepTimer > 0f) return;
+
+        SFXManager.Play("Footstep");
+        _stepTimer = isSprinting ? sprintStepInterval : walkStepInterval;
     }
 
     public void FixedUpdate()
