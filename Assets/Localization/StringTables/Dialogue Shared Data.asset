@@ -1071,6 +1071,90 @@ MonoBehaviour:
     m_Key: dialogue.shop.buy
     m_Metadata:
       m_Items: []
+  - m_Id: 25127365250899968
+    m_Key: quest.settling_in.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365548695552
+    m_Key: quest.settling_in.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365548695553
+    m_Key: quest.settling_in.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365787770880
+    m_Key: quest.full_pantry.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365787770881
+    m_Key: quest.full_pantry.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365787770882
+    m_Key: quest.full_pantry.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365787770883
+    m_Key: quest.full_pantry.objective1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365938765824
+    m_Key: quest.the_herd.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365938765825
+    m_Key: quest.the_herd.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365938765826
+    m_Key: quest.the_herd.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365938765827
+    m_Key: quest.the_herd.objective1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366089760768
+    m_Key: quest.market_day.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366089760769
+    m_Key: quest.market_day.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366089760770
+    m_Key: quest.market_day.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366278504448
+    m_Key: quest.proving_grounds.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366278504449
+    m_Key: quest.proving_grounds.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366278504450
+    m_Key: quest.proving_grounds.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366433693696
+    m_Key: quest.valley_keeper.title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366437888000
+    m_Key: quest.valley_keeper.description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366437888001
+    m_Key: quest.valley_keeper.objective0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366437888002
+    m_Key: quest.valley_keeper.objective1
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

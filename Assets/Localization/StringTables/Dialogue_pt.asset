@@ -1177,6 +1177,90 @@ MonoBehaviour:
     m_Localized: Comprar
     m_Metadata:
       m_Items: []
+  - m_Id: 25127365250899968
+    m_Localized: Se Ajeitando
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365548695552
+    m_Localized: "Uma cenoura \xE9 um come\xE7o. Tr\xEAs \xE9 um h\xE1bito."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365548695553
+    m_Localized: Colha 3 cenouras
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365787770880
+    m_Localized: Despensa Cheia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365787770881
+    m_Localized: "S\xF3 de cenoura ningu\xE9m passa o inverno. Plante outra coisa."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365787770882
+    m_Localized: Junte 5 tomates
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365787770883
+    m_Localized: Junte 5 repolhos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365938765824
+    m_Localized: O Rebanho
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365938765825
+    m_Localized: "Animal alimentado retribui. Animal esquecido, n\xE3o."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365938765826
+    m_Localized: Colete 10 ovos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365938765827
+    m_Localized: Colete 5 leites
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366089760768
+    m_Localized: Dia de Feira
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366089760769
+    m_Localized: "Ab\xF3bora leva tempo. Reputa\xE7\xE3o tamb\xE9m."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366089760770
+    m_Localized: "Junte 8 ab\xF3boras"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366278504448
+    m_Localized: Campo de Provas
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366278504449
+    m_Localized: "A mata anda inquieta. Seus animais est\xE3o prontos."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366278504450
+    m_Localized: Limpe o Bosque Sussurrante
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366433693696
+    m_Localized: "Guardi\xE3o do Vale"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366437888000
+    m_Localized: "O vale j\xE1 sabe seu nome. V\xE1 merec\xEA-lo."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366437888001
+    m_Localized: Limpe a Floresta Ancestral
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366437888002
+    m_Localized: Conte para a Maren
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

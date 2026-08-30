@@ -1178,6 +1178,90 @@ MonoBehaviour:
     m_Localized: Comprar
     m_Metadata:
       m_Items: []
+  - m_Id: 25127365250899968
+    m_Localized: "Acomod\xE1ndose"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365548695552
+    m_Localized: "Una zanahoria es un comienzo. Tres es un h\xE1bito."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365548695553
+    m_Localized: Cosecha 3 zanahorias
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365787770880
+    m_Localized: Una Despensa Llena
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365787770881
+    m_Localized: Solo con zanahorias no se pasa el invierno. Planta otra cosa.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365787770882
+    m_Localized: "Re\xFAne 5 tomates"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365787770883
+    m_Localized: "Re\xFAne 5 repollos"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365938765824
+    m_Localized: "El Reba\xF1o"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365938765825
+    m_Localized: El animal alimentado retribuye. El olvidado, no.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365938765826
+    m_Localized: Recoge 10 huevos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127365938765827
+    m_Localized: Recoge 5 leches
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366089760768
+    m_Localized: "D\xEDa de Mercado"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366089760769
+    m_Localized: "La calabaza toma su tiempo. La reputaci\xF3n tambi\xE9n."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366089760770
+    m_Localized: "Re\xFAne 8 calabazas"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366278504448
+    m_Localized: Campo de Pruebas
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366278504449
+    m_Localized: "El bosque est\xE1 inquieto. Tus animales est\xE1n listos."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366278504450
+    m_Localized: Despeja el Bosque Susurrante
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366433693696
+    m_Localized: "Guardi\xE1n del Valle"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366437888000
+    m_Localized: El valle ya sabe tu nombre. Ve a merecerlo.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366437888001
+    m_Localized: Despeja el Bosque Ancestral
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25127366437888002
+    m_Localized: "Cu\xE9ntaselo a Maren"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

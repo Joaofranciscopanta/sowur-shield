@@ -280,6 +280,40 @@ public class QuestManager : MonoBehaviour, ISaveable
         SowurShield.Core.SFXManager.Play("QuestComplete");
 
         OnQuestCompleted?.Invoke(data);
+
+        OfferFollowUps(data.questId);
+    }
+
+    /// <summary>
+    /// Starts any quest whose only outstanding prerequisite was the one just finished.
+    /// </summary>
+    /// <remarks>
+    /// Without this the chain is gated but never opened: each link would sit waiting for an
+    /// NPC to hand it over, and there is no villager whose job is "give the player the next
+    /// rung". Quests that an NPC does offer are unaffected -- StartQuest is a no-op once a
+    /// quest is active or done, so a giver simply becomes redundant rather than conflicting.
+    /// </remarks>
+    private void OfferFollowUps(string justCompleted)
+    {
+        // Snapshot first: StartQuest writes back into _allQuests, and mutating the dictionary
+        // mid-enumeration aborts the loop -- which is why only the first eligible quest was
+        // ever offered and the rest of the chain stayed shut.
+        var candidates = new List<QuestData>(_allQuests.Values);
+
+        foreach (QuestData candidate in candidates)
+        {
+            if (candidate == null) continue;
+            if (candidate.prerequisiteQuestIds == null) continue;
+            if (candidate.prerequisiteQuestIds.Count == 0) continue;
+            if (!candidate.prerequisiteQuestIds.Contains(justCompleted)) continue;
+
+            if (_activeQuestIds.Contains(candidate.questId)) continue;
+            if (_completedQuestIds.Contains(candidate.questId)) continue;
+
+            // StartQuest re-checks every prerequisite, so a quest waiting on two finished
+            // ones only opens when both are done.
+            StartQuest(candidate.questId);
+        }
     }
 
     private void GrantRewards(QuestData data)
