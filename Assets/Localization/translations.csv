@@ -150,7 +150,7 @@ Combat,combat.status.shield,SHD,ESC,ESC
 Combat,combat.status.burn,BRN,QMD,QMD
 Combat,combat.status.poison,PSN,VNN,VNN
 Combat,combat.status.weakness,WKN,FRQ,DBL
-Combat,combat.status.turn_counter,Turn: {0}/{1},Turno: {0}/{1},Turno: {0}/{1}
+Combat,combat.status.turn_counter,Turn {0},Turno {0},Turno {0}
 Combat,combat.status.your_team,Your Team: {0}/{1},Seu Time: {0}/{1},Tu Equipo: {0}/{1}
 Combat,combat.status.enemies,Enemies: {0}/{1},Inimigos: {0}/{1},Enemigos: {0}/{1}
 Combat,combat.consumables.title,Items,Itens,Objetos
