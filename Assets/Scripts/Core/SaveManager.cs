@@ -154,18 +154,7 @@ namespace SowurShield.Core
 
                 LogDebug("New game initialized successfully");
 
-                // Start tutorial for new games
-                TutorialManager.Instance?.StartTutorial();
-
-                // ...and give the player something to do once it ends.
-                //
-                // Seven quests are written and translated, but only Maren's dialogue tree
-                // carries a StartQuest effect, so six of them were unreachable and a new
-                // game had zero objectives -- nothing on screen said what to do after the
-                // six tutorial steps. Four achievements even reference quests that could
-                // never start. This opens the first one; the rest still need an NPC to
-                // offer them, which is content work rather than wiring.
-                SowurShield.Dialogue.QuestManager.Instance?.StartQuest(OpeningQuestId);
+                BeginNewGame();
             }
             else if (HasSaveFile())
             {
@@ -184,12 +173,37 @@ namespace SowurShield.Core
                 ReapplyLoadedDataToRegisteredObjects();
 
                 LogDebug("No save file found. Created new game data.");
+
+                // This branch is a new game too, so it needs the same opening beats as the
+                // one above. Leaving them out of here is why a fresh play session showed the
+                // tutorial (TutorialManager starts itself) but had no active quest at all.
+                BeginNewGame();
             }
 
             // Set last: from here on, RegisterSaveable applies currentGameData to any object
             // that registers late, so objects whose Start() ran after this one still get their
             // persisted state instead of silently keeping scene defaults.
             hasCompletedInitialLoad = true;
+        }
+
+        /// <summary>
+        /// The things a brand new game needs on top of fresh data: the tutorial, and a first
+        /// objective so the player is not left with an empty quest tracker.
+        /// </summary>
+        /// <remarks>
+        /// Called from BOTH new-game branches. There are two: the explicit
+        /// initializeNewGameAfterLoad path, and the "no save file" fallback, which is the one
+        /// that actually runs when the player picks an empty slot or presses Play in the
+        /// editor -- the flag is consumed before the scene's SaveManager exists.
+        /// </remarks>
+        private void BeginNewGame()
+        {
+            TutorialManager.Instance?.StartTutorial();
+
+            // Seven quests are written and translated, but only Maren's dialogue tree carries
+            // a StartQuest effect, so a new game had no objectives at all. The villagers now
+            // offer the rest; this opens the one that follows the tutorial.
+            SowurShield.Dialogue.QuestManager.Instance?.StartQuest(OpeningQuestId);
         }
 
         // ============================================================================

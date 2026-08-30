@@ -35,16 +35,61 @@ public class QuestTrackerUI : MonoBehaviour
             QuestManager.Instance.OnQuestStarted     += OnQuestStarted;
             QuestManager.Instance.OnObjectiveUpdated += OnObjectiveUpdated;
             QuestManager.Instance.OnQuestCompleted   += OnQuestCompleted;
+
+            AdoptActiveQuest();
         }
+
+        // After adoption, not from OnEnable: OnEnable runs before Start, so the coroutine
+        // would wait on localization and then refresh a tracker that had no quest yet.
+        // Switching language mid-game must re-resolve the two labels as well.
+        UnityEngine.Localization.Settings.LocalizationSettings.SelectedLocaleChanged += OnLocaleChanged;
     }
 
-    private void OnDestroy()
+    private void OnLocaleChanged(UnityEngine.Localization.Locale _) => Refresh();
+
+    /// <summary>
+    /// Retries the labels until the string tables actually answer.
+    /// </summary>
+    /// <remarks>
+    /// Waiting on LocalizationSettings.InitializationOperation is not sufficient: it can
+    /// report IsDone on the first frame, before the tables are fetched, so a refresh driven
+    /// off it still writes empty strings and nothing ever corrects them. Retrying while the
+    /// title is blank is the version that actually works, and it costs one string compare per
+    /// frame only until the first successful resolve.
+    /// </remarks>
+    private void Update()
     {
-        if (QuestManager.Instance != null)
+        if (_trackedQuest == null) return;
+        if (questTitleText == null || !string.IsNullOrEmpty(questTitleText.text)) return;
+
+        Refresh();
+    }
+
+    /// <summary>
+    /// Picks up a quest that is already running, so the tracker is not blank when it starts
+    /// after the quest does.
+    /// </summary>
+    /// <remarks>
+    /// The panel is only ever shown from OnQuestStarted, so a quest begun before this
+    /// component subscribed was invisible. That is the normal case for a new game: SaveManager
+    /// opens the first quest during its own Start(), which can run before this one. It also
+    /// covers a loaded save, where quests are restored rather than started.
+    /// </remarks>
+    private void AdoptActiveQuest()
+    {
+        if (_trackedQuest != null) return;
+
+        var ids = QuestManager.Instance.GetActiveQuestIds();
+        if (ids == null) return;
+
+        foreach (string id in ids)
         {
-            QuestManager.Instance.OnQuestStarted     -= OnQuestStarted;
-            QuestManager.Instance.OnObjectiveUpdated -= OnObjectiveUpdated;
-            QuestManager.Instance.OnQuestCompleted   -= OnQuestCompleted;
+            QuestData quest = QuestManager.Instance.GetQuestData(id);
+            if (quest == null) continue;
+
+            _trackedQuest = quest;
+            Refresh();
+            return;
         }
     }
 
