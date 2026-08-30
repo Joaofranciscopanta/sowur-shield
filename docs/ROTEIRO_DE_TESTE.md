@@ -6,9 +6,14 @@
 
 ## ✅ Rodei este roteiro em 2026-08-30 — resultado
 
-**16 dos 17 passos passam.** O único que falha é o **17 (troca de idioma)**, e a causa é
-antiga: só 2 labels têm `LocalizeStringEvent` e retraduzem sozinhos; os outros 19 são escritos
-por script e só mudam quando o script reescreve. Não é regressão, é lacuna de arquitetura.
+**Os 17 passos passam.**
+
+⚠️ Correção de um relato meu anterior: eu disse que o passo 17 falhava. **Falhava o meu
+teste, não o jogo.** Eu estava trocando `LocalizationSettings.SelectedLocale` direto, coisa
+que nenhuma parte do jogo faz. Pelo caminho real — `LocalizationManager.SetLanguage()`, que é
+o que a UI chama — tudo retraduz na hora: "Spring 2", "Money: $100", tutorial em inglês. O
+`UIDataConnector` já escuta `LocalizationManager.OnLanguageChanged` e reescreve os rótulos
+dinâmicos.
 
 Três bugs foram achados e corrigidos rodando o roteiro:
 - Jogo novo não iniciava quest nenhuma — o `SaveManager` tem **três** ramos e eu tinha ligado
