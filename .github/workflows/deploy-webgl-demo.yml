@@ -139,13 +139,47 @@ jobs:
 
           echo "build_number=$BUILD_NUMBER" >> $GITHUB_OUTPUT
           
-          DOWNLOAD_INFO=$(curl -s -H "Authorization: Basic $ENCODED_KEY" \
-            "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${UNITY_BUILD_TARGET_ID}/builds/${BUILD_NUMBER}")
-          
-          DOWNLOAD_URL=$(echo "$DOWNLOAD_INFO" | grep -o '"download_primary"[^}]*"href":"[^"]*"' | grep -o 'https://[^"]*' | head -1)
-          [ -z "$DOWNLOAD_URL" ] && echo "❌ Could not fetch download URL" && exit 1
-          
-          curl -L "$DOWNLOAD_URL" -o temp_build/webgl-build.zip
+          # Unity flips buildStatus to "success" slightly before it publishes the
+          # artifact's download link, so a single lookup here can legitimately come
+          # back without one. Run #123 asked 0.05s after the poll saw success, got
+          # no link, and threw away an 18-minute paid Cloud Build on the spot.
+          # Wait for the link rather than giving up on the first miss.
+          DOWNLOAD_URL=""
+          DOWNLOAD_INFO=""
+          ATTEMPTS=10
+          for attempt in $(seq 1 $ATTEMPTS); do
+            RESPONSE=$(curl -s -w '\n%{http_code}' -H "Authorization: Basic $ENCODED_KEY" \
+              "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${UNITY_BUILD_TARGET_ID}/builds/${BUILD_NUMBER}")
+            HTTP_CODE=$(printf '%s' "$RESPONSE" | tail -n1)
+            DOWNLOAD_INFO=$(printf '%s' "$RESPONSE" | sed '$d')
+
+            DOWNLOAD_URL=$(printf '%s' "$DOWNLOAD_INFO" | jq -r '.links.download_primary.href // empty' 2>/dev/null || true)
+            if [ -z "$DOWNLOAD_URL" ]; then
+              # Fallback for a body jq cannot parse (an HTML error page, say).
+              DOWNLOAD_URL=$(printf '%s' "$DOWNLOAD_INFO" | grep -o '"download_primary"[^}]*"href":"[^"]*"' | grep -o 'https://[^"]*' | head -1)
+            fi
+
+            if [ -n "$DOWNLOAD_URL" ]; then
+              echo "✅ Download link resolved on attempt $attempt/$ATTEMPTS"
+              break
+            fi
+
+            BUILD_STATUS=$(printf '%s' "$DOWNLOAD_INFO" | jq -r '.buildStatus // "unknown"' 2>/dev/null || echo "unknown")
+            echo "  ⏳ [$attempt/$ATTEMPTS] HTTP $HTTP_CODE, buildStatus=$BUILD_STATUS, no download link yet"
+            [ "$attempt" -lt "$ATTEMPTS" ] && sleep 30
+          done
+
+          if [ -z "$DOWNLOAD_URL" ]; then
+            echo "❌ Could not fetch download URL for build #$BUILD_NUMBER after $ATTEMPTS attempts"
+            # Print the body so this failure is diagnosable from the log alone.
+            # Signed URLs are redacted: these logs are public on this repo.
+            echo "--- Last API response (URLs redacted) ---"
+            printf '%s' "$DOWNLOAD_INFO" | sed -E 's#https://[^"]*#<redacted-url>#g'
+            echo ""
+            exit 1
+          fi
+
+          curl -fL --retry 3 --retry-delay 10 "$DOWNLOAD_URL" -o temp_build/webgl-build.zip
           echo "✅ Build downloaded successfully"
 
       - name: Extract Build
