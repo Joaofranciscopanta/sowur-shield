@@ -365,10 +365,42 @@ public class PlayerStats : MonoBehaviour, ISaveable
         {
             energySlider.maxValue = maxEnergy;
             energySlider.value = currentEnergy;
+            TintEnergyBar();
         }
 
         UpdateMoneyUI();
     }
+
+    /// <summary>
+    /// Colours the stamina bar by how much is left, so the player can read their state at a
+    /// glance instead of judging the length of a 48px bar with no number on it.
+    /// </summary>
+    /// <remarks>
+    /// Colour rather than a numeric label was the deliberate choice: the bar is 48x16px in
+    /// the corner and a readable number does not fit without re-laying out the HUD.
+    /// </remarks>
+    private void TintEnergyBar()
+    {
+        if (energySlider == null || maxEnergy <= 0) return;
+
+        UnityEngine.UI.Image fill = energySlider.fillRect != null
+            ? energySlider.fillRect.GetComponent<UnityEngine.UI.Image>()
+            : null;
+        if (fill == null) return;
+
+        float ratio = currentEnergy / (float)maxEnergy;
+
+        fill.color = ratio <= CriticalEnergyRatio ? EnergyCritical
+                   : ratio <= LowEnergyRatio      ? EnergyLow
+                   :                                EnergyHealthy;
+    }
+
+    private const float LowEnergyRatio = 0.40f;
+    private const float CriticalEnergyRatio = 0.20f;
+
+    private static readonly Color EnergyHealthy  = new Color(0.45f, 0.80f, 0.35f);
+    private static readonly Color EnergyLow      = new Color(0.95f, 0.78f, 0.25f);
+    private static readonly Color EnergyCritical = new Color(0.88f, 0.30f, 0.25f);
 
     private void UpdateMoneyUI()
     {

@@ -55,7 +55,10 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 317448200
-    m_Localized: \n\nLimite de turnos atingido!
+    m_Localized: '
+
+
+      Limite de turnos atingido!'
     m_Metadata:
       m_Items: []
   - m_Id: 317448201
@@ -92,7 +95,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 317448209
-    m_Localized: 'Turno: {0}/{1}'
+    m_Localized: Turno {0}
     m_Metadata:
       m_Items: []
   - m_Id: 317448210

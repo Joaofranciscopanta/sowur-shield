@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
@@ -432,10 +433,24 @@ namespace SowurShield.Dialogue
         /// </summary>
         public Sprite GetPortrait()
         {
-            if (npcPortrait != null) return npcPortrait;
+            // The inspector reference is checked against the placeholder list too: the scene
+            // has portrait_joana and friends wired directly on the component, so filtering
+            // only inside LoadOwnPortrait left the silhouettes winning anyway.
+            if (npcPortrait != null && !IsPlaceholderPortrait(npcPortrait)) return npcPortrait;
 
             Sprite own = LoadOwnPortrait();
             if (own != null) return own;
+
+            // The villager's own world sprite, as a stand-in for a real portrait.
+            //
+            // Resources/Portraits holds 64x80 placeholders: featureless silhouettes with no
+            // face at all, while every villager has 450x900 art with an actual drawn face
+            // standing in the scene. Showing a blank silhouette next to their dialogue was
+            // worse than showing the character themselves, so the sprite wins until the real
+            // portraits are drawn. Reading it off the renderer also means an NPC added later
+            // gets a face with no new art path to wire.
+            var renderer = GetComponentInChildren<SpriteRenderer>();
+            if (renderer != null && renderer.sprite != null) return renderer.sprite;
 
             var startNode = defaultDialogue?.GetStartNode();
             return startNode?.speakerPortrait;
@@ -470,8 +485,50 @@ namespace SowurShield.Dialogue
             }
             slug = sb.ToString().Replace(" ", "_");
 
-            _ownPortrait = Resources.Load<Sprite>($"Portraits/portrait_{slug}");
+            Sprite loaded = Resources.Load<Sprite>($"Portraits/portrait_{slug}");
+
+            // Skip the placeholder portraits so the caller falls through to the villager's
+            // world sprite. Eight of the nine files in Resources/Portraits are 64x80
+            // five-colour silhouettes with no face; only Maren's is real art. Matching on
+            // the known names rather than sniffing pixel counts keeps this obvious to read
+            // and trivial to undo -- delete a name from the list as each portrait is drawn.
+            if (loaded != null && IsPlaceholderPortrait(loaded))
+                loaded = null;
+
+            _ownPortrait = loaded;
             return _ownPortrait;
+        }
+
+        /// <summary>
+        /// Villagers whose Resources/Portraits file is still a blank silhouette. Remove a
+        /// name here the moment its real portrait lands and it takes over again.
+        /// </summary>
+        private static readonly System.Collections.Generic.HashSet<string> PlaceholderPortraits =
+            new System.Collections.Generic.HashSet<string>
+            {
+                "bento", "clara", "elias", "isabela", "joana", "nara", "rui", "tomas",
+            };
+
+        /// <summary>
+        /// True for the blank silhouettes in Resources/Portraits, matched on the asset name
+        /// so it catches them whether they arrive from Resources or from an inspector slot.
+        /// </summary>
+        private static bool IsPlaceholderPortrait(Sprite sprite)
+        {
+            if (sprite == null) return false;
+            string n = sprite.name;
+            const string prefix = "portrait_";
+            if (!n.StartsWith(prefix)) return false;
+
+            string slug = n.Substring(prefix.Length).ToLowerInvariant();
+
+            // The importer slices these as Multiple, so the sprite is "portrait_joana_0"
+            // rather than "portrait_joana". Drop a trailing _<digits> before matching.
+            int underscore = slug.LastIndexOf('_');
+            if (underscore > 0 && slug.Substring(underscore + 1).All(char.IsDigit))
+                slug = slug.Substring(0, underscore);
+
+            return PlaceholderPortraits.Contains(slug);
         }
 
         private Sprite _ownPortrait;
