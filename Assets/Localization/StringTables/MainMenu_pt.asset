@@ -71,15 +71,15 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 296476684
-    m_Localized: "\U0001F4C4 Informa\xE7\xF5es do Save\\n\\n\U0001F4C1 Arquivo: {0}\\n\U0001F4C5
-      Criado: {1}\\n\U0001F552 \xDAltimo salvamento: {2}\\n\U0001F4BE Tamanho: {3}\\n\\n\U0001F4A1
-      O jogo salva automaticamente quando voc\xEA dorme na cama"
+    m_Localized: "Informa\xE7\xF5es do Save\\n\\nArquivo: {0}\\nCriado: {1}\\n\xDAltimo
+      salvamento: {2}\\nTamanho: {3}\\n\\n O jogo salva automaticamente quando voc\xEA
+      dorme na cama"
     m_Metadata:
       m_Items: []
   - m_Id: 296476685
-    m_Localized: "\u274C Nenhum arquivo de save encontrado\\n\\n\U0001F6CF\uFE0F
-      Durma em uma cama para salvar seu progresso automaticamente.\\n\\nO jogo criar\xE1
-      um arquivo de save quando voc\xEA dormir pela primeira vez."
+    m_Localized: "Nenhum arquivo de save encontrado\\n\\nDurma em uma cama para salvar
+      seu progresso automaticamente.\\n\\nO jogo criar\xE1 um arquivo de save quando
+      voc\xEA dormir pela primeira vez."
     m_Metadata:
       m_Items: []
   - m_Id: 296476686
@@ -136,14 +136,14 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 296476698
     m_Localized: "Informa\xE7\xF5es do Arquivo de Save:\\n\\nArquivo: {0}\\nCriado:
-      {1}\\n\xDAltima Modifica\xE7\xE3o: {2}\\nTamanho: {3}\\n\\n\U0001F4A1 O jogo
-      salva automaticamente quando voc\xEA dorme na cama"
+      {1}\\n\xDAltima Modifica\xE7\xE3o: {2}\\nTamanho: {3}\\n\\n O jogo salva automaticamente
+      quando voc\xEA dorme na cama"
     m_Metadata:
       m_Items: []
   - m_Id: 296476699
-    m_Localized: "Nenhum arquivo de save encontrado.\\n\\n\U0001F6CF\uFE0F Durma
-      em uma cama para salvar seu progresso automaticamente.\\n\\nO jogo criar\xE1
-      um arquivo de save quando voc\xEA dormir."
+    m_Localized: "Nenhum arquivo de save encontrado.\\n\\nDurma em uma cama para
+      salvar seu progresso automaticamente.\\n\\nO jogo criar\xE1 um arquivo de save
+      quando voc\xEA dormir."
     m_Metadata:
       m_Items: []
   - m_Id: 296476700

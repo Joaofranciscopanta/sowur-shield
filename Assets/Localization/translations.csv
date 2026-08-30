@@ -27,8 +27,8 @@ MainMenu,mainmenu.save_size_label,Size: {0}KB,Tamanho: {0}KB,Tamaño: {0}KB
 MainMenu,mainmenu.save_last_saved_label,Last Saved: {0},Último salvamento: {0},Último guardado: {0}
 MainMenu,mainmenu.gamemenu.settings_not_configured,Settings panel not configured!,Painel de configurações não configurado!,¡Panel de ajustes no configurado!
 MainMenu,mainmenu.gamemenu.saveinfo_not_configured,Save info panel not configured!,Painel de informações de save não configurado!,¡Panel de información de guardado no configurado!
-MainMenu,mainmenu.gamemenu.save_info_found,"📄 Save File Information\n\n📁 File: {0}\n📅 Created: {1}\n🕒 Last Saved: {2}\n💾 Size: {3}\n\n💡 Game saves automatically when you sleep in bed","📄 Informações do Save\n\n📁 Arquivo: {0}\n📅 Criado: {1}\n🕒 Último salvamento: {2}\n💾 Tamanho: {3}\n\n💡 O jogo salva automaticamente quando você dorme na cama","📄 Información de guardado\n\n📁 Archivo: {0}\n📅 Creado: {1}\n🕒 Último guardado: {2}\n💾 Tamaño: {3}\n\n💡 El juego se guarda automáticamente cuando duermes en la cama"
-MainMenu,mainmenu.gamemenu.save_info_not_found,"❌ No save file found\n\n🛏️ Sleep in a bed to save your progress automatically.\n\nThe game will create a save file when you go to sleep for the first time.","❌ Nenhum arquivo de save encontrado\n\n🛏️ Durma em uma cama para salvar seu progresso automaticamente.\n\nO jogo criará um arquivo de save quando você dormir pela primeira vez.","❌ No se encontró archivo de guardado\n\n🛏️ Duerme en una cama para guardar tu progreso automáticamente.\n\nEl juego creará un archivo de guardado la primera vez que duermas."
+MainMenu,mainmenu.gamemenu.save_info_found,"Save File Information\n\nFile: {0}\nCreated: {1}\nLast Saved: {2}\nSize: {3}\n\n💡 Game saves automatically when you sleep in bed","Informações do Save\n\nArquivo: {0}\nCriado: {1}\nÚltimo salvamento: {2}\nTamanho: {3}\n\n💡 O jogo salva automaticamente quando você dorme na cama","Información de guardado\n\nArchivo: {0}\nCreado: {1}\nÚltimo guardado: {2}\nTamaño: {3}\n\n💡 El juego se guarda automáticamente cuando duermes en la cama"
+MainMenu,mainmenu.gamemenu.save_info_not_found,"No save file found\n\nSleep in a bed to save your progress automatically.\n\nThe game will create a save file when you go to sleep for the first time.","Nenhum arquivo de save encontrado\n\nDurma em uma cama para salvar seu progresso automaticamente.\n\nO jogo criará um arquivo de save quando você dormir pela primeira vez.","No se encontró archivo de guardado\n\nDuerme en una cama para guardar tu progreso automáticamente.\n\nEl juego creará un archivo de guardado la primera vez que duermas."
 MainMenu,mainmenu.gamemenu.save_slot_title,Save Game — Choose Slot,Salvar Jogo — Escolha o Slot,Guardar partida — Elige ranura
 MainMenu,mainmenu.gamemenu.load_slot_title,Load Game — Choose Slot,Carregar Jogo — Escolha o Slot,Cargar partida — Elige ranura
 MainMenu,mainmenu.gamemenu.overwrite_confirm,Overwrite save in {0}?,Sobrescrever o save em {0}?,¿Sobrescribir guardado en {0}?
@@ -42,7 +42,7 @@ MainMenu,mainmenu.gamemenu.test_notification,Test notification message!,Mensagem
 MainMenu,mainmenu.gamemenu.test_error,Test error message!,Mensagem de erro de teste!,¡Mensaje de error de prueba!
 MainMenu,mainmenu.quittomainmenu.confirm,"Return to Main Menu?\n\nAny unsaved progress will be lost.\nMake sure to save your game first!","Voltar ao Menu Principal?\n\nQualquer progresso não salvo será perdido.\nCertifique-se de salvar o jogo primeiro!","¿Volver al menú principal?\n\nSe perderá cualquier progreso no guardado.\n¡Asegúrate de guardar tu partida primero!"
 MainMenu,mainmenu.savegameui.save_info_found,"Save File Information:\n\nFile: {0}\nCreated: {1}\nLast Modified: {2}\nSize: {3}\n\n💡 Game saves automatically when you sleep in bed","Informações do Arquivo de Save:\n\nArquivo: {0}\nCriado: {1}\nÚltima Modificação: {2}\nTamanho: {3}\n\n💡 O jogo salva automaticamente quando você dorme na cama","Información del archivo de guardado:\n\nArchivo: {0}\nCreado: {1}\nÚltima modificación: {2}\nTamaño: {3}\n\n💡 El juego se guarda automáticamente cuando duermes en la cama"
-MainMenu,mainmenu.savegameui.save_info_not_found,"No save file found.\n\n🛏️ Sleep in a bed to save your progress automatically.\n\nThe game will create a save file when you go to sleep.","Nenhum arquivo de save encontrado.\n\n🛏️ Durma em uma cama para salvar seu progresso automaticamente.\n\nO jogo criará um arquivo de save quando você dormir.","No se encontró archivo de guardado.\n\n🛏️ Duerme en una cama para guardar tu progreso automáticamente.\n\nEl juego creará un archivo de guardado cuando duermas."
+MainMenu,mainmenu.savegameui.save_info_not_found,"No save file found.\n\nSleep in a bed to save your progress automatically.\n\nThe game will create a save file when you go to sleep.","Nenhum arquivo de save encontrado.\n\nDurma em uma cama para salvar seu progresso automaticamente.\n\nO jogo criará um arquivo de save quando você dormir.","No se encontró archivo de guardado.\n\nDuerme en una cama para guardar tu progreso automáticamente.\n\nEl juego creará un archivo de guardado cuando duermas."
 MainMenu,mainmenu.saveslotbutton.autosave,Auto Save,Save Automático,Guardado automático
 MainMenu,mainmenu.saveslotbutton.slot_prefix,Slot ,Slot ,Ranura
 MainMenu,mainmenu.saveslotbutton.day_label,"Day {0} — {1}, Year {2}","Dia {0} — {1}, Ano {2}","Día {0} — {1}, Año {2}"
@@ -110,7 +110,7 @@ Animals,animals.market.gold_label,Gold: {0},Ouro: {0},Oro: {0}
 Animals,animals.roster.group_header,{0} ({1} animals),{0} ({1} animais),{0} ({1} animales)
 Animals,animals.roster.mood_happy,☺,☺,☺
 Animals,animals.roster.mood_neutral,•,•,•
-Animals,animals.roster.mood_sad,☹,☹,☹
+Animals,animals.roster.mood_sad,:(,:(,:(
 Animals,animals.roster.hungry,Hungry,Com Fome,Hambriento
 Animals,animals.roster.fed,Fed,Alimentado,Alimentado
 Animals,animals.roster.row_status,"{0} {1:F0}%  |  {2}","{0} {1:F0}%  |  {2}","{0} {1:F0}%  |  {2}"
@@ -130,12 +130,12 @@ Animals,animal.Sparrow.name,Sparrow,Pardal,Gorrión
 Combat,combat.selection.happiness,Happiness: {0:F0}%,Felicidade: {0:F0}%,Felicidad: {0:F0}%
 Combat,combat.selection.fed,Fed,Alimentado,Alimentado
 Combat,combat.selection.no_food_needed,No food needed,Nenhum alimento necessário,No necesita alimento
-Combat,combat.selection.needs,Needs: ,Precisa: ,Necesita:
+Combat,combat.selection.needs,Needs: ,Precisa: ,Necesita: 
 Combat,combat.selection.food_line,"{0}x {1} ","{0}x {1} ","{0}x {1} "
 Combat,combat.hud.combo,Combo x{0}!,Combo x{0}!,¡Combo x{0}!
 Combat,combat.results.victory,*** VICTORY! ***,*** VITÓRIA! ***,*** ¡VICTORIA! ***
 Combat,combat.results.defeat,-- DEFEAT --,-- DERROTA --,-- DERROTA --
-Combat,combat.results.draw,⏱️ DRAW ⏱️,⏱️ EMPATE ⏱️,⏱️ EMPATE ⏱️
+Combat,combat.results.draw,DRAW,EMPATE,EMPATE
 Combat,combat.results.turn_limit,"\n\nTurn limit reached!","\n\nLimite de turnos atingido!","\n\n¡Límite de turnos alcanzado!"
 Combat,combat.results.partial_rewards,"Partial Rewards:\nGold: 50\nXP: 25 (all units)","Recompensas Parciais:\nOuro: 50\nXP: 25 (todas as unidades)","Recompensas Parciales:\nOro: 50\nXP: 25 (todas las unidades)"
 Combat,combat.results.stats,"<b>Battle Statistics</b>\n\nTurns: {0}\nYour Survivors: {1}\nEnemy Survivors: {2}\n","<b>Estatísticas da Batalha</b>\n\nTurnos: {0}\nSeus Sobreviventes: {1}\nSobreviventes Inimigos: {2}\n","<b>Estadísticas de la Batalla</b>\n\nTurnos: {0}\nTus Sobrevivientes: {1}\nSobrevivientes Enemigos: {2}\n"
@@ -279,7 +279,7 @@ Dialogue,shop.general_store.title,General Store,Loja Geral,Tienda General
 Dialogue,dialogue.shop.friendship_discount,Friendship Discount: {0}% off,Desconto de Amizade: {0}% off,Descuento de Amistad: {0}% de descuento
 Dialogue,dialogue.shop.gold_label,Gold: {0},Ouro: {0},Oro: {0}
 Dialogue,dialogue.shop.price,{0}g,{0}g,{0}g
-Dialogue,dialogue.shop.unlimited_stock,∞,∞,∞
+Dialogue,dialogue.shop.unlimited_stock,x99+,x99+,x99+
 Dialogue,dialogue.shop.stock_count,x{0},x{0},x{0}
 Dialogue,dialogue.gift.choose_title,Choose a gift,Escolha um presente,Elige un regalo
 Dialogue,dialogue.gift.close,Close,Fechar,Cerrar
@@ -304,7 +304,7 @@ Dialogue,dialogue.seedshop.gold_label,Gold: {0},Ouro: {0},Oro: {0}
 Dialogue,dialogue.seedshop.item_row,{0}  — {1}g,{0}  — {1}g,{0}  — {1}g
 Dialogue,dialogue.seedshop.buy,Buy,Comprar,Comprar
 Farming,farming.building.cost_progress,{0}: {1} / {2},{0}: {1} / {2},{0}: {1} / {2}
-Farming,farming.building.built,✓ Built,✓ Construído,✓ Construido
+Farming,farming.building.built,• Built,• Construído,• Construido
 Farming,farming.building.cannot_afford,Cannot afford,Não pode pagar,No se puede pagar
 Farming,farming.buildingshop.title,Farm Buildings,Construções da Fazenda,Construcciones de la Granja
 Farming,farming.buildingshop.build,Build,Construir,Construir
