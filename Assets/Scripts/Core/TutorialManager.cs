@@ -53,7 +53,8 @@ public class TutorialManager : MonoBehaviour, ISaveable
     [SerializeField] private LocalizedString sleepDescription_Localized; // table "Tutorial", key "tutorial.sleep.description"
     [SerializeField] private LocalizedString harvestTitle_Localized; // table "Tutorial", key "tutorial.harvest.title"
     [SerializeField] private LocalizedString harvestDescription_Localized; // table "Tutorial", key "tutorial.harvest.description"
-    [SerializeField] private LocalizedString stepProgressText_Localized; // table "Tutorial", key "tutorial.step_progress"
+    [SerializeField] private LocalizedString stepProgressText_Localized; // table "Tutorial", key "tutorial.step_progress" (legacy: included the step title)
+    [SerializeField] private LocalizedString stepCounterText_Localized; // table "Tutorial", key "tutorial.step_counter"
 
     // Tutorial steps in order. Built at runtime (not a static literal array) because
     // LocalizedString fields are populated via the Inspector and aren't available
@@ -107,6 +108,11 @@ public class TutorialManager : MonoBehaviour, ISaveable
         }
 
         BuildSteps();
+
+        // Added after the scene was authored, so the serialized field is empty there — wire
+        // it here rather than requiring the TutorialCanvas to be re-saved by hand.
+        if (stepCounterText_Localized == null || stepCounterText_Localized.IsEmpty)
+            stepCounterText_Localized = new LocalizedString("Tutorial", "tutorial.step_counter");
 
         if (tutorialPanel != null) tutorialPanel.SetActive(false);
         if (skipButton != null) skipButton.onClick.AddListener(CompleteTutorial);
@@ -221,8 +227,14 @@ public class TutorialManager : MonoBehaviour, ISaveable
         if (stepText != null)      stepText.text = step.description.SafeGetLocalizedString();
         if (stepCountText != null)
         {
-            stepProgressText_Localized.Arguments = new object[] { _currentStepIndex + 1, Steps.Length, step.title.SafeGetLocalizedString() };
-            stepCountText.text = stepProgressText_Localized.SafeGetLocalizedString();
+            // Counter only. The old format was "Passo {0}/{1}: {2}", where {2} is the step
+            // title -- free text that runs from "Are o solo" to "Durma para avançar o dia".
+            // The label's slot in the bar is a fixed 118px, sized for the counter alone, so
+            // the longest titles overflowed it by ~62px and printed over the panel. The title
+            // is redundant there anyway: the description beside it already gives the
+            // instruction, and that one wraps and auto-sizes.
+            stepCounterText_Localized.Arguments = new object[] { _currentStepIndex + 1, Steps.Length };
+            stepCountText.text = stepCounterText_Localized.SafeGetLocalizedString();
         }
     }
 

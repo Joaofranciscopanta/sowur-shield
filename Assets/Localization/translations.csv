@@ -437,3 +437,6 @@ Dialogue,dialogue.quests.tab_active,Active,Ativas,Activas
 Dialogue,dialogue.quests.tab_completed,Completed,Concluídas,Completadas
 Dialogue,dialogue.quests.empty_active,No active quests yet.,Nenhuma missão ativa ainda.,Aún no hay misiones activas.
 Dialogue,dialogue.quests.empty_completed,Complete quests to fill your journal.,Conclua missões para preencher seu diário.,Completa misiones para llenar tu diario.
+Inventory,item.Fish.name,Fish,Peixe,Pez
+Inventory,item.RareFish.name,Rare Fish,Peixe Raro,Pez Raro
+Tutorial,tutorial.step_counter,Step {0}/{1},Passo {0}/{1},Paso {0}/{1}
