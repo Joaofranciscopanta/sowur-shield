@@ -275,6 +275,10 @@ public class QuestManager : MonoBehaviour, ISaveable
         ConversationMemory.Instance?.SetQuestStatus(data.questId, "completed");
 
         GrantRewards(data);
+
+        // The payoff moment of the loop; it had the tracker flourish but no sound.
+        SowurShield.Core.SFXManager.Play("QuestComplete");
+
         OnQuestCompleted?.Invoke(data);
     }
 

@@ -274,6 +274,12 @@ namespace SowurShield.Core
 
             OnCropHarvested?.Invoke(this);
             OnAnyCropHarvested?.Invoke(this);
+
+            // Three sfx_harvest_crop clips have been sitting in Resources with nothing
+            // calling them, so the one action the whole farming loop builds towards was
+            // silent while tilling and watering were not.
+            SowurShield.Core.SFXManager.Play("HarvestCrop");
+
             TutorialManager.NotifyStepComplete("harvest");
             SowurShield.Dialogue.QuestManager.Instance?.NotifyObjective(
                 SowurShield.Dialogue.QuestObjectiveType.HarvestCrop, harvestedCropName);

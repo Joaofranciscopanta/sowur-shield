@@ -648,6 +648,11 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         if (totalEarnings > 0)
         {
             playerStats.AddMoney(totalEarnings);
+
+            // Hooked here rather than on AddMoney, which also fires for quest rewards --
+            // the coin chime should mean "you sold something", not "money changed".
+            SFXManager.Play("SellItem");
+
             OnItemsSold?.Invoke(totalEarnings);
             OnAnyItemsSold?.Invoke(totalEarnings);
         }
