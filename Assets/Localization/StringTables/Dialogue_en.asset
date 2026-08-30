@@ -1260,6 +1260,26 @@ MonoBehaviour:
     m_Localized: Tell Maren
     m_Metadata:
       m_Items: []
+  - m_Id: 25256626574057472
+    m_Localized: Quests
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25256626603417600
+    m_Localized: Active
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25256626603417601
+    m_Localized: Completed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25256626603417602
+    m_Localized: No active quests yet.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 25256626603417603
+    m_Localized: Complete quests to fill your journal.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

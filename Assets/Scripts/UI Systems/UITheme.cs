@@ -23,8 +23,16 @@ public class UITheme : ScriptableObject
     public Color woodDark  = new Color(0.420f, 0.267f, 0.137f); // #6B4423
 
     [Header("Highlights")]
+    // These two are highlights for DARK surfaces (wood, the dialogue bar). On the cream
+    // panel interior highlightGold measures 1.28:1 against the background — the character
+    // codex shipped every one of its headings that way, effectively invisible. Use
+    // headingOnLight for accent text sitting on cream or tan.
     public Color highlightGold   = new Color(0.957f, 0.827f, 0.369f); // #F4D35E
     public Color highlightYellow = new Color(1.000f, 0.820f, 0.400f); // #FFD166
+
+    // Same amber family as highlightGold, darkened until it passes WCAG on the light
+    // panels: 6.43:1 on backgroundCream, 5.61:1 on backgroundTan.
+    public Color headingOnLight  = new Color(0.478f, 0.306f, 0.071f); // #7A4E12
 
     [Header("Status")]
     public Color positive = new Color(0.506f, 0.784f, 0.518f); // #81C784
