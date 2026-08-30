@@ -111,7 +111,9 @@ public class QuestTrackerUI : MonoBehaviour
 
     private void OnQuestCompleted(QuestData quest)
     {
-        if (_trackedQuest != null && quest.questId == _trackedQuest.questId)
+        bool wasTracked = _trackedQuest != null && quest.questId == _trackedQuest.questId;
+
+        if (wasTracked)
         {
             // Try to switch to another active quest
             _trackedQuest = null;
@@ -121,8 +123,59 @@ public class QuestTrackerUI : MonoBehaviour
                 break;
             }
         }
+
+        // Acknowledge the finish before the panel changes. Completing a quest was the one
+        // payoff moment in the loop with no feedback at all -- the tracker simply vanished,
+        // or silently swapped to the next objective, and the only sign anything had happened
+        // was the money going up.
+        if (wasTracked && isActiveAndEnabled)
+            StartCoroutine(CelebrateThenRefresh());
+        else
+            Refresh();
+    }
+
+    /// <summary>
+    /// A short flourish on the panel, then the normal refresh.
+    /// </summary>
+    private System.Collections.IEnumerator CelebrateThenRefresh()
+    {
+        RectTransform panel = trackerPanel != null
+            ? trackerPanel.GetComponent<RectTransform>() : null;
+
+        if (panel != null)
+        {
+            // Fill the bar the rest of the way first: the objective that finished the quest
+            // often lands the same frame, so jumping straight to the next quest hid the bar
+            // ever reaching full.
+            if (progressBar != null) progressBar.fillAmount = 1f;
+
+            Vector3 baseScale = panel.localScale;
+            const float punch = 0.06f;
+            const float half = CelebrationSeconds * 0.5f;
+
+            for (float t = 0f; t < half; t += Time.unscaledDeltaTime)
+            {
+                panel.localScale = baseScale * (1f + punch * (t / half));
+                yield return null;
+            }
+            for (float t = 0f; t < half; t += Time.unscaledDeltaTime)
+            {
+                panel.localScale = baseScale * (1f + punch * (1f - t / half));
+                yield return null;
+            }
+
+            panel.localScale = baseScale;
+
+            // Let the full bar read for a beat before the panel moves on.
+            yield return new WaitForSecondsRealtime(HoldSeconds);
+        }
+
         Refresh();
     }
+
+    // Short enough not to delay the next objective, long enough to register as deliberate.
+    private const float CelebrationSeconds = 0.24f;
+    private const float HoldSeconds = 0.55f;
 
     // =========================================================================
     // Display
