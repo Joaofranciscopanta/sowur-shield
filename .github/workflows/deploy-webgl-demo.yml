@@ -139,13 +139,29 @@ jobs:
 
           echo "build_number=$BUILD_NUMBER" >> $GITHUB_OUTPUT
           
-          DOWNLOAD_INFO=$(curl -s -H "Authorization: Basic $ENCODED_KEY" \
-            "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${UNITY_BUILD_TARGET_ID}/builds/${BUILD_NUMBER}")
-          
-          DOWNLOAD_URL=$(echo "$DOWNLOAD_INFO" | grep -o '"download_primary"[^}]*"href":"[^"]*"' | grep -o 'https://[^"]*' | head -1)
-          [ -z "$DOWNLOAD_URL" ] && echo "❌ Could not fetch download URL" && exit 1
-          
-          curl -L "$DOWNLOAD_URL" -o temp_build/webgl-build.zip
+          # Unity flips buildStatus to "success" BEFORE the artifact upload finishes,
+          # so download_primary can still be absent for a minute or two. Poll for it
+          # instead of failing on the first miss (this killed build #45's deploy).
+          DOWNLOAD_URL=""
+          for i in $(seq 1 20); do
+            DOWNLOAD_INFO=$(curl -s -H "Authorization: Basic $ENCODED_KEY" \
+              "https://build-api.cloud.unity3d.com/api/v1/orgs/${UNITY_ORG_ID}/projects/${UNITY_PROJECT_ID}/buildtargets/${UNITY_BUILD_TARGET_ID}/builds/${BUILD_NUMBER}")
+
+            DOWNLOAD_URL=$(echo "$DOWNLOAD_INFO" | grep -o '"download_primary"[^}]*"href":"[^"]*"' | grep -o 'https://[^"]*' | head -1)
+            [ -n "$DOWNLOAD_URL" ] && break
+
+            echo "  ⏳ [$i/20] Artifact for build #$BUILD_NUMBER not published yet, waiting 30s..."
+            sleep 30
+          done
+
+          if [ -z "$DOWNLOAD_URL" ]; then
+            echo "❌ Could not fetch download URL for build #$BUILD_NUMBER after 10 minutes"
+            echo "--- Build details ---"
+            echo "$DOWNLOAD_INFO"
+            exit 1
+          fi
+
+          curl -fL "$DOWNLOAD_URL" -o temp_build/webgl-build.zip
           echo "✅ Build downloaded successfully"
 
       - name: Extract Build
