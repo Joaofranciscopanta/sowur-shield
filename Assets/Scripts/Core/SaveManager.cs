@@ -7,6 +7,12 @@ namespace SowurShield.Core
 {
     public class SaveManager : MonoBehaviour
     {
+        /// <summary>
+        /// The quest a new game opens with. "first_harvest" follows straight on from the
+        /// tutorial, whose last step teaches the player to harvest.
+        /// </summary>
+        private const string OpeningQuestId = "first_harvest";
+
         [Header("Save Settings")]
         [SerializeField] private string saveFileName = "GameSave";
         [SerializeField] private string saveFileExtension = ".json";
@@ -150,6 +156,16 @@ namespace SowurShield.Core
 
                 // Start tutorial for new games
                 TutorialManager.Instance?.StartTutorial();
+
+                // ...and give the player something to do once it ends.
+                //
+                // Seven quests are written and translated, but only Maren's dialogue tree
+                // carries a StartQuest effect, so six of them were unreachable and a new
+                // game had zero objectives -- nothing on screen said what to do after the
+                // six tutorial steps. Four achievements even reference quests that could
+                // never start. This opens the first one; the rest still need an NPC to
+                // offer them, which is content work rather than wiring.
+                SowurShield.Dialogue.QuestManager.Instance?.StartQuest(OpeningQuestId);
             }
             else if (HasSaveFile())
             {
