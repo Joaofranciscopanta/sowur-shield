@@ -2,7 +2,12 @@
 
 > Lista viva do que **eu não posso resolver sozinho** e por quê. Atualizada em 2026-08-29.
 > Companion da [auditoria visual](VISUAL_AUDIT_2026_08_29.md).
-> As correções estão em `main` (PR #40 mergeado).
+> Tudo abaixo está em `main`.
+>
+> 🎮 **Três defeitos desta rodada só apareceram JOGANDO**, com todos os 842 testes passando:
+> o boneco desenhado **debaixo do terreno** (`b45c504`), o **tutorial tapando o jogador**
+> (`813ce97`), e **nenhum objeto mostrando prompt de interação** (`57bc9a2`) — 9 de 11 NPCs
+> apontavam para um GameObject vazio. Medir não substitui jogar.
 
 Ordenado por impacto. Cada item diz **por que parei** e **o que exatamente decidir/fazer**.
 
@@ -244,8 +249,10 @@ Coisas que a auditoria apontou mas que são **escolha sua**, não defeito objeti
 - **Caixa de diálogo**: hoje é 1872px de largura com fonte 18 — linha de ~180 caracteres.
   Stardew usa caixa estreita com retrato à esquerda. Reduzir para ~900px é uma mudança de
   identidade visual, não um bug.
-- **HUD espalhada em 4 cantos**: consolidar em 2 grupos melhoraria a leitura, mas muda o
-  layout que você já conhece.
+- ~~**HUD espalhada em 4 cantos**~~ — ✅ agrupada (`9bb5aaa`). Estruturalmente: os 8
+  mostradores fixos foram para um pai `HUD` (19 filhos soltos → 12). **Nada se moveu na tela**
+  — conferi os world corners antes e depois, batem ao pixel. Se quiser *reposicionar* de fato,
+  aí é decisão sua.
 - **Minimapa "fullscreen"** ocupa 40% da tela. Fazer virar tela cheia de verdade é
   simples, mas talvez você goste assim.
 - **Stamina sem número**: barra de 60px sem valor numérico e sem cor de estado crítico.
@@ -254,29 +261,33 @@ Me diga quais desses você quer e eu faço.
 
 ---
 
-## 🔴 8. O tutorial existe, está traduzido, e NUNCA rodou
+## ✅ 8. Tutorial — CONSTRUÍDO e depois REFEITO após você jogar
 
-**Estado**: `TutorialManager.cs` (288 linhas) implementa um tutorial de **6 passos** — arar,
-plantar, regar, acariciar animal, dormir, colher — com `LocalizedString` para cada título e
-descrição. As **13 entradas estão traduzidas em EN/PT/ES** em `translations.csv`, com
-formatação rica (negrito nos nomes das ferramentas).
+**Construído** (`74f5f98`): o `TutorialManager` de 6 passos existia, traduzido em EN/PT/ES,
+mas `TutorialManager.Instance` era **NULL** — nenhum GameObject carregava o componente, então
+o `?.StartTutorial()` do `SaveManager` engolia a chamada em silêncio. Nunca rodou uma vez.
 
-**O problema**: `TutorialManager.Instance` é **NULL**. Não existe nenhum GameObject nem
-prefab com esse componente — só o script. O `SaveManager` chama
-`TutorialManager.Instance?.StartTutorial()` num jogo novo, e o `?.` engole a chamada em
-silêncio.
+**Refeito** (`813ce97`) depois do seu veredito jogando: *"essa tela desse tamanho, não dá pra
+ver o player, esquisito"*. Você estava certo — medido, o painel era **980x470 (22% da tela)** e
+a faixa dele (y 76..546) engolia o jogador (y 482..598). Um tutorial cujo primeiro passo é
+"clique num bloco de terra" ficava na frente da terra e do boneco.
 
-**Por que não liguei**: instanciar exige criar o painel de UI (`tutorialPanel`, `stepText`,
-`stepCountText`, `skipButton`, `nextButton` são todos `[SerializeField]` sem referência).
-Montar isso é decisão de design — onde o painel aparece, que tamanho tem, se bloqueia o
-jogo. Fazer às cegas provavelmente ficaria pior que não ter.
+Agora é uma **barra de 1120x92 (5% da tela)** acima do hotbar, feita com o
+`topbar_background` — a arte de barra do próprio HUD, 99% interior. A janela antiga não
+*conseguia* ser baixa: `panel_wood_generic` pinta 236px de moldura vertical antes de caber
+conteúdo.
 
-**Vale muito a pena**: o primeiro passo já diz *"Equipe a **Enxada** da sua barra de itens"*
-— e a enxada agora está lá desde o início (corrigido nesta sessão). O tutorial e o kit
-inicial foram feitos para funcionar juntos.
+**Dois bugs achados no caminho:**
+- O primeiro passo continha um **`
+` LITERAL** (dois caracteres, não quebra de linha). Todo
+  jogador novo, nos 3 idiomas, via `
 
-**Decisão sua**: quer que eu monte o painel seguindo o estilo do menu de pausa (a peça de UI
-mais bem resolvida do jogo)?
+` na primeira frase que o jogo diz.
+- A confirmação de apagar save tinha o mesmo defeito. Ali as quebras são desejadas, então
+  viraram quebras de verdade.
+
+Os botões "Pular"/"Entendi" também não eram localizados — o `TutorialManager` reescreve o
+texto do passo mas nunca as legendas, então ficavam em português para EN e ES.
 
 ---
 
