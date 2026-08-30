@@ -13,13 +13,15 @@ MonoBehaviour:
   m_Name: Maren_Beloved
   m_EditorClassIdentifier: SowurShield.Dialogue.DialogueTree
   conversationId: maren_beloved
-  conversationDescription: "Unlocked at relationship >= 75. Maren reveals her secret — she keeps a special seed she has never dared to plant."
+  conversationDescription: "Unlocked at relationship >= 75. Maren reveals her secret
+    \u2014 she keeps a special seed she has never dared to plant."
   startNodeId: start
   isRepeatable: 1
   saveProgressOnExit: 1
   nodes:
   - nodeId: start
     speakerName: Maren
+    speakerPortrait: {fileID: 0}
     speakerEmotion: 7
     speakerPosition: 0
     dialogueText:
@@ -39,12 +41,23 @@ MonoBehaviour:
     - conditionType: 3
       conditionKey: maren
       conditionOperator: 4
-      conditionValue: "75"
+      conditionValue: 75
       invertCondition: 0
-      description: "Beloved tier"
-    nodeEffects: []
+      description: Beloved tier
+    nodeEffects:
+    - effectType: 7
+      effectKey: get_to_know_maren
+      effectValue: 
+      numericValue: 0
+      description: Offer 'get_to_know_maren'. Her own quest, at any relationship.
+        StartQuest is a no-op if already active or done.
+    voiceClip: {fileID: 0}
+    ambientSound: {fileID: 0}
+    editorNote: 
+    editorPosition: {x: 0, y: 0}
   - nodeId: secret_seed
     speakerName: Maren
+    speakerPortrait: {fileID: 0}
     speakerEmotion: 7
     speakerPosition: 0
     dialogueText:
@@ -72,11 +85,12 @@ MonoBehaviour:
       effects:
       - effectType: 1
         effectKey: maren
-        effectValue: ""
+        effectValue: 
         numericValue: 5
-        description: "+5 relationship for sincere encouragement"
+        description: +5 relationship for sincere encouragement
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
+      editorNote: 
     - choiceText:
         m_TableReference:
           m_TableCollectionName: Dialogue
@@ -91,12 +105,18 @@ MonoBehaviour:
       effects: []
       isExitChoice: 0
       choiceColor: {r: 1, g: 1, b: 1, a: 1}
-    nextNodeId: ""
+      editorNote: 
+    nextNodeId: 
     autoAdvanceDelay: 0
     displayConditions: []
     nodeEffects: []
+    voiceClip: {fileID: 0}
+    ambientSound: {fileID: 0}
+    editorNote: 
+    editorPosition: {x: 0, y: 0}
   - nodeId: encourage_plant
     speakerName: Maren
+    speakerPortrait: {fileID: 0}
     speakerEmotion: 1
     speakerPosition: 0
     dialogueText:
@@ -116,11 +136,16 @@ MonoBehaviour:
     nodeEffects:
     - effectType: 0
       effectKey: maren_encouraged_seed
-      effectValue: "true"
+      effectValue: true
       numericValue: 0
-      description: "Flag: player encouraged Maren to plant her father's seed"
+      description: 'Flag: player encouraged Maren to plant her father''s seed'
+    voiceClip: {fileID: 0}
+    ambientSound: {fileID: 0}
+    editorNote: 
+    editorPosition: {x: 0, y: 0}
   - nodeId: keep_memory
     speakerName: Maren
+    speakerPortrait: {fileID: 0}
     speakerEmotion: 0
     speakerPosition: 0
     dialogueText:
@@ -138,8 +163,13 @@ MonoBehaviour:
     autoAdvanceDelay: 0
     displayConditions: []
     nodeEffects: []
+    voiceClip: {fileID: 0}
+    ambientSound: {fileID: 0}
+    editorNote: 
+    editorPosition: {x: 0, y: 0}
   - nodeId: gift_reward
     speakerName: Maren
+    speakerPortrait: {fileID: 0}
     speakerEmotion: 1
     speakerPosition: 0
     dialogueText:
@@ -153,22 +183,29 @@ MonoBehaviour:
       m_LocalVariables: []
     nodeType: 0
     choices: []
-    nextNodeId: ""
+    nextNodeId: 
     autoAdvanceDelay: 0
     displayConditions: []
     nodeEffects:
     - effectType: 3
       effectKey: PumpkinSeed
-      effectValue: ""
+      effectValue: 
       numericValue: 3
-      description: "Gives 3x Pumpkin Seeds as a trust reward"
+      description: Gives 3x Pumpkin Seeds as a trust reward
     - effectType: 0
       effectKey: maren_gave_gift_seeds
-      effectValue: "true"
+      effectValue: true
       numericValue: 0
-      description: "Flag: reward already given, prevents second delivery"
+      description: 'Flag: reward already given, prevents second delivery'
+    voiceClip: {fileID: 0}
+    ambientSound: {fileID: 0}
+    editorNote: 
+    editorPosition: {x: 0, y: 0}
   tags:
   - beloved
   - lore
   - secret
   priority: 20
+  references:
+    version: 2
+    RefIds: []

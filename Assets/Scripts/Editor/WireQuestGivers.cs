@@ -50,6 +50,16 @@ public static class WireQuestGivers
         ("clara_Default",    "clara_remedy",       "Cabbage and radish: the farming loop"),
         ("bento_Default",    "egg_collector",      "Overlaps Isabela's egg objective"),
         ("elias_Default",    "clear_sunny_fields", "The way into combat; gated on first_harvest"),
+
+        // Maren has five trees and picks one by relationship, so the effect has to be on all
+        // of the conversational ones. Hers was only on Maren_Default: at relationship 81 she
+        // greets from Maren_Beloved instead and her quest became permanently unreachable --
+        // befriending her locked you out of her own quest. GiftReaction is deliberately left
+        // out; it is a one-line response to a present, not a conversation.
+        ("Maren_Default",        "get_to_know_maren", "Her own quest, at any relationship"),
+        ("Maren_Friend",         "get_to_know_maren", "Her own quest, at any relationship"),
+        ("Maren_Beloved",        "get_to_know_maren", "Her own quest, at any relationship"),
+        ("Maren_SeasonalSpring", "get_to_know_maren", "Her own quest, at any relationship"),
     };
 
     // DialogueEffect.EffectType.StartQuest. Taken from the enum rather than hard-coded so a
