@@ -10184,6 +10184,8 @@ GameObject:
   - component: {fileID: 542293311}
   - component: {fileID: 542293313}
   - component: {fileID: 542293312}
+  - component: {fileID: 542293315}
+  - component: {fileID: 542293314}
   m_Layer: 0
   m_Name: MapEditor
   m_TagString: Untagged
@@ -10205,7 +10207,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.MapEditor.RuntimeMapEditor
   editorEnabled: 0
   toggleKeyName: b
-  autoSaveInterval: 30
   currentMapData: {fileID: 0}
   dualGridTilemap: {fileID: 162187564}
   mapEditorUI: {fileID: 0}
@@ -10331,6 +10332,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.MapEditor.MapEditorHistory
   maximoDePassos: 100
+--- !u!114 &542293314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 542293305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4df86892d05ae6a43843e5b08516339e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.MapEditor.ObjectPalette
+--- !u!114 &542293315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 542293305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b132de4bbbb0c344ae9425fdb395203, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.MapEditor.ObjectPlacer
 --- !u!1 &550225266
 GameObject:
   m_ObjectHideFlags: 0

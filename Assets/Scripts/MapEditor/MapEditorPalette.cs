@@ -40,6 +40,8 @@ namespace SowurShield.MapEditor
 
         private GameObject root;
         private TextMeshProUGUI statusText;
+        private Button botaoObjetos;
+        private ObjectPalette objectPalette;
         private Button botaoDesfazer;
         private Button botaoRefazer;
         private string mensagem;
@@ -68,6 +70,7 @@ namespace SowurShield.MapEditor
         {
             mapEditor = GetComponent<RuntimeMapEditor>();
             brushTool = GetComponent<BrushTool>();
+            objectPalette = GetComponent<ObjectPalette>();
             theme = UIThemeStyler.LoadTheme();
 
             ConstruirUI();
@@ -122,6 +125,8 @@ namespace SowurShield.MapEditor
             y = AdicionarBotoesDeTile(painel.transform, y);
             y = AdicionarSecao(painel.transform, y, "Ferramenta");
             y = AdicionarBotoesDePincel(painel.transform, y);
+            y = AdicionarSecao(painel.transform, y, "Objetos");
+            y = AdicionarBotaoDeObjetos(painel.transform, y);
             y = AdicionarSecao(painel.transform, y, "Ações");
             y = AdicionarBotoesDeAcao(painel.transform, y);
             AdicionarStatus(painel.transform, y);
@@ -145,9 +150,9 @@ namespace SowurShield.MapEditor
             // versao com 470 punha o rodape 18px para fora — e o rect reportava tudo
             // dentro do painel, entao so o screenshot acusava.
             //
-            // 700 cobre titulo + 2 tiles + 5 pinceis + 3 acoes + status, com as duas
-            // faixas de moldura. Ao acrescentar linhas, medir de novo.
-            rt.sizeDelta = new Vector2(320f, 700f);
+            // 770 cobre titulo + 2 tiles + 5 pinceis + 1 objetos + 3 acoes + status,
+            // com as duas faixas de moldura. Ao acrescentar linhas, medir de novo.
+            rt.sizeDelta = new Vector2(320f, 770f);
 
             UIThemeStyler.StylePanel(painel, theme);
             return painel;
@@ -209,6 +214,17 @@ namespace SowurShield.MapEditor
         /// Ctrl as vezes vai parar na janela errada — o usuario aperta e nada
         /// acontece. Botao sempre funciona.
         /// </summary>
+        /// <summary>
+        /// Abre a lista de objetos (painel proprio, com rolagem): sao 57 prefabs e
+        /// eles nao cabem nesta paleta junto com os pinceis.
+        /// </summary>
+        private float AdicionarBotaoDeObjetos(Transform pai, float y)
+        {
+            botaoObjetos = CriarBotao(pai, "Colocar objeto...", y);
+            botaoObjetos.onClick.AddListener(() => objectPalette?.Alternar());
+            return y - theme.buttonHeightSmall - theme.spacingXS - theme.spacingS;
+        }
+
         private float AdicionarBotoesDeAcao(Transform pai, float y)
         {
             botaoDesfazer = CriarBotao(pai, "Desfazer", y);

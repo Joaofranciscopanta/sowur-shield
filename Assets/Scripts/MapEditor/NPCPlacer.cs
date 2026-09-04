@@ -414,11 +414,25 @@ public class NPCPlacer : MonoBehaviour
         return availableNPCTemplates?.FirstOrDefault(t => t.npcId == npcId);
     }
     
+    /// <summary>
+    /// O CAMINHO do prefab, nao o nome.
+    ///
+    /// Isto devolvia `prefab.name` com um "For now, return the name", e um nome nao
+    /// resolve de volta: o NPC era gravado no mapa e nunca reaparecia ao carregar,
+    /// porque o PrefabCatalog procura pelo caminho.
+    /// </summary>
     private string GetPrefabPath(GameObject prefab)
     {
-        // This would typically return the asset path for the prefab
-        // For now, return the name
-        return prefab.name;
+        if (prefab == null) return "";
+#if UNITY_EDITOR
+        var caminho = UnityEditor.AssetDatabase.GetAssetPath(prefab);
+        if (!string.IsNullOrEmpty(caminho)) return caminho;
+
+        // Uma instancia de cena nao tem caminho proprio; pedimos o do prefab de origem.
+        var origem = UnityEditor.PrefabUtility.GetCorrespondingObjectFromSource(prefab);
+        if (origem != null) return UnityEditor.AssetDatabase.GetAssetPath(origem);
+#endif
+        return "";
     }
     
     private void PlaySound(AudioClip clip)

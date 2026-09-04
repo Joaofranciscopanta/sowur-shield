@@ -30,6 +30,7 @@ public class BrushTool : MonoBehaviour
     // cedo e o pincel nunca desenhava nada. Agora falamos com o dual grid do JOGO,
     // atraves do DualGridPaintAdapter.
     private DualGridTilemap dualGrid;
+    private ObjectPlacer objectPlacer;
     private Camera mainCamera;
     
     // Brush state
@@ -95,6 +96,7 @@ public class BrushTool : MonoBehaviour
     {
         mapEditor = RuntimeMapEditor.Instance;
         dualGrid = FindFirstObjectByType<DualGridTilemap>();
+        objectPlacer = GetComponent<ObjectPlacer>();
         mainCamera = Camera.main;
         
         if (audioSource == null)
@@ -134,6 +136,10 @@ public class BrushTool : MonoBehaviour
         if (UnityEngine.EventSystems.EventSystem.current != null &&
             UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
             return;
+
+        // Com um objeto escolhido, o clique e do ObjectPlacer. Sem isto o mesmo
+        // clique colocaria uma arvore E pintaria terra debaixo dela.
+        if (objectPlacer != null && objectPlacer.ModoColocacao) return;
 
         Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         Vector3Int currentTilePos = WorldToTilePosition(mouseWorldPos);

@@ -30,6 +30,7 @@ namespace SowurShield.MapEditor
 
         private RuntimeMapEditor mapEditor;
         private BrushTool brushTool;
+        private ObjectPlacer placer;
         private Camera cam;
         private Transform poolPai;
         private Sprite spriteQuadrado;
@@ -45,6 +46,7 @@ namespace SowurShield.MapEditor
         {
             mapEditor = GetComponent<RuntimeMapEditor>();
             brushTool = GetComponent<BrushTool>();
+            placer = GetComponent<ObjectPlacer>();
             cam = Camera.main;
 
             spriteQuadrado = CriarSpriteQuadrado();
@@ -77,6 +79,10 @@ namespace SowurShield.MapEditor
                 cam = Camera.main;
                 if (cam == null) return;
             }
+
+            // Com um objeto escolhido o clique coloca em vez de pintar, entao o
+            // preview do pincel nao pode sugerir que vai pintar.
+            if (placer != null && placer.ModoColocacao) { Esconder(); return; }
 
             // Sobre a UI o clique nao pinta (BrushTool ignora), entao o preview
             // tambem nao deve sugerir que pintaria.
