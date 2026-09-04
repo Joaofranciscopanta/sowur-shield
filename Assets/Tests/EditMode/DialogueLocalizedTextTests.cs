@@ -75,9 +75,10 @@ public class DialogueLocalizedTextTests
     }
 
     /// <summary>
-    /// Um LocalizedString com nome mas KeyId 0 resolve para nada em runtime e desenha
-    /// um balao de fala VAZIO. O VillagerDialogueFactory ja documentava isso; o campo
-    /// novo do inspector tem que carimbar o id tambem.
+    /// O campo tem que carimbar o KeyId, nao so o nome. Medido: 25 dos 58 nos do
+    /// jogo tem KeyId 0 e ainda resolvem (o Unity cai para a busca por nome), mas o
+    /// id sobrevive a renomear a chave na tabela — e e o que o VillagerDialogueFactory
+    /// ja fazia.
     /// </summary>
     [Test]
     public void CampoDeTexto_CarimbaOKeyIdNaoSoONome()
@@ -86,8 +87,8 @@ public class DialogueLocalizedTextTests
             Application.dataPath, "Scripts/Dialogue/Editor/LocalizedTextField.cs"));
 
         Assert.IsTrue(fonte.Contains("TableEntryReference = entrada.Id"),
-            "Sem carimbar o Id, o no aponta para a chave so pelo nome, m_KeyId fica 0 " +
-            "e o balao de fala sai vazio em runtime.");
+            "Sem carimbar o Id, o no fica preso a chave pelo NOME: renomear a chave " +
+            "na tabela quebra a referencia em silencio.");
     }
 
     /// <summary>

@@ -119,9 +119,10 @@ namespace SowurShield.Dialogue.Editor
         /// <summary>
         /// Aponta o LocalizedString para a chave — por ID, nao so pelo nome.
         ///
-        /// Um LocalizedString com nome mas `m_KeyId == 0` resolve para nada em
-        /// runtime e desenha um balao de fala VAZIO. Este detalhe esta documentado
-        /// no VillagerDialogueFactory justamente porque ja mordeu antes.
+        /// Um LocalizedString com nome mas `m_KeyId == 0` ainda resolve — o Unity
+        /// cai para a busca por nome — mas o id e mais robusto: sobrevive a
+        /// renomear a chave na tabela. O caso fatal que o VillagerDialogueFactory
+        /// documenta e quando NEM o nome esta preenchido, aí o balao sai vazio.
         /// </summary>
         private static void CarimbarChave(LocalizedString alvo, StringTableCollection colecao,
                                           string chave)

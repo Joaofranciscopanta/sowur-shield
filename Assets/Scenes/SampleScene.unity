@@ -10186,6 +10186,7 @@ GameObject:
   - component: {fileID: 542293312}
   - component: {fileID: 542293315}
   - component: {fileID: 542293314}
+  - component: {fileID: 542293316}
   m_Layer: 0
   m_Name: MapEditor
   m_TagString: Untagged
@@ -10356,6 +10357,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b132de4bbbb0c344ae9425fdb395203, type: 3}
   m_Name: 
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.MapEditor.ObjectPlacer
+--- !u!114 &542293316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 542293305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d9bc5ebc36456c429a6d8faa6826cbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.MapEditor.DialoguePalette
 --- !u!1 &550225266
 GameObject:
   m_ObjectHideFlags: 0

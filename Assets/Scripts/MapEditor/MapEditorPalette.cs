@@ -42,6 +42,8 @@ namespace SowurShield.MapEditor
         private TextMeshProUGUI statusText;
         private Button botaoObjetos;
         private ObjectPalette objectPalette;
+        private Button botaoDialogo;
+        private DialoguePalette dialoguePalette;
         private Button botaoDesfazer;
         private Button botaoRefazer;
         private string mensagem;
@@ -71,6 +73,7 @@ namespace SowurShield.MapEditor
             mapEditor = GetComponent<RuntimeMapEditor>();
             brushTool = GetComponent<BrushTool>();
             objectPalette = GetComponent<ObjectPalette>();
+            dialoguePalette = GetComponent<DialoguePalette>();
             theme = UIThemeStyler.LoadTheme();
 
             ConstruirUI();
@@ -150,9 +153,9 @@ namespace SowurShield.MapEditor
             // versao com 470 punha o rodape 18px para fora — e o rect reportava tudo
             // dentro do painel, entao so o screenshot acusava.
             //
-            // 770 cobre titulo + 2 tiles + 5 pinceis + 1 objetos + 3 acoes + status,
-            // com as duas faixas de moldura. Ao acrescentar linhas, medir de novo.
-            rt.sizeDelta = new Vector2(320f, 770f);
+            // 810 cobre titulo + 2 tiles + 5 pinceis + 2 (objetos/dialogo) + 3 acoes
+            // + status, com as duas faixas de moldura. Ao acrescentar, medir de novo.
+            rt.sizeDelta = new Vector2(320f, 810f);
 
             UIThemeStyler.StylePanel(painel, theme);
             return painel;
@@ -222,6 +225,10 @@ namespace SowurShield.MapEditor
         {
             botaoObjetos = CriarBotao(pai, "Colocar objeto...", y);
             botaoObjetos.onClick.AddListener(() => objectPalette?.Alternar());
+            y -= theme.buttonHeightSmall + theme.spacingXS;
+
+            botaoDialogo = CriarBotao(pai, "Editar diálogo...", y);
+            botaoDialogo.onClick.AddListener(() => dialoguePalette?.Alternar());
             return y - theme.buttonHeightSmall - theme.spacingXS - theme.spacingS;
         }
 
