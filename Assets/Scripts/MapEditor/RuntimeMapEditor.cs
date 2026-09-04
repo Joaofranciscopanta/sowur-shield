@@ -312,21 +312,14 @@ public class RuntimeMapEditor : MonoBehaviour
     private void ApplyMapDataToTilemap()
     {
         if (currentMapData == null || dualGridTilemap == null) return;
-        
-        // Clear existing tiles
-        // TODO: Implement clear method in DualGridTilemap
-        
-        // Apply tile data
-        foreach (var tileEntry in currentMapData.tileData)
-        {
-            // TODO: Convert ExtendedTileType to appropriate tile and apply
-            // This will need the extended DualGridTilemap system
-        }
-        
-        // Apply NPC spawns, objects, etc.
-        // TODO: Implement object spawning
-        
 
+        // O adaptador limpa, aplica e faz UM refresh no fim. Ver DualGridPaintAdapter
+        // para por que a pintura e binaria e por que grama e "celula vazia".
+        DualGridPaintAdapter.Apply(dualGridTilemap, currentMapData);
+
+        // NPCs e objetos ainda nao sao aplicados: o NPCPlacer guarda npcSpawns no
+        // MapData, mas instanciar de volta precisa de um catalogo de prefabs por id,
+        // que ainda nao existe. Fase 3.
     }
     
     public void SaveCurrentMap()
@@ -356,23 +349,24 @@ public class RuntimeMapEditor : MonoBehaviour
     
     private void UpdateMapDataFromTilemap()
     {
-        if (currentMapData == null) return;
-        
-        // TODO: Scan current tilemap state and update MapData
-        // This will need integration with extended DualGridTilemap
-        
+        if (currentMapData == null || dualGridTilemap == null) return;
 
+        // Le a cena e reescreve o tileData. Sem isto, salvar um mapa que voce nao
+        // pintou nesta sessao gravava um MapData vazio por cima do mundo existente.
+        DualGridPaintAdapter.CaptureInto(dualGridTilemap, currentMapData);
     }
     
     // Tool methods for other systems
     public void SetTileAtPosition(Vector3Int position, ExtendedTileType tileType)
     {
         if (currentMapData == null) return;
-        
+
+        // Pinta na cena primeiro: se este tileset nao sabe desenhar o tipo pedido,
+        // nao gravamos no MapData um dado que nunca vai reaparecer na tela.
+        if (!DualGridPaintAdapter.Paint(dualGridTilemap, position, tileType))
+            return;
+
         currentMapData.SetTileAt(position, tileType, selectedLayer);
-        
-        // Apply to visual tilemap
-        // TODO: Convert ExtendedTileType to actual tile and apply via DualGridTilemap
     }
     
     public ExtendedTileType GetTileAtPosition(Vector3Int position)
