@@ -217,11 +217,10 @@ public class RuntimeMapEditor : MonoBehaviour
             mapEditorUI.SetActive(true);
         }
         
-        // Show grid overlay
-        if (gridOverlay != null)
-        {
-            gridOverlay.SetActive(true);
-        }
+        // A grade NAO e ligada/desligada aqui. O GridOverlay se inscreve em
+        // OnEditorToggled e cuida da propria visibilidade — desativar o GameObject
+        // inteiro impedia o Start() dele de rodar, entao a grade nunca chegava a ser
+        // construida e nenhuma linha aparecia.
         
         // Hide game UI
         if (gameUI != null)
@@ -268,11 +267,7 @@ public class RuntimeMapEditor : MonoBehaviour
             mapEditorUI.SetActive(false);
         }
         
-        // Hide grid overlay
-        if (gridOverlay != null)
-        {
-            gridOverlay.SetActive(false);
-        }
+        // Ver EnterEditorMode: a visibilidade da grade e do proprio GridOverlay.
         
         // Show game UI
         if (gameUI != null)
