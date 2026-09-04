@@ -10181,6 +10181,7 @@ GameObject:
   - component: {fileID: 542293308}
   - component: {fileID: 542293309}
   - component: {fileID: 542293310}
+  - component: {fileID: 542293311}
   m_Layer: 0
   m_Name: MapEditor
   m_TagString: Untagged
@@ -10278,6 +10279,23 @@ MonoBehaviour:
   corPintar: {r: 1, g: 1, b: 1, a: 0.45}
   corApagar: {r: 0.9, g: 0.45, b: 0.45, a: 0.45}
   corContorno: {r: 1, g: 0.95, b: 0.6, a: 0.9}
+--- !u!114 &542293311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 542293305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f579fd3f42be5ed4e8c224e95ed447ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.MapEditor.MapEditorCamera
+  velocidade: 12
+  velocidadeRapida: 30
+  passoDoZoom: 1.5
+  zoomMinimo: 1.5
+  zoomMaximo: 30
 --- !u!1 &550225266
 GameObject:
   m_ObjectHideFlags: 0

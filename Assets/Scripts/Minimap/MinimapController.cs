@@ -412,6 +412,13 @@ public class MinimapController : MonoBehaviour, IUIWindow
 
     private void OnToggleMinimap(InputAction.CallbackContext context)
     {
+        // O minimapa em fullscreen desabilita o movimento e toma a tela inteira —
+        // abri-lo no meio da construcao so atrapalha, e sair dele mexeria no estado
+        // que o editor ja controla.
+        if (SowurShield.MapEditor.RuntimeMapEditor.Instance != null &&
+            SowurShield.MapEditor.RuntimeMapEditor.Instance.IsEditorActive)
+            return;
+
         ToggleMinimapState();
     }
 
