@@ -1,0 +1,1324 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d220a95211fbd7b43bdc7bd8c3b29bbc, type: 3}
+  m_Name: New Map 2026-09-04_16-27
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.MapEditor.MapData
+  mapName: New Map 2026-09-04_16-27
+  description: 
+  mapSize: {x: 100, y: 100}
+  playerSpawnPosition: {x: 0, y: 0, z: 0}
+  tileData:
+  - position: {x: -12, y: -12, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -11, y: -12, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -10, y: -12, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -9, y: -12, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -12, y: -11, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -11, y: -11, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -10, y: -11, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -9, y: -11, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -12, y: -10, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -11, y: -10, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -10, y: -10, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -9, y: -10, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -12, y: -9, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -11, y: -9, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -10, y: -9, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -9, y: -9, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 0, y: -8, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 1, y: -8, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 2, y: -8, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 0, y: -7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 1, y: -7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 2, y: -7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 5, y: -7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 6, y: -7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 7, y: -7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 8, y: -7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 9, y: -7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 10, y: -7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 11, y: -7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 0, y: -6, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 1, y: -6, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 2, y: -6, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 5, y: -6, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 6, y: -6, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 7, y: -6, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 8, y: -6, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 9, y: -6, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 10, y: -6, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 11, y: -6, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 0, y: -5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 1, y: -5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 2, y: -5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 5, y: -5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 6, y: -5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 7, y: -5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 8, y: -5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 9, y: -5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 10, y: -5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 11, y: -5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 0, y: -4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 1, y: -4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 2, y: -4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 5, y: -4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 6, y: -4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 7, y: -4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 8, y: -4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 9, y: -4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 10, y: -4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 11, y: -4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 0, y: -3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 1, y: -3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 2, y: -3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 5, y: -3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 6, y: -3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 7, y: -3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 8, y: -3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 9, y: -3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 10, y: -3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 11, y: -3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 0, y: -2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 1, y: -2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 2, y: -2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 5, y: -2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 6, y: -2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 7, y: -2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 8, y: -2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 9, y: -2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 10, y: -2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 11, y: -2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 0, y: -1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 1, y: -1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 2, y: -1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 5, y: -1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 6, y: -1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 7, y: -1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 8, y: -1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 9, y: -1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 10, y: -1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 11, y: -1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -5, y: 0, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -4, y: 0, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -3, y: 0, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -2, y: 0, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -1, y: 0, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 0, y: 0, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 1, y: 0, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 2, y: 0, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 3, y: 0, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 4, y: 0, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 5, y: 0, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 6, y: 0, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 7, y: 0, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 8, y: 0, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 9, y: 0, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 10, y: 0, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 11, y: 0, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -9, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -8, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -7, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -6, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -5, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -4, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -3, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -2, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -1, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 0, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 1, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 2, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 3, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 4, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 5, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 6, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 7, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 8, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 9, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 10, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 11, y: 1, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -9, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -8, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -7, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -6, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -5, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -4, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -3, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -2, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -1, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 0, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 1, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 2, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 3, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 4, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 5, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 6, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 7, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 8, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 9, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 10, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 11, y: 2, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -9, y: 3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -8, y: 3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -7, y: 3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -6, y: 3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -5, y: 3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -4, y: 3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -3, y: 3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -2, y: 3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -1, y: 3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 0, y: 3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 1, y: 3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 2, y: 3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 5, y: 3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 6, y: 3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 7, y: 3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 8, y: 3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 9, y: 3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 10, y: 3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 11, y: 3, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -5, y: 4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -4, y: 4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -3, y: 4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -2, y: 4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -1, y: 4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 0, y: 4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 1, y: 4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 2, y: 4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 5, y: 4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 6, y: 4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 7, y: 4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 8, y: 4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 9, y: 4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 10, y: 4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 11, y: 4, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -5, y: 5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -4, y: 5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -3, y: 5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -2, y: 5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -1, y: 5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 0, y: 5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 1, y: 5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 2, y: 5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 5, y: 5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 6, y: 5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 7, y: 5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 8, y: 5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 9, y: 5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 10, y: 5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 11, y: 5, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -5, y: 6, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -4, y: 6, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -3, y: 6, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -2, y: 6, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -1, y: 6, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 0, y: 6, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 1, y: 6, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 2, y: 6, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -5, y: 7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -4, y: 7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -3, y: 7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -2, y: 7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -1, y: 7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 0, y: 7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 1, y: 7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 2, y: 7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 8, y: 7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 9, y: 7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 10, y: 7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 11, y: 7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 12, y: 7, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -11, y: 8, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -10, y: 8, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -9, y: 8, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -8, y: 8, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 8, y: 8, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 9, y: 8, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 10, y: 8, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 11, y: 8, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 12, y: 8, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -11, y: 9, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -10, y: 9, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -9, y: 9, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -8, y: 9, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 8, y: 9, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 9, y: 9, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 10, y: 9, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 11, y: 9, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 12, y: 9, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -11, y: 10, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -10, y: 10, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -9, y: 10, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -8, y: 10, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 8, y: 10, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 9, y: 10, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 10, y: 10, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 11, y: 10, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: 12, y: 10, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -11, y: 11, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -10, y: 11, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -9, y: 11, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  - position: {x: -8, y: 11, z: 0}
+    tileType: 2
+    layer: 0
+    hasCollision: 0
+    customData: 
+  npcSpawns: []
+  objectSpawns:
+  - position: {x: -10.5, y: 1.5, z: 0}
+    objectId: Bush_Green2
+    prefabPath: Assets/Prefabs/Decorations/Bush_Green2.prefab
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    isActive: 1
+    customData: 
+  - position: {x: -11.5, y: 3.5, z: 0}
+    objectId: Bush_Green2
+    prefabPath: Assets/Prefabs/Decorations/Bush_Green2.prefab
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    isActive: 1
+    customData: 
+  - position: {x: -10.5, y: 3.5, z: 0}
+    objectId: Bush_Green2
+    prefabPath: Assets/Prefabs/Decorations/Bush_Green2.prefab
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    isActive: 1
+    customData: 
+  - position: {x: -12.5, y: 1.5, z: 0}
+    objectId: Flower_Sunflower
+    prefabPath: Assets/Prefabs/Decorations/Flower_Sunflower.prefab
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    isActive: 1
+    customData: 
+  - position: {x: -12.5, y: 0.5, z: 0}
+    objectId: Flower_Sunflower
+    prefabPath: Assets/Prefabs/Decorations/Flower_Sunflower.prefab
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    isActive: 1
+    customData: 
+  - position: {x: -11.5, y: 3.5, z: 0}
+    objectId: Tree_OrangeFruit
+    prefabPath: Assets/Prefabs/Decorations/Tree_OrangeFruit.prefab
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    isActive: 1
+    customData: 
+  - position: {x: -9.5, y: 3.5, z: 0}
+    objectId: Tree_OrangeFruit
+    prefabPath: Assets/Prefabs/Decorations/Tree_OrangeFruit.prefab
+    rotation: {x: 0, y: 0, z: 0}
+    scale: {x: 1, y: 1, z: 1}
+    isActive: 1
+    customData: 
+  spawnPoints: []
+  interactionZones: []
+  backgroundColor: {r: 0, g: 0, b: 0, a: 1}
+  enableDayNightCycle: 1
+  ambientLightLevel: 1
+  createdBy: Lucas
+  creationDate: 2026-09-04 16:27:45
+  lastModified: 2026-09-04 18:11:09
+  versionNumber: 252

@@ -10313,8 +10313,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9a9d3adc78a65342a9988e7af98f3f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.MapEditor.MapSerializer
-  mapsFolder: Assets/Maps
-  backupFolder: Assets/Maps/Backups
+  mapsFolder: Assets/Resources/Maps
+  backupFolder: Assets/MapBackups
   maxBackups: 10
   createBackupOnSave: 1
   enableAutoSave: 1

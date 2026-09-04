@@ -18,15 +18,20 @@ namespace SowurShield.MapEditor
     public static class PrefabCatalog
     {
         /// <summary>
-        /// Pastas varridas, na ordem em que aparecem na paleta. Ficam fora de
-        /// Resources de proposito: o catalogo so existe no Editor (o editor de mapa
-        /// e dev-only), entao usamos AssetDatabase e nao carregamos nada no build.
+        /// Pastas varridas, na ordem em que aparecem na paleta.
+        ///
+        /// TODAS sob Resources/ desde 2026-09-04. O catalogo em si continua sendo
+        /// so-Editor (usa AssetDatabase), mas um mapa salvo agora e CARREGADO PELO
+        /// JOGO, e o MapRuntimeLoader resolve os prefabs por Resources.Load. Um
+        /// prefab fora de Resources/ simplesmente nao existe no build: 40 dos 57
+        /// estavam assim, e todo mapa com arvore ou decoracao perderia esses objetos
+        /// ao ser carregado no jogo.
         /// </summary>
         private static readonly string[] Pastas =
         {
-            "Assets/Prefabs/Decorations",
-            "Assets/Prefabs/FruitTrees",
-            "Assets/Prefabs/Fruits",
+            "Assets/Resources/Prefabs/Decorations",
+            "Assets/Resources/Prefabs/FruitTrees",
+            "Assets/Resources/Prefabs/Fruits",
             "Assets/Resources/Prefabs/GroundItems"
         };
 
