@@ -111,7 +111,14 @@ namespace SowurShield.MapEditor
         private void AplicarObjetos(MapData dados)
         {
             var raiz = GameObject.Find(RaizDeObjetos);
-            if (raiz != null) Destroy(raiz);
+            if (raiz != null)
+            {
+                // DestroyImmediate, nao Destroy: o Destroy do Unity so acontece no
+                // FIM do frame, entao a raiz nova (criada na linha seguinte, com o
+                // mesmo nome) conviveria com a velha ate la -- e um GameObject.Find
+                // no meio disso pode devolver a que esta para morrer.
+                DestroyImmediate(raiz);
+            }
             raiz = new GameObject(RaizDeObjetos);
 
             int perdidos = 0;
