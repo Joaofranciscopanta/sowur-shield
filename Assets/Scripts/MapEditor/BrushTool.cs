@@ -137,7 +137,18 @@ public class BrushTool : MonoBehaviour
 
         Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         Vector3Int currentTilePos = WorldToTilePosition(mouseWorldPos);
-        
+
+        // Um passo de historico = um gesto do usuario, do apertar ao soltar. Feito
+        // aqui, num lugar so, em vez de nos 11 pontos de clique espalhados pelos
+        // brushes — esquecer um deles daria um Ctrl+Z que desfaz pela metade.
+        //
+        // O balde e a excecao: FloodFill e uma corrotina que continua depois do
+        // botao ser solto, entao ele fecha o proprio passo ao terminar.
+        if (Input.GetMouseButtonDown(0))
+            mapEditor.History?.IniciarPasso();
+        else if (Input.GetMouseButtonUp(0) && currentBrushType != BrushType.Fill)
+            mapEditor.History?.FinalizarPasso();
+
         // Handle different brush types
         switch (currentBrushType)
         {
@@ -370,6 +381,10 @@ public class BrushTool : MonoBehaviour
         
         PlaySound(paintSound);
 
+        // O balde roda por varios frames e termina depois do botao ser solto, entao
+        // e ele quem fecha o passo — do contrario o Ctrl+Z desfaria so a parte
+        // pintada ate o momento em que o dedo saiu do mouse.
+        mapEditor.History?.FinalizarPasso();
     }
     
     private void DrawLine(Vector3Int start, Vector3Int end, ExtendedTileType tileType)

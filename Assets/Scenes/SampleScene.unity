@@ -10182,6 +10182,8 @@ GameObject:
   - component: {fileID: 542293309}
   - component: {fileID: 542293310}
   - component: {fileID: 542293311}
+  - component: {fileID: 542293313}
+  - component: {fileID: 542293312}
   m_Layer: 0
   m_Name: MapEditor
   m_TagString: Untagged
@@ -10209,6 +10211,7 @@ MonoBehaviour:
   mapEditorUI: {fileID: 0}
   editorCamera: {fileID: 0}
   gridOverlay: {fileID: 13631274}
+  mapSerializer: {fileID: 0}
   player: {fileID: 0}
   cursorController: {fileID: 0}
   gameUI: {fileID: 0}
@@ -10296,6 +10299,38 @@ MonoBehaviour:
   passoDoZoom: 1.5
   zoomMinimo: 1.5
   zoomMaximo: 30
+--- !u!114 &542293312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 542293305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9a9d3adc78a65342a9988e7af98f3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.MapEditor.MapSerializer
+  mapsFolder: Assets/Maps
+  backupFolder: Assets/Maps/Backups
+  maxBackups: 10
+  createBackupOnSave: 1
+  enableAutoSave: 1
+  autoSaveInterval: 60
+  maxAutoSaves: 5
+--- !u!114 &542293313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 542293305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7caaa5fe4bd79c848af2e2428d764d0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.MapEditor.MapEditorHistory
+  maximoDePassos: 100
 --- !u!1 &550225266
 GameObject:
   m_ObjectHideFlags: 0
