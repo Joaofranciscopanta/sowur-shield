@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 using SowurShield.Core;
 using SowurShield.Inventory;
 using SowurShield.Dialogue;
+using SowurShield.MapEditor;
 
 namespace SowurShield.Farming
 {
@@ -64,6 +65,15 @@ public partial class CursorController : MonoBehaviour {
     void Update() {
         if (mouse == null || mainCamera == null || playerTransform == null) return;
         
+        // Com o editor de mapa aberto, o clique pertence ao pincel. Sem isto o mesmo
+        // clique pintava um tile E usava a ferramenta da mao (arar, regar, cavar) na
+        // celula debaixo do cursor — e EnterEditorMode liga este componente de
+        // proposito, entao ele nao para sozinho.
+        if (RuntimeMapEditor.Instance != null && RuntimeMapEditor.Instance.IsEditorActive) {
+            cursorRenderer.enabled = false;
+            return;
+        }
+
         // Hide cursor when inventory is open, dialogue is active, or SellBox is open
         if ((playerInventory != null && playerInventory.IsInventoryOpen) ||
             (dialogueUI != null && dialogueUI.IsDialogueActive) ||
