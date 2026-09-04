@@ -48,6 +48,28 @@ public class BrushTool : MonoBehaviour
     private float lastPaintTime = 0f;
     private const float PAINT_COOLDOWN = 0.05f;
     
+    /// <summary>
+    /// A celula onde um arrasto de linha/retangulo comecou, ou null se nao ha
+    /// arrasto em curso. O BrushPreview usa isto para mostrar a forma inteira
+    /// enquanto o botao esta pressionado, em vez de so a celula sob o cursor.
+    /// </summary>
+    public Vector3Int? DragStart
+    {
+        get
+        {
+            if (isDrawingLine) return lineStartPosition;
+            if (isDrawingRectangle) return rectangleStartPosition;
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// As celulas que o pincel cobre a partir de um centro, no tamanho atual.
+    /// Publico para o preview desenhar exatamente a mesma area que o clique pinta —
+    /// duplicar essa conta faria o preview mentir assim que uma das duas mudasse.
+    /// </summary>
+    public List<Vector3Int> AreaDoPincel(Vector3Int centro) => GetBrushArea(centro);
+
     public BrushType CurrentBrushType => currentBrushType;
     public int BrushSize => brushSize;
     
@@ -371,7 +393,11 @@ public class BrushTool : MonoBehaviour
         
         int error = dx - dy;
         
-        for (int i = 0; i < dx + dy; i++)
+        // dx + dy + 1: uma linha de (0,0) a (0,5) tem SEIS celulas, nao cinco. Com
+        // `< dx + dy` o laco parava um passo antes e a celula final nunca era pintada
+        // — o usuario soltava o botao sobre uma celula que ficava por pintar. O `break`
+        // interno ja garante que nao passamos do fim.
+        for (int i = 0; i <= dx + dy; i++)
         {
             points.Add(new Vector3Int(x, y, 0));
             

@@ -47,6 +47,10 @@ public class RuntimeMapEditor : MonoBehaviour
     [HideInInspector] public BrushType selectedBrush = BrushType.Paint;
     
     public bool IsEditorActive => editorEnabled;
+
+    /// <summary>O dual grid que este editor pinta. O preview precisa dele para
+    /// converter a posicao do mouse em celula pelo mesmo caminho que o pincel.</summary>
+    public SowurShield.Farming.DualGridTilemap DualGrid => dualGridTilemap;
     public MapData CurrentMapData => currentMapData;
     
     // Events
