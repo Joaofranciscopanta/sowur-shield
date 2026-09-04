@@ -660,6 +660,10 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
     
     private void ShowDialoguePanel()
     {
+        // A barra do tutorial ocupa a mesma faixa de baixo da tela e ficaria
+        // atravessando a moldura da conversa pelas duas pontas.
+        SowurShield.Core.TutorialManager.Instance?.SetSuppressedByDialogue(true);
+
         if (dialoguePanel != null)
         {
             dialoguePanel.SetActive(true);
@@ -674,6 +678,8 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
     
     private void HideDialoguePanel()
     {
+        SowurShield.Core.TutorialManager.Instance?.SetSuppressedByDialogue(false);
+
         if (dialoguePanel != null)
         {
             // Play sound
@@ -686,6 +692,14 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
         }
     }
     
+    private void OnDisable()
+    {
+        // Sem isto, uma conversa interrompida por troca de cena deixaria a barra do
+        // tutorial suprimida para sempre.
+        if (isDialogueActive)
+            SowurShield.Core.TutorialManager.Instance?.SetSuppressedByDialogue(false);
+    }
+
     private void HideChoices()
     {
         if (choicePanel != null)
