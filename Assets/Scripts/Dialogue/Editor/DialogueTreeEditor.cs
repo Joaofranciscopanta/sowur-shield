@@ -264,10 +264,14 @@ public class DialogueTreeEditor : UnityEditor.Editor
         
         EditorGUILayout.Space();
         
-        // Dialogue text
-        EditorGUILayout.LabelField("Dialogue Text", EditorStyles.boldLabel);
-        var dialogueTextProp = nodeProp.FindPropertyRelative("dialogueText");
-        dialogueTextProp.stringValue = EditorGUILayout.TextArea(dialogueTextProp.stringValue, GUILayout.Height(60));
+        // Texto do dialogo: um campo por idioma, escrito direto nas tabelas.
+        //
+        // Isto era um TextArea escrevendo no stringValue do campo, e nao funcionava:
+        // um LocalizedString num SerializedProperty e Generic, entao stringValue le
+        // vazio e escrever nele nao grava nada — sem erro. Quem digitava uma fala
+        // aqui a via sumir ao sair do campo.
+        EditorGUILayout.LabelField("Texto do diálogo", EditorStyles.boldLabel);
+        DesenharTextoLocalizado(nodeProp, 60f);
         
         EditorGUILayout.Space();
         
@@ -295,15 +299,14 @@ public class DialogueTreeEditor : UnityEditor.Editor
     {
         // Show just essential info
         var speakerNameProp = nodeProp.FindPropertyRelative("speakerName");
-        var dialogueTextProp = nodeProp.FindPropertyRelative("dialogueText");
         var nextNodeIdProp = nodeProp.FindPropertyRelative("nextNodeId");
         var choicesProp = nodeProp.FindPropertyRelative("choices");
         
         EditorGUILayout.PropertyField(nodeProp.FindPropertyRelative("nodeId"), new GUIContent("Node ID"));
         EditorGUILayout.PropertyField(speakerNameProp, new GUIContent("Speaker"));
         
-        EditorGUILayout.LabelField("Dialogue Text:");
-        dialogueTextProp.stringValue = EditorGUILayout.TextArea(dialogueTextProp.stringValue, GUILayout.Height(40));
+        EditorGUILayout.LabelField("Texto do diálogo:");
+        DesenharTextoLocalizado(nodeProp, 40f);
         
         EditorGUILayout.PropertyField(nextNodeIdProp, new GUIContent("Next Node ID"));
         
@@ -352,6 +355,48 @@ public class DialogueTreeEditor : UnityEditor.Editor
         }
     }
     
+    /// <summary>
+    /// Desenha o texto do no nos tres idiomas.
+    ///
+    /// Precisa do objeto real (nao do SerializedProperty) porque um LocalizedString
+    /// so pode ser lido e escrito pela API dele; via SerializedProperty ele e um
+    /// blob Generic. Por isso aplicamos o que estiver pendente antes e
+    /// re-serializamos depois.
+    /// </summary>
+    private void DesenharTextoLocalizado(SerializedProperty nodeProp, float altura)
+    {
+        var arvore = target as DialogueTree;
+        if (arvore == null) return;
+
+        int indice = IndiceDoNo(nodeProp);
+        if (indice < 0 || indice >= arvore.nodes.Length) return;
+
+        var no = arvore.nodes[indice];
+        serializedObject.ApplyModifiedProperties();
+
+        string chaveSugerida = LocalizedTextField.ChavePadrao(arvore.name, no.nodeId);
+        if (LocalizedTextField.Desenhar(no.dialogueText, chaveSugerida, altura))
+        {
+            EditorUtility.SetDirty(arvore);
+        }
+
+        serializedObject.Update();
+    }
+
+    /// <summary>
+    /// O indice do no dentro do array, extraido do caminho do SerializedProperty
+    /// ("nodes.Array.data[3]") — nao ha API direta para isso.
+    /// </summary>
+    private static int IndiceDoNo(SerializedProperty nodeProp)
+    {
+        string caminho = nodeProp.propertyPath;
+        int abre = caminho.LastIndexOf('[');
+        int fecha = caminho.LastIndexOf(']');
+        if (abre < 0 || fecha <= abre) return -1;
+
+        return int.TryParse(caminho.Substring(abre + 1, fecha - abre - 1), out int i) ? i : -1;
+    }
+
     private void AddNewNode()
     {
         if (string.IsNullOrEmpty(newNodeId))
@@ -376,7 +421,9 @@ public class DialogueTreeEditor : UnityEditor.Editor
         // Set default values
         newNodeProp.FindPropertyRelative("nodeId").stringValue = newNodeId;
         newNodeProp.FindPropertyRelative("nodeType").enumValueIndex = (int)newNodeType;
-        newNodeProp.FindPropertyRelative("dialogueText").stringValue = "";
+        // Nada de `dialogueText.stringValue = ""` aqui: e um LocalizedString, e
+        // escrever nele por stringValue nao faz nada. O no nasce sem chave, e ela
+        // e criada quando se digita a primeira fala (ver LocalizedTextField).
         newNodeProp.FindPropertyRelative("speakerName").stringValue = "";
         newNodeProp.FindPropertyRelative("nextNodeId").stringValue = "";
         newNodeProp.FindPropertyRelative("autoAdvanceDelay").floatValue = 0f;
