@@ -31,7 +31,6 @@ public class NPCPlacer : MonoBehaviour
     // Runtime references
     private RuntimeMapEditor mapEditor;
     private Camera mainCamera;
-    private MapEditorUI editorUI;
     
     // Placement state
     private NPCTemplate selectedNPCTemplate;
@@ -68,7 +67,6 @@ public class NPCPlacer : MonoBehaviour
     {
         mapEditor = RuntimeMapEditor.Instance;
         mainCamera = Camera.main;
-        editorUI = FindFirstObjectByType<MapEditorUI>();
         
         if (audioSource == null)
         {

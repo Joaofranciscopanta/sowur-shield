@@ -399,6 +399,46 @@ public class RuntimeMapEditor : MonoBehaviour
     /// tem estado de cena, so pastas de destino, entao exigir montagem manual seria
     /// mais uma referencia para esquecer.
     /// </summary>
+    /// <summary>
+    /// Os mapas que existem no disco, para a paleta listar.
+    ///
+    /// Havia "Salvar mapa" e nenhum jeito de reabrir: o mapa salvo ficava
+    /// inacessivel pelo proprio editor. O MapSerializer ja sabia listar e ler --
+    /// como o resto deste editor, faltava so quem chamasse.
+    /// </summary>
+    public System.Collections.Generic.List<string> MapasDisponiveis()
+    {
+        var serializer = ObterSerializer();
+        return serializer != null
+            ? serializer.GetAvailableMaps()
+            : new System.Collections.Generic.List<string>();
+    }
+
+    /// <summary>
+    /// Carrega um mapa do disco pelo nome e aplica na cena.
+    ///
+    /// Devolve false quando o arquivo nao pode ser lido, para a paleta poder dizer
+    /// isso em vez de deixar a tela igual e o usuario sem saber se clicou errado.
+    /// </summary>
+    public bool CarregarMapaDoDisco(string nome)
+    {
+        if (string.IsNullOrEmpty(nome)) return false;
+
+        var serializer = ObterSerializer();
+        if (serializer == null) return false;
+
+        var dados = serializer.LoadMapData(nome);
+        if (dados == null) return false;
+
+        LoadMapData(dados);
+
+        // Carregar substitui a cena inteira, entao o que estava na pilha de desfazer
+        // se refere a um mapa que nao esta mais aberto -- desfazer depois disso
+        // reporia tiles do mapa anterior por cima deste.
+        History?.Limpar();
+        return true;
+    }
+
     private MapSerializer ObterSerializer()
     {
         if (mapSerializer != null) return mapSerializer;

@@ -40,7 +40,7 @@ namespace SowurShield.MapEditor
         // Passou a comecar a 84 (moldura medida na textura) e ganhou a linha
         // "Tamanho", e as duas molduras medidas na TELA (130 no topo, 168 na base)
         // em vez dos 48 estimados.
-        private const float AlturaPainel = 864f;
+        private const float AlturaPainel = 906f;
 
         private RuntimeMapEditor mapEditor;
         private ObjectPlacer placer;
@@ -50,6 +50,7 @@ namespace SowurShield.MapEditor
         private readonly Dictionary<string, Button> botoes = new();
         private TextMeshProUGUI rodape;
         private TextMeshProUGUI rotuloTamanho;
+        private TextMeshProUGUI rotuloGiro;
 
         public bool Aberta => painel != null && painel.activeSelf;
 
@@ -140,6 +141,9 @@ namespace SowurShield.MapEditor
             ConstruirLinhaDeTamanho(painel.transform, y);
             y -= theme.buttonHeightSmall + theme.spacingS;
 
+            ConstruirLinhaDeGiro(painel.transform, y);
+            y -= theme.buttonHeightSmall + theme.spacingS;
+
             float alturaLista = AlturaPainel + y - MolduraBasePx - 46f;  // 46 = rodape
             ConstruirLista(painel.transform, y, alturaLista);
 
@@ -192,6 +196,63 @@ namespace SowurShield.MapEditor
             rotuloTamanho.alignment = TextAlignmentOptions.Center;
             if (theme.fontPrimary != null) rotuloTamanho.font = theme.fontPrimary;
             AtualizarRotuloTamanho();
+        }
+
+        /// <summary>
+        /// A linha "[Girar 90] 0 [Espelhar]".
+        ///
+        /// `ObjectSpawnData.rotation` ja existia e o carregador ja o aplicava; era o
+        /// placer que gravava zero fixo. Girar de 90 em 90 porque a grade e quadrada:
+        /// angulo livre so desalinha do chao pintado.
+        /// </summary>
+        private void ConstruirLinhaDeGiro(Transform pai, float y)
+        {
+            var linha = new GameObject("LinhaGiro", typeof(RectTransform));
+            linha.transform.SetParent(pai, false);
+            var rt = linha.GetComponent<RectTransform>();
+            rt.anchorMin = new Vector2(0f, 1f);
+            rt.anchorMax = new Vector2(1f, 1f);
+            rt.pivot = new Vector2(0.5f, 1f);
+            rt.offsetMin = new Vector2(MolduraPx, 0f);
+            rt.offsetMax = new Vector2(-MolduraPx, 0f);
+            rt.anchoredPosition = new Vector2(0f, y);
+            rt.sizeDelta = new Vector2(rt.sizeDelta.x, theme.buttonHeightSmall);
+
+            float largura = LarguraPainel - MolduraPx * 2f;
+            float ladoBotao = (largura - 52f) * 0.5f;   // 52 = espaco do rotulo do angulo
+
+            // Rotulos curtos de proposito: a arte do botao e 5:1 e pinta so parte do
+            // rect, entao "Espelhar" por extenso vaza da placa pintada num botao
+            // desta largura. O rotulo do meio ja diz o angulo e o estado do espelho.
+            var girar = CriarBotaoEm(linha.transform, "Girar", 0f, ladoBotao);
+            girar.onClick.AddListener(() => { placer?.Girar(); AtualizarRotuloGiro(); });
+
+            var espelhar = CriarBotaoEm(linha.transform, "Virar", largura - ladoBotao, ladoBotao);
+            espelhar.onClick.AddListener(() => { placer?.AlternarEspelho(); AtualizarRotuloGiro(); });
+
+            var alvo = new GameObject("Angulo", typeof(TextMeshProUGUI));
+            alvo.transform.SetParent(linha.transform, false);
+            var art = alvo.GetComponent<RectTransform>();
+            art.anchorMin = new Vector2(0f, 0f);
+            art.anchorMax = new Vector2(0f, 1f);
+            art.pivot = new Vector2(0f, 0.5f);
+            art.anchoredPosition = new Vector2(ladoBotao, 0f);
+            art.sizeDelta = new Vector2(52f, 0f);
+
+            rotuloGiro = alvo.GetComponent<TextMeshProUGUI>();
+            rotuloGiro.fontSize = theme.fontSizeCaption;
+            rotuloGiro.color = theme.headingOnLight;
+            rotuloGiro.alignment = TextAlignmentOptions.Center;
+            if (theme.fontPrimary != null) rotuloGiro.font = theme.fontPrimary;
+            AtualizarRotuloGiro();
+        }
+
+        private void AtualizarRotuloGiro()
+        {
+            if (rotuloGiro == null) return;
+            float g = placer != null ? placer.Rotacao : 0f;
+            bool esp = placer != null && placer.Espelhado;
+            rotuloGiro.text = g.ToString("0") + "°" + (esp ? " V" : "");
         }
 
         private void AtualizarRotuloTamanho()
@@ -315,6 +376,7 @@ namespace SowurShield.MapEditor
             if (rotuloTamanho != null)
             {
                 AtualizarRotuloTamanho();
+                AtualizarRotuloGiro();
             }
         }
 

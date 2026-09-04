@@ -48,12 +48,58 @@ namespace SowurShield.MapEditor
         private static readonly float[] Degraus =
             { 0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f, 3f, 4f };
 
+        // ---------------------------------------------------------------------
+        // Rotacao e espelho
+        // ---------------------------------------------------------------------
+
+        /// <summary>
+        /// Rotacao em Z aplicada ao objeto colocado, em graus.
+        ///
+        /// Mesma historia da escala: `ObjectSpawnData.rotation` ja existia e o
+        /// RecriarObjetos ja fazia `Quaternion.Euler(obj.rotation)` ao carregar --
+        /// o placer e que gravava `Vector3.zero` fixo, entao o campo era salvo e
+        /// nunca significava nada.
+        /// </summary>
+        public float Rotacao { get; private set; }
+
+        /// <summary>
+        /// Espelhamento horizontal. Vale para arvores e decoracao, onde virar a arte
+        /// evita que uma fileira do mesmo prefab pareca copiada.
+        /// </summary>
+        public bool Espelhado { get; private set; }
+
+        /// <summary>Gira 90 graus por clique: a grade e quadrada, angulos livres so desalinham.</summary>
+        public void Girar()
+        {
+            Rotacao = Mathf.Repeat(Rotacao + 90f, 360f);
+            AplicarTransformacaoAoFantasma();
+        }
+
+        public void AlternarEspelho()
+        {
+            Espelhado = !Espelhado;
+            AplicarTransformacaoAoFantasma();
+        }
+
+        /// <summary>Escala com o sinal do espelho: X negativo vira a arte.</summary>
+        private Vector3 EscalaComEspelho()
+        {
+            return new Vector3(Espelhado ? -Escala : Escala, Escala, Escala);
+        }
+
+        private void AplicarTransformacaoAoFantasma()
+        {
+            if (fantasma == null) return;
+            fantasma.transform.localScale = EscalaComEspelho();
+            fantasma.transform.rotation = Quaternion.Euler(0f, 0f, Rotacao);
+        }
+
         public void DefinirEscala(float valor)
         {
             Escala = Mathf.Clamp(valor, EscalaMin, EscalaMax);
             // O fantasma tem que mostrar o tamanho real, senao so se descobre que o
             // objeto ficou gigante depois de clicar.
-            if (fantasma != null) fantasma.transform.localScale = Vector3.one * Escala;
+            AplicarTransformacaoAoFantasma();
         }
 
         /// <summary>Anda um degrau para cima (+1) ou para baixo (-1).</summary>
@@ -154,9 +200,10 @@ namespace SowurShield.MapEditor
             if (prefabSelecionado == null || mapEditor.CurrentMapData == null) return;
 
             var raiz = ObterRaiz();
-            var instancia = Instantiate(prefabSelecionado, posicao, Quaternion.identity, raiz);
+            var instancia = Instantiate(prefabSelecionado, posicao,
+                                        Quaternion.Euler(0f, 0f, Rotacao), raiz);
             instancia.name = prefabSelecionado.name;
-            instancia.transform.localScale = Vector3.one * Escala;
+            instancia.transform.localScale = EscalaComEspelho();
 
             mapEditor.CurrentMapData.objectSpawns.Add(new ObjectSpawnData
             {
@@ -164,8 +211,8 @@ namespace SowurShield.MapEditor
                 objectId = prefabSelecionado.name,
                 // O CAMINHO, nao o nome: e o que o PrefabCatalog resolve ao carregar.
                 prefabPath = caminhoSelecionado,
-                rotation = Vector3.zero,
-                scale = Vector3.one * Escala,
+                rotation = new Vector3(0f, 0f, Rotacao),
+                scale = EscalaComEspelho(),
                 isActive = true
             });
         }
@@ -231,7 +278,7 @@ namespace SowurShield.MapEditor
                 cor.a *= 0.5f;
                 sr.color = cor;
             }
-            fantasma.transform.localScale = Vector3.one * Escala;
+            AplicarTransformacaoAoFantasma();
             fantasma.SetActive(false);
         }
 
