@@ -12,7 +12,9 @@ namespace SowurShield.Dialogue.Editor
     ///
     /// Existe porque o caminho intuitivo NAO funciona: num SerializedProperty, um
     /// LocalizedString tem `propertyType == Generic`, entao `prop.stringValue` le
-    /// string vazia e **escrever nele nao grava nada** — sem excecao, sem warning.
+    /// string vazia e **escrever nele nao grava nada**. O Unity loga "type is not a
+    /// supported string value", mas sem dizer qual campo e uma vez por frame — no
+    /// meio do ruido do console, ninguem ligava o erro ao texto que sumia.
     /// O DialogueTreeEditor fazia exatamente isso em quatro lugares, o que quer
     /// dizer que o campo de texto daquele inspector nunca escreveu fala nenhuma:
     /// quem digitava via o texto sumir ao sair do campo.

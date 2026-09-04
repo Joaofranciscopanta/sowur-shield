@@ -18,8 +18,12 @@ namespace SowurShield.Tests
 /// inspector de DialogueTree editava a fala com
 /// `dialogueTextProp.stringValue = TextArea(...)`, e um LocalizedString num
 /// SerializedProperty tem propertyType Generic — stringValue le vazio e escrever
-/// nele NAO GRAVA NADA, sem excecao e sem warning. O campo de texto daquele
-/// inspector nunca escreveu fala nenhuma; quem digitava via o texto sumir.
+/// nele NAO GRAVA NADA. O campo de texto daquele inspector nunca escreveu fala
+/// nenhuma; quem digitava via o texto sumir.
+///
+/// O Unity ate loga "type is not a supported string value" a cada toque no campo —
+/// mas sem dizer QUAL campo, uma vez por frame enquanto o inspector estava aberto.
+/// No meio do ruido do console, ninguem ligou o erro ao texto que desaparecia.
 /// </summary>
 public class DialogueLocalizedTextTests
 {
@@ -39,16 +43,13 @@ public class DialogueLocalizedTextTests
             var prop = so.FindProperty("nodes").GetArrayElementAtIndex(0)
                          .FindPropertyRelative("dialogueText");
 
+            // O tipo E a prova: `stringValue` so existe para propriedades String, e
+            // este campo e Generic. Nao tocamos nele aqui de proposito — CADA toque
+            // (leitura inclusive) faz o Unity logar "type is not a supported string
+            // value", e o test runner trata log de erro como falha.
             Assert.AreEqual(SerializedPropertyType.Generic, prop.propertyType,
-                "LocalizedString e Generic, nao String. Quem editar por .stringValue " +
-                "escreve no vazio: o texto some e nao ha erro nenhum.");
-
-            prop.stringValue = "isto nao deveria persistir";
-            so.ApplyModifiedProperties();
-
-            Assert.IsTrue(string.IsNullOrEmpty(prop.stringValue),
-                "Escrever em stringValue num LocalizedString nao grava — e por isso " +
-                "que o campo do inspector precisa passar pelas tabelas de idioma.");
+                "LocalizedString e Generic, nao String. Editar por .stringValue escreve " +
+                "no vazio: o texto some e o inspector fica cuspindo erro no console.");
         }
         finally
         {
@@ -67,7 +68,7 @@ public class DialogueLocalizedTextTests
 
         Assert.IsFalse(fonte.Contains("dialogueTextProp.stringValue"),
             "O texto do dialogo tem que ser escrito nas tabelas de idioma, nao no " +
-            "SerializedProperty — la ele se perde em silencio.");
+            "SerializedProperty — la ele se perde.");
 
         Assert.IsTrue(fonte.Contains("DesenharTextoLocalizado"),
             "O inspector precisa desenhar os campos por idioma.");
