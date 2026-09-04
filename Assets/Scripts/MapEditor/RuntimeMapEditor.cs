@@ -14,8 +14,11 @@ public class RuntimeMapEditor : MonoBehaviour
     
     [Header("Map Editor Settings")]
     [SerializeField] private bool editorEnabled = false;
-    [SerializeField] private string toggleKeyName = "f1";
-    [SerializeField] private float autoSaveInterval = 30f;
+    // B de "build". Escolhida por ser uma tecla normal e livre: as de movimento e
+    // acao ja estao no PlayerControls (wasd, e, k, m, tab, escape, 0-9, setas), J e o
+    // painel de quests, e F1 ja e o debugKey do InventoryDebugger — apertar F1 abriria
+    // as duas coisas ao mesmo tempo.
+    [SerializeField] private string toggleKeyName = "b";
     
     private Keyboard keyboard;
     private KeyControl toggleKeyControl;
@@ -26,6 +29,7 @@ public class RuntimeMapEditor : MonoBehaviour
     [SerializeField] private GameObject mapEditorUI;
     [SerializeField] private Camera editorCamera;
     [SerializeField] private GameObject gridOverlay;
+    [SerializeField] private MapSerializer mapSerializer;
     
     [Header("Player & Game References")]
     [SerializeField] private PlayerMove player;
@@ -34,7 +38,6 @@ public class RuntimeMapEditor : MonoBehaviour
     
     // Editor state
     private bool isInitialized = false;
-    private float lastAutoSaveTime;
     private Vector3 playerPositionBeforeEditor;
     
     // Current editor settings
@@ -43,6 +46,10 @@ public class RuntimeMapEditor : MonoBehaviour
     [HideInInspector] public BrushType selectedBrush = BrushType.Paint;
     
     public bool IsEditorActive => editorEnabled;
+
+    /// <summary>O dual grid que este editor pinta. O preview precisa dele para
+    /// converter a posicao do mouse em celula pelo mesmo caminho que o pincel.</summary>
+    public SowurShield.Farming.DualGridTilemap DualGrid => dualGridTilemap;
     public MapData CurrentMapData => currentMapData;
     
     // Events
@@ -77,7 +84,12 @@ public class RuntimeMapEditor : MonoBehaviour
     private void Update()
     {
         HandleInput();
-        HandleAutoSave();
+
+        // Sem autosave aqui: quem faz isso e o MapSerializer, a cada 60s, gravando
+        // "<mapa>_autosave_HH-mm" com rotacao de 5 copias. Havia um segundo autosave
+        // neste componente chamando SaveCurrentMap a cada 30s — ele enchia
+        // Assets/Maps de "New Map <data>.asset", um por sessao e sem limite, e ainda
+        // gravava por cima do arquivo do usuario sem ele ter pedido.
     }
     
     private void InitializeEditor()
@@ -91,12 +103,17 @@ public class RuntimeMapEditor : MonoBehaviour
         
         if (dualGridTilemap == null)
             dualGridTilemap = FindFirstObjectByType<DualGridTilemap>();
-        
-        if (gameUI == null)
-            gameUI = FindFirstObjectByType<Canvas>();
-        
-        // Initialize with editor disabled
-        SetEditorMode(false);
+
+        // gameUI NAO e descoberto automaticamente. Havia um
+        // `gameUI = FindFirstObjectByType<Canvas>()` aqui, e a cena tem 11 canvases
+        // ativos — o primeiro e o SellingBoxCanvas. Como ExitEditorMode faz
+        // gameUI.SetActive(true), so por existir na cena o editor ABRIA a UI da
+        // caixa de venda no boot. Se ninguem ligou o campo no inspector, nao mexemos
+        // em canvas nenhum.
+
+        // Estado inicial fechado, sem passar por ExitEditorMode: aquele caminho
+        // mexe no jogador e na UI, e no boot nao ha nada para restaurar.
+        editorEnabled = false;
         
         // Create default map data if none assigned
         if (currentMapData == null)
@@ -112,7 +129,7 @@ public class RuntimeMapEditor : MonoBehaviour
     {
         if (!isInitialized || keyboard == null) return;
         
-        // Toggle editor with F1 key
+        // Abre/fecha o editor (tecla em toggleKeyName)
         if (toggleKeyControl != null && toggleKeyControl.wasPressedThisFrame)
         {
             ToggleEditor();
@@ -127,42 +144,21 @@ public class RuntimeMapEditor : MonoBehaviour
     
     private void HandleEditorInput()
     {
-        // Save shortcut (Ctrl+S)
-        if (keyboard != null && (keyboard[Key.LeftCtrl].isPressed || keyboard[Key.RightCtrl].isPressed) && keyboard[Key.S].wasPressedThisFrame)
-        {
-            SaveCurrentMap();
-        }
-        
-        // Load shortcut (Ctrl+O)
-        if (keyboard != null && (keyboard[Key.LeftCtrl].isPressed || keyboard[Key.RightCtrl].isPressed) && keyboard[Key.O].wasPressedThisFrame)
-        {
-            // TODO: Implement load dialog
+        // Nada de Ctrl+S / Ctrl+Z / Ctrl+O aqui. No Play Mode do Unity a Game View
+        // disputa o foco com o resto do Editor, e um atalho com Ctrl as vezes vai
+        // parar na janela errada — o usuario aperta e nada acontece, sem saber por
+        // que. Salvar, desfazer e refazer sao BOTOES na paleta (MapEditorPalette).
+        //
+        // As teclas 1 e 2 ficam: nao usam modificador, entao nao competem com o
+        // Editor, e ja existem como botao na paleta de qualquer forma.
 
-        }
-        
-        // Undo (Ctrl+Z) - TODO: Implement undo system
-        if (keyboard != null && (keyboard[Key.LeftCtrl].isPressed || keyboard[Key.RightCtrl].isPressed) && keyboard[Key.Z].wasPressedThisFrame)
-        {
-
-        }
-        
-        // Quick tile type switching (1-5 keys)
+        // Troca rapida de tipo. So oferecemos o que este tileset desenha de verdade:
+        // o enum tem 15 valores, mas o dual grid e binario e o adaptador recusa o resto.
+        // Ter 3=Water numa tecla so ensinaria o usuario a pintar sem efeito nenhum.
         if (keyboard != null)
         {
             if (keyboard[Key.Digit1].wasPressedThisFrame) selectedTileType = ExtendedTileType.Grass;
             if (keyboard[Key.Digit2].wasPressedThisFrame) selectedTileType = ExtendedTileType.Dirt;
-            if (keyboard[Key.Digit3].wasPressedThisFrame) selectedTileType = ExtendedTileType.Water;
-            if (keyboard[Key.Digit4].wasPressedThisFrame) selectedTileType = ExtendedTileType.Stone;
-            if (keyboard[Key.Digit5].wasPressedThisFrame) selectedTileType = ExtendedTileType.Sand;
-        }
-    }
-    
-    private void HandleAutoSave()
-    {
-        if (editorEnabled && Time.time - lastAutoSaveTime >= autoSaveInterval)
-        {
-            AutoSaveMap();
-            lastAutoSaveTime = Time.time;
         }
     }
     
@@ -209,11 +205,10 @@ public class RuntimeMapEditor : MonoBehaviour
             mapEditorUI.SetActive(true);
         }
         
-        // Show grid overlay
-        if (gridOverlay != null)
-        {
-            gridOverlay.SetActive(true);
-        }
+        // A grade NAO e ligada/desligada aqui. O GridOverlay se inscreve em
+        // OnEditorToggled e cuida da propria visibilidade — desativar o GameObject
+        // inteiro impedia o Start() dele de rodar, entao a grade nunca chegava a ser
+        // construida e nenhuma linha aparecia.
         
         // Hide game UI
         if (gameUI != null)
@@ -260,11 +255,7 @@ public class RuntimeMapEditor : MonoBehaviour
             mapEditorUI.SetActive(false);
         }
         
-        // Hide grid overlay
-        if (gridOverlay != null)
-        {
-            gridOverlay.SetActive(false);
-        }
+        // Ver EnterEditorMode: a visibilidade da grade e do proprio GridOverlay.
         
         // Show game UI
         if (gameUI != null)
@@ -312,68 +303,145 @@ public class RuntimeMapEditor : MonoBehaviour
     private void ApplyMapDataToTilemap()
     {
         if (currentMapData == null || dualGridTilemap == null) return;
-        
-        // Clear existing tiles
-        // TODO: Implement clear method in DualGridTilemap
-        
-        // Apply tile data
-        foreach (var tileEntry in currentMapData.tileData)
-        {
-            // TODO: Convert ExtendedTileType to appropriate tile and apply
-            // This will need the extended DualGridTilemap system
-        }
-        
-        // Apply NPC spawns, objects, etc.
-        // TODO: Implement object spawning
-        
 
+        // O adaptador limpa, aplica e faz UM refresh no fim. Ver DualGridPaintAdapter
+        // para por que a pintura e binaria e por que grama e "celula vazia".
+        DualGridPaintAdapter.Apply(dualGridTilemap, currentMapData);
+
+        RecriarObjetos();
     }
+
+    /// <summary>
+    /// Instancia os objetos e NPCs gravados no mapa.
+    ///
+    /// Ate agora isto nao existia: o NPCPlacer gravava `npcSpawns` e nada os trazia
+    /// de volta, entao carregar um mapa restaurava o chao e perdia tudo o que
+    /// estivesse em cima dele. O PrefabCatalog resolve o `prefabPath` gravado.
+    /// </summary>
+    private void RecriarObjetos()
+    {
+        if (currentMapData == null) return;
+
+        // Um pai unico: sem isto, recarregar o mapa empilharia copias soltas pela
+        // hierarquia e nao haveria como limpar as anteriores.
+        var raiz = GameObject.Find(RaizDeObjetosDoMapa);
+        if (raiz != null) DestroyImmediate(raiz);
+        raiz = new GameObject(RaizDeObjetosDoMapa);
+
+        int recriados = 0, perdidos = 0;
+
+        foreach (var obj in currentMapData.objectSpawns)
+        {
+            if (!obj.isActive) continue;
+            var prefab = PrefabCatalog.Resolver(obj.prefabPath);
+            if (prefab == null) { perdidos++; continue; }
+
+            var instancia = Instantiate(prefab, obj.position, Quaternion.Euler(obj.rotation), raiz.transform);
+            instancia.transform.localScale = obj.scale;
+            recriados++;
+        }
+
+        foreach (var npc in currentMapData.npcSpawns)
+        {
+            if (!npc.isActive) continue;
+            var prefab = PrefabCatalog.Resolver(npc.npcPrefabPath);
+            if (prefab == null) { perdidos++; continue; }
+
+            var instancia = Instantiate(prefab, npc.position,
+                Quaternion.Euler(0f, 0f, npc.rotation), raiz.transform);
+            if (!string.IsNullOrEmpty(npc.npcName)) instancia.name = npc.npcName;
+            recriados++;
+        }
+
+        // Um prefab movido ou apagado desde que o mapa foi salvo some em silencio se
+        // ninguem avisar — e o usuario acha que o editor perdeu o trabalho dele.
+        if (perdidos > 0)
+        {
+            Debug.LogWarning($"[MapEditor] {perdidos} objeto(s) do mapa nao foram " +
+                             "encontrados: o prefab foi movido ou apagado desde que " +
+                             "o mapa foi salvo.");
+        }
+    }
+
+    /// <summary>Nome do GameObject que agrupa o que o mapa instancia.</summary>
+    public const string RaizDeObjetosDoMapa = "MapObjects (Editor)";
     
     public void SaveCurrentMap()
     {
-        if (currentMapData == null)
-        {
+        if (currentMapData == null) return;
 
-            return;
-        }
-        
-        // Update map data from current tilemap state
+        // Le a cena para o MapData antes de gravar.
         UpdateMapDataFromTilemap();
-        
-        // Save to assets (this will be handled by MapSerializer)
-        // For now, just update metadata
+
+        // Ate 2026-09-03 este metodo parava aqui, com um `// For now, just update
+        // metadata`: o mapa era atualizado em memoria e NADA ia para o disco, entao
+        // sair do Play Mode perdia tudo o que se tinha pintado. O MapSerializer
+        // (backup, autosave, asset + JSON) ja existia e nunca tinha sido chamado.
+        var serializer = ObterSerializer();
+        if (serializer != null)
+        {
+            serializer.SaveMapData(currentMapData);
+        }
+        else
+        {
+            // Sem serializer nao ha para onde salvar; avisar e melhor que fingir
+            // que salvou, porque o proximo passo do usuario e fechar o jogo.
+            Debug.LogWarning("[MapEditor] Sem MapSerializer: o mapa NAO foi gravado " +
+                             "em disco. Adicione um MapSerializer a cena.");
+        }
+
         currentMapData.UpdateMetadata();
-        
         OnMapSaved?.Invoke();
-
     }
-    
-    private void AutoSaveMap()
-    {
-        SaveCurrentMap();
 
+    /// <summary>
+    /// O MapSerializer e criado sob demanda se ninguem o ligou no inspector: ele nao
+    /// tem estado de cena, so pastas de destino, entao exigir montagem manual seria
+    /// mais uma referencia para esquecer.
+    /// </summary>
+    private MapSerializer ObterSerializer()
+    {
+        if (mapSerializer != null) return mapSerializer;
+
+        mapSerializer = FindFirstObjectByType<MapSerializer>();
+        if (mapSerializer == null)
+        {
+            mapSerializer = gameObject.AddComponent<MapSerializer>();
+        }
+        return mapSerializer;
     }
     
     private void UpdateMapDataFromTilemap()
     {
-        if (currentMapData == null) return;
-        
-        // TODO: Scan current tilemap state and update MapData
-        // This will need integration with extended DualGridTilemap
-        
+        if (currentMapData == null || dualGridTilemap == null) return;
 
+        // Le a cena e reescreve o tileData. Sem isto, salvar um mapa que voce nao
+        // pintou nesta sessao gravava um MapData vazio por cima do mundo existente.
+        DualGridPaintAdapter.CaptureInto(dualGridTilemap, currentMapData);
     }
     
     // Tool methods for other systems
     public void SetTileAtPosition(Vector3Int position, ExtendedTileType tileType)
     {
         if (currentMapData == null) return;
-        
+
+        // Lido ANTES de pintar: e o que o Ctrl+Z precisa restaurar.
+        var antes = DualGridPaintAdapter.Read(dualGridTilemap, position);
+
+        // Pinta na cena primeiro: se este tileset nao sabe desenhar o tipo pedido,
+        // nao gravamos no MapData um dado que nunca vai reaparecer na tela.
+        if (!DualGridPaintAdapter.Paint(dualGridTilemap, position, tileType))
+            return;
+
         currentMapData.SetTileAt(position, tileType, selectedLayer);
-        
-        // Apply to visual tilemap
-        // TODO: Convert ExtendedTileType to actual tile and apply via DualGridTilemap
+        History?.RegistrarMudanca(position, antes, tileType);
     }
+
+    private MapEditorHistory _history;
+    /// <summary>Historico de desfazer/refazer, se houver um na cena.</summary>
+    public MapEditorHistory History => _history != null
+        ? _history
+        : _history = GetComponent<MapEditorHistory>();
     
     public ExtendedTileType GetTileAtPosition(Vector3Int position)
     {
@@ -386,8 +454,6 @@ public class RuntimeMapEditor : MonoBehaviour
     // Validation and utility methods
     private void OnValidate()
     {
-        if (autoSaveInterval < 10f)
-            autoSaveInterval = 10f;
     }
     
     private void OnDestroy()

@@ -23,6 +23,17 @@ public class UIInput : MonoBehaviour
 
     private void HandleEscapeKey()
     {
+        // Com o editor de mapa aberto, ESC FECHA O EDITOR em vez de abrir o menu de
+        // pausa. Bloquear a tecla sem mais nada prenderia quem constroi: ESC e o
+        // reflexo de todo mundo para "sair daqui", e a alternativa seria descobrir
+        // que a saida e o B.
+        if (SowurShield.MapEditor.RuntimeMapEditor.Instance != null &&
+            SowurShield.MapEditor.RuntimeMapEditor.Instance.IsEditorActive)
+        {
+            SowurShield.MapEditor.RuntimeMapEditor.Instance.SetEditorMode(false);
+            return;
+        }
+
         // Always ensure cursor is visible when handling UI
         EnsureCursorVisible();
 

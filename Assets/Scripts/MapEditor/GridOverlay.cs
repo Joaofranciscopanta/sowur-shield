@@ -379,19 +379,35 @@ public class GridOverlay : MonoBehaviour
     // Public methods
     public void SetGridVisibility(bool visible)
     {
-        showGrid = visible;
-        
+        // NAO escrever em showGrid aqui. showGrid e a PREFERENCIA do usuario ("quero
+        // grade"); `visible` e o estado do momento ("o editor esta aberto"). Misturar
+        // os dois desligava a grade para sempre: no boot o editor esta fechado, entao
+        // InitializeGrid chamava SetGridVisibility(false), que gravava showGrid=false —
+        // e dai em diante `showGrid && editorActive` era falso com o editor aberto.
         if (gridParent != null)
         {
             gridParent.SetActive(visible);
         }
-        
+
         OnGridToggled?.Invoke(visible);
+    }
+
+    /// <summary>
+    /// Liga/desliga a preferencia de grade (o que um botao "mostrar grade" faria).
+    /// Aplica na hora se o editor estiver aberto.
+    /// </summary>
+    public void SetGridPreference(bool wanted)
+    {
+        showGrid = wanted;
+        SetGridVisibility(wanted && mapEditor?.IsEditorActive == true);
     }
     
     public void ToggleGrid()
     {
-        SetGridVisibility(!showGrid);
+        // Alterna a preferencia, nao a visibilidade crua: SetGridVisibility deixou de
+        // escrever em showGrid, entao chama-la aqui alternaria o objeto uma vez e
+        // depois leria sempre o mesmo showGrid.
+        SetGridPreference(!showGrid);
     }
     
     public void SetGridSize(float size)

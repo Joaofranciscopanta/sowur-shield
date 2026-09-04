@@ -1,9 +1,8 @@
 {
-    "name": "SowurShield.Dialogue.Editor",
+    "name": "SowurShield.MapEditor.Editor",
     "rootNamespace": "",
     "references": [
         "SowurShield.Runtime",
-        "Unity.TextMeshPro",
         "Unity.Localization",
         "Unity.Localization.Editor"
     ],
@@ -14,7 +13,7 @@
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
-    "autoReferenced": false,
+    "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false

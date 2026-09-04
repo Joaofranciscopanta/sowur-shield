@@ -25,7 +25,12 @@ public class BrushTool : MonoBehaviour
     
     // Runtime references
     private RuntimeMapEditor mapEditor;
-    private ExtendedDualGridTilemap extendedTilemap;
+    // Era um ExtendedDualGridTilemap — um sistema paralelo que nao existe em cena
+    // nenhuma (0 assets de TileLibrary no projeto). Com ele null, PaintTiles retornava
+    // cedo e o pincel nunca desenhava nada. Agora falamos com o dual grid do JOGO,
+    // atraves do DualGridPaintAdapter.
+    private DualGridTilemap dualGrid;
+    private ObjectPlacer objectPlacer;
     private Camera mainCamera;
     
     // Brush state
@@ -44,6 +49,28 @@ public class BrushTool : MonoBehaviour
     private float lastPaintTime = 0f;
     private const float PAINT_COOLDOWN = 0.05f;
     
+    /// <summary>
+    /// A celula onde um arrasto de linha/retangulo comecou, ou null se nao ha
+    /// arrasto em curso. O BrushPreview usa isto para mostrar a forma inteira
+    /// enquanto o botao esta pressionado, em vez de so a celula sob o cursor.
+    /// </summary>
+    public Vector3Int? DragStart
+    {
+        get
+        {
+            if (isDrawingLine) return lineStartPosition;
+            if (isDrawingRectangle) return rectangleStartPosition;
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// As celulas que o pincel cobre a partir de um centro, no tamanho atual.
+    /// Publico para o preview desenhar exatamente a mesma area que o clique pinta —
+    /// duplicar essa conta faria o preview mentir assim que uma das duas mudasse.
+    /// </summary>
+    public List<Vector3Int> AreaDoPincel(Vector3Int centro) => GetBrushArea(centro);
+
     public BrushType CurrentBrushType => currentBrushType;
     public int BrushSize => brushSize;
     
@@ -68,7 +95,8 @@ public class BrushTool : MonoBehaviour
     private void InitializeBrushTool()
     {
         mapEditor = RuntimeMapEditor.Instance;
-        extendedTilemap = FindFirstObjectByType<ExtendedDualGridTilemap>();
+        dualGrid = FindFirstObjectByType<DualGridTilemap>();
+        objectPlacer = GetComponent<ObjectPlacer>();
         mainCamera = Camera.main;
         
         if (audioSource == null)
@@ -95,9 +123,38 @@ public class BrushTool : MonoBehaviour
     
     private void HandleInput()
     {
+        // Camera.main devolve null enquanto a MainCamera nao existe (troca de cena,
+        // ordem de Start). Sem isto, ScreenToWorldPoint lancaria a cada frame.
+        if (mainCamera == null)
+        {
+            mainCamera = Camera.main;
+            if (mainCamera == null) return;
+        }
+
+        // Nao pintar por baixo da interface: sem esta guarda, clicar num botao da
+        // paleta escolhe o tile E pinta o mundo atras dele no mesmo clique.
+        if (UnityEngine.EventSystems.EventSystem.current != null &&
+            UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+            return;
+
+        // Com um objeto escolhido, o clique e do ObjectPlacer. Sem isto o mesmo
+        // clique colocaria uma arvore E pintaria terra debaixo dela.
+        if (objectPlacer != null && objectPlacer.ModoColocacao) return;
+
         Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         Vector3Int currentTilePos = WorldToTilePosition(mouseWorldPos);
-        
+
+        // Um passo de historico = um gesto do usuario, do apertar ao soltar. Feito
+        // aqui, num lugar so, em vez de nos 11 pontos de clique espalhados pelos
+        // brushes — esquecer um deles daria um Ctrl+Z que desfaz pela metade.
+        //
+        // O balde e a excecao: FloodFill e uma corrotina que continua depois do
+        // botao ser solto, entao ele fecha o proprio passo ao terminar.
+        if (Input.GetMouseButtonDown(0))
+            mapEditor.History?.IniciarPasso();
+        else if (Input.GetMouseButtonUp(0) && currentBrushType != BrushType.Fill)
+            mapEditor.History?.FinalizarPasso();
+
         // Handle different brush types
         switch (currentBrushType)
         {
@@ -156,7 +213,7 @@ public class BrushTool : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            ExtendedTileType targetTileType = extendedTilemap.GetTileTypeAt(tilePos);
+            ExtendedTileType targetTileType = DualGridPaintAdapter.Read(dualGrid, tilePos);
             if (targetTileType != mapEditor.selectedTileType)
             {
                 StartCoroutine(FloodFill(tilePos, targetTileType, mapEditor.selectedTileType));
@@ -255,11 +312,11 @@ public class BrushTool : MonoBehaviour
     
     private void PaintTiles(List<Vector3Int> positions, ExtendedTileType tileType)
     {
-        if (extendedTilemap == null) return;
+        if (dualGrid == null) return;
         
         foreach (Vector3Int pos in positions)
         {
-            extendedTilemap.SetCell(pos, tileType, mapEditor.selectedLayer);
+            mapEditor.SetTileAtPosition(pos, tileType);
             OnTilePainted?.Invoke(pos, tileType);
         }
         
@@ -268,11 +325,11 @@ public class BrushTool : MonoBehaviour
     
     private void EraseTiles(List<Vector3Int> positions)
     {
-        if (extendedTilemap == null) return;
+        if (dualGrid == null) return;
         
         foreach (Vector3Int pos in positions)
         {
-            extendedTilemap.SetCell(pos, ExtendedTileType.None, mapEditor.selectedLayer);
+            mapEditor.SetTileAtPosition(pos, ExtendedTileType.Grass);
             OnTileErased?.Invoke(pos);
         }
         
@@ -297,11 +354,11 @@ public class BrushTool : MonoBehaviour
             if (visited.Contains(current)) continue;
             visited.Add(current);
             
-            ExtendedTileType currentType = extendedTilemap.GetTileTypeAt(current);
+            ExtendedTileType currentType = DualGridPaintAdapter.Read(dualGrid, current);
             if (currentType != targetType) continue;
             
             // Paint this tile
-            extendedTilemap.SetCell(current, replaceType, mapEditor.selectedLayer);
+            mapEditor.SetTileAtPosition(current, replaceType);
             OnTilePainted?.Invoke(current, replaceType);
             
             // Add neighbors to queue
@@ -330,6 +387,10 @@ public class BrushTool : MonoBehaviour
         
         PlaySound(paintSound);
 
+        // O balde roda por varios frames e termina depois do botao ser solto, entao
+        // e ele quem fecha o passo — do contrario o Ctrl+Z desfaria so a parte
+        // pintada ate o momento em que o dedo saiu do mouse.
+        mapEditor.History?.FinalizarPasso();
     }
     
     private void DrawLine(Vector3Int start, Vector3Int end, ExtendedTileType tileType)
@@ -353,7 +414,11 @@ public class BrushTool : MonoBehaviour
         
         int error = dx - dy;
         
-        for (int i = 0; i < dx + dy; i++)
+        // dx + dy + 1: uma linha de (0,0) a (0,5) tem SEIS celulas, nao cinco. Com
+        // `< dx + dy` o laco parava um passo antes e a celula final nunca era pintada
+        // — o usuario soltava o botao sobre uma celula que ficava por pintar. O `break`
+        // interno ja garante que nao passamos do fim.
+        for (int i = 0; i <= dx + dy; i++)
         {
             points.Add(new Vector3Int(x, y, 0));
             
@@ -480,6 +545,17 @@ public class BrushTool : MonoBehaviour
     
     private Vector3Int WorldToTilePosition(Vector3 worldPos)
     {
+        // Perguntamos ao proprio tilemap em vez de arredondar na mao. Hoje o grid e
+        // 1x1 na origem e FloorToInt daria o mesmo resultado, mas qualquer mudanca de
+        // cellSize, offset ou escala quebraria a versao manual em silencio — o pincel
+        // pintaria uma celula ao lado da que esta sob o cursor.
+        if (dualGrid != null && dualGrid.placeholderTilemap != null)
+        {
+            var cell = dualGrid.placeholderTilemap.WorldToCell(worldPos);
+            cell.z = 0;
+            return cell;
+        }
+
         return new Vector3Int(
             Mathf.FloorToInt(worldPos.x),
             Mathf.FloorToInt(worldPos.y),

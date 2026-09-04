@@ -183,6 +183,16 @@ animator.SetBool("isRunning", isSprinting && moveInput != Vector2.zero);
 
     private void DetectAndInteract()
     {
+        // Com o editor de mapa aberto, E nao fala com NPC nem abre a cama. O cursor
+        // ja e neutralizado no CursorController, mas a tecla E segue outro caminho
+        // (InteractionManager, por proximidade) e nao passava por guarda nenhuma —
+        // entao dava para abrir um dialogo no meio da construcao.
+        if (SowurShield.MapEditor.RuntimeMapEditor.Instance != null &&
+            SowurShield.MapEditor.RuntimeMapEditor.Instance.IsEditorActive)
+        {
+            return;
+        }
+
         // Don't interact if any slot is being dragged
         if (InventorySlot.IsAnySlotDragging)
         {

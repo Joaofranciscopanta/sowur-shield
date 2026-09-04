@@ -30,6 +30,15 @@ public class DualGridTilemap : MonoBehaviour {
     public Tile[] tiles;
 
     void Start() {
+        BuildRules();
+        RefreshDisplayTilemap();
+    }
+
+    // As regras viviam inline no Start, o que significava que SetCell so funcionava
+    // depois do Start ter rodado — ou seja, so em Play Mode. O editor de mapa roda no
+    // Editor, fora do Play Mode, e batia em NullReferenceException aqui dentro.
+    // Agora qualquer entrada garante as regras antes de usar (ver EnsureRules).
+    private void BuildRules() {
         // This dictionary stores the "rules", each 4-neighbour configuration corresponds to a tile
         // |_1_|_2_|
         // |_3_|_4_|
@@ -51,10 +60,22 @@ public class DualGridTilemap : MonoBehaviour {
             {new (Grass, Dirt, Dirt, Grass), tiles[4]}, // DUAL_DOWN_RIGHT
             {new (Dirt, Dirt, Dirt, Dirt), tiles[12]},
         };
-        RefreshDisplayTilemap();
+    }
+
+    // O dicionario e static: sobrevive a troca de cena e fica apontando para os tiles
+    // da primeira instancia que rodou. Reconstruimos quando esta nulo ou quando os
+    // tiles desta instancia nao sao os que estao la dentro.
+    private void EnsureRules() {
+        if (neighbourTupleToTile == null || neighbourTupleToTile.Count == 0) {
+            BuildRules();
+            return;
+        }
+        if (tiles != null && tiles.Length > 6 && !neighbourTupleToTile.ContainsValue(tiles[6]))
+            BuildRules();
     }
 
     public void SetCell(Vector3Int coords, Tile tile) {
+        EnsureRules();
         placeholderTilemap.SetTile(coords, tile);
         setDisplayTile(coords);
     }
@@ -87,6 +108,7 @@ public class DualGridTilemap : MonoBehaviour {
 
     // The tiles on the display tilemap will recalculate themselves based on the placeholder tilemap
     public void RefreshDisplayTilemap() {
+        EnsureRules();
         for (int i = -50; i < 50; i++) {
             for (int j = -50; j < 50; j++) {
                 setDisplayTile(new Vector3Int(i, j, 0));

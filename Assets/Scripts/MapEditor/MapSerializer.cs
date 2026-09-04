@@ -104,8 +104,13 @@ public class MapSerializer : MonoBehaviour
                 fileName += ".asset";
             }
             
+            // As pastas eram criadas so no Start(), que nao rodou ainda quando este
+            // componente e adicionado por AddComponent e usado no mesmo frame — o
+            // primeiro save falhava em silencio e o usuario perdia o trabalho.
+            EnsureDirectoriesExist();
+
             string fullPath = Path.Combine(mapsFolder, fileName);
-            
+
             // Create backup if enabled
             if (createBackupOnSave && File.Exists(fullPath))
             {
@@ -323,8 +328,21 @@ public class MapSerializer : MonoBehaviour
     private void SaveAsScriptableObject(MapData mapData, string path)
     {
 #if UNITY_EDITOR
-        // In editor, use Unity's asset system
-        UnityEditor.AssetDatabase.CreateAsset(Object.Instantiate(mapData), path);
+        // CreateAsset num caminho ocupado nao substitui: o Unity renomeia para
+        // "Mapa 1.asset", "Mapa 2.asset"... e cada save vira um asset novo. Quem
+        // constroi salvaria dez vezes e teria dez mapas, sem saber qual e o bom.
+        var existente = UnityEditor.AssetDatabase.LoadAssetAtPath<MapData>(path);
+        if (existente != null)
+        {
+            // Copia os campos para o asset que ja esta no disco, preservando o GUID
+            // (uma referencia a este mapa noutro lugar continua valendo).
+            UnityEditor.EditorUtility.CopySerialized(mapData, existente);
+            UnityEditor.EditorUtility.SetDirty(existente);
+        }
+        else
+        {
+            UnityEditor.AssetDatabase.CreateAsset(Object.Instantiate(mapData), path);
+        }
         UnityEditor.AssetDatabase.SaveAssets();
         UnityEditor.AssetDatabase.Refresh();
 #else
