@@ -90,10 +90,9 @@ namespace SowurShield.MapEditor
 
             if (aplicarTerreno)
             {
-                // O DualGridTilemap monta as regras no proprio Start. Se este
-                // componente rodar primeiro, RefreshDisplayTilemap trabalha com o
-                // dicionario ainda nulo -- por isso o Apply e chamado depois de
-                // garantir que o tilemap ja se inicializou.
+                // A ordem de Start entre este componente e o DualGridTilemap nao
+                // importa: RefreshDisplayTilemap chama EnsureRules(), que monta as
+                // regras se ainda nao existirem (DualGridTilemap.cs:68).
                 DualGridPaintAdapter.Apply(dual, dados);
             }
 
