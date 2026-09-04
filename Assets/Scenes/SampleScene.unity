@@ -9997,6 +9997,64 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &542293305
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 542293307}
+  - component: {fileID: 542293306}
+  m_Layer: 0
+  m_Name: MapEditor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &542293306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 542293305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e5466d24c64067448a48e1946f45080, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.MapEditor.RuntimeMapEditor
+  editorEnabled: 0
+  toggleKeyName: b
+  autoSaveInterval: 30
+  currentMapData: {fileID: 0}
+  dualGridTilemap: {fileID: 162187564}
+  mapEditorUI: {fileID: 0}
+  editorCamera: {fileID: 0}
+  gridOverlay: {fileID: 0}
+  player: {fileID: 0}
+  cursorController: {fileID: 0}
+  gameUI: {fileID: 0}
+  selectedTileType: 1
+  selectedLayer: 0
+  selectedBrush: 0
+--- !u!4 &542293307
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 542293305}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &550225266
 GameObject:
   m_ObjectHideFlags: 0
@@ -23065,6 +23123,8 @@ MonoBehaviour:
     m_Bits: 4294967295
   interactionPoint: {fileID: 0}
   interactionEffectPrefab: {fileID: 0}
+  walkStepInterval: 0.42
+  sprintStepInterval: 0.28
 --- !u!212 &1203825691
 SpriteRenderer:
   serializedVersion: 2
@@ -143318,6 +143378,15 @@ MonoBehaviour:
     m_FallbackState: 0
     m_WaitForCompletion: 0
     m_LocalVariables: []
+  stepCounterText_Localized:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   references:
     version: 2
     RefIds: []
@@ -154178,3 +154247,4 @@ SceneRoots:
   - {fileID: 767276561}
   - {fileID: 1869510729}
   - {fileID: 2017194483}
+  - {fileID: 542293307}

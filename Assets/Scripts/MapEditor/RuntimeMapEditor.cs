@@ -14,7 +14,11 @@ public class RuntimeMapEditor : MonoBehaviour
     
     [Header("Map Editor Settings")]
     [SerializeField] private bool editorEnabled = false;
-    [SerializeField] private string toggleKeyName = "f1";
+    // B de "build". Escolhida por ser uma tecla normal e livre: as de movimento e
+    // acao ja estao no PlayerControls (wasd, e, k, m, tab, escape, 0-9, setas), J e o
+    // painel de quests, e F1 ja e o debugKey do InventoryDebugger — apertar F1 abriria
+    // as duas coisas ao mesmo tempo.
+    [SerializeField] private string toggleKeyName = "b";
     [SerializeField] private float autoSaveInterval = 30f;
     
     private Keyboard keyboard;
@@ -91,12 +95,17 @@ public class RuntimeMapEditor : MonoBehaviour
         
         if (dualGridTilemap == null)
             dualGridTilemap = FindFirstObjectByType<DualGridTilemap>();
-        
-        if (gameUI == null)
-            gameUI = FindFirstObjectByType<Canvas>();
-        
-        // Initialize with editor disabled
-        SetEditorMode(false);
+
+        // gameUI NAO e descoberto automaticamente. Havia um
+        // `gameUI = FindFirstObjectByType<Canvas>()` aqui, e a cena tem 11 canvases
+        // ativos — o primeiro e o SellingBoxCanvas. Como ExitEditorMode faz
+        // gameUI.SetActive(true), so por existir na cena o editor ABRIA a UI da
+        // caixa de venda no boot. Se ninguem ligou o campo no inspector, nao mexemos
+        // em canvas nenhum.
+
+        // Estado inicial fechado, sem passar por ExitEditorMode: aquele caminho
+        // mexe no jogador e na UI, e no boot nao ha nada para restaurar.
+        editorEnabled = false;
         
         // Create default map data if none assigned
         if (currentMapData == null)
@@ -112,7 +121,7 @@ public class RuntimeMapEditor : MonoBehaviour
     {
         if (!isInitialized || keyboard == null) return;
         
-        // Toggle editor with F1 key
+        // Abre/fecha o editor (tecla em toggleKeyName)
         if (toggleKeyControl != null && toggleKeyControl.wasPressedThisFrame)
         {
             ToggleEditor();
@@ -146,14 +155,13 @@ public class RuntimeMapEditor : MonoBehaviour
 
         }
         
-        // Quick tile type switching (1-5 keys)
+        // Troca rapida de tipo. So oferecemos o que este tileset desenha de verdade:
+        // o enum tem 15 valores, mas o dual grid e binario e o adaptador recusa o resto.
+        // Ter 3=Water numa tecla so ensinaria o usuario a pintar sem efeito nenhum.
         if (keyboard != null)
         {
             if (keyboard[Key.Digit1].wasPressedThisFrame) selectedTileType = ExtendedTileType.Grass;
             if (keyboard[Key.Digit2].wasPressedThisFrame) selectedTileType = ExtendedTileType.Dirt;
-            if (keyboard[Key.Digit3].wasPressedThisFrame) selectedTileType = ExtendedTileType.Water;
-            if (keyboard[Key.Digit4].wasPressedThisFrame) selectedTileType = ExtendedTileType.Stone;
-            if (keyboard[Key.Digit5].wasPressedThisFrame) selectedTileType = ExtendedTileType.Sand;
         }
     }
     
