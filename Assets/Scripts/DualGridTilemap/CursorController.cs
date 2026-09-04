@@ -34,6 +34,9 @@ public partial class CursorController : MonoBehaviour {
     private SowurShield.Inventory.Inventory playerInventory;
     private SowurShield.Core.PlayerMove playerMove;
     private DialogueTreeUI dialogueUI;
+    private string sortingLayerOriginal;
+    private int sortingOrderOriginal;
+    private bool emModoEditor;
 
     void Start() {
         if (balance == null)
@@ -48,6 +51,11 @@ public partial class CursorController : MonoBehaviour {
         if (cursorRenderer == null) {
             cursorRenderer = gameObject.AddComponent<SpriteRenderer>();
         }
+        // O editor de mapa sobe o cursor para WorldUI enquanto esta aberto; guardamos
+        // o valor original para devolver ao fechar, senao o cursor do JOGO fica com o
+        // sorting do editor para sempre.
+        sortingLayerOriginal = cursorRenderer.sortingLayerName;
+        sortingOrderOriginal = cursorRenderer.sortingOrder;
 
         if (mainCamera == null) {
         }
@@ -65,13 +73,25 @@ public partial class CursorController : MonoBehaviour {
     void Update() {
         if (mouse == null || mainCamera == null || playerTransform == null) return;
         
-        // Com o editor de mapa aberto, o clique pertence ao pincel. Sem isto o mesmo
-        // clique pintava um tile E usava a ferramenta da mao (arar, regar, cavar) na
-        // celula debaixo do cursor — e EnterEditorMode liga este componente de
-        // proposito, entao ele nao para sozinho.
+        // Com o editor de mapa aberto o cursor continua VISIVEL — e o mesmo indicador
+        // que o jogo ja usa, entao o editor nao precisa desenhar outro — mas fica
+        // inerte: nao interage com NPC, cama, SellBox nem usa a ferramenta da mao.
+        // Sem isto o mesmo clique pintava um tile E arava o chao embaixo dele.
+        //
+        // O limite de maxDistance tambem nao vale aqui: ele existe para o jogador nao
+        // alcancar o que esta longe, e quem constroi precisa pintar a tela inteira.
         if (RuntimeMapEditor.Instance != null && RuntimeMapEditor.Instance.IsEditorActive) {
-            cursorRenderer.enabled = false;
+            emModoEditor = true;
+            cursorRenderer.enabled = true;
+            AcompanharMouseSemInteragir();
             return;
+        }
+
+        if (emModoEditor) {
+            emModoEditor = false;
+            cursorRenderer.sortingLayerName = sortingLayerOriginal;
+            cursorRenderer.sortingOrder = sortingOrderOriginal;
+            cursorRenderer.color = normalColor;
         }
 
         // Hide cursor when inventory is open, dialogue is active, or SellBox is open
@@ -463,6 +483,48 @@ public partial class CursorController : MonoBehaviour {
             // Opcionalmente, você pode passar referências necessárias
             soilScript.Initialize(playerInventory);
         }
+    }
+
+    /// <summary>
+    /// Move o indicador para a celula sob o mouse sem disparar nenhuma interacao.
+    /// Usado enquanto o editor de mapa esta aberto: o jogo empresta o proprio cursor
+    /// ao editor em vez de este desenhar um quadrado seu.
+    ///
+    /// Diferencas em relacao ao Update normal: sem limite de maxDistance (quem
+    /// constroi precisa alcancar a tela toda) e sem deteccao de interagiveis, entao
+    /// NPC, cama e SellBox nao respondem enquanto se pinta.
+    /// </summary>
+    private void AcompanharMouseSemInteragir() {
+        Vector2 screenPos = GamepadVirtualCursor.OverridePosition ?? mouse.position.ReadValue();
+        Vector3 worldPos = mainCamera.ScreenToWorldPoint(
+            new Vector3(screenPos.x, screenPos.y, mainCamera.nearClipPlane));
+
+        // Pelo tilemap, e nao por FloorToInt: e o mesmo caminho que o pincel usa, entao
+        // o indicador nunca aponta para uma celula diferente da que sera pintada.
+        Vector3Int tilePos;
+        var dual = RuntimeMapEditor.Instance.DualGrid;
+        if (dual != null && dual.placeholderTilemap != null) {
+            tilePos = dual.placeholderTilemap.WorldToCell(worldPos);
+            tilePos.z = 0;
+        } else {
+            tilePos = GetWorldPosTile(worldPos);
+        }
+
+        transform.position = tilePos + new Vector3(0.5f, 0.5f, -1);
+
+        // A cor diz o que o clique fara: apagar ou pintar. Verde e reservado para
+        // interagiveis, que aqui nao existem, entao nao ha ambiguidade.
+        var editor = RuntimeMapEditor.Instance;
+        bool apagando = editor.selectedBrush == MapEditor.BrushType.Eraser
+                     || editor.selectedTileType == MapEditor.ExtendedTileType.Grass;
+        cursorRenderer.color = apagando
+            ? new Color(1f, 0.55f, 0.55f)
+            : new Color(1f, 0.93f, 0.55f);
+
+        // O indicador do jogo desenha em Default/0 e ficaria sob o proprio tilemap
+        // do chao enquanto se pinta.
+        cursorRenderer.sortingLayerName = "WorldUI";
+        cursorRenderer.sortingOrder = 1001;
     }
 
     public static Vector3Int GetWorldPosTile(Vector3 worldPos) {

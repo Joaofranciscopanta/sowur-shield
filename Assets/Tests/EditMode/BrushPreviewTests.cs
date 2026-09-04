@@ -139,19 +139,22 @@ public class BrushPreviewTests
     }
 
     /// <summary>
-    /// Uma versao anterior reposicionava pool[0] para marcar o cursor, o que fazia
-    /// dois quadrados cairem na mesma celula e uma celula legitima sumir do preview.
-    /// O marcador tem que ser um objeto separado.
+    /// O preview NAO deve marcar a celula sob o cursor: quem faz isso e o indicador
+    /// que o jogo ja tem, emprestado ao editor. Um segundo marcador competiria com
+    /// o primeiro na mesma celula.
+    ///
+    /// (Uma versao anterior reposicionava pool[0] para isso, o que punha dois
+    /// quadrados na mesma celula e sumia com uma celula legitima da area.)
     /// </summary>
     [Test]
-    public void MarcadorDoCursor_NaoConsomeUmaCelulaDaArea()
+    public void Preview_NaoDesenhaMarcadorProprioDeCursor()
     {
         var campos = typeof(BrushPreview)
             .GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
 
-        Assert.IsNotNull(campos.FirstOrDefault(f => f.Name == "marcadorCursor"),
-            "O realce do cursor tem que ser um SpriteRenderer proprio. Reutilizar um " +
-            "quadrado do pool apaga uma celula da area prevista.");
+        Assert.IsNull(campos.FirstOrDefault(f => f.Name == "marcadorCursor"),
+            "O realce da celula sob o mouse e do CursorController do jogo. Um " +
+            "marcador proprio aqui seria um segundo indicador na mesma celula.");
     }
 
     /// <summary>
@@ -167,6 +170,67 @@ public class BrushPreviewTests
 
         Assert.IsTrue(fonte.Contains("sortingLayerName = \"WorldUI\""),
             "Sem uma sorting layer alta o preview fica enterrado sob o tilemap do chao.");
+    }
+}
+
+/// <summary>
+/// Enquanto o editor de mapa esta aberto, nada do JOGO pode responder ao input:
+/// o Lucas reportou (2026-09-03) que construir esbarrava em NPC, cama e menus.
+///
+/// Sao dois caminhos independentes, e cobrir so um deixa o defeito de pe:
+///  - clique esquerdo -> CursorController (ferramenta, SellBox, NPC por raycast);
+///  - tecla E         -> PlayerMove.DetectAndInteract -> InteractionManager.
+/// A guarda do cursor ja existia; a de E nao, e era por ali que o dialogo abria.
+/// </summary>
+public class EditorInputIsolationTests
+{
+    private static string Fonte(string caminhoRelativo) =>
+        System.IO.File.ReadAllText(System.IO.Path.Combine(Application.dataPath, caminhoRelativo));
+
+    [Test]
+    public void TeclaE_NaoInterageComOEditorAberto()
+    {
+        var fonte = Fonte("Scripts/Core/PlayerMove.cs");
+
+        int guarda = fonte.IndexOf("RuntimeMapEditor.Instance");
+        Assert.Greater(guarda, -1,
+            "DetectAndInteract precisa recuar com o editor aberto. Sem isto E abre " +
+            "dialogo de NPC e a cama no meio da construcao — o cursor ser neutro " +
+            "nao basta, porque E segue outro caminho.");
+
+        int deteccao = fonte.IndexOf("InteractionManager.Instance");
+        Assert.Less(guarda, deteccao,
+            "A guarda tem que vir antes de consultar o InteractionManager.");
+    }
+
+    [Test]
+    public void Cursor_ContinuaVisivelMasInerteNoEditor()
+    {
+        var fonte = Fonte("Scripts/DualGridTilemap/CursorController.cs");
+
+        Assert.IsTrue(fonte.Contains("AcompanharMouseSemInteragir"),
+            "O editor usa o indicador do proprio jogo; ele segue o mouse sem interagir.");
+
+        int guarda = fonte.IndexOf("RuntimeMapEditor.Instance");
+        int interacao = fonte.IndexOf("ProcessHexInteraction(activeTilePos)");
+        Assert.Less(guarda, interacao,
+            "A guarda do editor tem que vir antes do processamento de clique.");
+    }
+
+    /// <summary>
+    /// O editor sobe o cursor para WorldUI para ele nao ficar sob o tilemap. Se o
+    /// valor original nao for devolvido, o cursor do jogo fica com o sorting do
+    /// editor depois de fechar — um defeito que so apareceria muito depois.
+    /// </summary>
+    [Test]
+    public void Cursor_RecuperaOSortingOriginalAoFechar()
+    {
+        var fonte = Fonte("Scripts/DualGridTilemap/CursorController.cs");
+
+        Assert.IsTrue(fonte.Contains("sortingLayerOriginal"),
+            "O sorting original precisa ser guardado.");
+        Assert.IsTrue(fonte.Contains("cursorRenderer.sortingLayerName = sortingLayerOriginal"),
+            "E devolvido ao sair do modo editor.");
     }
 }
 

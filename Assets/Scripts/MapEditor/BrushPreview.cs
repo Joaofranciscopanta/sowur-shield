@@ -4,7 +4,12 @@ using UnityEngine;
 namespace SowurShield.MapEditor
 {
     /// <summary>
-    /// Mostra onde o pincel vai pintar, antes do clique.
+    /// Mostra a FORMA que o pincel vai pintar, antes do clique.
+    ///
+    /// A celula sob o mouse nao e marcada aqui: quem faz isso e o indicador que o
+    /// jogo ja tem (`Cursor` + CursorController), emprestado ao editor enquanto ele
+    /// esta aberto. Desenhar um quadrado proprio para isso era um segundo indicador
+    /// competindo com o primeiro.
     ///
     /// O BrushTool ja tinha ganchos para isto (`brushPreviewPrefab`, `linePreview`,
     /// `rectanglePreview`), mas todos guardam contra null e nunca foram ligados: o
@@ -35,10 +40,6 @@ namespace SowurShield.MapEditor
         private readonly List<SpriteRenderer> pool = new();
         private int emUso;
 
-        // O marcador da celula sob o cursor e um objeto SEPARADO do pool. Uma versao
-        // anterior reposicionava pool[0] para isso, o que fazia dois quadrados caírem
-        // na mesma celula e uma celula legitima desaparecer do preview.
-        private SpriteRenderer marcadorCursor;
 
         private void Start()
         {
@@ -87,7 +88,7 @@ namespace SowurShield.MapEditor
             }
 
             var celula = CelulaSobOCursor();
-            Desenhar(CelulasAfetadas(celula), celula);
+            Desenhar(CelulasAfetadas(celula));
         }
 
         private Vector3Int CelulaSobOCursor()
@@ -158,7 +159,7 @@ namespace SowurShield.MapEditor
             return pontos;
         }
 
-        private void Desenhar(List<Vector3Int> celulas, Vector3Int celulaSobCursor)
+        private void Desenhar(List<Vector3Int> celulas)
         {
             bool apagando = mapEditor.selectedBrush == BrushType.Eraser
                          || mapEditor.selectedTileType == ExtendedTileType.Grass;
@@ -176,35 +177,11 @@ namespace SowurShield.MapEditor
 
             for (int i = emUso; i < pool.Count; i++)
                 pool[i].gameObject.SetActive(false);
-
-            MarcarCelulaSobCursor(celulaSobCursor);
-        }
-
-        /// <summary>
-        /// Um contorno mais forte na celula exatamente sob o mouse. Numa area grande
-        /// (pincel 5, retangulo) e facil perder de vista onde o cursor esta.
-        /// </summary>
-        private void MarcarCelulaSobCursor(Vector3Int celula)
-        {
-            if (marcadorCursor == null)
-            {
-                var go = new GameObject("CursorCell");
-                go.transform.SetParent(poolPai, false);
-                marcadorCursor = go.AddComponent<SpriteRenderer>();
-                marcadorCursor.sprite = spriteQuadrado;
-                marcadorCursor.sortingLayerName = "WorldUI";
-                // Acima dos quadrados da area, senao some sob eles.
-                marcadorCursor.sortingOrder = 1001;
-                marcadorCursor.color = corContorno;
-            }
-            marcadorCursor.transform.position = new Vector3(celula.x + 0.5f, celula.y + 0.5f, 0f);
-            marcadorCursor.gameObject.SetActive(true);
         }
 
         private void Esconder()
         {
             foreach (var sr in pool) sr.gameObject.SetActive(false);
-            if (marcadorCursor != null) marcadorCursor.gameObject.SetActive(false);
             emUso = 0;
         }
 
