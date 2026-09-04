@@ -40,6 +40,10 @@ namespace SowurShield.MapEditor
 
         private GameObject root;
         private TextMeshProUGUI statusText;
+        private Button botaoDesfazer;
+        private Button botaoRefazer;
+        private string mensagem;
+        private float mensagemAte;
         private readonly Dictionary<ExtendedTileType, Button> tileButtons = new();
         private readonly Dictionary<BrushType, Button> brushButtons = new();
 
@@ -118,6 +122,8 @@ namespace SowurShield.MapEditor
             y = AdicionarBotoesDeTile(painel.transform, y);
             y = AdicionarSecao(painel.transform, y, "Ferramenta");
             y = AdicionarBotoesDePincel(painel.transform, y);
+            y = AdicionarSecao(painel.transform, y, "Ações");
+            y = AdicionarBotoesDeAcao(painel.transform, y);
             AdicionarStatus(painel.transform, y);
 
             AtualizarDestaques();
@@ -134,13 +140,14 @@ namespace SowurShield.MapEditor
             rt.anchorMax = new Vector2(0f, 1f);
             rt.pivot = new Vector2(0f, 1f);
             rt.anchoredPosition = new Vector2(theme.spacingL, -theme.spacingL);
-            // 300x500. A altura foi medida, nao estimada: com 470 o rodape de status
-            // terminava 18px abaixo da area legivel (painel menos os 34px de moldura
-            // de cada lado). O rect dizia que estava tudo dentro; so o screenshot e a
-            // medicao contra a MOLDURA acusaram.
-            // 320x540: o conteudo mede ~404px e a moldura come 48px em cima e 48
-            // embaixo — 404+96 = 500 nao deixava folga para o rodape de status.
-            rt.sizeDelta = new Vector2(320f, 540f);
+            // A altura e medida, nao estimada: o conteudo tem que caber DENTRO da
+            // area legivel, que e o painel menos MolduraPx em cima e embaixo. Uma
+            // versao com 470 punha o rodape 18px para fora — e o rect reportava tudo
+            // dentro do painel, entao so o screenshot acusava.
+            //
+            // 700 cobre titulo + 2 tiles + 5 pinceis + 3 acoes + status, com as duas
+            // faixas de moldura. Ao acrescentar linhas, medir de novo.
+            rt.sizeDelta = new Vector2(320f, 700f);
 
             UIThemeStyler.StylePanel(painel, theme);
             return painel;
@@ -192,6 +199,39 @@ namespace SowurShield.MapEditor
                 y -= theme.buttonHeightSmall + theme.spacingXS;
             }
             return y - theme.spacingS;
+        }
+
+        /// <summary>
+        /// Salvar, desfazer e refazer como BOTOES, nao atalhos.
+        ///
+        /// Ctrl+S / Ctrl+Z existiam so no teclado e foram REMOVIDOS: no Play Mode do
+        /// Unity a Game View disputa o foco com o resto do Editor, e um atalho com
+        /// Ctrl as vezes vai parar na janela errada — o usuario aperta e nada
+        /// acontece. Botao sempre funciona.
+        /// </summary>
+        private float AdicionarBotoesDeAcao(Transform pai, float y)
+        {
+            botaoDesfazer = CriarBotao(pai, "Desfazer", y);
+            botaoDesfazer.onClick.AddListener(() => mapEditor.History?.Desfazer());
+            y -= theme.buttonHeightSmall + theme.spacingXS;
+
+            botaoRefazer = CriarBotao(pai, "Refazer", y);
+            botaoRefazer.onClick.AddListener(() => mapEditor.History?.Refazer());
+            y -= theme.buttonHeightSmall + theme.spacingXS;
+
+            var salvar = CriarBotao(pai, "Salvar mapa", y);
+            salvar.onClick.AddListener(Salvar);
+            y -= theme.buttonHeightSmall + theme.spacingXS;
+
+            return y - theme.spacingS;
+        }
+
+        private void Salvar()
+        {
+            mapEditor.SaveCurrentMap();
+            // Sem retorno visivel o usuario clica de novo sem saber se funcionou.
+            mensagem = "Mapa salvo em Assets/Maps";
+            mensagemAte = Time.unscaledTime + 3f;
         }
 
         private void AdicionarStatus(Transform pai, float y)
@@ -273,15 +313,43 @@ namespace SowurShield.MapEditor
             foreach (var par in brushButtons)
                 PintarSelecao(par.Value, par.Key == mapEditor.selectedBrush);
 
+            // Um botao que nao faz nada e pior que um botao ausente: o usuario clica,
+            // nada acontece, e ele nao sabe se e o botao ou o editor que quebrou.
+            var historico = mapEditor.History;
+            if (botaoDesfazer != null)
+                DefinirDisponibilidade(botaoDesfazer, historico != null && historico.PassosParaDesfazer > 0);
+            if (botaoRefazer != null)
+                DefinirDisponibilidade(botaoRefazer, historico != null && historico.PassosParaRefazer > 0);
+
             if (statusText != null)
             {
                 int pintados = mapEditor.CurrentMapData != null
                     ? mapEditor.CurrentMapData.tileData.Count
                     : 0;
+
+                // A confirmacao do save toma o lugar do status por alguns segundos.
+                string linha = (mensagem != null && Time.unscaledTime < mensagemAte)
+                    ? mensagem
+                    : $"{pintados} célula(s) no mapa";
+
                 statusText.text =
                     $"{NomeDoTipo(mapEditor.selectedTileType)} · {NomeDoPincel(mapEditor.selectedBrush)}\n" +
-                    $"{pintados} célula(s) no mapa";
+                    linha;
             }
+        }
+
+        /// <summary>
+        /// Acinzenta em vez de esconder: um botao que some faz o painel saltar e o
+        /// usuario perde a posicao dos outros.
+        /// </summary>
+        private void DefinirDisponibilidade(Button botao, bool disponivel)
+        {
+            botao.interactable = disponivel;
+            var rotulo = botao.GetComponentInChildren<TextMeshProUGUI>();
+            if (rotulo != null)
+                rotulo.color = disponivel
+                    ? theme.textDark
+                    : new Color(theme.textDark.r, theme.textDark.g, theme.textDark.b, 0.4f);
         }
 
         private void PintarSelecao(Button botao, bool selecionado)

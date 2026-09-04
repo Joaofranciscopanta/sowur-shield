@@ -19,7 +19,6 @@ public class RuntimeMapEditor : MonoBehaviour
     // painel de quests, e F1 ja e o debugKey do InventoryDebugger — apertar F1 abriria
     // as duas coisas ao mesmo tempo.
     [SerializeField] private string toggleKeyName = "b";
-    [SerializeField] private float autoSaveInterval = 30f;
     
     private Keyboard keyboard;
     private KeyControl toggleKeyControl;
@@ -39,7 +38,6 @@ public class RuntimeMapEditor : MonoBehaviour
     
     // Editor state
     private bool isInitialized = false;
-    private float lastAutoSaveTime;
     private Vector3 playerPositionBeforeEditor;
     
     // Current editor settings
@@ -86,7 +84,12 @@ public class RuntimeMapEditor : MonoBehaviour
     private void Update()
     {
         HandleInput();
-        HandleAutoSave();
+
+        // Sem autosave aqui: quem faz isso e o MapSerializer, a cada 60s, gravando
+        // "<mapa>_autosave_HH-mm" com rotacao de 5 copias. Havia um segundo autosave
+        // neste componente chamando SaveCurrentMap a cada 30s — ele enchia
+        // Assets/Maps de "New Map <data>.asset", um por sessao e sem limite, e ainda
+        // gravava por cima do arquivo do usuario sem ele ter pedido.
     }
     
     private void InitializeEditor()
@@ -141,25 +144,14 @@ public class RuntimeMapEditor : MonoBehaviour
     
     private void HandleEditorInput()
     {
-        // Save shortcut (Ctrl+S)
-        if (keyboard != null && (keyboard[Key.LeftCtrl].isPressed || keyboard[Key.RightCtrl].isPressed) && keyboard[Key.S].wasPressedThisFrame)
-        {
-            SaveCurrentMap();
-        }
-        
-        // Load shortcut (Ctrl+O)
-        if (keyboard != null && (keyboard[Key.LeftCtrl].isPressed || keyboard[Key.RightCtrl].isPressed) && keyboard[Key.O].wasPressedThisFrame)
-        {
-            // TODO: Implement load dialog
+        // Nada de Ctrl+S / Ctrl+Z / Ctrl+O aqui. No Play Mode do Unity a Game View
+        // disputa o foco com o resto do Editor, e um atalho com Ctrl as vezes vai
+        // parar na janela errada — o usuario aperta e nada acontece, sem saber por
+        // que. Salvar, desfazer e refazer sao BOTOES na paleta (MapEditorPalette).
+        //
+        // As teclas 1 e 2 ficam: nao usam modificador, entao nao competem com o
+        // Editor, e ja existem como botao na paleta de qualquer forma.
 
-        }
-        
-        // Desfazer (Ctrl+Z) e refazer (Ctrl+Y).
-        bool ctrl = keyboard != null &&
-                    (keyboard[Key.LeftCtrl].isPressed || keyboard[Key.RightCtrl].isPressed);
-        if (ctrl && keyboard[Key.Z].wasPressedThisFrame) History?.Desfazer();
-        if (ctrl && keyboard[Key.Y].wasPressedThisFrame) History?.Refazer();
-        
         // Troca rapida de tipo. So oferecemos o que este tileset desenha de verdade:
         // o enum tem 15 valores, mas o dual grid e binario e o adaptador recusa o resto.
         // Ter 3=Water numa tecla so ensinaria o usuario a pintar sem efeito nenhum.
@@ -167,15 +159,6 @@ public class RuntimeMapEditor : MonoBehaviour
         {
             if (keyboard[Key.Digit1].wasPressedThisFrame) selectedTileType = ExtendedTileType.Grass;
             if (keyboard[Key.Digit2].wasPressedThisFrame) selectedTileType = ExtendedTileType.Dirt;
-        }
-    }
-    
-    private void HandleAutoSave()
-    {
-        if (editorEnabled && Time.time - lastAutoSaveTime >= autoSaveInterval)
-        {
-            AutoSaveMap();
-            lastAutoSaveTime = Time.time;
         }
     }
     
@@ -428,12 +411,6 @@ public class RuntimeMapEditor : MonoBehaviour
         return mapSerializer;
     }
     
-    private void AutoSaveMap()
-    {
-        SaveCurrentMap();
-
-    }
-    
     private void UpdateMapDataFromTilemap()
     {
         if (currentMapData == null || dualGridTilemap == null) return;
@@ -477,8 +454,6 @@ public class RuntimeMapEditor : MonoBehaviour
     // Validation and utility methods
     private void OnValidate()
     {
-        if (autoSaveInterval < 10f)
-            autoSaveInterval = 10f;
     }
     
     private void OnDestroy()
