@@ -22,8 +22,25 @@ namespace SowurShield.MapEditor
         // cobre ~44px de cada lado num painel desta largura, e inset menor desenha o
         // texto sobre ela.
         private const float MolduraPx = 48f;
+
+        // Medido no SCREENSHOT renderizado, nao na textura: com Image.Sliced so os
+        // 32px da borda do 9-slice ficam fixos -- todo o resto da arte pertence a
+        // faixa central, que e ESTICADA. Entao os 81px que a textura mostra nao
+        // sao 81px na tela. Lendo a coluna do meio do painel ja desenhado, a
+        // moldura vai ate ~103px e o creme estavel comeca a 126. Dai os 130.
+        private const float MolduraTopoPx = 130f;
+
+        // A base da arte e MAIS espessa que o topo: medindo a mesma coluna do
+        // screenshot de baixo para cima, o creme estavel comeca a 165px (contra 126
+        // no topo) -- o painel tem um pe decorativo. Assumir simetria com o topo
+        // deixava o rodape por baixo dele.
+        private const float MolduraBasePx = 168f;
         private const float LarguraPainel = 340f;
-        private const float AlturaPainel = 620f;
+        // 620 quando o conteudo comecava a 48px do topo e nao havia linha de tamanho.
+        // Passou a comecar a 84 (moldura medida na textura) e ganhou a linha
+        // "Tamanho", e as duas molduras medidas na TELA (130 no topo, 168 na base)
+        // em vez dos 48 estimados.
+        private const float AlturaPainel = 864f;
 
         private RuntimeMapEditor mapEditor;
         private ObjectPlacer placer;
@@ -32,6 +49,7 @@ namespace SowurShield.MapEditor
         private GameObject painel;
         private readonly Dictionary<string, Button> botoes = new();
         private TextMeshProUGUI rodape;
+        private TextMeshProUGUI rotuloTamanho;
 
         public bool Aberta => painel != null && painel.activeSelf;
 
@@ -105,22 +123,100 @@ namespace SowurShield.MapEditor
             rt.sizeDelta = new Vector2(LarguraPainel, AlturaPainel);
             UIThemeStyler.StylePanel(painel, theme);
 
-            float y = -MolduraPx;
+            float y = -MolduraTopoPx;
             var titulo = CriarTexto(painel.transform, "Objetos", theme.fontSizeH2,
                                     theme.headingOnLight, y, 34f);
             titulo.fontStyle = FontStyles.Bold;
             y -= 34f + theme.spacingS;
 
-            var fechar = CriarBotao(painel.transform, "Fechar (voltar ao pincel)", y);
+            // "Fechar (voltar ao pincel)" nao cabia na largura pintada do botao: a arte
+            // pinta so parte do rect e o rotulo vazava por cima da borda.
+            var fechar = CriarBotao(painel.transform, "Voltar ao pincel", y);
             fechar.onClick.AddListener(Fechar);
             y -= theme.buttonHeightSmall + theme.spacingS;
 
-            float alturaLista = AlturaPainel + y - MolduraPx - 46f;  // 46 = rodape
+            // Tamanho do objeto: por BOTAO, nunca por atalho -- no Play Mode a Game
+            // View disputa foco com o Editor e a tecla vai para a janela errada.
+            ConstruirLinhaDeTamanho(painel.transform, y);
+            y -= theme.buttonHeightSmall + theme.spacingS;
+
+            float alturaLista = AlturaPainel + y - MolduraBasePx - 46f;  // 46 = rodape
             ConstruirLista(painel.transform, y, alturaLista);
 
             rodape = CriarTexto(painel.transform, "Clique para colocar · direito remove",
                                 theme.fontSizeCaption, theme.textDark,
-                                -(AlturaPainel - MolduraPx - 40f), 40f);
+                                -(AlturaPainel - MolduraBasePx - 40f), 40f);
+        }
+
+        /// <summary>
+        /// A linha "Tamanho: [-] 1,0x [+]".
+        ///
+        /// O ObjectSpawnData sempre teve um campo `scale` e o carregador sempre o
+        /// aplicou; faltava alguem para escolher o valor. Fica acima da lista porque
+        /// vale para o proximo objeto colocado, seja ele qual for.
+        /// </summary>
+        private void ConstruirLinhaDeTamanho(Transform pai, float y)
+        {
+            var linha = new GameObject("LinhaTamanho", typeof(RectTransform));
+            linha.transform.SetParent(pai, false);
+            var rt = linha.GetComponent<RectTransform>();
+            rt.anchorMin = new Vector2(0f, 1f);
+            rt.anchorMax = new Vector2(1f, 1f);
+            rt.pivot = new Vector2(0.5f, 1f);
+            rt.offsetMin = new Vector2(MolduraPx, 0f);
+            rt.offsetMax = new Vector2(-MolduraPx, 0f);
+            rt.anchoredPosition = new Vector2(0f, y);
+            rt.sizeDelta = new Vector2(rt.sizeDelta.x, theme.buttonHeightSmall);
+
+            float largura = LarguraPainel - MolduraPx * 2f;
+            float ladoBotao = theme.buttonHeightSmall + 12f;
+
+            var menos = CriarBotaoEm(linha.transform, "-", 0f, ladoBotao);
+            menos.onClick.AddListener(() => { placer?.AjustarEscala(-1); AtualizarRotuloTamanho(); });
+
+            var mais = CriarBotaoEm(linha.transform, "+", largura - ladoBotao, ladoBotao);
+            mais.onClick.AddListener(() => { placer?.AjustarEscala(+1); AtualizarRotuloTamanho(); });
+
+            var alvo = new GameObject("Tamanho", typeof(TextMeshProUGUI));
+            alvo.transform.SetParent(linha.transform, false);
+            var art = alvo.GetComponent<RectTransform>();
+            art.anchorMin = new Vector2(0f, 0f);
+            art.anchorMax = new Vector2(0f, 1f);
+            art.pivot = new Vector2(0f, 0.5f);
+            art.anchoredPosition = new Vector2(ladoBotao + theme.spacingXS, 0f);
+            art.sizeDelta = new Vector2(largura - (ladoBotao + theme.spacingXS) * 2f, 0f);
+
+            rotuloTamanho = alvo.GetComponent<TextMeshProUGUI>();
+            rotuloTamanho.fontSize = theme.fontSizeButton;
+            rotuloTamanho.color = theme.headingOnLight;
+            rotuloTamanho.alignment = TextAlignmentOptions.Center;
+            if (theme.fontPrimary != null) rotuloTamanho.font = theme.fontPrimary;
+            AtualizarRotuloTamanho();
+        }
+
+        private void AtualizarRotuloTamanho()
+        {
+            if (rotuloTamanho == null) return;
+            float e = placer != null ? placer.Escala : 1f;
+            rotuloTamanho.text = "Tamanho: " + e.ToString("0.##") + "x";
+        }
+
+        /// <summary>Botao numa posicao X fixa dentro da linha, para o "-" e o "+".</summary>
+        private Button CriarBotaoEm(Transform pai, string rotulo, float x, float largura)
+        {
+            var go = new GameObject("Btn_" + rotulo, typeof(Image), typeof(Button));
+            go.transform.SetParent(pai, false);
+            var rt = go.GetComponent<RectTransform>();
+            rt.anchorMin = new Vector2(0f, 0f);
+            rt.anchorMax = new Vector2(0f, 1f);
+            rt.pivot = new Vector2(0f, 0.5f);
+            rt.anchoredPosition = new Vector2(x, 0f);
+            rt.sizeDelta = new Vector2(largura, 0f);
+
+            var b = go.GetComponent<Button>();
+            UIThemeStyler.StyleButton(b, theme);
+            AdicionarRotulo(go.transform, rotulo);
+            return b;
         }
 
         /// <summary>
@@ -212,6 +308,13 @@ namespace SowurShield.MapEditor
                 rodape.text = string.IsNullOrEmpty(selecionado)
                     ? "Escolha um objeto para colocar"
                     : "Clique para colocar · direito remove";
+            }
+
+            // O tamanho pode mudar sem passar pelos botoes (mapa carregado, por
+            // exemplo), entao o rotulo se mantem em dia aqui tambem.
+            if (rotuloTamanho != null)
+            {
+                AtualizarRotuloTamanho();
             }
         }
 

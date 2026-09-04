@@ -28,6 +28,48 @@ namespace SowurShield.MapEditor
         public string CaminhoSelecionado => caminhoSelecionado;
         public bool ModoColocacao => prefabSelecionado != null;
 
+        // ---------------------------------------------------------------------
+        // Tamanho do objeto
+        // ---------------------------------------------------------------------
+
+        /// <summary>
+        /// Multiplicador aplicado ao objeto colocado. O ObjectSpawnData ja tinha um
+        /// campo `scale` e o RecriarObjetos ja o aplicava ao carregar, mas o placer
+        /// gravava Vector3.one fixo -- entao o campo existia, era salvo e nunca
+        /// significava nada. Agora e ele que o alimenta.
+        /// </summary>
+        public float Escala { get; private set; } = 1f;
+
+        /// <summary>Limites: abaixo de 0,25 o objeto some no chao, acima de 4 tapa a tela.</summary>
+        public const float EscalaMin = 0.25f;
+        public const float EscalaMax = 4f;
+
+        /// <summary>Os degraus do botao "-" e "+" da paleta.</summary>
+        private static readonly float[] Degraus =
+            { 0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f, 3f, 4f };
+
+        public void DefinirEscala(float valor)
+        {
+            Escala = Mathf.Clamp(valor, EscalaMin, EscalaMax);
+            // O fantasma tem que mostrar o tamanho real, senao so se descobre que o
+            // objeto ficou gigante depois de clicar.
+            if (fantasma != null) fantasma.transform.localScale = Vector3.one * Escala;
+        }
+
+        /// <summary>Anda um degrau para cima (+1) ou para baixo (-1).</summary>
+        public void AjustarEscala(int direcao)
+        {
+            int i = System.Array.IndexOf(Degraus, Escala);
+            if (i < 0)
+            {
+                // Valor fora da tabela (veio de um mapa antigo): procurar o degrau mais proximo.
+                i = 0;
+                for (int k = 1; k < Degraus.Length; k++)
+                    if (Mathf.Abs(Degraus[k] - Escala) < Mathf.Abs(Degraus[i] - Escala)) i = k;
+            }
+            DefinirEscala(Degraus[Mathf.Clamp(i + direcao, 0, Degraus.Length - 1)]);
+        }
+
         private void Start()
         {
             mapEditor = GetComponent<RuntimeMapEditor>();
@@ -114,6 +156,7 @@ namespace SowurShield.MapEditor
             var raiz = ObterRaiz();
             var instancia = Instantiate(prefabSelecionado, posicao, Quaternion.identity, raiz);
             instancia.name = prefabSelecionado.name;
+            instancia.transform.localScale = Vector3.one * Escala;
 
             mapEditor.CurrentMapData.objectSpawns.Add(new ObjectSpawnData
             {
@@ -122,7 +165,7 @@ namespace SowurShield.MapEditor
                 // O CAMINHO, nao o nome: e o que o PrefabCatalog resolve ao carregar.
                 prefabPath = caminhoSelecionado,
                 rotation = Vector3.zero,
-                scale = Vector3.one,
+                scale = Vector3.one * Escala,
                 isActive = true
             });
         }
@@ -188,6 +231,7 @@ namespace SowurShield.MapEditor
                 cor.a *= 0.5f;
                 sr.color = cor;
             }
+            fantasma.transform.localScale = Vector3.one * Escala;
             fantasma.SetActive(false);
         }
 
