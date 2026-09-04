@@ -104,3 +104,8 @@ Assets/Screenshots.meta
 # Staging area for generated placeholder art before import (see docs/PLACEHOLDER_ASSET_BRIEF.md)
 _Incoming/
 _Staged/
+
+# Backups e autosaves do editor de mapa: copias locais de trabalho, nao
+# pertencem ao repositorio (e ficam FORA de Resources/ para nao entrar no build).
+/Assets/MapBackups/
+/Assets/MapBackups.meta

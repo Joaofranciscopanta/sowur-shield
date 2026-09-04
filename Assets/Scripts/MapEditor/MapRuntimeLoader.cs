@@ -155,6 +155,8 @@ namespace SowurShield.MapEditor
         /// O editor grava o caminho de projeto inteiro ("Assets/Resources/Prefabs/
         /// GroundItems/X.prefab") porque e o que o AssetDatabase resolve. Em runtime
         /// so vale o trecho DEPOIS de "Resources/", e sem a extensao.
+        ///
+        /// Tem um segundo caminho para os mapas antigos -- ver o comentario dentro.
         /// </summary>
         public static GameObject ResolverPrefab(string caminho)
         {
@@ -162,13 +164,46 @@ namespace SowurShield.MapEditor
 
             const string marca = "Resources/";
             int i = caminho.IndexOf(marca);
-            if (i < 0) return null;   // fora de Resources: nao existe no build
+            if (i >= 0)
+            {
+                string chave = SemExtensao(caminho.Substring(i + marca.Length));
+                var direto = Resources.Load<GameObject>(chave);
+                if (direto != null) return direto;
+            }
 
-            string chave = caminho.Substring(i + marca.Length);
-            int ponto = chave.LastIndexOf('.');
-            if (ponto >= 0) chave = chave.Substring(0, ponto);
+            // Mapas salvos ANTES de 2026-09-04 gravaram o caminho antigo
+            // ("Assets/Prefabs/Decorations/X.prefab"), de quando esses prefabs ainda
+            // nao viviam sob Resources/. Sem este segundo caminho, todo mapa antigo
+            // abriria com o chao certo e NENHUM objeto -- medido: os 7 objetos do
+            // unico mapa salvo falhavam todos.
+            //
+            // O nome do arquivo e unico entre os prefabs da paleta, entao procurar
+            // por ele nas pastas conhecidas recupera o objeto sem precisar reescrever
+            // os mapas.
+            string nome = SemExtensao(System.IO.Path.GetFileName(caminho));
+            if (string.IsNullOrEmpty(nome)) return null;
 
-            return Resources.Load<GameObject>(chave);
+            foreach (var pasta in PastasDePrefabs)
+            {
+                var achado = Resources.Load<GameObject>(pasta + "/" + nome);
+                if (achado != null) return achado;
+            }
+            return null;
+        }
+
+        /// <summary>As pastas de prefab sob Resources/ que a paleta oferece.</summary>
+        private static readonly string[] PastasDePrefabs =
+        {
+            "Prefabs/Decorations",
+            "Prefabs/FruitTrees",
+            "Prefabs/Fruits",
+            "Prefabs/GroundItems"
+        };
+
+        private static string SemExtensao(string s)
+        {
+            int ponto = s.LastIndexOf('.');
+            return ponto >= 0 ? s.Substring(0, ponto) : s;
         }
     }
 }
