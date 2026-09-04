@@ -220,6 +220,9 @@ public class TutorialManager : MonoBehaviour, ISaveable
     private void ShowCurrentStep()
     {
         if (_currentStepIndex < 0 || _currentStepIndex >= Steps.Length) return;
+        // Um passo concluido durante a conversa nao pode reacender a barra por baixo
+        // do dialogo; ela reaparece sozinha quando a conversa terminar.
+        if (_suppressedByDialogue) return;
 
         TutorialStep step = Steps[_currentStepIndex];
 
@@ -242,6 +245,36 @@ public class TutorialManager : MonoBehaviour, ISaveable
     {
         if (tutorialPanel != null) tutorialPanel.SetActive(false);
     }
+
+    // =========================================================================
+    // Supressao durante o dialogo
+    // =========================================================================
+
+    /// <summary>
+    /// Esconde a barra do tutorial enquanto uma conversa estiver aberta.
+    ///
+    /// Os dois paineis moram na mesma faixa de baixo da tela: a barra do tutorial
+    /// vai de X=400 a 1520 e o painel de dialogo de 556 a 1384, entao um sempre
+    /// atravessa o outro. Como o canvas do dialogo esta em sortingOrder 70 e o do
+    /// tutorial em 60, o que sobra na tela e a barra espreitando pelas duas pontas
+    /// do dialogo -- com o botao "Entendi" do tutorial caindo DENTRO da moldura da
+    /// conversa, onde parece ser um botao do dialogo e nao e.
+    ///
+    /// Some enquanto se conversa e volta ao fim, em vez de empurrar um dos dois
+    /// para outro canto: durante a conversa o passo do tutorial nao pode ser
+    /// cumprido de qualquer forma, entao nao ha o que ler ali.
+    /// </summary>
+    public void SetSuppressedByDialogue(bool suppressed)
+    {
+        _suppressedByDialogue = suppressed;
+
+        if (tutorialPanel == null) return;
+
+        if (suppressed) tutorialPanel.SetActive(false);
+        else if (IsTutorialActive) ShowCurrentStep();
+    }
+
+    private bool _suppressedByDialogue;
 
     // =========================================================================
     // ISaveable

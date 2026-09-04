@@ -29,12 +29,22 @@ namespace SowurShield.MapEditor
         // A mesma moldura medida nos outros paineis: a madeira do panel_wood_generic
         // cobre ~44px de cada lado, e inset menor desenha o texto sobre ela.
         private const float MolduraPx = 48f;
+
+        // Medido no SCREENSHOT renderizado, nao na textura: com Image.Sliced so os
+        // 32px da borda do 9-slice ficam fixos -- todo o resto da arte pertence a
+        // faixa central, que e ESTICADA. Entao os 81px que a textura mostra nao
+        // sao 81px na tela. Lendo a coluna do meio do painel ja desenhado, a
+        // moldura vai ate ~103px e o creme estavel comeca a 126. Dai os 130.
+        private const float MolduraTopoPx = 130f;
+
         private const float Largura = 460f;
-        // 820: medido em duas rodadas, nao estimado. Com 700 o campo de espanhol e
-        // o rodape terminavam 76px abaixo da area legivel (o painel menos MolduraPx
-        // de cada lado); com 800 ainda faltavam 6px para o rodape. O rect reportava
-        // tudo dentro nas duas vezes — so a medicao contra a MOLDURA acusou.
-        private const float Altura = 820f;
+        // 1022: medido, nao estimado. Com 700 o campo de espanhol e o rodape
+        // terminavam 76px abaixo da area legivel; com 800 ainda faltavam 6px. Os
+        // 820 que resultaram disso valiam enquanto a moldura era tida como 48 de
+        // cada lado; medida NA TELA ela e 130 em cima e 168 embaixo, dai +202.
+        // O rect reportava tudo dentro em todas as vezes — so a medicao contra a
+        // MOLDURA acusou.
+        private const float Altura = 1022f;
 
         private RuntimeMapEditor mapEditor;
         private UITheme theme;
@@ -121,7 +131,7 @@ namespace SowurShield.MapEditor
             rt.sizeDelta = new Vector2(Largura, Altura);
             UIThemeStyler.StylePanel(painel, theme);
 
-            float y = -MolduraPx;
+            float y = -MolduraTopoPx;
 
             var titulo = CriarTexto(painel.transform, "Diálogo", theme.fontSizeH2,
                                     theme.headingOnLight, y, 34f);

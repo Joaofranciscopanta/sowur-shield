@@ -27,16 +27,18 @@ namespace SowurShield.MapEditor
         private UITheme theme;
 
         // A moldura VISIVEL do panel_wood_generic nao e a borda de 32px do 9-slice.
-        // Medido na propria textura: a madeira vai ate x=55 de 512 (10.7%). Como o
-        // Image e Sliced, os 32px do canto nao escalam e o resto da madeira (23px do
-        // sprite) e esticado junto com o centro — num painel de 300px isso da 12px,
-        // somando ~44px de madeira visivel de cada lado.
-        //
-        // Inset menor que isso desenha o texto SOBRE a madeira, onde ele fica
-        // ilegivel. O rect continua reportando tudo dentro do painel, entao so o
-        // screenshot acusa: os botoes pareciam certos (tem arte propria por baixo)
-        // e apenas os textos puros ficavam cortados.
+        // Medido no SCREENSHOT renderizado, nao na textura: com Image.Sliced so os
+        // 32px da borda do 9-slice ficam fixos -- todo o resto da arte pertence a
+        // faixa central, que e ESTICADA. Entao os 81px que a textura mostra nao
+        // sao 81px na tela. Lendo a coluna do meio do painel ja desenhado, a
+        // moldura vai ate ~103px e o creme estavel comeca a 126. Dai os 130.
         private const float MolduraPx = 48f;
+
+        // Medido na textura do panel_wood_generic (512x512, borda 9-slice de 32): o
+        // o interior creme estavel (F7E7CE) so comeca a 81px do topo. A madeira PINTADA passa muito da
+        // borda do 9-slice, e o rect nao acusa nada -- com os 48 de MolduraPx o
+        // titulo saia desenhado por cima da moldura, cortado ao meio.
+        private const float MolduraTopoPx = 130f;
 
         private GameObject root;
         private TextMeshProUGUI statusText;
@@ -121,7 +123,7 @@ namespace SowurShield.MapEditor
             var painel = CriarPainel(canvasGO.transform);
             // A margem de topo tem que ser a mesma moldura: o titulo estava sendo
             // desenhado sobre a madeira superior.
-            float y = -MolduraPx;
+            float y = -MolduraTopoPx;
 
             y = AdicionarTitulo(painel.transform, y, "Editor de Mapa");
             y = AdicionarSecao(painel.transform, y, "Terreno");
@@ -153,9 +155,12 @@ namespace SowurShield.MapEditor
             // versao com 470 punha o rodape 18px para fora — e o rect reportava tudo
             // dentro do painel, entao so o screenshot acusava.
             //
-            // 810 cobre titulo + 2 tiles + 5 pinceis + 2 (objetos/dialogo) + 3 acoes
-            // + status, com as duas faixas de moldura. Ao acrescentar, medir de novo.
-            rt.sizeDelta = new Vector2(320f, 810f);
+            // 1012 cobre titulo + 2 tiles + 5 pinceis + 2 (objetos/dialogo) + 3 acoes
+            // + status, com as duas faixas de moldura. (Eram 810 quando o conteudo
+            // comecava a 48px do topo; medida no screenshot, a moldura desenhada e de
+            // 130 no topo e 168 na base -- o pe e mais espesso que o topo.)
+            // Ao acrescentar, medir de novo.
+            rt.sizeDelta = new Vector2(320f, 1012f);
 
             UIThemeStyler.StylePanel(painel, theme);
             return painel;

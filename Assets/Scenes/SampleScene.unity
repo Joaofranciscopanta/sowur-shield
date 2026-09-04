@@ -4143,7 +4143,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -40, y: 18}
+  m_AnchoredPosition: {x: -34, y: 26}
   m_SizeDelta: {x: 30, y: 30}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &229424584
@@ -7855,7 +7855,7 @@ GameObject:
   m_Component:
   - component: {fileID: 397079886}
   - component: {fileID: 397079887}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10064,8 +10064,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 24}
-  m_SizeDelta: {x: 820, y: 210}
+  m_AnchoredPosition: {x: 0, y: 78}
+  m_SizeDelta: {x: 1200, y: 200}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &531208550
 MonoBehaviour:
@@ -11275,11 +11275,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1500363435}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: 45}
-  m_SizeDelta: {x: 285, y: 285}
-  m_Pivot: {x: 0.5, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &583408167
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -130224,8 +130224,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 93, y: -14}
-  m_SizeDelta: {x: -222, y: 32}
+  m_AnchoredPosition: {x: 88, y: -30}
+  m_SizeDelta: {x: -244, y: 34}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &1487560758
 CanvasRenderer:
@@ -130290,7 +130290,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 1
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 4096
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -130690,8 +130690,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 24, y: 0}
-  m_SizeDelta: {x: 150, y: 150}
+  m_AnchoredPosition: {x: 30, y: 0}
+  m_SizeDelta: {x: 160, y: 160}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1500363436
 MonoBehaviour:
@@ -136410,8 +136410,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 205}
-  m_SizeDelta: {x: 620, y: 0}
+  m_AnchoredPosition: {x: 0, y: 260}
+  m_SizeDelta: {x: 900, y: 0}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1631085792
 MonoBehaviour:
@@ -136426,12 +136426,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 22
-    m_Right: 22
+    m_Left: 24
+    m_Right: 24
     m_Top: 18
     m_Bottom: 18
   m_ChildAlignment: 7
-  m_Spacing: 8
+  m_Spacing: 10
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
@@ -138731,7 +138731,7 @@ GameObject:
   - component: {fileID: 1747176426}
   - component: {fileID: 1747176428}
   - component: {fileID: 1747176429}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: SellingBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139732,8 +139732,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 93, y: -6}
-  m_SizeDelta: {x: -222, y: -88}
+  m_AnchoredPosition: {x: 88, y: -22}
+  m_SizeDelta: {x: -244, y: -96}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1762704660
 CanvasRenderer:
@@ -139790,15 +139790,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
+  m_fontSize: 22
   m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 14
-  m_fontSizeMax: 18
+  m_fontSizeMin: 16
+  m_fontSizeMax: 22
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 4096
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_characterHorizontalScale: 1
@@ -142363,7 +142363,7 @@ GameObject:
   - component: {fileID: 1927566675}
   - component: {fileID: 1927566674}
   - component: {fileID: 1927566678}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Bed
   m_TagString: Interactable
   m_Icon: {fileID: 0}
