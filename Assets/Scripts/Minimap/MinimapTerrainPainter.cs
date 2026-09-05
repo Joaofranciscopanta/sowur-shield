@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -121,6 +121,77 @@ public class MinimapTerrainPainter : MonoBehaviour
         yield return null;
         Repaint();
     }
+
+    // ============================================================================
+    // ATUALIZACAO EM TEMPO REAL
+    // ============================================================================
+
+    /// <summary>
+    /// Avisa que o mundo mudou e o chao do minimapa precisa ser redesenhado.
+    ///
+    /// Ate aqui <see cref="Repaint"/> so corria uma vez, no Start. Quem editasse o mapa
+    /// (pintar estrada, mover um predio) via o mundo mudar e o minimapa continuar
+    /// mostrando a foto tirada no carregamento da cena — a textura estava correta para um
+    /// mundo que ja nao existia.
+    ///
+    /// E estatico e tolerante a ausencia: o editor de mapa nao deve precisar
+    /// de referencia ao minimapa, nem falhar em cenas que nao tem um.
+    /// </summary>
+    public static void RequestRepaint()
+    {
+        var painter = FindFirstObjectByType<MinimapTerrainPainter>();
+        if (painter != null && painter.isActiveAndEnabled)
+            painter.ScheduleRepaint();
+    }
+
+    [Tooltip("Intervalo minimo entre dois repaints automaticos, em segundos.")]
+    [SerializeField] private float repaintThrottleSeconds = 0.3f;
+
+    private float lastRepaintTime = float.NegativeInfinity;
+    private bool repaintQueued = false;
+
+    /// <summary>
+    /// Enfileira um repaint respeitando o intervalo minimo.
+    ///
+    /// Pintar arrastando o pincel gera uma chamada por celula — dezenas por segundo. Cada
+    /// Repaint varre todos os SpriteRenderer da cena e reescreve uma textura de 512x512,
+    /// entao atender uma a uma travaria o editor justamente enquanto se desenha. O
+    /// throttle mantem a sensacao de tempo real e garante que a ULTIMA mudanca sempre
+    /// aparece: o pedido que chega dentro da janela nao e descartado, e sim adiado.
+    /// </summary>
+    public void ScheduleRepaint()
+    {
+        if (repaintQueued) return;
+
+        float since = Time.unscaledTime - lastRepaintTime;
+        if (since >= repaintThrottleSeconds)
+        {
+            RepaintNow();
+            return;
+        }
+
+        repaintQueued = true;
+        StartCoroutine(RepaintAfter(repaintThrottleSeconds - since));
+    }
+
+    private System.Collections.IEnumerator RepaintAfter(float delay)
+    {
+        // Unscaled: o editor de mapa roda com o jogo pausado (timeScale 0), onde uma espera
+        // escalada nunca terminaria.
+        yield return new WaitForSecondsRealtime(delay);
+        repaintQueued = false;
+        RepaintNow();
+    }
+
+    private void RepaintNow()
+    {
+        lastRepaintTime = Time.unscaledTime;
+        Repaint();
+        OnRepainted?.Invoke();
+    }
+
+    /// <summary>Disparado depois de cada repaint, para quem desenha por cima (ex.: a neblina).</summary>
+    public static System.Action OnRepainted;
 
     private void OnDestroy()
     {

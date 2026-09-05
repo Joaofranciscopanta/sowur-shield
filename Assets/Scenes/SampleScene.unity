@@ -1242,7 +1242,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 10, y: 10}
+  m_SizeDelta: {x: 14, y: 14}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &42138625
 MonoBehaviour:
@@ -1257,14 +1257,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 1, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_Color: {r: 1, g: 0.95, b: 0.3, a: 1}
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1004689174341951383, guid: 85703410b0933d24bbec1473554e52f1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 639b15c246b05aa4780b2f004cc59f6c, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -13767,8 +13767,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1149027847}
-  - {fileID: 42138624}
   - {fileID: 1009230488}
+  - {fileID: 42138624}
   - {fileID: 1370788557}
   m_Father: {fileID: 328806570}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -13802,7 +13802,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 0.16, g: 0.19, b: 0.14, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -20246,10 +20246,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8721fe76781549dabcef35871b5bb6bf, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a13dc611d1b8aca48a97e69b3d73f0cf, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
-  m_FillCenter: 1
+  m_FillCenter: 0
   m_FillMethod: 4
   m_FillAmount: 1
   m_FillClockwise: 1
@@ -20838,8 +20838,8 @@ MonoBehaviour:
   stateText: {fileID: 371054531}
   playerMarker: {fileID: 42138624}
   playerMarkerImage: {fileID: 42138625}
-  playerMarkerColor: {r: 0, g: 1, b: 0, a: 1}
-  playerMarkerSize: 10
+  playerMarkerColor: {r: 1, g: 0.95, b: 0.3, a: 1}
+  playerMarkerSize: 14
   enableDebugLogs: 1
   zoomLabelLocalized:
     m_TableReference:
@@ -20964,6 +20964,7 @@ MonoBehaviour:
   soilColor: {r: 0.48, g: 0.36, b: 0.24, a: 1}
   groundSortingOrder: 0
   deferToAuthoredTerrain: 0
+  repaintThrottleSeconds: 0.3
 --- !u!114 &1054705964
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22062,7 +22063,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -28, y: -28}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1149027848
 MonoBehaviour:
@@ -129034,7 +129035,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 0, y: 22}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1370788558

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using DG.Tweening;
 using SowurShield.Core;
 
@@ -204,6 +204,58 @@ public class MinimapCamera : MonoBehaviour
         minimapCam.targetTexture = renderTexture;
     }
 
+    /// <summary>
+    /// Refaz o alvo de render na proporcao pedida (largura/altura).
+    ///
+    /// O RenderTexture era sempre quadrado, mas o painel nao e: nesta cena o fullscreen
+    /// mede 1720x940, ou seja 1,83:1. Uma textura quadrada esticada nesse rect deforma o
+    /// mundo — tudo fica quase o dobro mais largo do que e. Casando a proporcao da textura
+    /// com a da janela, nada estica: o modo largo passa a MOSTRAR mais mundo na horizontal,
+    /// que e o que se espera de um mapa maior.
+    /// </summary>
+    public void SetAspect(float aspect)
+    {
+        if (minimapCam == null) return;
+        if (aspect <= 0.01f || float.IsNaN(aspect)) return;
+
+        int shortSide = Mathf.Clamp(renderTextureSize, 64, 4096);
+        int w = aspect >= 1f ? Mathf.RoundToInt(shortSide * aspect) : shortSide;
+        int h = aspect >= 1f ? shortSide : Mathf.RoundToInt(shortSide / aspect);
+
+        w = Mathf.Clamp(w, 64, 4096);
+        h = Mathf.Clamp(h, 64, 4096);
+
+        if (renderTexture != null && renderTexture.width == w && renderTexture.height == h)
+            return;
+
+        var old = renderTexture;
+
+        renderTexture = new RenderTexture(w, h, 16);
+        renderTexture.name = "MinimapRenderTexture";
+        renderTexture.format = RenderTextureFormat.ARGB32;
+        renderTexture.filterMode = FilterMode.Bilinear;
+        renderTexture.antiAliasing = 1;
+
+        minimapCam.targetTexture = renderTexture;
+
+        // A camera ortografica deriva o aspect do alvo de render, mas so no proximo
+        // render; fixar aqui evita um frame com o enquadramento antigo.
+        minimapCam.aspect = (float)w / h;
+
+        OnRenderTextureChanged?.Invoke(renderTexture);
+
+        // Libertado DEPOIS de trocar o alvo: destruir o alvo ativo de uma camera deixa-a
+        // a renderizar para lado nenhum durante um frame.
+        if (old != null)
+        {
+            old.Release();
+            Destroy(old);
+        }
+    }
+
+    /// <summary>Avisa quem desenha a textura (a UI) que o alvo mudou de identidade.</summary>
+    public System.Action<RenderTexture> OnRenderTextureChanged;
+
     private void InitializePosition()
     {
         if (playerTarget != null)
@@ -254,15 +306,45 @@ public class MinimapCamera : MonoBehaviour
 
     private void UpdateManualPosition()
     {
-        // In manual mode, apply pan offset relative to player position
-        if (playerTarget == null)
-            return;
+        // A ancora do modo manual e o CENTRO DO MUNDO quando ha um definido, e so o jogador
+        // como recurso. Ate aqui era sempre o jogador — o que fazia com que CentreOnWorld
+        // fosse desfeito no LateUpdate seguinte, e o mapa aberto continuasse centrado em
+        // quem o abriu em vez de na quinta.
+        Vector3 basePosition;
 
-        Vector3 basePosition = playerTarget.position + followOffset;
-        basePosition.z = playerTarget.position.z - cameraDistance;
+        if (hasManualAnchor)
+        {
+            basePosition = manualAnchor;
+        }
+        else if (playerTarget != null)
+        {
+            basePosition = playerTarget.position + followOffset;
+            basePosition.z = playerTarget.position.z - cameraDistance;
+        }
+        else
+        {
+            return;
+        }
+
+        basePosition.z = transform.position.z;
 
         Vector3 targetPosition = basePosition + panOffset;
+        targetPosition.z = basePosition.z;
         transform.position = targetPosition;
+    }
+
+    private Vector3 manualAnchor;
+    private bool hasManualAnchor = false;
+
+    /// <summary>
+    /// Ponto a partir do qual o pan e medido — o mesmo que <see cref="UpdateManualPosition"/>
+    /// usa. Exposto para que quem limita o arrasto o faca contra o enquadramento REAL.
+    /// </summary>
+    public Vector3 CurrentPanAnchor(Bounds worldFallback, Transform playerFallback)
+    {
+        if (hasManualAnchor) return manualAnchor;
+        if (playerFallback != null) return playerFallback.position;
+        return worldFallback.center;
     }
 
     // ============================================================================
@@ -280,6 +362,8 @@ public class MinimapCamera : MonoBehaviour
         {
             // Reset pan offset when returning to follow mode
             panOffset = Vector3.zero;
+            // Voltar a seguir o jogador descarta a ancora do mapa aberto.
+            hasManualAnchor = false;
         }
     }
 
@@ -486,6 +570,53 @@ public class MinimapCamera : MonoBehaviour
         return viewportPoint.x >= 0 && viewportPoint.x <= 1 &&
                viewportPoint.y >= 0 && viewportPoint.y <= 1 &&
                viewportPoint.z > 0; // Must be in front of camera
+    }
+
+    /// <summary>
+    /// Centra a camera no mundo medido, em vez de no jogador.
+    ///
+    /// O fullscreen abre para mostrar a quinta inteira: centrado no jogador, um mundo que
+    /// nao esta centrado nele aparece encostado a um lado, com vazio do outro. E o pan
+    /// parte deste centro, entao arrastar tambem passa a comportar-se como um mapa.
+    /// </summary>
+    public void CentreOnWorld()
+    {
+        Bounds world;
+        if (!TryGetWorldBounds(out world))
+            return;
+
+        var pos = world.center;
+        pos.z = transform.position.z;   // preserva a distancia de camera
+        transform.position = pos;
+
+        // Guardado como ancora, senao o LateUpdate volta a centrar no jogador.
+        manualAnchor = pos;
+        hasManualAnchor = true;
+    }
+
+    /// <summary>
+    /// Meia-altura que enquadra o mundo inteiro nesta proporcao, com uma margem.
+    ///
+    /// Os passos de zoom sao discretos (0,5 / 1 / 2 / 3,5 do tamanho base) e o passo mais
+    /// justo que cobre 90% do mundo pode ainda deixar bastante vazio: numa janela 1,86x
+    /// mais larga que alta, um mundo quase quadrado limita-se pela ALTURA e sobra largura
+    /// dos dois lados. Isto devolve o valor continuo que encaixa, para o fullscreen abrir
+    /// no enquadramento certo em vez do degrau mais proximo.
+    /// </summary>
+    public float FitWorldOrthographicSize(float margin = 1.06f)
+    {
+        Bounds world;
+        if (!TryGetWorldBounds(out world))
+            return DefaultOrthographicSize();
+
+        float aspect = CurrentAspect();
+        if (aspect <= 0.0001f) aspect = 1f;
+
+        // orthographicSize e a MEIA-altura; a largura precisa de ser convertida por aspect.
+        float needByHeight = world.extents.y;
+        float needByWidth = world.extents.x / aspect;
+
+        return Mathf.Max(needByHeight, needByWidth) * margin;
     }
 
     /// <summary>

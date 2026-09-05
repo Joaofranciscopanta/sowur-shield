@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 using SowurShield.Farming;
 
@@ -50,6 +50,11 @@ namespace SowurShield.MapEditor
                 : null;
 
             dualGrid.SetCell(coords, placeholder);
+
+            // O minimapa desenha o chao a partir do que existe na cena, e ate aqui so fazia
+            // isso uma vez, no carregamento. Sem este aviso, pintar uma estrada nova nao
+            // mudava nada no minimapa ate reiniciar a cena.
+            SowurShield.Minimap.MinimapTerrainPainter.RequestRepaint();
             return true;
         }
 
@@ -124,6 +129,7 @@ namespace SowurShield.MapEditor
             // Um unico refresh no fim: SetCell por celula recalcularia os 4 vizinhos
             // a cada chamada, o que e ordens de magnitude mais lento num mapa cheio.
             dualGrid.RefreshDisplayTilemap();
+            SowurShield.Minimap.MinimapTerrainPainter.RequestRepaint();
             return applied;
         }
     }

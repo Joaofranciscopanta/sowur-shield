@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using SowurShield.Core;
 
 namespace SowurShield.Minimap
@@ -86,6 +86,26 @@ public class MinimapFogOfWar : MonoBehaviour, ISaveable
 
         // One frame later, so MinimapTerrainPainter has produced the ground this fog covers.
         StartCoroutine(BuildNextFrame());
+    }
+
+    private void OnEnable()
+    {
+        // A neblina e dimensionada pelos bounds do painter. Quando o mundo e editado e o
+        // chao redesenhado, esses bounds podem crescer (um predio colocado longe alarga a
+        // medicao) — sem reconstruir, a neblina ficaria deslocada do mapa que cobre.
+        // Build() preserva a mascara ja revelada, entao isto nao devolve o jogador ao
+        // escuro: so realinha.
+        MinimapTerrainPainter.OnRepainted += HandleTerrainRepainted;
+    }
+
+    private void OnDisable()
+    {
+        MinimapTerrainPainter.OnRepainted -= HandleTerrainRepainted;
+    }
+
+    private void HandleTerrainRepainted()
+    {
+        if (built) Build();
     }
 
     private void OnDestroy()

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using DG.Tweening;
 using SowurShield.Core;
@@ -380,20 +380,30 @@ public class MinimapController : MonoBehaviour, IUIWindow
         // fullscreen was just the HUD magnified 4x: a small explored blob marooned in a large
         // frame, with the player's marker drawn 28px wide. Opening a map should reveal more of
         // the farm, not less of it per pixel.
-        currentZoomIndex = DefaultFullscreenZoomIndex();
-
-        // Update UI
+        // A UI PRIMEIRO, e so depois a escolha do zoom.
+        //
+        // TransitionToFullscreen e quem poe a camera na proporcao do painel largo
+        // (1720x940 nesta cena). FullscreenOpeningScale mede o enquadramento contra esse
+        // aspect — se corresse antes, mediria contra o aspect ANTIGO (1,0, o do HUD
+        // quadrado) e abriria a camera num enquadramento pensado para uma janela quadrada.
         if (minimapUI != null)
         {
             minimapUI.TransitionToFullscreen(immediate ? 0f : transitionDuration, transitionEase);
         }
+
+        // O indice e definido por FullscreenOpeningScale(), que enquadra o mundo de forma
+        // continua em vez de escolher o degrau mais proximo.
 
         // Update camera
         if (minimapCamera != null)
         {
             minimapCamera.SetFollowPlayer(false);
             minimapCamera.SetPanOffset(fullscreenPanOffset);
-            minimapCamera.SetZoomLevel(CurrentViewScale(), immediate);
+
+            // Centrar no MUNDO, nao no jogador: um mapa aberto mostra a quinta toda, e nao
+            // a vizinhanca de quem o abriu. Sem isto o mundo aparecia encostado a um lado.
+            minimapCamera.CentreOnWorld();
+            minimapCamera.SetZoomLevel(FullscreenOpeningScale(), immediate);
         }
 
         if (minimapUI != null)
@@ -545,7 +555,11 @@ public class MinimapController : MonoBehaviour, IUIWindow
         if (!minimapCamera.TryGetWorldBounds(out Bounds bounds))
             return;
 
-        Vector3 anchor = player != null ? player.position : bounds.center;
+        // A MESMA ancora que a camera usa em modo manual (ver MinimapCamera.CentreOnWorld):
+        // o centro do mundo. Enquanto isto lia a posicao do jogador e a camera lia o centro
+        // do mundo, os limites de arrasto pertenciam a um enquadramento diferente do que
+        // estava no ecra — arrastar batia num limite invisivel fora do sitio.
+        Vector3 anchor = minimapCamera.CurrentPanAnchor(bounds, player);
 
         float halfHeight = minimapCamera.CurrentOrthographicSize();
         float halfWidth = halfHeight * minimapCamera.CurrentAspect();
@@ -595,42 +609,47 @@ public class MinimapController : MonoBehaviour, IUIWindow
     }
 
     /// <summary>
-    /// View scale fullscreen opens at: the tightest step that still shows most of the world,
-    /// falling back to the widest configured scale. Derived from the world's actual size rather
-    /// than hard-coded, so a larger map opens wider without anyone retuning a constant.
+    /// Escala com que o fullscreen ABRE: a que enquadra o mundo nesta janela.
+    ///
+    /// Os passos de zoom continuam discretos para quem usa a roda do rato — sao previsiveis
+    /// e e o que o jogador espera. Mas a abertura nao precisa de se limitar a um degrau: o
+    /// passo mais justo que cobre 90% do mundo deixava, numa janela 1,86x mais larga que
+    /// alta, largas faixas vazias dos dois lados, porque o mundo desta cena e quase
+    /// quadrado e so a altura o limitava. Aqui abrimos no enquadramento exato e guardamos
+    /// o degrau equivalente, para o zoom seguinte partir do sitio certo.
     /// </summary>
-    private int DefaultFullscreenZoomIndex()
+    private float FullscreenOpeningScale()
+    {
+        if (minimapCamera == null)
+            return CurrentViewScale();
+
+        float baseSize = minimapCamera.DefaultOrthographicSize();
+        if (baseSize <= 0f)
+            return CurrentViewScale();
+
+        float fitSize = minimapCamera.FitWorldOrthographicSize();
+        float scale = fitSize / baseSize;
+
+        // Alinhar o indice ao degrau mais proximo, senao o primeiro clique na roda saltaria
+        // para um zoom sem relacao com o que esta no ecra.
+        currentZoomIndex = NearestZoomIndex(scale);
+        return scale;
+    }
+
+    /// <summary>Degrau de zoom mais proximo de uma escala continua.</summary>
+    private int NearestZoomIndex(float scale)
     {
         if (viewScales == null || viewScales.Length == 0)
             return 0;
 
-        int widest = viewScales.Length - 1;
-
-        if (minimapCamera == null || !minimapCamera.TryGetWorldBounds(out Bounds world))
-            return widest;
-
-        float baseSize = minimapCamera.DefaultOrthographicSize();
-        if (baseSize <= 0f) return widest;
-
-        // orthographicSize is the HALF-height, so compare against the world's half-extent — not
-        // its full size, which overshoots by 2x and opened a 30-unit farm at 64 units, leaving
-        // the map a small island in a field of empty ground.
-        float needHalf = Mathf.Max(world.extents.x / Mathf.Max(minimapCamera.CurrentAspect(), 0.0001f),
-                                   world.extents.y);
-
-        // Pick the tightest scale that shows *most* of the world rather than the first that
-        // contains all of it. Insisting on full containment plus a margin made a farm that very
-        // nearly fits at one step jump to the next, doubling the empty border for the sake of the
-        // last few units. Showing ~90% and letting the player pan for the rest reads far better.
-        const float AcceptableCoverage = 0.9f;
-
-        for (int i = 0; i < viewScales.Length; i++)
+        int best = 0;
+        float bestDelta = Mathf.Abs(viewScales[0] - scale);
+        for (int i = 1; i < viewScales.Length; i++)
         {
-            if (baseSize * viewScales[i] >= needHalf * AcceptableCoverage)
-                return i;
+            float delta = Mathf.Abs(viewScales[i] - scale);
+            if (delta < bestDelta) { bestDelta = delta; best = i; }
         }
-
-        return widest;
+        return best;
     }
 
     /// <summary>
