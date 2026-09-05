@@ -193,6 +193,10 @@ public class MinimapFogOfWar : MonoBehaviour, ISaveable
             fogObject = new GameObject("MinimapFog");
             fogObject.transform.SetParent(transform, false);
 
+            // Gerado, nao autorado: sem DontSave ficaria gravado na cena se esta for salva
+            // durante o Play Mode, e reapareceria dimensionado para o mundo antigo.
+            fogObject.hideFlags = HideFlags.DontSave;
+
             // The icon layer, NOT MinimapTerrain. MinimapTerrain is deliberately shared with the
             // main camera so the ground reads on both (see MinimapCamera.MinimapTerrainLayerName);
             // putting the fog there meant the main camera drew it too, and a ~30x31 unit dark

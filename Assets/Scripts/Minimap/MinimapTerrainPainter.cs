@@ -549,6 +549,12 @@ public class MinimapTerrainPainter : MonoBehaviour
             groundObject = new GameObject("MinimapGround");
             groundObject.transform.SetParent(transform, false);
 
+            // DontSave: este objeto e gerado, nao autorado. Sem isto ficava gravado na cena
+            // ao salvar durante o Play Mode, e reaparecia depois como um retangulo de terreno
+            // com os bounds do mundo ANTIGO por cima do mapa — visivel mesmo com o painter
+            // desligado, porque o que estava salvo ja nao dependia dele.
+            groundObject.hideFlags = HideFlags.DontSave;
+
             // The icon layer, NOT MinimapTerrain — same reason as the fog in MinimapFogOfWar.
             // MinimapTerrain is shared with the main camera, so this painted approximation of the
             // ground was being drawn over the actual world. It read as the world's terrain, which
