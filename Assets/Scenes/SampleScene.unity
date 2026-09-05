@@ -1848,7 +1848,7 @@ MonoBehaviour:
   defaultDialogue: {fileID: 11400000, guid: c82572ad998b6eb41aab6292c9cb4b9b, type: 2}
   interactionPrompt: {fileID: 175611240}
   dialogueBox: {fileID: 0}
-  interactionRange: 3
+  interactionRange: 1.5
   allowRepeatedConversations: 1
   cooldownBetweenInteractions: 1
   disableMovementDuringDialogue: 1
@@ -6980,7 +6980,7 @@ MonoBehaviour:
   defaultDialogue: {fileID: 11400000, guid: 91f35461049655b4f8f693323b2c2aa0, type: 2}
   interactionPrompt: {fileID: 244492454}
   dialogueBox: {fileID: 0}
-  interactionRange: 3
+  interactionRange: 1.5
   allowRepeatedConversations: 1
   cooldownBetweenInteractions: 1
   disableMovementDuringDialogue: 1
@@ -7372,7 +7372,7 @@ MonoBehaviour:
   defaultDialogue: {fileID: 11400000, guid: bfbb495fae1114345bbc9bf9c2b0d1b5, type: 2}
   interactionPrompt: {fileID: 552451371}
   dialogueBox: {fileID: 0}
-  interactionRange: 3
+  interactionRange: 1.5
   allowRepeatedConversations: 1
   cooldownBetweenInteractions: 1
   disableMovementDuringDialogue: 1
@@ -13431,7 +13431,7 @@ MonoBehaviour:
   defaultDialogue: {fileID: 11400000, guid: 51644b6ef8f5f4c4294517546c4c9dc0, type: 2}
   interactionPrompt: {fileID: 1103733202}
   dialogueBox: {fileID: 0}
-  interactionRange: 3
+  interactionRange: 1.5
   allowRepeatedConversations: 1
   cooldownBetweenInteractions: 1
   disableMovementDuringDialogue: 1
@@ -21585,7 +21585,7 @@ MonoBehaviour:
   defaultDialogue: {fileID: 11400000, guid: d7fe0afdaff45504d867f18dd2d105ea, type: 2}
   interactionPrompt: {fileID: 35869576}
   dialogueBox: {fileID: 0}
-  interactionRange: 3
+  interactionRange: 1.5
   allowRepeatedConversations: 1
   cooldownBetweenInteractions: 1
   disableMovementDuringDialogue: 1
@@ -131699,7 +131699,7 @@ MonoBehaviour:
   defaultDialogue: {fileID: 11400000, guid: a63bc588d1f974b4a995aaeb055b3560, type: 2}
   interactionPrompt: {fileID: 1933839737}
   dialogueBox: {fileID: 0}
-  interactionRange: 3
+  interactionRange: 1.5
   allowRepeatedConversations: 1
   cooldownBetweenInteractions: 1
   disableMovementDuringDialogue: 1
@@ -132758,7 +132758,7 @@ MonoBehaviour:
   defaultDialogue: {fileID: 11400000, guid: b5d761df7ae1491ca7f8aa9376dcd455, type: 2}
   interactionPrompt: {fileID: 9261440}
   dialogueBox: {fileID: 0}
-  interactionRange: 3
+  interactionRange: 1.5
   allowRepeatedConversations: 1
   cooldownBetweenInteractions: 1
   disableMovementDuringDialogue: 1
@@ -140599,7 +140599,7 @@ MonoBehaviour:
   defaultDialogue: {fileID: 11400000, guid: fc861b37ec4d7d149bf0e9368c3e8a14, type: 2}
   interactionPrompt: {fileID: 383649596}
   dialogueBox: {fileID: 0}
-  interactionRange: 3
+  interactionRange: 1.5
   allowRepeatedConversations: 1
   cooldownBetweenInteractions: 1
   disableMovementDuringDialogue: 1
@@ -146997,7 +146997,7 @@ MonoBehaviour:
   defaultDialogue: {fileID: 11400000, guid: e8e05cdeadff04f4e840dbc13c643491, type: 2}
   interactionPrompt: {fileID: 1689888014}
   dialogueBox: {fileID: 0}
-  interactionRange: 3
+  interactionRange: 1.5
   allowRepeatedConversations: 1
   cooldownBetweenInteractions: 1
   disableMovementDuringDialogue: 1

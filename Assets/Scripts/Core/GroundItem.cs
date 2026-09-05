@@ -147,6 +147,14 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
             bool over = IsMouseOver();
             if (over && !hoverShowing)
             {
+                // O nome e reescrito AO MOSTRAR, nao so ao criar.
+                //
+                // O rotulo era escrito uma unica vez no Start, e as tabelas de localizacao
+                // ainda nao tinham carregado nessa altura: o SafeGetLocalizedString devolvia
+                // vazio e o GetDisplayName caia para o `itemName`, que e o id interno em
+                // ingles. Resultado medido em pt: o rotulo dizia "Bread" e "Shovel" enquanto
+                // o jogo ja sabia "Pao" e "Pa". Tambem cobre a troca de idioma em jogo.
+                AtualizarRotulo();
                 hoverLabel.SetActive(true);
                 hoverShowing = true;
             }
@@ -197,6 +205,23 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
         labelRt.offsetMax = new Vector2(-4, 0);
 
         hoverLabel.SetActive(false);
+    }
+
+    /// <summary>
+    /// Reescreve o nome no rotulo com o idioma que esta ativo agora.
+    ///
+    /// Chamado ao mostrar o rotulo, e nao so ao cria-lo -- ver o comentario no Update.
+    /// </summary>
+    private void AtualizarRotulo()
+    {
+        if (hoverLabel == null || item == null) return;
+
+        var tmp = hoverLabel.GetComponentInChildren<TextMeshProUGUI>(true);
+        if (tmp == null) return;
+
+        string nome = item.GetDisplayName();
+        if (!string.IsNullOrEmpty(nome) && tmp.text != nome)
+            tmp.text = nome;
     }
 
     private bool IsMouseOver()

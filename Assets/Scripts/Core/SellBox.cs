@@ -494,8 +494,23 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         UpdateTotalValueDisplay();
         ForceUpdateAllUI();
 
+        // Anunciar ao dock: sem isto, abrir o inventario por cima punha os dois paineis
+        // na mesma faixa central da tela. Ver WindowDock.
+        AnunciarAoDock(true);
+
         // Notify systems
         OnSellBoxToggled?.Invoke();
+    }
+
+    /// <summary>Diz ao <see cref="SowurShield.UI.WindowDock"/> que este painel abriu ou fechou.</summary>
+    private void AnunciarAoDock(bool aberto)
+    {
+        var dock = SowurShield.UI.WindowDock.Instance;
+        var rt = sellBoxMainPanel != null ? sellBoxMainPanel.transform as RectTransform : null;
+        if (dock == null || rt == null) return;
+
+        if (aberto) dock.Registrar(rt);
+        else dock.Remover(rt);
     }
 
     public void CloseWindow()
@@ -511,6 +526,9 @@ public class SellBox : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         {
             playerMove.EnableMovement();
         }
+
+        // Antes de esconder: o dock devolve o painel a posicao de origem.
+        AnunciarAoDock(false);
 
         if (sellBoxMainPanel != null)
         {

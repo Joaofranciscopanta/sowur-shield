@@ -133,6 +133,36 @@ public class PlayerStats : MonoBehaviour, ISaveable
         // Persist immediately: the rewards have now been cleared from TeamAssemblerData, so if
         // the player quits before the next autosave they would otherwise be lost from both.
         SaveManager.Instance?.SaveGame();
+
+        // E carimbar o SNAPSHOT em memoria, nao so o disco.
+        //
+        // Ao voltar do combate o SaveManager ja tem hasCompletedInitialLoad = true (ele
+        // sobrevive a troca de cena), e o RegisterSaveable aplica LoadData(currentGameData)
+        // a todo ISaveable que se registe depois. O PlayerDataManager e o proprio PlayerStats
+        // escrevem ambos em `money`, entao qualquer um deles a registar-se depois deste
+        // credito repunha o valor ANTIGO do snapshot -- reproduzido: 350 voltava a 100. O
+        // jogador via a tela de vitoria com o ouro e o HUD nunca somava.
+        //
+        // Reescrever o snapshot fecha a corrida qualquer que seja a ordem de registo.
+        SincronizarDinheiroNoSnapshot();
+    }
+
+    /// <summary>
+    /// Poe o dinheiro e o XP atuais no snapshot que o SaveManager tem em memoria.
+    ///
+    /// Nao e o mesmo que salvar: `SaveGame()` escreve no disco, mas o `currentGameData`
+    /// que o `RegisterSaveable` reaplica a objetos que se registam tarde continua a ser o
+    /// da carga anterior. Sem isto, o premio do combate era creditado e logo revertido.
+    /// </summary>
+    private void SincronizarDinheiroNoSnapshot()
+    {
+        var dados = SaveManager.Instance != null ? SaveManager.Instance.CurrentGameData : null;
+        if (dados == null || dados.playerData == null) return;
+
+        dados.playerData.money = money;
+        dados.playerData.experience = experience;
+        dados.playerData.playerLevel = playerLevel;
+        dados.playerData.experienceToNextLevel = experienceToNextLevel;
     }
 
     /// <summary>

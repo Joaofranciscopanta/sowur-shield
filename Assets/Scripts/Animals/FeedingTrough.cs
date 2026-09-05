@@ -91,7 +91,22 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         UpdateStatusText();
         LayoutPanel();
 
+        // Anunciar ao dock DEPOIS do layout: o LayoutPanel mexe nos filhos, o dock move o
+        // painel inteiro. Ao contrario, o dock seria desfeito. Ver WindowDock.
+        AnunciarAoDock(true);
+
         DisablePlayerMovement();
+    }
+
+    /// <summary>Diz ao <see cref="SowurShield.UI.WindowDock"/> que este painel abriu ou fechou.</summary>
+    private void AnunciarAoDock(bool aberto)
+    {
+        var dock = SowurShield.UI.WindowDock.Instance;
+        var rt = troughPanel != null ? troughPanel.transform as RectTransform : null;
+        if (dock == null || rt == null) return;
+
+        if (aberto) dock.Registrar(rt);
+        else dock.Remover(rt);
     }
 
     /// <summary>
@@ -118,6 +133,9 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
 
     public void CloseWindow()
     {
+        // Antes de esconder: o dock devolve o painel a posicao de origem.
+        AnunciarAoDock(false);
+
         if (troughPanel != null)
             troughPanel.SetActive(false);
         isOpen = false;

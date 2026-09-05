@@ -201,7 +201,7 @@ MonoBehaviour:
   defaultDialogue: {fileID: 11400000, guid: b5d761df7ae1491ca7f8aa9376dcd455, type: 2}
   interactionPrompt: {fileID: 4333675948389773232}
   dialogueBox: {fileID: 0}
-  interactionRange: 3
+  interactionRange: 1.5
   allowRepeatedConversations: 1
   cooldownBetweenInteractions: 1
   disableMovementDuringDialogue: 1

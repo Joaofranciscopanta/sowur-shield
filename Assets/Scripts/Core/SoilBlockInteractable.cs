@@ -902,9 +902,17 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             statusTextObj.SetActive(false);
     }
 
+    /// <summary>
+    /// Dias ate a COLHEITA, nao ate a proxima fase.
+    ///
+    /// Mostrar `DaysUntilNextStage` fazia o contador parecer preso: numa cenoura de 4 fases
+    /// x 2 dias ele dizia "2" quatro vezes seguidas, zerando e reiniciando a cada mudanca
+    /// de aspeto, sem nunca dizer que faltavam 8 dias no total. Quem joga quer saber quando
+    /// pode colher, nao quando o desenho muda.
+    /// </summary>
     private int GetDaysRemaining()
     {
-        return cropGrowthManager != null ? cropGrowthManager.DaysUntilNextStage : 0;
+        return cropGrowthManager != null ? cropGrowthManager.DaysUntilHarvest : 0;
     }
 
     /// <summary>

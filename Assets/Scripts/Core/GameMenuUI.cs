@@ -366,7 +366,13 @@ public class GameMenuUI : MonoBehaviour
         
         // Fullscreen toggle
         if (fullscreenToggle != null)
+        {
             fullscreenToggle.onValueChanged.AddListener(OnFullscreenToggled);
+
+            // O toggle da mira e clonado a partir deste, por codigo: assim aparece nas
+            // opcoes sem obrigar a montar nada a mao na cena, e herda o estilo ja aplicado.
+            CriarToggleDeMira();
+        }
         
         // Resolution dropdown
         if (resolutionDropdown != null)
@@ -570,6 +576,48 @@ public class GameMenuUI : MonoBehaviour
         PlayerPrefs.Save();
     }
     
+    /// <summary>
+    /// Clona o toggle de ecra inteiro para criar o de "mirar com o cursor".
+    ///
+    /// Clonar em vez de construir do zero herda o estilo, a fonte e o tamanho que o
+    /// original ja tem -- um Toggle criado a mao por codigo sai sem Image e nem pinta nem
+    /// clica (ver reference_unity_button_no_image_dead). Fica logo abaixo do original, com
+    /// o mesmo passo vertical que separa os outros controlos.
+    ///
+    /// A opcao existe porque o jogador pediu: com ela ligada, o alvo sob a seta do rato
+    /// ganha de quem esta apenas por perto. Desligada por padrao, para quem joga so com o
+    /// teclado nao ter de mover o cursor para interagir.
+    /// </summary>
+    private void CriarToggleDeMira()
+    {
+        if (miraToggle != null) return;
+
+        var original = fullscreenToggle.gameObject;
+        var clone = Instantiate(original, original.transform.parent);
+        clone.name = "AimAtCursorToggle";
+
+        var rtOriginal = original.transform as RectTransform;
+        var rtClone = clone.transform as RectTransform;
+        if (rtOriginal != null && rtClone != null)
+        {
+            // Um passo abaixo do original. 34 e a altura do proprio controlo na cena.
+            rtClone.anchoredPosition = rtOriginal.anchoredPosition + new Vector2(0f, -34f);
+        }
+
+        miraToggle = clone.GetComponent<Toggle>();
+        // O clone traz os listeners do original: sem isto, mexer na mira punha o jogo em
+        // ecra inteiro.
+        miraToggle.onValueChanged.RemoveAllListeners();
+        miraToggle.isOn = SowurShield.Core.InteractionPreferences.MirarNoCursor;
+        miraToggle.onValueChanged.AddListener(v =>
+            SowurShield.Core.InteractionPreferences.MirarNoCursor = v);
+
+        var rotulo = clone.GetComponentInChildren<TMPro.TextMeshProUGUI>(true);
+        if (rotulo != null) rotulo.text = "Mirar com o cursor";
+    }
+
+    private Toggle miraToggle;
+
     private void OnFullscreenToggled(bool fullscreen)
     {
         Screen.fullScreen = fullscreen;
