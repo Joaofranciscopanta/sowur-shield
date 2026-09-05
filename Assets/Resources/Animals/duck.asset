@@ -25,8 +25,8 @@ MonoBehaviour:
   animalType: 
   animalFamily: Anatidae
   animalClass: 
-  idleSprite: {fileID: 3805131861176811647, guid: cd85b77fce8de69418b644ba975c1d18, type: 3}
-  animatorController: {fileID: 0}
+  idleSprite: {fileID: 3177321844194984488, guid: e4ce9333ae20bde4297796ea4dd829fb, type: 3}
+  animatorController: {fileID: 9100000, guid: b122877598d82224f8326f3baea9b8de, type: 2}
   moveSpeed: 1.5
   wanderRadius: 5
   minIdleTime: 2

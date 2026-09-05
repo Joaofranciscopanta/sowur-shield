@@ -65,6 +65,7 @@ namespace SowurShield.Debugging
                 Dock(sb);
                 Plantacoes(sb);
                 Tutorial(sb);
+                Assets(sb);
 
                 sb.AppendLine("===== FIM DO SELFCHECK =====");
                 Debug.Log(sb.ToString());
@@ -231,6 +232,45 @@ namespace SowurShield.Debugging
 
                 sb.AppendLine($"[TUTORIAL] arar chao virgem: passo {antes} -> {depois} " +
                               $"({(depois > antes ? "avanca" : "PRESO")})");
+            }
+
+            /// <summary>
+            /// As lacunas de asset fechadas a 2026-09-05, medidas DENTRO da build.
+            ///
+            /// Os testes de EditMode ja cobrem isto, mas leem pelo AssetDatabase, que nao
+            /// existe no jogo montado. Aqui a leitura e por Resources, que e o caminho
+            /// real -- um asset fora de `Assets/Resources/` existe no Editor e SOME na
+            /// build, que foi exatamente o que aconteceu com a paleta do editor de mapa.
+            /// </summary>
+            private static void Assets(StringBuilder sb)
+            {
+                int inimigos = 0, semSprite = 0;
+                foreach (var e in Resources.LoadAll<SowurShield.Combat.EnemyData>("Enemies"))
+                {
+                    if (e == null) continue;
+                    inimigos++;
+                    if (e.sprite == null) { semSprite++; sb.AppendLine($"[ASSETS]   inimigo sem sprite: {e.name}"); }
+                }
+                sb.AppendLine($"[ASSETS] inimigos={inimigos} sem sprite={semSprite}");
+
+                int animais = 0, semArte = 0, semAnim = 0;
+                foreach (var a in Resources.LoadAll<SowurShield.Animals.AnimalData>("Animals"))
+                {
+                    if (a == null) continue;
+                    animais++;
+                    if (a.idleSprite == null) { semArte++; sb.AppendLine($"[ASSETS]   animal sem sprite: {a.name}"); }
+                    if (a.animatorController == null) { semAnim++; sb.AppendLine($"[ASSETS]   animal sem animator: {a.name}"); }
+                }
+                sb.AppendLine($"[ASSETS] animais={animais} sem sprite={semArte} sem animator={semAnim}");
+
+                int skills = 0, semIcone = 0;
+                foreach (var s in Resources.LoadAll<SowurShield.Animals.AnimalSkill>("AnimalSkills"))
+                {
+                    if (s == null) continue;
+                    skills++;
+                    if (s.skillIcon == null) { semIcone++; sb.AppendLine($"[ASSETS]   skill sem icone: {s.name}"); }
+                }
+                sb.AppendLine($"[ASSETS] skills={skills} sem icone={semIcone}");
             }
         }
     }
