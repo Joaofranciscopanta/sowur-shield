@@ -204,6 +204,17 @@ namespace SowurShield.MapEditor
                 instancia.name = obj.objectId;
             }
 
+            // Os COLISORES tem de acompanhar as posicoes que acabamos de escrever.
+            //
+            // A fisica 2D so sincroniza no FixedUpdate. Ate la, tudo o que foi movido ou
+            // criado aqui tem o colisor na posicao ANTIGA (ou na origem) -- e um NPC cujo
+            // colisor esta noutro sitio simplesmente nao e alvo de interacao: falar com
+            // ele nao faz nada, nem som de erro.
+            //
+            // Uma chamada no fim chega para todos, e e barata. Medido: uma personagem
+            // movida para 1 unidade do jogador ficava com o colisor a 9,9 de distancia.
+            Physics2D.SyncTransforms();
+
             if (perdidos > 0)
             {
                 Debug.LogWarning($"[MapRuntimeLoader] {perdidos} objeto(s) do mapa nao " +

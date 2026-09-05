@@ -67,6 +67,7 @@ namespace SowurShield.Debugging
                 Tutorial(sb);
                 Assets(sb);
                 Codex(sb);
+                Conversa(sb);
 
                 sb.AppendLine("===== FIM DO SELFCHECK =====");
                 Debug.Log(sb.ToString());
@@ -326,6 +327,73 @@ namespace SowurShield.Debugging
                                   (b.Length > 50 ? b.Substring(0, 50) + "..." : b) + "\"");
                     break;
                 }
+            }
+
+            /// <summary>
+            /// Falar com um NPC tem de abrir a conversa, nao travar o jogo.
+            ///
+            /// Relatado a jogar a build: interagir fazia "um barulho tipo de erro" e
+            /// travava. O `StartDialogue` poe `isDialogueActive = true` e chama
+            /// `DisableMovement()` ANTES de `dialogueUI.StartDialogue(...)` -- se algo
+            /// depois disso rebentar, o jogador fica congelado sem conversa nenhuma, que
+            /// e exatamente o sintoma.
+            ///
+            /// Aqui chamamos o `Interact()` de cada NPC dentro de try/catch e reportamos
+            /// o estado em que o jogo ficou.
+            /// </summary>
+            private static void Conversa(StringBuilder sb)
+            {
+                var ui = Object.FindFirstObjectByType<SowurShield.Dialogue.DialogueTreeUI>(
+                    FindObjectsInactive.Include);
+                sb.AppendLine($"[CONVERSA] DialogueTreeUI na cena: {(ui != null ? "sim" : "NAO")}");
+
+                var jogador = Object.FindFirstObjectByType<SowurShield.Core.PlayerMove>(
+                    FindObjectsInactive.Include);
+
+                int total = 0, abriu = 0, semFala = 0, rebentou = 0;
+
+                foreach (var npc in Object.FindObjectsByType<SowurShield.Dialogue.NPCDialogueInteractable>(
+                             FindObjectsInactive.Include, FindObjectsSortMode.None))
+                {
+                    // Inativos na cena sao placeholders (generic_npc, chicken): o jogador
+                    // nunca os ve, entao "nao abriram" neles nao e defeito nenhum.
+                    if (npc == null || !npc.gameObject.activeInHierarchy) continue;
+                    total++;
+
+                    bool podia = npc.CanInteract();
+                    try
+                    {
+                        npc.Interact();
+
+                        // O que interessa nao e "nao lancou" -- e se a conversa ABRIU.
+                        // Um NPC que poe isDialogueActive e nao mostra UI e o caso que
+                        // trava o jogo.
+                        bool ativo = npc.IsDialogueActive();
+                        if (ativo) abriu++;
+                        else if (!podia) semFala++;
+                        else
+                        {
+                            rebentou++;
+                            sb.AppendLine($"[CONVERSA]   {npc.gameObject.name}: podia falar e nao abriu");
+                        }
+
+                        // Fechar pelo mesmo caminho que o jogo usa, senao o proximo NPC
+                        // media o estado deixado por este.
+                        if (ativo && ui != null) ui.EndDialogue();
+                    }
+                    catch (System.Exception ex)
+                    {
+                        rebentou++;
+                        sb.AppendLine($"[CONVERSA]   {npc.gameObject.name} LANCOU: " +
+                                      ex.GetType().Name + " - " + ex.Message);
+                    }
+                }
+
+                sb.AppendLine($"[CONVERSA] npcs={total} abriram={abriu} sem fala={semFala} problema={rebentou}");
+
+                // Se o jogador ficou sem movimento depois disto, o jogo esta travado.
+                if (jogador != null)
+                    sb.AppendLine($"[CONVERSA] jogador pode mover no fim: {jogador.IsMovementEnabled()}");
             }
         }
     }
