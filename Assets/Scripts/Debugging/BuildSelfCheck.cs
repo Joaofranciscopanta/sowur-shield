@@ -65,6 +65,10 @@ namespace SowurShield.Debugging
                 Dock(sb);
                 Plantacoes(sb);
                 Tutorial(sb);
+                Assets(sb);
+                Codex(sb);
+                Conversa(sb);
+                Dormir(sb);
 
                 sb.AppendLine("===== FIM DO SELFCHECK =====");
                 Debug.Log(sb.ToString());
@@ -231,6 +235,214 @@ namespace SowurShield.Debugging
 
                 sb.AppendLine($"[TUTORIAL] arar chao virgem: passo {antes} -> {depois} " +
                               $"({(depois > antes ? "avanca" : "PRESO")})");
+            }
+
+            /// <summary>
+            /// As lacunas de asset fechadas a 2026-09-05, medidas DENTRO da build.
+            ///
+            /// Os testes de EditMode ja cobrem isto, mas leem pelo AssetDatabase, que nao
+            /// existe no jogo montado. Aqui a leitura e por Resources, que e o caminho
+            /// real -- um asset fora de `Assets/Resources/` existe no Editor e SOME na
+            /// build, que foi exatamente o que aconteceu com a paleta do editor de mapa.
+            /// </summary>
+            private static void Assets(StringBuilder sb)
+            {
+                int inimigos = 0, semSprite = 0;
+                foreach (var e in Resources.LoadAll<SowurShield.Combat.EnemyData>("Enemies"))
+                {
+                    if (e == null) continue;
+                    inimigos++;
+                    if (e.sprite == null) { semSprite++; sb.AppendLine($"[ASSETS]   inimigo sem sprite: {e.name}"); }
+                }
+                sb.AppendLine($"[ASSETS] inimigos={inimigos} sem sprite={semSprite}");
+
+                int animais = 0, semArte = 0, semAnim = 0;
+                foreach (var a in Resources.LoadAll<SowurShield.Animals.AnimalData>("Animals"))
+                {
+                    if (a == null) continue;
+                    animais++;
+                    if (a.idleSprite == null) { semArte++; sb.AppendLine($"[ASSETS]   animal sem sprite: {a.name}"); }
+                    if (a.animatorController == null) { semAnim++; sb.AppendLine($"[ASSETS]   animal sem animator: {a.name}"); }
+                }
+                sb.AppendLine($"[ASSETS] animais={animais} sem sprite={semArte} sem animator={semAnim}");
+
+                int skills = 0, semIcone = 0;
+                foreach (var s in Resources.LoadAll<SowurShield.Animals.AnimalSkill>("AnimalSkills"))
+                {
+                    if (s == null) continue;
+                    skills++;
+                    if (s.skillIcon == null) { semIcone++; sb.AppendLine($"[ASSETS]   skill sem icone: {s.name}"); }
+                }
+                sb.AppendLine($"[ASSETS] skills={skills} sem icone={semIcone}");
+            }
+
+            /// <summary>
+            /// O codex tem de traduzir. Durante meses nao traduziu: as 81 entradas
+            /// estavam em portugues cru com keyId 0, e como a build abre em `en`, quem
+            /// jogava em ingles via o jogo todo traduzido e o codex em portugues.
+            ///
+            /// ⚠️ Verificado AQUI e nao so por teste porque um LocalizedString mal ligado
+            /// devolve a string "No translation found..." em vez de lancar -- e essa
+            /// string passaria por um teste que so verificasse "nao esta vazio".
+            /// </summary>
+            private static void Codex(StringBuilder sb)
+            {
+                int npcs = 0, bios = 0, entradas = 0, quebrados = 0;
+
+                foreach (var npc in Object.FindObjectsByType<SowurShield.Dialogue.NPCDialogueInteractable>(
+                             FindObjectsInactive.Include, FindObjectsSortMode.None))
+                {
+                    if (npc == null || npc.GetTotalLoreCount() == 0) continue;
+                    npcs++;
+
+                    string bio = npc.GetBio();
+                    if (string.IsNullOrEmpty(bio) || bio.Contains("No translation found"))
+                    {
+                        quebrados++;
+                        sb.AppendLine($"[CODEX]   {npc.gameObject.name}: bio nao resolve");
+                    }
+                    else bios++;
+
+                    foreach (var e in npc.GetUnlockedLore())
+                    {
+                        entradas++;
+                        if (string.IsNullOrEmpty(e.GetTitle()) || e.GetTitle().Contains("No translation found") ||
+                            string.IsNullOrEmpty(e.GetBody())  || e.GetBody().Contains("No translation found"))
+                        {
+                            quebrados++;
+                            sb.AppendLine($"[CODEX]   {npc.gameObject.name}: lore nao resolve");
+                        }
+                    }
+                }
+
+                sb.AppendLine($"[CODEX] npcs={npcs} bios ok={bios} lore visivel={entradas} quebrados={quebrados}");
+
+                // Uma amostra do texto real: se o idioma for `en` e isto sair em
+                // portugues, a ligacao caiu para o campo cru sem ninguem dar por isso.
+                foreach (var npc in Object.FindObjectsByType<SowurShield.Dialogue.NPCDialogueInteractable>(
+                             FindObjectsInactive.Include, FindObjectsSortMode.None))
+                {
+                    if (npc == null || npc.GetTotalLoreCount() == 0) continue;
+                    var b = npc.GetBio();
+                    sb.AppendLine($"[CODEX]   amostra {npc.gameObject.name}: \"" +
+                                  (b.Length > 50 ? b.Substring(0, 50) + "..." : b) + "\"");
+                    break;
+                }
+            }
+
+            /// <summary>
+            /// Falar com um NPC tem de abrir a conversa, nao travar o jogo.
+            ///
+            /// Relatado a jogar a build: interagir fazia "um barulho tipo de erro" e
+            /// travava. O `StartDialogue` poe `isDialogueActive = true` e chama
+            /// `DisableMovement()` ANTES de `dialogueUI.StartDialogue(...)` -- se algo
+            /// depois disso rebentar, o jogador fica congelado sem conversa nenhuma, que
+            /// e exatamente o sintoma.
+            ///
+            /// Aqui chamamos o `Interact()` de cada NPC dentro de try/catch e reportamos
+            /// o estado em que o jogo ficou.
+            /// </summary>
+            private static void Conversa(StringBuilder sb)
+            {
+                var ui = Object.FindFirstObjectByType<SowurShield.Dialogue.DialogueTreeUI>(
+                    FindObjectsInactive.Include);
+                sb.AppendLine($"[CONVERSA] DialogueTreeUI na cena: {(ui != null ? "sim" : "NAO")}");
+
+                var jogador = Object.FindFirstObjectByType<SowurShield.Core.PlayerMove>(
+                    FindObjectsInactive.Include);
+
+                int total = 0, abriu = 0, semFala = 0, rebentou = 0;
+
+                foreach (var npc in Object.FindObjectsByType<SowurShield.Dialogue.NPCDialogueInteractable>(
+                             FindObjectsInactive.Include, FindObjectsSortMode.None))
+                {
+                    // Inativos na cena sao placeholders (generic_npc, chicken): o jogador
+                    // nunca os ve, entao "nao abriram" neles nao e defeito nenhum.
+                    if (npc == null || !npc.gameObject.activeInHierarchy) continue;
+                    total++;
+
+                    bool podia = npc.CanInteract();
+                    try
+                    {
+                        npc.Interact();
+
+                        // O que interessa nao e "nao lancou" -- e se a conversa ABRIU.
+                        // Um NPC que poe isDialogueActive e nao mostra UI e o caso que
+                        // trava o jogo.
+                        bool ativo = npc.IsDialogueActive();
+                        if (ativo) abriu++;
+                        else if (!podia) semFala++;
+                        else
+                        {
+                            rebentou++;
+                            sb.AppendLine($"[CONVERSA]   {npc.gameObject.name}: podia falar e nao abriu");
+                        }
+
+                        // Fechar pelo mesmo caminho que o jogo usa, senao o proximo NPC
+                        // media o estado deixado por este.
+                        if (ativo && ui != null) ui.EndDialogue();
+                    }
+                    catch (System.Exception ex)
+                    {
+                        rebentou++;
+                        sb.AppendLine($"[CONVERSA]   {npc.gameObject.name} LANCOU: " +
+                                      ex.GetType().Name + " - " + ex.Message);
+                    }
+                }
+
+                sb.AppendLine($"[CONVERSA] npcs={total} abriram={abriu} sem fala={semFala} problema={rebentou}");
+
+                // Se o jogador ficou sem movimento depois disto, o jogo esta travado.
+                if (jogador != null)
+                    sb.AppendLine($"[CONVERSA] jogador pode mover no fim: {jogador.IsMovementEnabled()}");
+            }
+
+            /// <summary>
+            /// Dormir tem de deixar a pilha de janelas LIMPA.
+            ///
+            /// Relatado a jogar a build: "coloquei as sementes no lugar para os animais
+            /// comerem, quando fui dormir no outro dia tudo estava dando Denied em todos
+            /// os botoes". Uma janela esquecida na pilha faz o TryOpenWindow recusar
+            /// TODAS as outras -- e durante o fade de sono o painel some de vista, entao
+            /// parecia fechado.
+            /// </summary>
+            private static void Dormir(StringBuilder sb)
+            {
+                var um = SowurShield.Core.UIManager.Instance;
+                if (um == null) { sb.AppendLine("[DORMIR] sem UIManager"); return; }
+
+                var cama = Object.FindFirstObjectByType<SowurShield.Core.BedInteractable>(
+                    FindObjectsInactive.Include);
+                if (cama == null) { sb.AppendLine("[DORMIR] sem cama na cena"); return; }
+
+                // Uma janela qualquer, aberta e esquecida.
+                SowurShield.Core.IUIWindow vitima = null;
+                foreach (var mb in Object.FindObjectsByType<MonoBehaviour>(
+                             FindObjectsInactive.Include, FindObjectsSortMode.None))
+                    if (mb is SowurShield.Core.IUIWindow j && !(mb is SowurShield.Core.BedInteractable))
+                    { vitima = j; break; }
+
+                if (vitima == null) { sb.AppendLine("[DORMIR] sem janela para testar"); return; }
+
+                um.ForceCloseAllWindows();
+                bool abriu = um.TryOpenWindow(vitima);
+                sb.AppendLine($"[DORMIR] janela '{vitima.WindowName}' aberta antes de dormir: {abriu}");
+
+                // Correr so o inicio da SleepSequence: a limpeza acontece antes do fade,
+                // e nao queremos esperar o dia inteiro avancar dentro do selfcheck.
+                var mi = typeof(SowurShield.Core.BedInteractable).GetMethod("SleepSequence",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (mi != null)
+                {
+                    var rotina = mi.Invoke(cama, null) as System.Collections.IEnumerator;
+                    if (rotina != null) rotina.MoveNext();
+                }
+
+                // O teste real: depois de dormir, outra janela abre?
+                bool depois = um.TryOpenWindow(vitima);
+                sb.AppendLine($"[DORMIR] abrir uma janela depois de dormir: " +
+                              (depois ? "OK" : "RECUSADO -> Denied em todos os botoes"));
+                um.ForceCloseAllWindows();
             }
         }
     }

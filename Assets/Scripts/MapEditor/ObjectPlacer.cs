@@ -223,6 +223,11 @@ namespace SowurShield.MapEditor
             instancia.name = prefabSelecionado.name;
             instancia.transform.localScale = EscalaComEspelho(prefabSelecionado);
 
+            // A fisica 2D so sincroniza no FixedUpdate, que nao corre com o jogo pausado:
+            // sem isto o objeto aparece no sitio certo com o colisor noutro. Importa nos
+            // que sao interativos -- arvores, caixa de venda, cama.
+            Physics2D.SyncTransforms();
+
             mapEditor.CurrentMapData.objectSpawns.Add(new ObjectSpawnData
             {
                 position = posicao,

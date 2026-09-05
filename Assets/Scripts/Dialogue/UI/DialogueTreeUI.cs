@@ -184,30 +184,43 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
     /// <summary>
     /// Starts a dialogue tree conversation
     /// </summary>
-    public void StartDialogue(DialogueTree dialogueTree)
+    /// <summary>
+    /// Abre uma conversa. Devolve <c>false</c> quando NAO abriu.
+    ///
+    /// ⚠️ O retorno existe porque quem chama precisa de saber. O
+    /// `NPCDialogueInteractable.StartDialogue` poe `isDialogueActive = true` e chama
+    /// `DisableMovement()` ANTES desta chamada; como aqui se saia em silencio por tres
+    /// caminhos diferentes, o jogador ficava **congelado sem conversa nenhuma** — com o
+    /// som "Denied" a tocar quando a recusa vinha do UIManager. Foi assim que o Lucas
+    /// descreveu: "faz um barulho tipo de erro e trava".
+    /// </summary>
+    public bool StartDialogue(DialogueTree dialogueTree)
     {
         if (dialogueTree == null)
         {
-            return;
+            return false;
         }
 
         if (isDialogueActive)
         {
-            return;
+            return false;
         }
 
         // Use UIManager to try opening this window
         if (UIManager.Instance != null && !UIManager.Instance.TryOpenWindow(this))
         {
-            return;
+            return false;
         }
-        
+
         // Validate tree
         if (!dialogueTree.ValidateTree())
         {
-            return;
+            // A janela ja foi aceite pelo UIManager acima: sair agora sem a devolver
+            // deixaria a pilha suja e bloquearia TODAS as janelas seguintes.
+            if (UIManager.Instance != null) UIManager.Instance.TryCloseWindow(this);
+            return false;
         }
-        
+
         currentDialogueTree = dialogueTree;
         isDialogueActive = true;
         
@@ -227,16 +240,18 @@ public class DialogueTreeUI : MonoBehaviour, IUIWindow
         
         // Begin dialogue
         var startNode = dialogueTree.GetNode(startNodeId);
-        if (startNode != null)
+        if (startNode == null)
         {
-            ShowNode(startNode);
-        }
-        else
-        {
+            // Sem no inicial nao ha conversa nenhuma para mostrar. O EndDialogue limpa a
+            // pilha do UIManager, mas quem chamou tem de saber que isto falhou -- senao
+            // fica com o jogador congelado a olhar para nada.
             EndDialogue();
+            return false;
         }
-        
+
+        ShowNode(startNode);
         OnDialogueStarted?.Invoke();
+        return true;
     }
     
     /// <summary>

@@ -201,7 +201,29 @@ public class CombatUnit : MonoBehaviour
     {
         if (GetComponent<CombatUnitVFX>() == null)
             gameObject.AddComponent<CombatUnitVFX>();
+
+        SetupMotion();
     }
+
+    /// <summary>
+    /// Liga a animacao por transformacao (avancar, tremer, tombar).
+    ///
+    /// Os triggers do Animator nao levam a estado nenhum -- o projeto nao tem um unico
+    /// AnimationClip de combate -- entao sem isto o golpe e a morte acontecem sem que
+    /// nada se mexa. Corre no fim da montagem visual de proposito: o NormalizeSpriteSize
+    /// ja escreveu a escala final, e e essa que o CombatMotion tem de guardar.
+    /// </summary>
+    private void SetupMotion()
+    {
+        combatMotion = GetComponent<CombatMotion>();
+        if (combatMotion == null)
+            combatMotion = gameObject.AddComponent<CombatMotion>();
+
+        combatMotion.DefinirLado(isPlayerUnit);
+        combatMotion.Guardar();
+    }
+
+    private CombatMotion combatMotion;
 
     /// <summary>
     /// Setup visual components
@@ -397,13 +419,20 @@ public class CombatUnit : MonoBehaviour
         SpriteRenderer sr = visualObject != null ? visualObject.GetComponent<SpriteRenderer>() : null;
         if (sr != null)
         {
+            // A cor apagada e escrita ANTES de tombar: a rotina de morte parte da cor
+            // atual e so mexe no alfa, entao ve esta e desvanece a partir dela.
             sr.color = new Color(0.4f, 0.4f, 0.4f, 0.6f);
+            if (combatMotion != null) combatMotion.Morrer();
         }
         else if (visualObject != null)
         {
             Renderer renderer = visualObject.GetComponent<Renderer>();
             if (renderer != null)
                 renderer.sharedMaterial.color = Color.gray;
+
+            // Tomba tambem quem caiu na esfera cinza: sao justamente as unidades sem
+            // arte, e sem isto morrem sem qualquer sinal de que morreram.
+            if (combatMotion != null) combatMotion.Morrer();
         }
     }
 
@@ -509,6 +538,10 @@ public class CombatUnit : MonoBehaviour
                 unitAnimator.SetTrigger(AnimCrit);
         }
 
+        // O trigger acima nao leva a estado nenhum (nao ha clipes de combate); o recuo
+        // e o tremor vem daqui.
+        if (combatMotion != null) combatMotion.Levar(isCrit);
+
         if (visualObject != null)
         {
             if (currentFlashCoroutine != null)
@@ -520,12 +553,22 @@ public class CombatUnit : MonoBehaviour
     /// <summary>Fire the Poison or Weakness animator trigger, if an animator is assigned.</summary>
     public void TriggerStatusAnimation(StatusEffectType type)
     {
-        if (unitAnimator == null) return;
+        if (unitAnimator != null)
+        {
+            if (type == StatusEffectType.Poison)
+                unitAnimator.SetTrigger(AnimPoison);
+            else if (type == StatusEffectType.Weakness)
+                unitAnimator.SetTrigger(AnimWeakness);
+        }
+
+        // Fora do guard do animator de proposito: unidade sem animatorController -- que
+        // e o caso de duck, Sparrow e de todo inimigo -- tambem tem de mostrar o estado.
+        if (combatMotion == null) return;
 
         if (type == StatusEffectType.Poison)
-            unitAnimator.SetTrigger(AnimPoison);
+            combatMotion.Estado(new Color(0.55f, 0.9f, 0.4f));
         else if (type == StatusEffectType.Weakness)
-            unitAnimator.SetTrigger(AnimWeakness);
+            combatMotion.Estado(new Color(0.75f, 0.6f, 0.95f));
     }
 
     /// <summary>
@@ -535,6 +578,8 @@ public class CombatUnit : MonoBehaviour
     {
         if (unitAnimator != null)
             unitAnimator.SetTrigger(AnimAttack);
+
+        if (combatMotion != null) combatMotion.Atacar();
 
         if (visualObject != null)
         {

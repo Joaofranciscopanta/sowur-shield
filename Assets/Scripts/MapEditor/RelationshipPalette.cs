@@ -93,8 +93,15 @@ namespace SowurShield.MapEditor
 
         public void Alternar()
         {
-            if (Aberta) Fechar();
-            else { painel.SetActive(true); PreencherPersonagens(); }
+            if (Aberta) { Fechar(); return; }
+
+            // O painel do codex ocupa a mesma faixa da tela (1200..1660 de 1920): abrir
+            // um por cima do outro deixa os nomes de um a aparecer por tras dos botoes
+            // do outro. O reciproco esta no CodexPalette.Alternar.
+            GetComponent<CodexPalette>()?.Fechar();
+
+            painel.SetActive(true);
+            PreencherPersonagens();
         }
 
         public void Fechar()

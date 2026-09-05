@@ -24,7 +24,7 @@ MonoBehaviour:
     m_LocalVariables: []
   enemyType: 0
   description: 
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 1a766999a316a2b4ca55e48a41bef595, type: 3}
   animatorController: {fileID: 0}
   spriteScale: 1
   baseHealth: 200

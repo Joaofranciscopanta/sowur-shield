@@ -608,8 +608,26 @@ namespace SowurShield.Dialogue
             // villagers have portrait art in Resources/Portraits.
             dialogueUI.SetDefaultSpeakerPortrait(GetPortrait(), SpeakerPosition.Left);
 
-            // Start the dialogue
-            dialogueUI.StartDialogue(dialogueToShow);
+            // Start the dialogue.
+            //
+            // ⚠️ Se a UI recusar, desfazemos TUDO o que ficou escrito acima. A conversa
+            // pode ser recusada por outra janela ja estar aberta (o UIManager toca
+            // "Denied"), por a arvore nao validar, ou por nao haver no inicial -- e ate
+            // 2026-09-05 nenhum desses casos era comunicado: o jogador ficava com o
+            // movimento desligado e sem conversa, ou seja, **travado**. Era o defeito que
+            // o Lucas descreveu como "faz um barulho tipo de erro e trava".
+            if (!dialogueUI.StartDialogue(dialogueToShow))
+            {
+                isDialogueActive = false;
+                dialogueUI.OnDialogueEnded -= OnDialogueEndedCallback;
+
+                if (dialogueBox != null) dialogueBox.SetActive(false);
+                if (interactionPrompt != null && playerInRange) interactionPrompt.SetActive(true);
+                if (disableMovementDuringDialogue && playerMovement != null)
+                    playerMovement.EnableMovement();
+
+                return;
+            }
 
             OnDialogueStarted?.Invoke(dialogueToShow);
         }

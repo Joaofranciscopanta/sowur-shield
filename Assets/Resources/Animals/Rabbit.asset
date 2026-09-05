@@ -26,7 +26,7 @@ MonoBehaviour:
   animalFamily: Leporidae
   animalClass: Mammal
   idleSprite: {fileID: 7595986285605212588, guid: ce5acadeea6b2484692086623f08bcb8, type: 3}
-  animatorController: {fileID: 0}
+  animatorController: {fileID: 9100000, guid: 8bae6e23b84bff847b58c05982789d1b, type: 2}
   moveSpeed: 2.2
   wanderRadius: 6
   minIdleTime: 1

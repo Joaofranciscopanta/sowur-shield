@@ -168,7 +168,23 @@ namespace SowurShield.MapEditor
                         npcPrefabPath = caminhoSelecionado
                     });
 
-                    if (naCena != null) naCena.transform.position = posicao;
+                    if (naCena != null)
+                    {
+                        naCena.transform.position = posicao;
+
+                        // O COLISOR nao acompanha o transform sozinho.
+                        //
+                        // A fisica 2D so sincroniza no FixedUpdate, e o editor de mapa
+                        // corre com o jogo pausado (timeScale 0) -- entao o FixedUpdate
+                        // nunca chega a correr e o colisor fica na posicao ANTIGA para
+                        // sempre. Medido: personagem movida para 1 unidade do jogador com
+                        // o colisor ainda a 9,9 de distancia.
+                        //
+                        // Sintoma a jogar: a personagem aparece no sitio novo e interagir
+                        // com ela nao faz absolutamente nada -- nem som de erro, porque
+                        // nem chega a ser considerada um alvo. Relatado pelo Lucas.
+                        Physics2D.SyncTransforms();
+                    }
 
                     UltimaMensagem = $"{NomeVisivel(prefabSelecionado)} movido de " +
                                      $"({antes.x:0},{antes.y:0}) para ({posicao.x:0},{posicao.y:0}).";
@@ -189,6 +205,10 @@ namespace SowurShield.MapEditor
 
             var instancia = Instantiate(prefabSelecionado, posicao, Quaternion.identity, raiz);
             instancia.name = nome;
+
+            // Mesmo motivo do ramo de mover: com o jogo pausado o FixedUpdate nao corre,
+            // e sem isto a personagem nova nasce com o colisor fora do sitio.
+            Physics2D.SyncTransforms();
 
             mapEditor.CurrentMapData.npcSpawns.Add(new NPCSpawnData
             {

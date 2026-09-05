@@ -51,6 +51,8 @@ namespace SowurShield.MapEditor
         private DialoguePalette dialoguePalette;
         private Button botaoPresentes;
         private RelationshipPalette relationshipPalette;
+        private Button botaoCodex;
+        private CodexPalette codexPalette;
         private Button botaoDesfazer;
         private TextMeshProUGUI rotuloPincel;
         private GameObject painelDeMapas;
@@ -88,6 +90,10 @@ namespace SowurShield.MapEditor
             relationshipPalette = GetComponent<RelationshipPalette>();
             if (relationshipPalette == null)
                 relationshipPalette = gameObject.AddComponent<RelationshipPalette>();
+
+            codexPalette = GetComponent<CodexPalette>();
+            if (codexPalette == null)
+                codexPalette = gameObject.AddComponent<CodexPalette>();
             theme = UIThemeStyler.LoadTheme();
 
             ConstruirUI();
@@ -366,6 +372,10 @@ namespace SowurShield.MapEditor
 
             botaoPresentes = CriarBotao(pai, "Editar presentes...", y);
             botaoPresentes.onClick.AddListener(() => relationshipPalette?.Alternar());
+            y -= theme.buttonHeightSmall + theme.spacingXS;
+
+            botaoCodex = CriarBotao(pai, "Editar codex...", y);
+            botaoCodex.onClick.AddListener(() => codexPalette?.Alternar());
             return y - theme.buttonHeightSmall - theme.spacingXS - theme.spacingS;
         }
 
