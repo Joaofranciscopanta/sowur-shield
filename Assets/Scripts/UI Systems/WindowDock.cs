@@ -30,15 +30,14 @@ namespace SowurShield.UI
         private readonly Dictionary<RectTransform, Vector2> posicaoOriginal =
             new Dictionary<RectTransform, Vector2>();
 
-        /// <summary>
-        /// Distancia entre o centro de duas janelas empilhadas, em pixels de referencia.
-        ///
-        /// 330, medido: com 260 o comedouro (392 de altura) e o inventario (529) ficavam
-        /// separados mas ainda a encostar-se -- o topo de um a tocar a base do outro. A
-        /// media das duas alturas mais um respiro da 330, e ai as duas cabem folgadas num
-        /// ecra de 1080.
-        /// </summary>
-        private const float PassoVertical = 330f;
+        /// <summary>Folga entre duas janelas empilhadas, em pixels de referencia.</summary>
+        private const float Respiro = 24f;
+
+        /// <summary>Altura do ecra de referencia do CanvasScaler do projeto.</summary>
+        private const float AlturaDeReferencia = 1080f;
+
+        /// <summary>Margem que a pilha nunca invade, em cima e em baixo.</summary>
+        private const float MargemDoEcra = 40f;
 
         /// <summary>
         /// Cria o dock sozinho ao carregar a cena.
@@ -54,12 +53,20 @@ namespace SowurShield.UI
 
             var go = new GameObject(nameof(WindowDock));
             go.AddComponent<WindowDock>();
+            // Sobrevive a troca de cena. `AfterSceneLoad` dispara uma unica vez, na
+            // PRIMEIRA cena -- que no jogo montado e o MainMenu, nao a SampleScene. Sem
+            // isto o dock morria ao carregar a quinta, e o jogo ficava sem dock nenhum:
+            // medido na build com um selfcheck, "[DOCK] instalado=False". Em Play Mode o
+            // engano nao aparecia, porque ali a primeira cena JA e a do jogo.
+            DontDestroyOnLoad(go);
         }
 
         private void Awake()
         {
-            if (Instance != null && Instance != this) { Destroy(this); return; }
+            if (Instance != null && Instance != this) { Destroy(gameObject); return; }
             Instance = this;
+            // Tambem para o caso de alguem por o componente numa cena a mao.
+            DontDestroyOnLoad(gameObject);
         }
 
         private void OnDestroy()
@@ -117,20 +124,45 @@ namespace SowurShield.UI
                 return;
             }
 
-            // Empilhamento centrado: com 2 janelas os deslocamentos sao +130 e -130; com 3,
-            // +260 / 0 / -260. O centro do conjunto fica sempre no centro da tela.
-            float alturaTotal = (abertas.Count - 1) * PassoVertical;
-            float topo = alturaTotal * 0.5f;
+            // Empilhamento pela ALTURA REAL de cada janela, nao por um passo fixo.
+            //
+            // Com um passo de 330 o comedouro (392 de altura) e o inventario (530) ainda se
+            // sobrepunham em 131px -- medido. Um passo fixo so funciona se todas as janelas
+            // tiverem o mesmo tamanho, e nao tem: a soma das metades e que decide.
+            var alturas = new List<float>(abertas.Count);
+            float somaAlturas = 0f;
+            foreach (var j in abertas)
+            {
+                float h = Mathf.Max(j.rect.height * Mathf.Abs(j.lossyScale.y), 1f);
+                alturas.Add(h);
+                somaAlturas += h;
+            }
 
+            float respiro = Respiro;
+            float alturaTotal = somaAlturas + respiro * (abertas.Count - 1);
+
+            // Se a pilha nao cabe no ecra, o respiro encolhe antes de deixar sobrepor.
+            float disponivel = AlturaDeReferencia - 2f * MargemDoEcra;
+            if (alturaTotal > disponivel && abertas.Count > 1)
+            {
+                respiro = Mathf.Max(0f, (disponivel - somaAlturas) / (abertas.Count - 1));
+                alturaTotal = somaAlturas + respiro * (abertas.Count - 1);
+            }
+
+            // Comeca no topo da pilha e desce, dando a cada janela a sua propria altura.
+            float cursor = alturaTotal * 0.5f;
             for (int i = 0; i < abertas.Count; i++)
             {
                 var janela = abertas[i];
                 Vector2 origem = posicaoOriginal.TryGetValue(janela, out var o)
                     ? o : janela.anchoredPosition;
 
+                float centro = cursor - alturas[i] * 0.5f;
+                cursor -= alturas[i] + respiro;
+
                 // So o Y e reorganizado. Mexer no X moveria paineis que o designer alinhou
                 // de proposito com outra coisa (a hotbar, por exemplo).
-                janela.anchoredPosition = new Vector2(origem.x, topo - i * PassoVertical);
+                janela.anchoredPosition = new Vector2(origem.x, centro);
             }
         }
 

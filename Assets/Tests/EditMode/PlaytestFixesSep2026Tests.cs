@@ -18,8 +18,6 @@ namespace SowurShield.Tests
 /// </summary>
 public class PlaytestFixesSep2026Tests
 {
-    private const BindingFlags Priv = BindingFlags.NonPublic | BindingFlags.Instance;
-
     // =====================================================================
     // 1. Alcance de interacao
     // =====================================================================
@@ -208,7 +206,10 @@ public class PlaytestFixesSep2026Tests
     {
         var host = new GameObject("DockDeTeste");
         var dock = host.AddComponent<WindowDock>();
-        typeof(WindowDock).GetMethod("Awake", Priv)?.Invoke(dock, null);
+        // O Awake NAO e invocado: ele chama DontDestroyOnLoad, que so existe em Play Mode e
+        // lanca num teste de EditMode. O que o teste exercita e o Registrar/Remover, que
+        // nao dependem do singleton.
+        DefinirInstanciaDoDock(dock);
 
         var a = NovaJanela("A");
         var b = NovaJanela("B");
@@ -225,6 +226,9 @@ public class PlaytestFixesSep2026Tests
             Object.DestroyImmediate(a.gameObject);
             Object.DestroyImmediate(b.gameObject);
             Object.DestroyImmediate(host);
+            // O singleton fica a apontar para um objeto destruido se nao for limpo, e o
+            // teste seguinte herda uma instancia morta.
+            DefinirInstanciaDoDock(null);
         }
     }
 
@@ -234,7 +238,10 @@ public class PlaytestFixesSep2026Tests
     {
         var host = new GameObject("DockDeTeste");
         var dock = host.AddComponent<WindowDock>();
-        typeof(WindowDock).GetMethod("Awake", Priv)?.Invoke(dock, null);
+        // O Awake NAO e invocado: ele chama DontDestroyOnLoad, que so existe em Play Mode e
+        // lanca num teste de EditMode. O que o teste exercita e o Registrar/Remover, que
+        // nao dependem do singleton.
+        DefinirInstanciaDoDock(dock);
 
         var a = NovaJanela("A");
         var b = NovaJanela("B");
@@ -253,7 +260,26 @@ public class PlaytestFixesSep2026Tests
             Object.DestroyImmediate(a.gameObject);
             Object.DestroyImmediate(b.gameObject);
             Object.DestroyImmediate(host);
+            // O singleton fica a apontar para um objeto destruido se nao for limpo, e o
+            // teste seguinte herda uma instancia morta.
+            DefinirInstanciaDoDock(null);
         }
+    }
+
+    /// <summary>
+    /// Atribui o singleton do dock sem passar pelo Awake.
+    ///
+    /// `Instance` e uma auto-property com setter privado, entao a escrita vai pelo setter
+    /// nao-publico (ou pelo campo de apoio que o compilador gera).
+    /// </summary>
+    private static void DefinirInstanciaDoDock(WindowDock valor)
+    {
+        var prop = typeof(WindowDock).GetProperty("Instance");
+        var setter = prop != null ? prop.GetSetMethod(nonPublic: true) : null;
+        if (setter != null) { setter.Invoke(null, new object[] { valor }); return; }
+
+        typeof(WindowDock).GetField("<Instance>k__BackingField",
+            BindingFlags.NonPublic | BindingFlags.Static)?.SetValue(null, valor);
     }
 
     private static RectTransform NovaJanela(string nome)

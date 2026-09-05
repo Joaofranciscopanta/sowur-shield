@@ -425,6 +425,14 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             UpdateAppearance(); // Atualiza aparência caso cultivo estivesse morrendo
             PlayEffect(waterEffect);
             PlaySound(waterSound, "WaterSoil");
+
+            // Regar um cultivo TAMBEM conta para o passo "water_crop" do tutorial.
+            //
+            // A notificacao so existia no ramo de cima (solo arado e ainda sem semente),
+            // entao quem plantasse antes de regar -- que e a ordem natural, e a que o
+            // proprio tutorial ensina no passo anterior -- regava, via a agua cair, e o
+            // passo nunca completava. Relatado a jogar: "o passo 3 nao completa sozinho".
+            TutorialManager.NotifyStepComplete("water_crop");
         }
     }
 

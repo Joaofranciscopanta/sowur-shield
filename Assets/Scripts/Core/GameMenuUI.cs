@@ -612,8 +612,23 @@ public class GameMenuUI : MonoBehaviour
         miraToggle.onValueChanged.AddListener(v =>
             SowurShield.Core.InteractionPreferences.MirarNoCursor = v);
 
+        // O clone traz o LocalizeStringEvent do original, que reescreve o texto de volta
+        // para "Tela Cheia" no frame seguinte -- o rotulo aparecia errado e por cima do
+        // "Idioma". Remover o componente antes de escrever o texto novo.
+        foreach (var loc in clone.GetComponentsInChildren<
+                     UnityEngine.Localization.Components.LocalizeStringEvent>(true))
+            Destroy(loc);
+
         var rotulo = clone.GetComponentInChildren<TMPro.TextMeshProUGUI>(true);
-        if (rotulo != null) rotulo.text = "Mirar com o cursor";
+        if (rotulo != null)
+        {
+            rotulo.text = "Mirar com o cursor";
+            // O rotulo do original e estreito e o texto novo e mais longo: sem isto ele
+            // transbordava por cima da linha do idioma, logo abaixo.
+            rotulo.enableAutoSizing = true;
+            rotulo.fontSizeMin = 10f;
+            rotulo.overflowMode = TMPro.TextOverflowModes.Ellipsis;
+        }
     }
 
     private Toggle miraToggle;
