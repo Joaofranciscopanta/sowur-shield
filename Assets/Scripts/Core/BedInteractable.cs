@@ -147,6 +147,20 @@ public class BedInteractable : MonoBehaviour, IInteractable
 
         isSleeping = true;
 
+        // Fechar TUDO o que ficou aberto antes de dormir.
+        //
+        // Sem isto, quem fosse dormir com o comedouro (ou a caixa de venda, ou a loja)
+        // aberto acordava no dia seguinte com essa janela ainda na pilha do UIManager --
+        // e uma janela na pilha faz TryOpenWindow recusar todas as outras, tocando
+        // "Denied". O painel some de vista durante o fade, entao parecia fechado: o
+        // sintoma era "no outro dia tudo dava Denied em todos os botoes". Relatado a
+        // jogar a build, e reproduzido: dia 4 -> 5 com FeedingTrough preso na pilha.
+        //
+        // A cama nao passa pelo UIManager (o painel de confirmacao e mostrado a mao),
+        // entao ninguem estava a limpar isto.
+        if (UIManager.Instance != null)
+            UIManager.Instance.ForceCloseAllWindows();
+
         // Hide confirmation panel
         if (confirmationPanel != null)
         {

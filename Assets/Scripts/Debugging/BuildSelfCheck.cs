@@ -68,6 +68,7 @@ namespace SowurShield.Debugging
                 Assets(sb);
                 Codex(sb);
                 Conversa(sb);
+                Dormir(sb);
 
                 sb.AppendLine("===== FIM DO SELFCHECK =====");
                 Debug.Log(sb.ToString());
@@ -394,6 +395,54 @@ namespace SowurShield.Debugging
                 // Se o jogador ficou sem movimento depois disto, o jogo esta travado.
                 if (jogador != null)
                     sb.AppendLine($"[CONVERSA] jogador pode mover no fim: {jogador.IsMovementEnabled()}");
+            }
+
+            /// <summary>
+            /// Dormir tem de deixar a pilha de janelas LIMPA.
+            ///
+            /// Relatado a jogar a build: "coloquei as sementes no lugar para os animais
+            /// comerem, quando fui dormir no outro dia tudo estava dando Denied em todos
+            /// os botoes". Uma janela esquecida na pilha faz o TryOpenWindow recusar
+            /// TODAS as outras -- e durante o fade de sono o painel some de vista, entao
+            /// parecia fechado.
+            /// </summary>
+            private static void Dormir(StringBuilder sb)
+            {
+                var um = SowurShield.Core.UIManager.Instance;
+                if (um == null) { sb.AppendLine("[DORMIR] sem UIManager"); return; }
+
+                var cama = Object.FindFirstObjectByType<SowurShield.Core.BedInteractable>(
+                    FindObjectsInactive.Include);
+                if (cama == null) { sb.AppendLine("[DORMIR] sem cama na cena"); return; }
+
+                // Uma janela qualquer, aberta e esquecida.
+                SowurShield.Core.IUIWindow vitima = null;
+                foreach (var mb in Object.FindObjectsByType<MonoBehaviour>(
+                             FindObjectsInactive.Include, FindObjectsSortMode.None))
+                    if (mb is SowurShield.Core.IUIWindow j && !(mb is SowurShield.Core.BedInteractable))
+                    { vitima = j; break; }
+
+                if (vitima == null) { sb.AppendLine("[DORMIR] sem janela para testar"); return; }
+
+                um.ForceCloseAllWindows();
+                bool abriu = um.TryOpenWindow(vitima);
+                sb.AppendLine($"[DORMIR] janela '{vitima.WindowName}' aberta antes de dormir: {abriu}");
+
+                // Correr so o inicio da SleepSequence: a limpeza acontece antes do fade,
+                // e nao queremos esperar o dia inteiro avancar dentro do selfcheck.
+                var mi = typeof(SowurShield.Core.BedInteractable).GetMethod("SleepSequence",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (mi != null)
+                {
+                    var rotina = mi.Invoke(cama, null) as System.Collections.IEnumerator;
+                    if (rotina != null) rotina.MoveNext();
+                }
+
+                // O teste real: depois de dormir, outra janela abre?
+                bool depois = um.TryOpenWindow(vitima);
+                sb.AppendLine($"[DORMIR] abrir uma janela depois de dormir: " +
+                              (depois ? "OK" : "RECUSADO -> Denied em todos os botoes"));
+                um.ForceCloseAllWindows();
             }
         }
     }
