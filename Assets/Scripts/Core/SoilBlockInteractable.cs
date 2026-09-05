@@ -277,6 +277,14 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             UpdateAppearance();
             PlayEffect(tillEffect);
             PlaySound(tillSound, "TillSoil");
+
+            // Este e o caminho REAL de arar no jogo.
+            //
+            // Quando o jogador passa a enxada em chao virgem, o CursorController cria o
+            // bloco e chama ESTE metodo -- nao o TillSoil, que so corre num bloco que ja
+            // existia. So o TillSoil notificava o tutorial, entao o passo 1 nunca
+            // completava por mais que se arasse. Relatado a jogar duas vezes.
+            TutorialManager.NotifyStepComplete("till_soil");
         }
     }
 

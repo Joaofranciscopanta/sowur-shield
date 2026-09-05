@@ -64,6 +64,7 @@ namespace SowurShield.Debugging
                 Alcances(sb);
                 Dock(sb);
                 Plantacoes(sb);
+                Tutorial(sb);
 
                 sb.AppendLine("===== FIM DO SELFCHECK =====");
                 Debug.Log(sb.ToString());
@@ -185,6 +186,51 @@ namespace SowurShield.Debugging
                     sb.AppendLine($"[PLANTA] {c.name}: {c.TotalStages} fases x " +
                                   $"{c.daysPerStage} dias = {c.TotalStages * c.daysPerStage} " +
                                   "ate colher");
+            }
+
+            /// <summary>
+            /// O passo 1 tem de completar pelo caminho que o jogo usa mesmo.
+            ///
+            /// Ha DOIS caminhos para arar: o `TillSoil` (bloco que ja existia) e o
+            /// `TillSoilDirectly` (chao virgem, que e o que o CursorController chama).
+            /// So o primeiro notificava o tutorial, entao arar no jogo nao completava
+            /// passo nenhum. Verificamos o segundo, que era o partido.
+            /// </summary>
+            private static void Tutorial(StringBuilder sb)
+            {
+                var tm = SowurShield.Core.TutorialManager.Instance;
+                if (tm == null) { sb.AppendLine("[TUTORIAL] sem TutorialManager na cena"); return; }
+
+                var campo = typeof(SowurShield.Core.TutorialManager).GetField(
+                    "_currentStepIndex",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                System.Func<int> passo = () => campo == null ? -99 : (int)campo.GetValue(tm);
+
+                // O save da build pode ter o tutorial ja concluido -- e ai o StartTutorial
+                // sai logo e o indice fica em -1, o que parece "preso" sem ser. Zeramos o
+                // estado para medir o comportamento, nao o save.
+                var concluido = typeof(SowurShield.Core.TutorialManager).GetField(
+                    "_tutorialComplete",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                sb.AppendLine($"[TUTORIAL] save trazia concluido={concluido?.GetValue(tm)}");
+                concluido?.SetValue(tm, false);
+
+                var feitos = typeof(SowurShield.Core.TutorialManager).GetField(
+                    "_completedStepIds",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                (feitos?.GetValue(tm) as System.Collections.Generic.HashSet<string>)?.Clear();
+
+                tm.StartTutorial();
+                int antes = passo();
+
+                var go = new GameObject("SelfCheckSoil");
+                var solo = go.AddComponent<SowurShield.Core.SoilBlockInteractable>();
+                solo.TillSoilDirectly();
+                int depois = passo();
+                Object.Destroy(go);
+
+                sb.AppendLine($"[TUTORIAL] arar chao virgem: passo {antes} -> {depois} " +
+                              $"({(depois > antes ? "avanca" : "PRESO")})");
             }
         }
     }

@@ -127,7 +127,13 @@ namespace SowurShield.MapEditor
             float delta = 0f;
 
             var mouse = Mouse.current;
-            if (mouse != null)
+            // Sobre a paleta, a roda e da LISTA e nao da camera.
+            //
+            // Os dois liam a mesma roda: rolar a lista de 67 objetos para achar uma arvore
+            // afastava o mundo ao mesmo tempo, e chegar ao fim da lista significava perder
+            // o enquadramento. Relatado a jogar a build. Mesma guarda que o ObjectPlacer ja
+            // usa para o clique -- sobre a UI o gesto pertence a UI.
+            if (mouse != null && !SobreAUI())
             {
                 float roda = mouse.scroll.ReadValue().y;
                 if (!Mathf.Approximately(roda, 0f)) delta -= Mathf.Sign(roda) * passoDoZoom;
@@ -144,6 +150,18 @@ namespace SowurShield.MapEditor
 
             cam.orthographicSize = Mathf.Clamp(
                 cam.orthographicSize + delta, zoomMinimo, zoomMaximo);
+        }
+
+        /// <summary>
+        /// Se o cursor esta sobre um elemento de UI (uma das paletas, tipicamente).
+        ///
+        /// As teclas +/- do Zoom continuam a funcionar mesmo aqui: nao ha ambiguidade
+        /// nenhuma nelas, e sao o recuo para quem usa trackpad.
+        /// </summary>
+        private static bool SobreAUI()
+        {
+            var es = UnityEngine.EventSystems.EventSystem.current;
+            return es != null && es.IsPointerOverGameObject();
         }
 
         /// <summary>Recentra a camera no jogador sem sair do editor.</summary>

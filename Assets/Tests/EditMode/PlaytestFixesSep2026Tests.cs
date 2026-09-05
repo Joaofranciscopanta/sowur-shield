@@ -167,6 +167,90 @@ public class PlaytestFixesSep2026Tests
     }
 
     // =====================================================================
+    // 2b. Tutorial
+    // =====================================================================
+
+    /// <summary>
+    /// TODO caminho que ara o solo tem que notificar o tutorial.
+    ///
+    /// Havia dois: `TillSoil` (num bloco que ja existia) e `TillSoilDirectly` (que o
+    /// CursorController chama ao criar o bloco em chao virgem). So o primeiro notificava --
+    /// e o segundo e o caminho NORMAL do jogo, entao o passo 1 nunca completava por mais
+    /// que se arasse. E como o tutorial ficava preso no passo 1, o passo 2 tambem parecia
+    /// quebrado. Relatado a jogar duas vezes seguidas.
+    /// </summary>
+    [Test]
+    public void TodoCaminhoQueAra_NotificaOTutorial()
+    {
+        string fonte = System.IO.File.ReadAllText(System.IO.Path.Combine(
+            Application.dataPath, "Scripts/Core/SoilBlockInteractable.cs"));
+
+        foreach (var metodo in new[] { "TillSoilDirectly", "TillSoil" })
+        {
+            int inicio = fonte.IndexOf($"void {metodo}(");
+            Assert.Greater(inicio, 0, $"Nao achei o metodo {metodo}.");
+
+            // Ate ao proximo metodo, ou 800 chars — o suficiente para um corpo destes.
+            int fim = fonte.IndexOf("\n    public ", inicio + 10);
+            int fim2 = fonte.IndexOf("\n    private ", inicio + 10);
+            if (fim2 > 0 && (fim < 0 || fim2 < fim)) fim = fim2;
+            if (fim < 0) fim = System.Math.Min(fonte.Length, inicio + 800);
+
+            string corpo = fonte.Substring(inicio, fim - inicio);
+            Assert.IsTrue(corpo.Contains("NotifyStepComplete(\"till_soil\")"),
+                $"{metodo} ara o solo mas nao avisa o tutorial — o passo fica preso.");
+        }
+    }
+
+    /// <summary>
+    /// Regar um CULTIVO tambem conta, nao so regar solo arado e vazio.
+    ///
+    /// A notificacao vivia so no ramo "solo arado sem semente". Quem plantasse antes de
+    /// regar — a ordem que o proprio tutorial ensina no passo anterior — nunca completava.
+    /// </summary>
+    [Test]
+    public void RegarUmCultivo_TambemContaParaOTutorial()
+    {
+        string fonte = System.IO.File.ReadAllText(System.IO.Path.Combine(
+            Application.dataPath, "Scripts/Core/SoilBlockInteractable.cs"));
+
+        int inicio = fonte.IndexOf("void WaterSoil(");
+        Assert.Greater(inicio, 0, "Nao achei o WaterSoil.");
+        int fim = fonte.IndexOf("\n    private PlayerMove", inicio);
+        if (fim < 0) fim = System.Math.Min(fonte.Length, inicio + 1600);
+
+        string corpo = fonte.Substring(inicio, fim - inicio);
+        int quantas = System.Text.RegularExpressions.Regex.Matches(
+            corpo, @"NotifyStepComplete\(""water_crop""\)").Count;
+
+        Assert.AreEqual(2, quantas,
+            "Os DOIS ramos de regar (solo arado e cultivo ja plantado) tem que notificar; " +
+            $"encontrei {quantas}.");
+    }
+
+    /// <summary>
+    /// O tutorial nao pede nada que leve dias de jogo a cumprir.
+    ///
+    /// O passo "harvest" pedia para colher, e a planta mais rapida leva 8 dias: a barra
+    /// ficava na tela mais de uma semana de jogo num passo impossivel de cumprir na hora.
+    /// </summary>
+    [Test]
+    public void OTutorial_NaoPedeNadaQueLeveDias()
+    {
+        string fonte = System.IO.File.ReadAllText(System.IO.Path.Combine(
+            Application.dataPath, "Scripts/Core/TutorialManager.cs"));
+
+        int inicio = fonte.IndexOf("Steps = new TutorialStep[]");
+        Assert.Greater(inicio, 0, "Nao achei a lista de passos.");
+        int fim = fonte.IndexOf("};", inicio);
+        string lista = fonte.Substring(inicio, fim - inicio);
+
+        Assert.IsFalse(
+            System.Text.RegularExpressions.Regex.IsMatch(lista, @"new TutorialStep\(""harvest"""),
+            "O passo de colher voltou: leva 8 dias na planta mais rapida.");
+    }
+
+    // =====================================================================
     // 3. Janelas sobrepostas
     // =====================================================================
 
