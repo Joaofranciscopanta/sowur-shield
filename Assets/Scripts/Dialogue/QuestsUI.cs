@@ -202,6 +202,23 @@ public class QuestsUI : MonoBehaviour, IUIWindow
         float insetX = frame.border.z * (panelRT.rect.width / frame.rect.width) * FrameArtMultiplier;
         float insetY = frame.border.w * (panelRT.rect.height / frame.rect.height) * FrameArtMultiplier;
 
+        // Alinhado com a LINHA DO TITULO, e nao apenas recuado da moldura. O recuo do
+        // 9-slice sozinho punha o botao em y 757..797 enquanto a fila de abas ocupa
+        // 718..762: sobrepunham-se em 5px, e o botao ficava espremido entre o titulo e
+        // as abas em vez de partilhar a linha do titulo, que e onde ha espaco livre.
+        if (titleTextRef != null)
+        {
+            // Ambos ancorados ao TOPO do painel, entao o y do titulo vale direto para o
+            // botao -- sem conversao de referencial.
+            var titleRT = titleTextRef.rectTransform;
+            if (Mathf.Approximately(titleRT.anchorMin.y, 1f))
+            {
+                btnRT.anchorMin = btnRT.anchorMax = new Vector2(1f, 1f);
+                btnRT.anchoredPosition = new Vector2(-insetX, titleRT.anchoredPosition.y);
+                return;
+            }
+        }
+
         btnRT.anchoredPosition = new Vector2(-insetX, -insetY);
     }
 
