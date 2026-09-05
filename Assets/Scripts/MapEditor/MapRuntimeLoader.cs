@@ -135,7 +135,7 @@ namespace SowurShield.MapEditor
 
                 var instancia = Instantiate(prefab, obj.position,
                                             Quaternion.Euler(obj.rotation), raiz.transform);
-                instancia.transform.localScale = obj.scale;
+                instancia.transform.localScale = EscalaDe(obj, prefab);
                 instancia.name = obj.objectId;
             }
 
@@ -148,6 +148,37 @@ namespace SowurShield.MapEditor
         }
 
         public const string RaizDeObjetos = "MapObjects (Runtime)";
+
+        /// <summary>
+        /// A escala com que instanciar um objeto do mapa.
+        ///
+        /// Desde 2026-09-05 cada prefab da paleta carrega no proprio localScale o fator
+        /// que o traz para a escala do mundo (PPU 16) -- 5,5 para a arte a PPU 100, 2
+        /// para as arvores, e assim por diante -- e o ObjectPlacer grava em
+        /// `scale` o produto desse fator pelo multiplicador escolhido. Para esses
+        /// mapas o valor gravado ja e absoluto e vai direto.
+        ///
+        /// Os mapas salvos ANTES disso gravaram exatamente (1,1,1), de quando o placer
+        /// escrevia o multiplicador cru e todo prefab tinha escala 1. Usar esse valor
+        /// hoje faria a flor nascer com 1/5,5 do tamanho -- o mesmo defeito de antes,
+        /// so que vindo do arquivo. Nesse caso caimos na escala do proprio prefab.
+        ///
+        /// (1,1,1) e seguro como sentinela: nenhum prefab da paleta tem escala natural
+        /// 1, entao um mapa novo nunca grava esse valor por coincidencia.
+        /// </summary>
+        public static Vector3 EscalaDe(ObjectSpawnData obj, GameObject prefab)
+        {
+            bool escalaDeMapaAntigo = obj.scale == Vector3.one;
+            if (escalaDeMapaAntigo && prefab != null)
+                return prefab.transform.localScale;
+
+            // Um mapa gravado com escala zerada (campo nunca preenchido) tambem cai
+            // no prefab: um objeto de escala 0 e invisivel e parece nao ter carregado.
+            if (obj.scale == Vector3.zero)
+                return prefab != null ? prefab.transform.localScale : Vector3.one;
+
+            return obj.scale;
+        }
 
         /// <summary>
         /// Converte o caminho gravado pelo editor numa chave de Resources.

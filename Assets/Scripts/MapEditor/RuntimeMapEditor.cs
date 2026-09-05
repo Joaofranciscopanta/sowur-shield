@@ -337,7 +337,9 @@ public class RuntimeMapEditor : MonoBehaviour
             if (prefab == null) { perdidos++; continue; }
 
             var instancia = Instantiate(prefab, obj.position, Quaternion.Euler(obj.rotation), raiz.transform);
-            instancia.transform.localScale = obj.scale;
+            // Mesma regra do jogo (MapRuntimeLoader.EscalaDe): mapa antigo gravou
+            // (1,1,1) e cai na escala natural do prefab; mapa novo ja e absoluto.
+            instancia.transform.localScale = MapRuntimeLoader.EscalaDe(obj, prefab);
             recriados++;
         }
 
