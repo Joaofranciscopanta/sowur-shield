@@ -29,11 +29,25 @@ namespace SowurShield.MapEditor
         /// </summary>
         private static readonly string[] Pastas =
         {
+            // NPCs em primeiro: sao o que se procura primeiro ao montar um mapa, e a
+            // lista de cenario tem 57 entradas para percorrer.
+            "Assets/Resources/Prefabs/NPCs",
             "Assets/Resources/Prefabs/Decorations",
             "Assets/Resources/Prefabs/FruitTrees",
             "Assets/Resources/Prefabs/Fruits",
             "Assets/Resources/Prefabs/GroundItems"
         };
+
+        /// <summary>
+        /// A pasta cujos prefabs sao pessoas, e nao cenario.
+        ///
+        /// A paleta precisa de distinguir os dois porque o clique vai para placers
+        /// diferentes: um NPC nao se duplica nem se escala, ao contrario de uma arvore.
+        /// </summary>
+        public const string CategoriaNPCs = "NPCs";
+
+        /// <summary>Se esta entrada e uma pessoa.</summary>
+        public static bool EhNPC(Entrada entrada) => entrada.Categoria == CategoriaNPCs;
 
         public readonly struct Entrada
         {
@@ -71,7 +85,13 @@ namespace SowurShield.MapEditor
                     cache.Add(new Entrada(caminho, nome, categoria));
                 }
             }
-            cache = cache.OrderBy(e => e.Categoria).ThenBy(e => e.Nome).ToList();
+            // Pela ORDEM DAS PASTAS, nao pelo nome da categoria: ordenar alfabeticamente
+            // poria "Decorations" antes de "NPCs" e desfazia a escolha feita na lista
+            // acima, onde as pessoas vem primeiro de proposito.
+            cache = cache
+                .OrderBy(e => System.Array.FindIndex(Pastas, p => p.EndsWith("/" + e.Categoria)))
+                .ThenBy(e => e.Nome)
+                .ToList();
 #endif
             return cache;
         }

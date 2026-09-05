@@ -343,9 +343,29 @@ public class RuntimeMapEditor : MonoBehaviour
             recriados++;
         }
 
+        // Uma varredura so, reusada por todos: FindObjectsByType por NPC seria O(n*m).
+        var npcsNaCena = FindObjectsByType<SowurShield.Dialogue.NPCDialogueInteractable>(
+                             FindObjectsSortMode.None);
+
         foreach (var npc in currentMapData.npcSpawns)
         {
             if (!npc.isActive) continue;
+
+            // Mesma regra do jogo (MapRuntimeLoader.AplicarNPCs): uma personagem que a
+            // cena ja traz e MOVIDA, nao duplicada. `npcId` indexa a memoria de conversa
+            // e o relacionamento, entao duas Joanas partilhariam estado e as duas
+            // ficariam erradas.
+            if (!string.IsNullOrEmpty(npc.npcId))
+            {
+                var existente = System.Array.Find(npcsNaCena, n => n.GetNPCId() == npc.npcId);
+                if (existente != null)
+                {
+                    existente.transform.position = npc.position;
+                    recriados++;
+                    continue;
+                }
+            }
+
             var prefab = PrefabCatalog.Resolver(npc.npcPrefabPath);
             if (prefab == null) { perdidos++; continue; }
 

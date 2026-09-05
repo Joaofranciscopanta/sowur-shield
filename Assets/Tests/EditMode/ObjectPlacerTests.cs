@@ -57,11 +57,20 @@ public class ObjectPlacerTests
         if (gridHost != null) Object.DestroyImmediate(gridHost);
     }
 
+    /// <summary>
+    /// O primeiro prefab de CENARIO do catalogo.
+    ///
+    /// Desde que a paleta passou a oferecer pessoas (2026-09-05), `Tudo()[0]` e um NPC —
+    /// que tem escala natural 1 e por isso fazia o teste de escala auto-ignorar-se em vez
+    /// de testar. O ObjectPlacer trata de cenario, entao o helper tem de devolver cenario.
+    /// </summary>
     private string PrimeiroPrefab()
     {
-        var tudo = PrefabCatalog.Tudo();
-        if (tudo.Count == 0) Assert.Ignore("Sem prefabs no catalogo.");
-        return tudo[0].Caminho;
+        foreach (var e in PrefabCatalog.Tudo())
+            if (!PrefabCatalog.EhNPC(e)) return e.Caminho;
+
+        Assert.Ignore("Sem prefabs de cenario no catalogo.");
+        return null;
     }
 
     private void Colocar(Vector3 posicao) =>

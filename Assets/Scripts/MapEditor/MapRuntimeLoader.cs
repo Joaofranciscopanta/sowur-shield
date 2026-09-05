@@ -33,6 +33,10 @@ namespace SowurShield.MapEditor
         [SerializeField] private bool aplicarTerreno = true;
         [SerializeField] private bool aplicarObjetos = true;
 
+        [Tooltip("As pessoas colocadas no editor. Uma personagem que a cena ja traz e " +
+                 "movida para a posicao do mapa, nunca duplicada.")]
+        [SerializeField] private bool aplicarNPCs = true;
+
         [Tooltip("Desligado, o componente fica inerte -- util para testar a cena como " +
                  "ela esta, sem apagar o que ja foi montado a mao.")]
         [SerializeField] private bool carregarAoIniciar = true;
@@ -97,10 +101,71 @@ namespace SowurShield.MapEditor
             }
 
             if (aplicarObjetos) AplicarObjetos(dados);
+            if (aplicarNPCs) AplicarNPCs(dados);
 
             MapaAtual = dados;
             return true;
         }
+
+        /// <summary>
+        /// Instancia as pessoas do mapa.
+        ///
+        /// Ate 2026-09-05 este loader ignorava `npcSpawns` por completo: o campo existia no
+        /// MapData desde sempre, o editor gravava-o, e nada o lia no jogo -- o mesmo defeito
+        /// que a opcao B corrigiu para os objetos, so que para gente.
+        ///
+        /// Uma personagem que a CENA ja traz nao e duplicada: `npcId` indexa a memoria de
+        /// conversa e o relacionamento, entao duas Joanas partilhariam estado e as duas
+        /// ficariam erradas. Nesse caso a que ja existe e MOVIDA para a posicao do mapa,
+        /// que e a mesma regra que a paleta aplica ao colocar.
+        /// </summary>
+        private void AplicarNPCs(MapData dados)
+        {
+            if (dados.npcSpawns == null || dados.npcSpawns.Count == 0) return;
+
+            var raiz = GameObject.Find(RaizDeNPCs);
+            if (raiz != null) DestroyImmediate(raiz);
+            raiz = new GameObject(RaizDeNPCs);
+
+            // Uma unica varredura da cena, reusada por todos os spawns: FindObjectsByType
+            // por NPC seria O(n*m) num metodo que corre no Start.
+            var naCena = FindObjectsByType<SowurShield.Dialogue.NPCDialogueInteractable>(
+                             FindObjectsSortMode.None);
+
+            int perdidos = 0, movidos = 0, criados = 0;
+            foreach (var npc in dados.npcSpawns)
+            {
+                if (!npc.isActive) continue;
+
+                if (!string.IsNullOrEmpty(npc.npcId))
+                {
+                    var existente = System.Array.Find(naCena, n => n.GetNPCId() == npc.npcId);
+                    if (existente != null)
+                    {
+                        existente.transform.position = npc.position;
+                        movidos++;
+                        continue;
+                    }
+                }
+
+                var prefab = ResolverPrefab(npc.npcPrefabPath);
+                if (prefab == null) { perdidos++; continue; }
+
+                var instancia = Instantiate(prefab, npc.position,
+                                            Quaternion.Euler(0f, 0f, npc.rotation), raiz.transform);
+                if (!string.IsNullOrEmpty(npc.npcName)) instancia.name = npc.npcName;
+                criados++;
+            }
+
+            if (perdidos > 0)
+            {
+                Debug.LogWarning($"[MapRuntimeLoader] {perdidos} NPC(s) do mapa nao " +
+                                 "puderam ser carregados: o prefab precisa estar sob " +
+                                 "Assets/Resources/ para existir no jogo.");
+            }
+        }
+
+        public const string RaizDeNPCs = "MapNPCs (Runtime)";
 
         /// <summary>
         /// Instancia os objetos do mapa sob uma raiz propria.
@@ -225,6 +290,7 @@ namespace SowurShield.MapEditor
         /// <summary>As pastas de prefab sob Resources/ que a paleta oferece.</summary>
         private static readonly string[] PastasDePrefabs =
         {
+            "Prefabs/NPCs",
             "Prefabs/Decorations",
             "Prefabs/FruitTrees",
             "Prefabs/Fruits",
