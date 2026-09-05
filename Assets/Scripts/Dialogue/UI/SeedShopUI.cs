@@ -67,9 +67,21 @@ public class SeedShopUI : MonoBehaviour, IUIWindow
         SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
     }
 
+    /// <summary>
+    /// Registra-se no UIManager -- ver o comentario igual no RelationshipUI. Tres janelas
+    /// implementavam IUIWindow sem nunca se registarem; esta era uma delas.
+    /// </summary>
+    private void Start()
+    {
+        if (UIManager.Instance != null)
+            UIManager.Instance.RegisterWindow(this);
+    }
+
     private void OnDestroy()
     {
         SowurShield.Core.LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+        if (UIManager.Instance != null)
+            UIManager.Instance.UnregisterWindow(this);
     }
 
     private void TryBuildUI()
