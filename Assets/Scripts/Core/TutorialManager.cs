@@ -70,7 +70,18 @@ public class TutorialManager : MonoBehaviour, ISaveable
             new TutorialStep("water_crop", waterCropDescription_Localized, waterCropTitle_Localized),
             new TutorialStep("pet_animal", petAnimalDescription_Localized, petAnimalTitle_Localized),
             new TutorialStep("sleep", sleepDescription_Localized, sleepTitle_Localized),
-            new TutorialStep("harvest", harvestDescription_Localized, harvestTitle_Localized),
+            // "harvest" foi REMOVIDO em 2026-09-05.
+            //
+            // Pedia para colher, mas a planta mais rapida (cenoura) leva 8 dias: dormir uma
+            // vez nao chega perto, e a barra do tutorial ficava na tela por mais de uma
+            // semana de jogo num passo que o jogador nao tinha como cumprir. Relatado a
+            // jogar: "o passo 6 nao faz sentido porque a crop nao fica pronta de um dia
+            // pro outro".
+            //
+            // Colher e a consequencia natural do que os cinco passos ja ensinaram, entao
+            // nao precisa de instrucao propria. O CropGrowthManager continua a chamar
+            // NotifyStepComplete("harvest") -- e inofensivo, e volta a servir se alguem
+            // reintroduzir o passo.
         };
     }
 
@@ -184,9 +195,25 @@ public class TutorialManager : MonoBehaviour, ISaveable
     {
         if (!IsTutorialActive) return;
         if (_currentStepIndex >= Steps.Length) return;
-        if (Steps[_currentStepIndex].stepId != stepId) return;
 
+        // Uma acao feita FORA DA VEZ fica guardada, em vez de se perder.
+        //
+        // Antes, uma notificacao que nao fosse a do passo atual era simplesmente ignorada:
+        // quem arasse o solo antes de o tutorial chegar a esse passo, ou fizesse as coisas
+        // noutra ordem, ficava preso num passo que ja tinha cumprido -- e a unica saida era
+        // o botao "Pular". Relatado a jogar: "os passos 1 e 3 nao completam sozinhos".
+        //
+        // Guardar sempre, e depois deixar o pulo de passos ja completos (abaixo) resolver:
+        // se o jogador chegar a este passo com ele ja feito, o tutorial avanca sozinho.
         _completedStepIds.Add(stepId);
+
+        if (Steps[_currentStepIndex].stepId != stepId)
+        {
+            // Nao era a vez deste passo, mas o ATUAL pode ja estar cumprido de antes.
+            SaltarPassosJaFeitos();
+            return;
+        }
+
         _currentStepIndex++;
 
         if (_currentStepIndex >= Steps.Length)
@@ -195,7 +222,17 @@ public class TutorialManager : MonoBehaviour, ISaveable
             return;
         }
 
-        // Skip already-complete steps
+        SaltarPassosJaFeitos();
+    }
+
+    /// <summary>
+    /// Avanca por cima de passos que o jogador ja cumpriu, e mostra o primeiro que falta.
+    ///
+    /// Separado para os dois caminhos do <see cref="AdvanceIfCurrentStep"/> o usarem: o
+    /// normal (avancou um passo) e o de uma acao feita fora da vez.
+    /// </summary>
+    private void SaltarPassosJaFeitos()
+    {
         while (_currentStepIndex < Steps.Length &&
                _completedStepIds.Contains(Steps[_currentStepIndex].stepId))
         {

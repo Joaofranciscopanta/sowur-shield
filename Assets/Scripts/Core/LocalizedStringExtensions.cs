@@ -25,12 +25,29 @@ namespace SowurShield.Core
 
             try
             {
-                return localizedString.GetLocalizedString();
+                return SemMensagemDeErro(localizedString.GetLocalizedString());
             }
             catch (System.Exception)
             {
                 return string.Empty;
             }
+        }
+
+        /// <summary>
+        /// Devolve vazio quando o Unity respondeu com a sua mensagem de chave em falta.
+        ///
+        /// `GetLocalizedString()` NAO lanca quando a entrada nao existe -- devolve o texto
+        /// "No translation found for 'Key Id 20037808398524416' in ...". O try/catch nao
+        /// apanha isso, e a mensagem ia direta para o ecra: o Lucas viu-a a pairar sobre o
+        /// machado e sobre a madeira, em letras brancas atravessadas no mundo.
+        ///
+        /// Devolver vazio faz quem chama cair no seu proprio recuo (o `itemName`, por
+        /// exemplo), que e um nome legivel mesmo que nao traduzido.
+        /// </summary>
+        private static string SemMensagemDeErro(string valor)
+        {
+            if (string.IsNullOrEmpty(valor)) return string.Empty;
+            return valor.StartsWith("No translation found") ? string.Empty : valor;
         }
 
         public static string SafeGetLocalizedString(this LocalizedString localizedString, params object[] arguments)
@@ -41,7 +58,7 @@ namespace SowurShield.Core
             try
             {
                 localizedString.Arguments = arguments;
-                return localizedString.GetLocalizedString();
+                return SemMensagemDeErro(localizedString.GetLocalizedString());
             }
             catch (System.Exception)
             {

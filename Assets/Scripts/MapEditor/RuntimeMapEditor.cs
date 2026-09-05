@@ -337,13 +337,35 @@ public class RuntimeMapEditor : MonoBehaviour
             if (prefab == null) { perdidos++; continue; }
 
             var instancia = Instantiate(prefab, obj.position, Quaternion.Euler(obj.rotation), raiz.transform);
-            instancia.transform.localScale = obj.scale;
+            // Mesma regra do jogo (MapRuntimeLoader.EscalaDe): mapa antigo gravou
+            // (1,1,1) e cai na escala natural do prefab; mapa novo ja e absoluto.
+            instancia.transform.localScale = MapRuntimeLoader.EscalaDe(obj, prefab);
             recriados++;
         }
+
+        // Uma varredura so, reusada por todos: FindObjectsByType por NPC seria O(n*m).
+        var npcsNaCena = FindObjectsByType<SowurShield.Dialogue.NPCDialogueInteractable>(
+                             FindObjectsSortMode.None);
 
         foreach (var npc in currentMapData.npcSpawns)
         {
             if (!npc.isActive) continue;
+
+            // Mesma regra do jogo (MapRuntimeLoader.AplicarNPCs): uma personagem que a
+            // cena ja traz e MOVIDA, nao duplicada. `npcId` indexa a memoria de conversa
+            // e o relacionamento, entao duas Joanas partilhariam estado e as duas
+            // ficariam erradas.
+            if (!string.IsNullOrEmpty(npc.npcId))
+            {
+                var existente = System.Array.Find(npcsNaCena, n => n.GetNPCId() == npc.npcId);
+                if (existente != null)
+                {
+                    existente.transform.position = npc.position;
+                    recriados++;
+                    continue;
+                }
+            }
+
             var prefab = PrefabCatalog.Resolver(npc.npcPrefabPath);
             if (prefab == null) { perdidos++; continue; }
 

@@ -56,6 +56,30 @@ namespace SowurShield.Core
             ? Mathf.Max(0, currentCrop.daysPerStage - daysInCurrentStage)
             : 0;
 
+        /// <summary>
+        /// Dias que faltam ate a plantacao poder ser COLHIDA.
+        ///
+        /// O contador da UI mostrava `DaysUntilNextStage`, que e o tempo ate a proxima FASE.
+        /// Numa cenoura de 4 fases x 2 dias isso significa ver "faltam 2" quatro vezes
+        /// seguidas: o numero chega a zero, a planta muda de aspeto, e volta a dizer 2 --
+        /// sem nunca informar que a colheita esta a 8 dias. Foi relatado a jogar, e a
+        /// leitura era "o contador esta preso".
+        ///
+        /// Aqui a conta e sobre o TOTAL: as fases que faltam vezes os dias de cada uma,
+        /// menos o que ja se passou na fase atual.
+        /// </summary>
+        public int DaysUntilHarvest
+        {
+            get
+            {
+                if (!HasCrop || isDead) return 0;
+                if (isReadyForHarvest) return 0;
+
+                int fasesRestantes = Mathf.Max(0, currentCrop.TotalStages - currentGrowthStage);
+                return Mathf.Max(0, fasesRestantes * currentCrop.daysPerStage - daysInCurrentStage);
+            }
+        }
+
         private GameTimeController timeController;
         private Coroutine harvestPulseCoroutine;
 

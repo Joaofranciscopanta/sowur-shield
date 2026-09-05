@@ -110,9 +110,25 @@ public class RelationshipUI : MonoBehaviour, IUIWindow
         LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
     }
 
+    /// <summary>
+    /// Registra-se no UIManager. Esta janela implementava IUIWindow desde sempre mas nunca
+    /// chamava RegisterWindow, entao nao aparecia em registeredWindows: o ESC nao a via e o
+    /// ForceCloseAllWindows nao a alcancava -- aberta por um caminho que nao passasse pelo
+    /// TryOpenWindow, ficava orfa sem forma de fechar.
+    ///
+    /// No Start, e nao no Awake: o UIManager pode ainda nao existir quando o Awake corre.
+    /// </summary>
+    private void Start()
+    {
+        if (UIManager.Instance != null)
+            UIManager.Instance.RegisterWindow(this);
+    }
+
     private void OnDestroy()
     {
         LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+        if (UIManager.Instance != null)
+            UIManager.Instance.UnregisterWindow(this);
     }
 
     private void HandleLanguageChanged(UnityEngine.Localization.Locale locale)

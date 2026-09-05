@@ -10,8 +10,17 @@ public class MapSerializer : MonoBehaviour
     public static MapSerializer Instance { get; private set; }
     
     [Header("Save Settings")]
-    [SerializeField] private string mapsFolder = "Assets/Maps";
-    [SerializeField] private string backupFolder = "Assets/Maps/Backups";
+    // Resources/, e nao Assets/Maps: `Assets/` e pasta de PROJETO e nao existe no
+    // jogo compilado, entao um mapa salvo ali nunca poderia ser lido pelo jogo. O
+    // que esta em Resources/ e empacotado no build e sai por Resources.Load, que e
+    // como todo o resto deste projeto (GameBalance, AnimalData, UITheme...) carrega.
+    [SerializeField] private string mapsFolder = "Assets/Resources/Maps";
+    // FORA de Resources/: backup nenhum precisa ir para o build do jogo, e cada
+    // copia ali dentro seria peso morto no download.
+    [SerializeField] private string backupFolder = "Assets/MapBackups";
+
+    /// <summary>Copias em JSON, tambem fora de Resources/ e do build.</summary>
+    [SerializeField] private string jsonFolder = "Assets/MapBackups/json";
     [SerializeField] private int maxBackups = 10;
     [SerializeField] private bool createBackupOnSave = true;
     
@@ -58,6 +67,11 @@ public class MapSerializer : MonoBehaviour
     
     private void EnsureDirectoriesExist()
     {
+        if (!Directory.Exists(jsonFolder))
+        {
+            Directory.CreateDirectory(jsonFolder);
+        }
+
         if (!Directory.Exists(mapsFolder))
         {
             Directory.CreateDirectory(mapsFolder);
@@ -123,8 +137,13 @@ public class MapSerializer : MonoBehaviour
             // Save as ScriptableObject asset
             SaveAsScriptableObject(mapData, fullPath);
             
-            // Also save as JSON for external use/backup
-            SaveAsJSON(mapData, fullPath.Replace(".asset", ".json"));
+            // O JSON e copia de conveniencia (ler/diffar fora do Unity), e vai para
+            // FORA de Resources/: desde que os mapas passaram a ser carregados pelo
+            // jogo, tudo o que esta em Resources/ e empacotado no build -- o .json
+            // seria uma segunda copia de cada mapa no download, sem nenhum uso.
+            string jsonPath = Path.Combine(
+                jsonFolder, Path.GetFileNameWithoutExtension(fileName) + ".json");
+            SaveAsJSON(mapData, jsonPath);
             
             OnMapSaved?.Invoke(fileName);
 
@@ -289,12 +308,21 @@ public class MapSerializer : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Copia de seguranca periodica enquanto o editor esta aberto.
+    ///
+    /// Vai para a pasta de BACKUP, nunca para mapsFolder. Desde que os mapas passaram
+    /// a viver em Resources/ (para o jogo poder carrega-los), tudo o que e escrito la
+    /// entra no build -- e o autosave dispara sozinho a cada intervalo, entao uma
+    /// tarde de trabalho poria dezenas de copias do mapa dentro do jogo. Ja tinha
+    /// acontecido: 5 dos 7 arquivos em Assets/Maps eram autosave.
+    /// </summary>
     private void AutoSaveCurrentMap()
     {
         if (mapEditor?.CurrentMapData == null) return;
         
         string autoSaveFileName = $"{mapEditor.CurrentMapData.mapName}_autosave_{System.DateTime.Now:HH-mm}";
-        SaveMapData(mapEditor.CurrentMapData, autoSaveFileName);
+        SaveAutoSaveOutsideResources(mapEditor.CurrentMapData, autoSaveFileName);
         
         // Clean up old auto saves
         CleanupOldAutoSaves();
@@ -302,11 +330,30 @@ public class MapSerializer : MonoBehaviour
 
     }
     
+    /// <summary>Grava o autosave como JSON na pasta de backup, fora do build.</summary>
+    private void SaveAutoSaveOutsideResources(MapData mapData, string fileName)
+    {
+        try
+        {
+            EnsureDirectoriesExist();
+            string caminho = Path.Combine(backupFolder, fileName + ".json");
+            SaveAsJSON(mapData, caminho);
+        }
+        catch (System.Exception e)
+        {
+            OnError?.Invoke($"Falha no autosave: {e.Message}");
+        }
+    }
+
     private void CleanupOldAutoSaves()
     {
         try
         {
-            string[] autoSaveFiles = Directory.GetFiles(mapsFolder, "*_autosave_*.asset");
+            // Os autosaves agora sao .json na pasta de backup, nao .asset em
+            // mapsFolder: procurar no lugar antigo faria a limpeza nunca achar nada
+            // e as copias se acumularem para sempre.
+            if (!Directory.Exists(backupFolder)) return;
+            string[] autoSaveFiles = Directory.GetFiles(backupFolder, "*_autosave_*.json");
             
             if (autoSaveFiles.Length > maxAutoSaves)
             {

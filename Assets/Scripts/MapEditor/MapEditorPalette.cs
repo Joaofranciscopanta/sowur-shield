@@ -49,6 +49,8 @@ namespace SowurShield.MapEditor
         private ObjectPalette objectPalette;
         private Button botaoDialogo;
         private DialoguePalette dialoguePalette;
+        private Button botaoPresentes;
+        private RelationshipPalette relationshipPalette;
         private Button botaoDesfazer;
         private TextMeshProUGUI rotuloPincel;
         private GameObject painelDeMapas;
@@ -81,6 +83,11 @@ namespace SowurShield.MapEditor
             brushTool = GetComponent<BrushTool>();
             objectPalette = GetComponent<ObjectPalette>();
             dialoguePalette = GetComponent<DialoguePalette>();
+            // Adicionado se faltar: assim o editor funciona numa cena montada antes de
+            // este componente existir, sem exigir religacao a mao no Inspector.
+            relationshipPalette = GetComponent<RelationshipPalette>();
+            if (relationshipPalette == null)
+                relationshipPalette = gameObject.AddComponent<RelationshipPalette>();
             theme = UIThemeStyler.LoadTheme();
 
             ConstruirUI();
@@ -355,6 +362,10 @@ namespace SowurShield.MapEditor
 
             botaoDialogo = CriarBotao(pai, "Editar diálogo...", y);
             botaoDialogo.onClick.AddListener(() => dialoguePalette?.Alternar());
+            y -= theme.buttonHeightSmall + theme.spacingXS;
+
+            botaoPresentes = CriarBotao(pai, "Editar presentes...", y);
+            botaoPresentes.onClick.AddListener(() => relationshipPalette?.Alternar());
             return y - theme.buttonHeightSmall - theme.spacingXS - theme.spacingS;
         }
 

@@ -44,6 +44,8 @@ namespace SowurShield.MapEditor
 
         private RuntimeMapEditor mapEditor;
         private ObjectPlacer placer;
+        // Pessoas e cenario tem placers separados: um NPC nao se escala nem se duplica.
+        private NPCPalettePlacer npcPlacer;
         private UITheme theme;
 
         private GameObject painel;
@@ -58,6 +60,10 @@ namespace SowurShield.MapEditor
         {
             mapEditor = GetComponent<RuntimeMapEditor>();
             placer = GetComponent<ObjectPlacer>();
+            // Adicionado se faltar: assim a paleta funciona numa cena montada antes de
+            // este componente existir, sem exigir religacao a mao no Inspector.
+            npcPlacer = GetComponent<NPCPalettePlacer>();
+            if (npcPlacer == null) npcPlacer = gameObject.AddComponent<NPCPalettePlacer>();
             theme = UIThemeStyler.LoadTheme();
 
             Construir();
@@ -94,6 +100,7 @@ namespace SowurShield.MapEditor
             // com a lista escondida faria o clique colocar arvores sem nada na tela
             // explicando por que o pincel parou de pintar.
             placer?.Selecionar(null);
+            npcPlacer?.Selecionar(null);
         }
 
         private void Construir()
@@ -348,15 +355,36 @@ namespace SowurShield.MapEditor
                 }
 
                 var caminho = entrada.Caminho;
-                var botao = CriarLinhaDeBotao(conteudo.transform, entrada.Nome);
-                botao.onClick.AddListener(() => placer?.Selecionar(caminho));
+                bool ehPessoa = PrefabCatalog.EhNPC(entrada);
+
+                // Nas pessoas mostra o nome de EXIBICAO, nao o do asset: "Tomás" e o que
+                // o jogador ve, e o generico chama-se NPC_Novo no disco mas "Novo NPC"
+                // na ficha da personagem.
+                string rotulo = entrada.Nome;
+                if (ehPessoa)
+                {
+                    var pf = PrefabCatalog.Resolver(caminho);
+                    if (pf != null) rotulo = NPCPalettePlacer.NomeVisivel(pf);
+                }
+
+                var botao = CriarLinhaDeBotao(conteudo.transform, rotulo);
+                // Um NPC e um objeto de cenario vao para placers diferentes, e escolher
+                // um tem de largar o outro -- senao o clique colocava os dois.
+                if (ehPessoa)
+                    botao.onClick.AddListener(() => { placer?.Selecionar(null); npcPlacer?.Selecionar(caminho); });
+                else
+                    botao.onClick.AddListener(() => { npcPlacer?.Selecionar(null); placer?.Selecionar(caminho); });
                 botoes[caminho] = botao;
             }
         }
 
         private void AtualizarDestaques()
         {
-            var selecionado = placer != null ? placer.CaminhoSelecionado : null;
+            // O que esta escolhido pode estar em qualquer um dos dois placers.
+            string doCenario = placer != null ? placer.CaminhoSelecionado : null;
+            string daPessoa = npcPlacer != null ? npcPlacer.CaminhoSelecionado : null;
+            var selecionado = string.IsNullOrEmpty(doCenario) ? daPessoa : doCenario;
+
             foreach (var par in botoes)
             {
                 var img = par.Value.GetComponent<Image>();
@@ -366,9 +394,16 @@ namespace SowurShield.MapEditor
 
             if (rodape != null)
             {
-                rodape.text = string.IsNullOrEmpty(selecionado)
-                    ? "Escolha um objeto para colocar"
-                    : "Clique para colocar · direito remove";
+                if (string.IsNullOrEmpty(selecionado))
+                    rodape.text = "Escolha o que colocar";
+                else if (!string.IsNullOrEmpty(daPessoa))
+                    // "Mover" e invisivel quando o NPC esta fora do ecra, entao a ultima
+                    // acao e dita por extenso -- senao um clique que moveu a Joana ao longe
+                    // parece um clique que nao fez nada.
+                    rodape.text = npcPlacer.UltimaMensagem
+                                  ?? "Clique para colocar · quem já está no mapa é movido";
+                else
+                    rodape.text = "Clique para colocar · direito remove";
             }
 
             // O tamanho pode mudar sem passar pelos botoes (mapa carregado, por
@@ -382,6 +417,7 @@ namespace SowurShield.MapEditor
 
         private static string NomeDaCategoria(string pasta) => pasta switch
         {
+            "NPCs"        => "Personagens",
             "Decorations" => "Decoração",
             "FruitTrees"  => "Árvores frutíferas",
             "Fruits"      => "Frutas",

@@ -589,6 +589,14 @@ public class Inventory : MonoBehaviour, ISaveable
         if (storagePanelBackground != null)
             storagePanelBackground.SetActive(isInventoryOpen);
 
+        // Anunciar ao dock, para nao ficar por cima de um contentor ja aberto.
+        //
+        // Abrir a caixa de venda (ou o comedouro) e carregar em Tab punha os dois paineis
+        // exatamente na mesma faixa central da tela -- medido: o do jogador em x 412..1508,
+        // a caixa em 730..1190, o comedouro em 695..1225. O dock reposiciona quem estiver
+        // aberto em vez de cada painel ter de conhecer os outros.
+        AnunciarAoDock(isInventoryOpen);
+
         // Show/hide the storage grid (hotbar always visible). The lazy "create any missing
         // slots on first open" branch that used to follow is gone: the view builds every slot
         // in Bind, so by the time this runs they all exist.
@@ -596,6 +604,30 @@ public class Inventory : MonoBehaviour, ISaveable
 
         // Don't pause the game - just disable player movement if inventory is open
         // You might want to disable player movement through a different mechanism
+    }
+
+    /// <summary>
+    /// Diz ao <see cref="SowurShield.UI.WindowDock"/> que este painel abriu ou fechou.
+    ///
+    /// A grade e o fundo sao objetos IRMAOS na cena, nao pai e filho, entao o dock precisa
+    /// de mover os dois -- mover so o fundo deixaria os slots para tras.
+    /// </summary>
+    private void AnunciarAoDock(bool aberto)
+    {
+        var dock = SowurShield.UI.WindowDock.Instance;
+        if (dock == null) return;
+
+        // SO o painel: a grade de slots e FILHA dele, entao acompanha sozinha.
+        //
+        // Registar os dois tratava-os como duas janelas e o dock separava-os -- medido, o
+        // fundo ficou em y 275..805 e os slots em 138..422, com a grade fora do proprio
+        // painel que devia conter.
+        var painel = storagePanelBackground != null
+            ? storagePanelBackground.transform as RectTransform : null;
+        if (painel == null) return;
+
+        if (aberto) dock.Registrar(painel);
+        else dock.Remover(painel);
     }
 
     public void ShowTooltip(ItemStack itemStack, Vector3 position)

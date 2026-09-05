@@ -252,11 +252,20 @@ public class UIManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Force close all windows (emergency use only)
+    /// Force close all windows (emergency use only).
+    ///
+    /// Varre a pilha E as janelas registradas. Ate 2026-09-05 este metodo percorria
+    /// apenas a pilha, e ai uma janela aberta por fora do TryOpenWindow -- qualquer
+    /// caminho que chame OpenWindow() direto -- ficava orfa para sempre: o proprio
+    /// metodo de emergencia que existe para esse caso nao a alcancava. Medido: com 4
+    /// janelas abertas, 3 continuaram abertas depois da chamada.
+    ///
+    /// A pilha vem primeiro para preservar a ordem de fechamento (topo primeiro);
+    /// a varredura das registradas so pega o que sobrou.
     /// </summary>
     public void ForceCloseAllWindows()
     {
-        LogDebug($"Force closing {openWindowStack.Count} windows");
+        LogDebug($"Force closing {openWindowStack.Count} stacked windows");
 
         while (openWindowStack.Count > 0)
         {
@@ -264,6 +273,14 @@ public class UIManager : MonoBehaviour
             // Popped regardless, but only a live window can be told to close.
             if (IsAlive(window))
                 window.CloseWindow();
+        }
+
+        // As orfas: registradas, abertas, e nunca empilhadas.
+        foreach (var window in registeredWindows)
+        {
+            if (!IsAlive(window) || !window.IsWindowOpen) continue;
+            LogDebug($"Force closing unstacked window: {window.WindowName}");
+            window.CloseWindow();
         }
     }
 

@@ -91,6 +91,8 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
     private SowurShield.Inventory.Inventory playerInventory;
 
     // Hover label (world-space, built procedurally)
+    /// <summary>Tamanho do rotulo no mundo, antes de descontar a escala do item.</summary>
+    private const float EscalaDoRotulo = 0.012f;
     private GameObject hoverLabel;
     private bool hoverShowing = false;
 
@@ -147,6 +149,14 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
             bool over = IsMouseOver();
             if (over && !hoverShowing)
             {
+                // O nome e reescrito AO MOSTRAR, nao so ao criar.
+                //
+                // O rotulo era escrito uma unica vez no Start, e as tabelas de localizacao
+                // ainda nao tinham carregado nessa altura: o SafeGetLocalizedString devolvia
+                // vazio e o GetDisplayName caia para o `itemName`, que e o id interno em
+                // ingles. Resultado medido em pt: o rotulo dizia "Bread" e "Shovel" enquanto
+                // o jogo ja sabia "Pao" e "Pa". Tambem cobre a troca de idioma em jogo.
+                AtualizarRotulo();
                 hoverLabel.SetActive(true);
                 hoverShowing = true;
             }
@@ -154,6 +164,30 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
             {
                 hoverLabel.SetActive(false);
                 hoverShowing = false;
+            }
+
+            // O rotulo nao acompanha o giro do item.
+            //
+            // O GroundItem roda sobre si mesmo (enableRotation), e o rotulo e FILHO dele:
+            // o texto girava junto e aparecia atravessado na diagonal, de cabeca para baixo
+            // metade do tempo -- foi assim que o Lucas o viu na build, com "No translation
+            // found" escrito de lado sobre o machado. Manter a rotacao a zero no mundo
+            // deixa o item girar e o texto ficar direito.
+            //
+            // Fora do if/else acima de proposito: tem de correr em TODOS os frames em que o
+            // rotulo esta visivel, nao so no frame em que aparece.
+            if (hoverShowing)
+            {
+                hoverLabel.transform.rotation = Quaternion.identity;
+
+                // E nem a escala: cada prefab tem a sua (o machado esta a 1,76; outros a
+                // 5,5 ou 0,6 -- ver reference_unity_ppu_mixed_world_scale), e o rotulo
+                // herdava-a, saindo com tamanhos diferentes de item para item.
+                var paiEscala = transform.lossyScale;
+                float sx = Mathf.Approximately(paiEscala.x, 0f) ? 1f : paiEscala.x;
+                float sy = Mathf.Approximately(paiEscala.y, 0f) ? 1f : paiEscala.y;
+                hoverLabel.transform.localScale =
+                    new Vector3(EscalaDoRotulo / sx, EscalaDoRotulo / sy, 1f);
             }
         }
     }
@@ -169,7 +203,7 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
         var canvas = hoverLabel.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.WorldSpace;
         canvas.sortingOrder = 200;
-        hoverLabel.transform.localScale = Vector3.one * 0.012f;
+        hoverLabel.transform.localScale = Vector3.one * EscalaDoRotulo;
 
         var rt = hoverLabel.GetComponent<RectTransform>();
         rt.sizeDelta = new Vector2(120, 22);
@@ -197,6 +231,23 @@ public class GroundItem : MonoBehaviour, IInteractable, ISaveable
         labelRt.offsetMax = new Vector2(-4, 0);
 
         hoverLabel.SetActive(false);
+    }
+
+    /// <summary>
+    /// Reescreve o nome no rotulo com o idioma que esta ativo agora.
+    ///
+    /// Chamado ao mostrar o rotulo, e nao so ao cria-lo -- ver o comentario no Update.
+    /// </summary>
+    private void AtualizarRotulo()
+    {
+        if (hoverLabel == null || item == null) return;
+
+        var tmp = hoverLabel.GetComponentInChildren<TextMeshProUGUI>(true);
+        if (tmp == null) return;
+
+        string nome = item.GetDisplayName();
+        if (!string.IsNullOrEmpty(nome) && tmp.text != nome)
+            tmp.text = nome;
     }
 
     private bool IsMouseOver()

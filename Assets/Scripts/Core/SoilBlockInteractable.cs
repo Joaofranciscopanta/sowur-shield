@@ -277,6 +277,14 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             UpdateAppearance();
             PlayEffect(tillEffect);
             PlaySound(tillSound, "TillSoil");
+
+            // Este e o caminho REAL de arar no jogo.
+            //
+            // Quando o jogador passa a enxada em chao virgem, o CursorController cria o
+            // bloco e chama ESTE metodo -- nao o TillSoil, que so corre num bloco que ja
+            // existia. So o TillSoil notificava o tutorial, entao o passo 1 nunca
+            // completava por mais que se arasse. Relatado a jogar duas vezes.
+            TutorialManager.NotifyStepComplete("till_soil");
         }
     }
 
@@ -425,6 +433,14 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             UpdateAppearance(); // Atualiza aparência caso cultivo estivesse morrendo
             PlayEffect(waterEffect);
             PlaySound(waterSound, "WaterSoil");
+
+            // Regar um cultivo TAMBEM conta para o passo "water_crop" do tutorial.
+            //
+            // A notificacao so existia no ramo de cima (solo arado e ainda sem semente),
+            // entao quem plantasse antes de regar -- que e a ordem natural, e a que o
+            // proprio tutorial ensina no passo anterior -- regava, via a agua cair, e o
+            // passo nunca completava. Relatado a jogar: "o passo 3 nao completa sozinho".
+            TutorialManager.NotifyStepComplete("water_crop");
         }
     }
 
@@ -902,9 +918,17 @@ public class SoilBlockInteractable : MonoBehaviour, IInteractable, ISaveable
             statusTextObj.SetActive(false);
     }
 
+    /// <summary>
+    /// Dias ate a COLHEITA, nao ate a proxima fase.
+    ///
+    /// Mostrar `DaysUntilNextStage` fazia o contador parecer preso: numa cenoura de 4 fases
+    /// x 2 dias ele dizia "2" quatro vezes seguidas, zerando e reiniciando a cada mudanca
+    /// de aspeto, sem nunca dizer que faltavam 8 dias no total. Quem joga quer saber quando
+    /// pode colher, nao quando o desenho muda.
+    /// </summary>
     private int GetDaysRemaining()
     {
-        return cropGrowthManager != null ? cropGrowthManager.DaysUntilNextStage : 0;
+        return cropGrowthManager != null ? cropGrowthManager.DaysUntilHarvest : 0;
     }
 
     /// <summary>

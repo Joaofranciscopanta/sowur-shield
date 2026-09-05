@@ -81,16 +81,34 @@ namespace SowurShield.MapEditor
             AplicarTransformacaoAoFantasma();
         }
 
-        /// <summary>Escala com o sinal do espelho: X negativo vira a arte.</summary>
-        private Vector3 EscalaComEspelho()
+        /// <summary>
+        /// Escala final de uma instancia: o tamanho natural do prefab vezes o
+        /// multiplicador escolhido, com o sinal do espelho no X.
+        ///
+        /// A base tem que vir do PREFAB, nao ser 1. O projeto mistura cinco densidades
+        /// de pixel (16, 32, 100, 256) e a escala do mundo e PPU 16, entao cada prefab
+        /// carrega no proprio localScale o fator que o traz para essa escala -- 5,5
+        /// para a arte a PPU 100, 2 para as arvores a PPU 16, e assim por diante.
+        ///
+        /// Ate 2026-09-05 este metodo devolvia o multiplicador cru e o Colocar()
+        /// ATRIBUIA esse valor, jogando fora o fator do prefab. Com isso 30 dos 57
+        /// itens da paleta nasciam entre 4x e 18x menores do que deviam: uma flor
+        /// media 0,11 unidade, um pixel no chao. Multiplicar preserva o fator e faz
+        /// o multiplicador significar de novo "metade" ou "o dobro" do tamanho certo.
+        /// </summary>
+        private Vector3 EscalaComEspelho(GameObject prefab)
         {
-            return new Vector3(Espelhado ? -Escala : Escala, Escala, Escala);
+            Vector3 baseDoPrefab = prefab != null ? prefab.transform.localScale : Vector3.one;
+            return new Vector3((Espelhado ? -Escala : Escala) * baseDoPrefab.x,
+                               Escala * baseDoPrefab.y,
+                               baseDoPrefab.z);
         }
 
         private void AplicarTransformacaoAoFantasma()
         {
             if (fantasma == null) return;
-            fantasma.transform.localScale = EscalaComEspelho();
+            // O fantasma usa o prefab selecionado como base: e ele que sera colocado.
+            fantasma.transform.localScale = EscalaComEspelho(prefabSelecionado);
             fantasma.transform.rotation = Quaternion.Euler(0f, 0f, Rotacao);
         }
 
@@ -203,7 +221,7 @@ namespace SowurShield.MapEditor
             var instancia = Instantiate(prefabSelecionado, posicao,
                                         Quaternion.Euler(0f, 0f, Rotacao), raiz);
             instancia.name = prefabSelecionado.name;
-            instancia.transform.localScale = EscalaComEspelho();
+            instancia.transform.localScale = EscalaComEspelho(prefabSelecionado);
 
             mapEditor.CurrentMapData.objectSpawns.Add(new ObjectSpawnData
             {
@@ -212,7 +230,7 @@ namespace SowurShield.MapEditor
                 // O CAMINHO, nao o nome: e o que o PrefabCatalog resolve ao carregar.
                 prefabPath = caminhoSelecionado,
                 rotation = new Vector3(0f, 0f, Rotacao),
-                scale = EscalaComEspelho(),
+                scale = EscalaComEspelho(prefabSelecionado),
                 isActive = true
             });
         }

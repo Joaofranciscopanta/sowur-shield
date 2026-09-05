@@ -93,7 +93,8 @@ public class InteractionManager : MonoBehaviour
         
         IInteractable newClosest = null;
         float closestDistance = float.MaxValue;
-        
+        int melhorPrioridade = int.MinValue;
+
         // Clean up null references
         registeredInteractables.RemoveAll(item => item == null || 
             (item is MonoBehaviour mb && mb == null));
@@ -116,9 +117,30 @@ public class InteractionManager : MonoBehaviour
             
             float distance = Vector3.Distance(player.position, interactableObject.transform.position);
             float interactionRange = GetInteractionRange(interactable);
-            
-            if (distance <= interactionRange && distance < closestDistance)
+
+            if (distance > interactionRange) continue;
+
+            // Desempate por TIPO antes da distancia.
+            //
+            // Escolher puramente o mais proximo fazia um NPC a 2,9 ganhar de um ovo a 3,0.
+            // Com os NPCs a 3 de alcance -- o maior do jogo -- isso significava falar com
+            // alguem sempre que se queria apanhar algo, entrar no combate ou abrir a caixa
+            // de venda. Medido: 27 sobreposicoes na cena.
+            //
+            // A prioridade so decide entre coisas que JA estao ao alcance; nao estende
+            // alcance nenhum, entao nada passa a ser alcancavel de mais longe por causa dela.
+            int prioridade = InteractionPreferences.Prioridade(interactable);
+
+            // Com a mira ligada, o que esta sob o cursor sobe acima de qualquer tipo.
+            if (InteractionPreferences.MirarNoCursor && EstaSobOCursor(interactableObject))
+                prioridade += 100;
+
+            bool melhor = prioridade > melhorPrioridade
+                       || (prioridade == melhorPrioridade && distance < closestDistance);
+
+            if (melhor)
             {
+                melhorPrioridade = prioridade;
                 closestDistance = distance;
                 newClosest = interactable;
             }
@@ -161,6 +183,32 @@ public class InteractionManager : MonoBehaviour
     private float GetInteractionRange(IInteractable interactable)
     {
         return interactable.GetInteractionRange();
+    }
+
+    /// <summary>
+    /// Se o cursor esta em cima deste objeto.
+    ///
+    /// Usado so quando <see cref="InteractionPreferences.MirarNoCursor"/> esta ligado: ai o
+    /// que esta sob a seta ganha de qualquer outro, que e o pedido de "prioridade mais no
+    /// clique do mouse". Testa os colliders e, em falhando, o desenho do sprite -- um NPC
+    /// tem collider mas um item no chao pode nao ter.
+    /// </summary>
+    private bool EstaSobOCursor(GameObject alvo)
+    {
+        var cam = Camera.main;
+        if (cam == null || alvo == null) return false;
+
+        Vector2 mundo = cam.ScreenToWorldPoint(Input.mousePosition);
+
+        foreach (var col in alvo.GetComponentsInChildren<Collider2D>())
+            if (col.enabled && col.OverlapPoint(mundo)) return true;
+
+        foreach (var sr in alvo.GetComponentsInChildren<SpriteRenderer>())
+            if (sr.enabled && sr.sprite != null && sr.bounds.Contains(
+                    new Vector3(mundo.x, mundo.y, sr.bounds.center.z)))
+                return true;
+
+        return false;
     }
     
     private void SetInteractablePromptVisibility(IInteractable interactable, bool visible)

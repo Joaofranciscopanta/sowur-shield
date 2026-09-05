@@ -444,16 +444,23 @@ namespace SowurShield.Inventory
                     valueText = valueObj.AddComponent<TextMeshProUGUI>();
 
                     RectTransform valueRect = valueObj.GetComponent<RectTransform>();
+                    // Ancorado ao canto inferior esquerdo do slot inteiro, e nao a um
+                    // ponto: o rect de 40x14 do desenho antigo era menor que a propria
+                    // linha de texto, entao o preco ficava cortado no meio.
                     valueRect.anchorMin = new Vector2(0, 0);
-                    valueRect.anchorMax = new Vector2(0, 0);
-                    valueRect.anchoredPosition = new Vector2(4, 4);
-                    valueRect.sizeDelta = new Vector2(40, 14);
+                    valueRect.anchorMax = new Vector2(1, 0);
+                    valueRect.pivot = new Vector2(0.5f, 0);
+                    valueRect.offsetMin = new Vector2(4, 2);
+                    valueRect.offsetMax = new Vector2(-4, 20);
                 }
             }
 
             if (valueText != null)
             {
-                valueText.fontSize = 8;
+                // fontSize 8 era o menor rotulo do jogo e o unico fora da escala do
+                // UITheme (32/24/18/14/12) -- ilegivel a 1080p. fontSizeCaption e o
+                // degrau que existe justamente para contador e preco.
+                valueText.fontSize = 12;
                 valueText.fontStyle = FontStyles.Bold;
                 valueText.color = new Color(1f, 0.84f, 0f);
                 valueText.alignment = TextAlignmentOptions.BottomLeft;

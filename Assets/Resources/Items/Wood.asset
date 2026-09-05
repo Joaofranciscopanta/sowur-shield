@@ -15,9 +15,9 @@ MonoBehaviour:
   itemName: Wood
   displayName:
     m_TableReference:
-      m_TableCollectionName: c7818de13af7bf241b2d39f8152a219d
+      m_TableCollectionName: Inventory
     m_TableEntryReference:
-      m_KeyId: 20037808436273153
+      m_KeyId: 0
       m_Key: item.Wood.name
     m_FallbackState: 0
     m_WaitForCompletion: 0

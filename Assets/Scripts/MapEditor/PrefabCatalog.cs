@@ -18,17 +18,36 @@ namespace SowurShield.MapEditor
     public static class PrefabCatalog
     {
         /// <summary>
-        /// Pastas varridas, na ordem em que aparecem na paleta. Ficam fora de
-        /// Resources de proposito: o catalogo so existe no Editor (o editor de mapa
-        /// e dev-only), entao usamos AssetDatabase e nao carregamos nada no build.
+        /// Pastas varridas, na ordem em que aparecem na paleta.
+        ///
+        /// TODAS sob Resources/ desde 2026-09-04. O catalogo em si continua sendo
+        /// so-Editor (usa AssetDatabase), mas um mapa salvo agora e CARREGADO PELO
+        /// JOGO, e o MapRuntimeLoader resolve os prefabs por Resources.Load. Um
+        /// prefab fora de Resources/ simplesmente nao existe no build: 40 dos 57
+        /// estavam assim, e todo mapa com arvore ou decoracao perderia esses objetos
+        /// ao ser carregado no jogo.
         /// </summary>
         private static readonly string[] Pastas =
         {
-            "Assets/Prefabs/Decorations",
-            "Assets/Prefabs/FruitTrees",
-            "Assets/Prefabs/Fruits",
+            // NPCs em primeiro: sao o que se procura primeiro ao montar um mapa, e a
+            // lista de cenario tem 57 entradas para percorrer.
+            "Assets/Resources/Prefabs/NPCs",
+            "Assets/Resources/Prefabs/Decorations",
+            "Assets/Resources/Prefabs/FruitTrees",
+            "Assets/Resources/Prefabs/Fruits",
             "Assets/Resources/Prefabs/GroundItems"
         };
+
+        /// <summary>
+        /// A pasta cujos prefabs sao pessoas, e nao cenario.
+        ///
+        /// A paleta precisa de distinguir os dois porque o clique vai para placers
+        /// diferentes: um NPC nao se duplica nem se escala, ao contrario de uma arvore.
+        /// </summary>
+        public const string CategoriaNPCs = "NPCs";
+
+        /// <summary>Se esta entrada e uma pessoa.</summary>
+        public static bool EhNPC(Entrada entrada) => entrada.Categoria == CategoriaNPCs;
 
         public readonly struct Entrada
         {
@@ -46,29 +65,60 @@ namespace SowurShield.MapEditor
 
         private static List<Entrada> cache;
 
-        /// <summary>Tudo o que o editor sabe colocar, agrupado pela pasta de origem.</summary>
+        /// <summary>
+        /// Tudo o que o editor sabe colocar, agrupado pela pasta de origem.
+        ///
+        /// ⚠️ Varre por <c>Resources.LoadAll</c>, NAO por AssetDatabase.
+        ///
+        /// Ate 2026-09-05 o corpo inteiro deste metodo estava dentro de
+        /// <c>#if UNITY_EDITOR</c>, e sem AssetDatabase numa build ele devolvia uma lista
+        /// VAZIA. No Editor tudo funcionava; no jogo montado a paleta abria sem um unico
+        /// item e o pincel nao pintava nada -- e nada no ecra dizia porque. O Lucas
+        /// encontrou isto a jogar a build, depois de a mesma coisa funcionar em Play Mode.
+        ///
+        /// Resources.LoadAll funciona nos dois lados, e todos estes prefabs ja vivem sob
+        /// Assets/Resources/ desde a opcao B (o jogo carrega mapas por Resources.Load),
+        /// entao nao ha nada a mover.
+        /// </summary>
         public static IReadOnlyList<Entrada> Tudo()
         {
             if (cache != null) return cache;
             cache = new List<Entrada>();
 
-#if UNITY_EDITOR
             foreach (var pasta in Pastas)
             {
-                if (!UnityEditor.AssetDatabase.IsValidFolder(pasta)) continue;
+                // "Assets/Resources/Prefabs/NPCs" -> "Prefabs/NPCs", que e o que
+                // Resources.LoadAll entende.
+                string chave = ChaveDeResources(pasta);
+                if (string.IsNullOrEmpty(chave)) continue;
 
-                var guids = UnityEditor.AssetDatabase.FindAssets("t:Prefab", new[] { pasta });
-                foreach (var guid in guids)
+                var categoria = System.IO.Path.GetFileName(pasta);
+                foreach (var prefab in Resources.LoadAll<GameObject>(chave))
                 {
-                    var caminho = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
-                    var nome = System.IO.Path.GetFileNameWithoutExtension(caminho);
-                    var categoria = System.IO.Path.GetFileName(pasta);
-                    cache.Add(new Entrada(caminho, nome, categoria));
+                    if (prefab == null) continue;
+                    // O caminho gravado continua a ser o de projeto: e o que os mapas ja
+                    // salvos guardam, e o Resolver abaixo sabe converter os dois sentidos.
+                    cache.Add(new Entrada($"{pasta}/{prefab.name}.prefab", prefab.name, categoria));
                 }
             }
-            cache = cache.OrderBy(e => e.Categoria).ThenBy(e => e.Nome).ToList();
-#endif
+
+            // Pela ORDEM DAS PASTAS, nao pelo nome da categoria: ordenar alfabeticamente
+            // poria "Decorations" antes de "NPCs" e desfazia a escolha feita na lista
+            // acima, onde as pessoas vem primeiro de proposito.
+            cache = cache
+                .OrderBy(e => System.Array.FindIndex(Pastas, p => p.EndsWith("/" + e.Categoria)))
+                .ThenBy(e => e.Nome)
+                .ToList();
+
             return cache;
+        }
+
+        /// <summary>"Assets/Resources/Prefabs/NPCs" -> "Prefabs/NPCs".</summary>
+        private static string ChaveDeResources(string pastaDeProjeto)
+        {
+            const string marcador = "/Resources/";
+            int i = pastaDeProjeto.IndexOf(marcador, System.StringComparison.Ordinal);
+            return i < 0 ? null : pastaDeProjeto.Substring(i + marcador.Length);
         }
 
         /// <summary>Esquece a varredura — util depois de importar prefabs novos.</summary>

@@ -100,6 +100,19 @@ public class ShopUI : MonoBehaviour, IUIWindow, ISaveable
         SowurShield.Core.LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
     }
 
+    /// <summary>
+    /// Segunda tentativa de registo. O Awake acima ja tenta, mas a ordem de Awake entre
+    /// objetos da cena e arbitraria: quando o UIManager acorda depois desta janela,
+    /// UIManager.Instance ainda e null ali e o registo perde-se em silencio -- medido, a
+    /// ShopUI nao estava em registeredWindows. RegisterWindow ignora duplicados, entao
+    /// tentar de novo no Start (que corre depois de todos os Awake) e seguro.
+    /// </summary>
+    private void Start()
+    {
+        if (UIManager.Instance != null)
+            UIManager.Instance.RegisterWindow(this);
+    }
+
     private void OnDestroy()
     {
         if (UIManager.Instance != null)

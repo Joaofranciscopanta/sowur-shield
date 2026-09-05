@@ -81,12 +81,61 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         // SetupUI has run, so the styling applied there was immediately overwritten.
         StyleSlotBackgrounds(UIThemeStyler.LoadTheme());
 
-        DisablePlayerMovement();
+        // O empilhamento tem de correr com o painel ATIVO. ApplyTheme roda no SetupUI, e
+        // ali o painel ainda esta desligado: o Unity nao faz passe de layout em objeto
+        // inativo, entao StackBetween lia rect.height/width desatualizados e punha o
+        // status fora do painel e o titulo por cima da grade. Medido: status em y
+        // 848..880 num painel que acaba em 736.
+        // O texto ANTES do layout: StackBetween posiciona o status a partir da altura do
+        // proprio rect, e com o texto do frame anterior essa altura esta errada.
         UpdateStatusText();
+        LayoutPanel();
+
+        // Anunciar ao dock DEPOIS do layout: o LayoutPanel mexe nos filhos, o dock move o
+        // painel inteiro. Ao contrario, o dock seria desfeito. Ver WindowDock.
+        AnunciarAoDock(true);
+
+        DisablePlayerMovement();
+    }
+
+    /// <summary>Diz ao <see cref="SowurShield.UI.WindowDock"/> que este painel abriu ou fechou.</summary>
+    private void AnunciarAoDock(bool aberto)
+    {
+        var dock = SowurShield.UI.WindowDock.Instance;
+        var rt = troughPanel != null ? troughPanel.transform as RectTransform : null;
+        if (dock == null || rt == null) return;
+
+        if (aberto) dock.Registrar(rt);
+        else dock.Remover(rt);
+    }
+
+    /// <summary>
+    /// Recoloca titulo, grade, status e botao dentro da moldura.
+    ///
+    /// Separado do ApplyTheme (que trata de cores e sprites) porque so pode correr com o
+    /// painel ativo — ver o comentario no OpenWindow.
+    /// </summary>
+    private void LayoutPanel()
+    {
+        var panelRect = troughPanel != null ? troughPanel.GetComponent<RectTransform>() : null;
+        if (panelRect == null) return;
+
+        // Mesmo recuo que o ApplyTheme usa, para os dois nao discordarem.
+        float inset = Mathf.Round(panelRect.rect.width * 0.125f) + 12f;
+
+        InsetFromFrame(titleText != null ? titleText.rectTransform : null, inset, fromTop: true);
+        InsetFromFrame(statusText != null ? statusText.rectTransform : null, inset, fromTop: false);
+        InsetFromFrame(closeButton != null ? closeButton.GetComponent<RectTransform>() : null,
+                       inset, fromTop: false);
+        FitSlotGrid();
+        StackBetween(inset);
     }
 
     public void CloseWindow()
     {
+        // Antes de esconder: o dock devolve o painel a posicao de origem.
+        AnunciarAoDock(false);
+
         if (troughPanel != null)
             troughPanel.SetActive(false);
         isOpen = false;
@@ -214,19 +263,11 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
             if (panelRect.rect.width < TargetWidth)
                 panelRect.sizeDelta = new Vector2(TargetWidth, TargetHeight);
 
-            float inset = Mathf.Round(panelRect.rect.width * 0.125f) + 12f;
-            InsetFromFrame(titleText != null ? titleText.rectTransform : null, inset, fromTop: true);
-            InsetFromFrame(statusText != null ? statusText.rectTransform : null, inset, fromTop: false);
-            InsetFromFrame(closeButton != null ? closeButton.GetComponent<RectTransform>() : null,
-                           inset, fromTop: false);
-
-            FitSlotGrid();
-
-            // Stack the middle content between the title and the status line rather than only
-            // clearing the frame. Insetting each child independently leaves them free to meet
-            // in the middle: the slot grid ended up under the title and the status text ran
-            // into the close button.
-            StackBetween(inset);
+            // Um primeiro posicionamento aqui deixa o painel apresentavel se algo o
+            // mostrar sem passar pelo OpenWindow. O que vale e a chamada de la, com o
+            // painel ja ativo: com ele desligado o Unity nao faz passe de layout e as
+            // medidas lidas aqui sao as do editor, nao as reais.
+            LayoutPanel();
         }
 
         // This panel is rendered at half scale, so a theme size set here lands on screen at
@@ -273,12 +314,19 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         if (panelRect == null || gridRect == null) return;
 
         float gutter = 24f;
-        float half = panelRect.rect.height * 0.5f;
+        float altura = panelRect.rect.height;
+
+        // Converte o anchoredPosition de qualquer filho para o CENTRO do painel. Os filhos
+        // aqui nao compartilham ancora (a grade e forcada ao topo, o titulo e o botao vem
+        // da cena com as suas), e anchoredPosition e sempre medido a partir da ancora do
+        // proprio filho -- somar valores de ancoras diferentes compara coisas distintas.
+        System.Func<RectTransform, float> centroDe = r =>
+            r.anchoredPosition.y + (r.anchorMin.y - 0.5f) * altura;
 
         // Title occupies the top band; the grid starts one gutter below it.
         float titleBottom = titleText != null
-            ? titleText.rectTransform.anchoredPosition.y - titleText.rectTransform.rect.height * 0.5f
-            : -inset;
+            ? centroDe(titleText.rectTransform) - titleText.rectTransform.rect.height * 0.5f
+            : altura * 0.5f - inset;
 
         // Height comes from the grid's own contents, not from rect.height: FitSlotGrid has just
         // written sizeDelta and the rect does not reflect it until the next layout pass, so
@@ -286,20 +334,71 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         // up mispositioned and oversized.
         float gridHeight = gridRect.sizeDelta.y;
 
-        gridRect.anchorMin = gridRect.anchorMax = new Vector2(0.5f, 1f);
-        gridRect.anchoredPosition = new Vector2(
-            gridRect.anchoredPosition.x,
-            titleBottom - gutter - gridHeight * 0.5f);
-
-        // Status sits above the close button, below the grid.
+        // A grade cede o espaco de que o resto precisa. Sem isto ela ficava com a altura
+        // ideal das suas linhas e o status -- que vem depois -- nao tinha onde caber:
+        // sobravam 27px entre a grade e o botao para uma linha de 38 mais dois respiros,
+        // o limite inferior vencia e o status subia por cima da grade. Reduzir a grade e
+        // preferivel a sobrepor: as celulas encolhem e continuam legiveis.
         if (statusText != null && closeButton != null)
         {
+            statusText.ForceMeshUpdate();
+            float alturaStatus = Mathf.Max(statusText.preferredHeight, 24f);
             var closeRect = closeButton.GetComponent<RectTransform>();
-            float closeTop = closeRect.anchoredPosition.y + closeRect.rect.height * 0.5f;
+            float closeTopo = centroDe(closeRect) + closeRect.rect.height * 0.5f;
+
+            // Do fundo do titulo ate o topo do botao, descontando status e os tres respiros.
+            float disponivel = (titleBottom - gutter) - (closeTopo + gutter)
+                               - alturaStatus - gutter;
+            if (disponivel > 0f && gridHeight > disponivel)
+            {
+                gridHeight = disponivel;
+                gridRect.sizeDelta = new Vector2(gridRect.sizeDelta.x, gridHeight);
+                ReflowGridCells(gridHeight);
+            }
+        }
+
+        // A grade passa a viver ancorada ao topo, entao o alvo (calculado no centro) volta
+        // a ser expresso no referencial dessa ancora nova.
+        gridRect.anchorMin = gridRect.anchorMax = new Vector2(0.5f, 1f);
+        float gridCentroAlvo = titleBottom - gutter - gridHeight * 0.5f;
+        gridRect.anchoredPosition = new Vector2(
+            gridRect.anchoredPosition.x,
+            gridCentroAlvo - 0.5f * altura);
+
+        // Status sits between the grid and the close button.
+        //
+        // It used to be placed purely from the button upwards, which never looked at where the
+        // grid had actually ended. With 12 slots the grid reached y 485..610 while the status
+        // sat at 470..525 — the grid covered the line, so "Comida armazenada / Pode alimentar"
+        // was invisible in game with no error of any kind. Anchoring it below the grid keeps the
+        // reading order (title, grid, status, button) whatever the row count turns out to be.
+        if (statusText != null)
+        {
             var statusRect = statusText.rectTransform;
-            statusRect.anchoredPosition = new Vector2(
-                statusRect.anchoredPosition.x,
-                closeTop + gutter + statusRect.rect.height * 0.5f);
+
+            // A altura vem do TEXTO, nao do rect da cena. O rect trazia 110px (folga para
+            // duas linhas grandes) enquanto as duas linhas reais ocupam ~50: com 110 o
+            // status nao cabia entre a grade e o botao, o limite inferior vencia e ele
+            // subia por cima da grade -- que e exatamente como a linha ficava invisivel.
+            statusText.ForceMeshUpdate();
+            float alturaTexto = Mathf.Max(statusText.preferredHeight, 24f);
+            statusRect.sizeDelta = new Vector2(statusRect.sizeDelta.x, alturaTexto);
+
+            float gridBottom = centroDe(gridRect) - gridHeight * 0.5f;
+            float alvoCentro = gridBottom - gutter - alturaTexto * 0.5f;
+
+            // Nunca abaixo do botao: numa janela apertada e melhor encostar que sobrepor.
+            if (closeButton != null)
+            {
+                var closeRect = closeButton.GetComponent<RectTransform>();
+                float closeTopo = centroDe(closeRect) + closeRect.rect.height * 0.5f;
+                float minimo = closeTopo + gutter + alturaTexto * 0.5f;
+                if (alvoCentro < minimo) alvoCentro = minimo;
+            }
+
+            // De volta ao referencial da ancora do proprio status.
+            float alvoLocal = alvoCentro - (statusRect.anchorMin.y - 0.5f) * altura;
+            statusRect.anchoredPosition = new Vector2(statusRect.anchoredPosition.x, alvoLocal);
         }
     }
 
@@ -352,8 +451,13 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         {
             float inset = Mathf.Round(panelRect.rect.width * 0.125f) + 12f;
             float maxWidth = panelRect.rect.width - inset * 2f;
-            if (gridRect.sizeDelta.x > maxWidth)
-                gridRect.sizeDelta = new Vector2(maxWidth, gridRect.sizeDelta.y);
+
+            // Largura ATRIBUIDA, nao apenas limitada. A comparacao ">" sozinha nunca
+            // corrigia uma largura errada para MENOS: a cena trazia sizeDelta.x = -296
+            // (o rect nasce com ancoras de ponto e offsets de um layout esticado), e um
+            // valor negativo passa direto por "> maxWidth" — a grade ficava com os
+            // cantos invertidos, x de 1021 a 873, e as celulas caiam fora do painel.
+            gridRect.sizeDelta = new Vector2(maxWidth, gridRect.sizeDelta.y);
         }
 
         // sizeDelta, not rect.width: InsetFromFrame has just narrowed this rect and the change
@@ -369,6 +473,27 @@ public class FeedingTrough : MonoBehaviour, IInteractable, IUIWindow, ISaveable
         float neededHeight = rows * cell + grid.spacing.y * (rows - 1)
                            + grid.padding.top + grid.padding.bottom;
         gridRect.sizeDelta = new Vector2(gridRect.sizeDelta.x, neededHeight);
+    }
+
+    /// <summary>
+    /// Reencolhe as celulas para caberem numa altura imposta de fora.
+    ///
+    /// O FitSlotGrid escolhe a celula pela LARGURA e deixa a altura seguir dela. Quando o
+    /// StackBetween descobre que essa altura nao cabe entre o titulo e o botao, a grade
+    /// tem de encolher — e a celula junto, senao as linhas transbordam do rect.
+    /// </summary>
+    private void ReflowGridCells(float alturaDisponivel)
+    {
+        var grid = slotParent != null ? slotParent.GetComponent<GridLayoutGroup>() : null;
+        if (grid == null || grid.constraintCount <= 0) return;
+
+        int rows = Mathf.CeilToInt(slotCount / (float)grid.constraintCount);
+        if (rows <= 0) return;
+
+        float util = alturaDisponivel - grid.padding.top - grid.padding.bottom
+                     - grid.spacing.y * (rows - 1);
+        float cell = Mathf.Floor(util / rows);
+        if (cell > 0f) grid.cellSize = new Vector2(cell, cell);
     }
 
     /// <summary>
