@@ -37,12 +37,19 @@ namespace SowurShield.Combat
         private bool ehDoJogador;
 
         [Header("Golpe")]
-        [SerializeField] private float avanco = 0.42f;
+        // 0,26 de uma casa de 1 unidade (GridManager.cellSize = 1). O primeiro valor
+        // era 0,42 -- quase metade do caminho ate a casa vizinha, o que faz a unidade
+        // parecer que sai do lugar dela em vez de dar um golpe. Os sprites sao
+        // normalizados para 0,8 de altura, entao 0,26 ja e um terco do proprio corpo.
+        [SerializeField] private float avanco = 0.26f;
         [SerializeField] private float tempoDeIda = 0.09f;
         [SerializeField] private float tempoDeVolta = 0.16f;
 
         [Header("Dano")]
-        [SerializeField] private float recuo = 0.16f;
+        // O critico multiplica isto por 1,9, entao 0,16 dava 0,30 de recuo -- perto de
+        // um terco de casa so por levar um golpe. 0,11 mantem o critico legivel (0,21)
+        // sem a unidade sair da casa dela.
+        [SerializeField] private float recuo = 0.11f;
         [SerializeField] private float tremor = 0.07f;
 
         [Header("Morte")]
@@ -124,7 +131,17 @@ namespace SowurShield.Combat
 
         private IEnumerator RotinaDeMorte()
         {
-            var inicio = transform.localPosition;
+            // Parte da POSE DE REPOUSO, nao de onde a unidade esta agora.
+            //
+            // Morrer a meio de um ataque e comum -- o contra-ataque mata quem investiu --
+            // e nessa altura o transform esta deslocado para a frente. Usar a posicao
+            // atual como base deixava o corpo a assentar no ponto da investida: medido
+            // 3,34 numa unidade cuja casa e 3,0, ou seja, um terco de casa fora.
+            // De onde esta ate a casa: o corpo desliza de volta enquanto tomba, em vez
+            // de saltar para la num frame.
+            var deslocado = transform.localPosition;
+            var inicio = poseLocal;
+
             Color corInicial = sr != null ? sr.color : Color.white;
             float t = 0f;
 
@@ -133,9 +150,12 @@ namespace SowurShield.Combat
                 t += Time.deltaTime / tempoDeMorte;
                 float p = Mathf.Clamp01(t);
 
-                // Tomba para o lado de onde veio o golpe e afunda um pouco.
+                // Tomba para o lado de onde veio o golpe e afunda um pouco, ao mesmo
+                // tempo que regressa a casa (se morreu a meio de uma investida).
                 transform.localRotation = Quaternion.Euler(0f, 0f, -75f * Frente * Suavizar(p));
-                transform.localPosition = inicio + new Vector3(0f, -0.18f * p, 0f);
+
+                var repouso = Vector3.Lerp(deslocado, inicio, SuavizarSaida(Mathf.Min(1f, p * 2.2f)));
+                transform.localPosition = repouso + new Vector3(0f, -0.18f * p, 0f);
 
                 // Encolhe pela escala BASE, que nao e 1 e pode ter X negativo.
                 transform.localScale = escalaBase * Mathf.Lerp(1f, 0.82f, p);
