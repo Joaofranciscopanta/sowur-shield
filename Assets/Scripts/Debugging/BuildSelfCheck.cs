@@ -66,6 +66,7 @@ namespace SowurShield.Debugging
                 Plantacoes(sb);
                 Tutorial(sb);
                 Assets(sb);
+                Codex(sb);
 
                 sb.AppendLine("===== FIM DO SELFCHECK =====");
                 Debug.Log(sb.ToString());
@@ -271,6 +272,60 @@ namespace SowurShield.Debugging
                     if (s.skillIcon == null) { semIcone++; sb.AppendLine($"[ASSETS]   skill sem icone: {s.name}"); }
                 }
                 sb.AppendLine($"[ASSETS] skills={skills} sem icone={semIcone}");
+            }
+
+            /// <summary>
+            /// O codex tem de traduzir. Durante meses nao traduziu: as 81 entradas
+            /// estavam em portugues cru com keyId 0, e como a build abre em `en`, quem
+            /// jogava em ingles via o jogo todo traduzido e o codex em portugues.
+            ///
+            /// ⚠️ Verificado AQUI e nao so por teste porque um LocalizedString mal ligado
+            /// devolve a string "No translation found..." em vez de lancar -- e essa
+            /// string passaria por um teste que so verificasse "nao esta vazio".
+            /// </summary>
+            private static void Codex(StringBuilder sb)
+            {
+                int npcs = 0, bios = 0, entradas = 0, quebrados = 0;
+
+                foreach (var npc in Object.FindObjectsByType<SowurShield.Dialogue.NPCDialogueInteractable>(
+                             FindObjectsInactive.Include, FindObjectsSortMode.None))
+                {
+                    if (npc == null || npc.GetTotalLoreCount() == 0) continue;
+                    npcs++;
+
+                    string bio = npc.GetBio();
+                    if (string.IsNullOrEmpty(bio) || bio.Contains("No translation found"))
+                    {
+                        quebrados++;
+                        sb.AppendLine($"[CODEX]   {npc.gameObject.name}: bio nao resolve");
+                    }
+                    else bios++;
+
+                    foreach (var e in npc.GetUnlockedLore())
+                    {
+                        entradas++;
+                        if (string.IsNullOrEmpty(e.GetTitle()) || e.GetTitle().Contains("No translation found") ||
+                            string.IsNullOrEmpty(e.GetBody())  || e.GetBody().Contains("No translation found"))
+                        {
+                            quebrados++;
+                            sb.AppendLine($"[CODEX]   {npc.gameObject.name}: lore nao resolve");
+                        }
+                    }
+                }
+
+                sb.AppendLine($"[CODEX] npcs={npcs} bios ok={bios} lore visivel={entradas} quebrados={quebrados}");
+
+                // Uma amostra do texto real: se o idioma for `en` e isto sair em
+                // portugues, a ligacao caiu para o campo cru sem ninguem dar por isso.
+                foreach (var npc in Object.FindObjectsByType<SowurShield.Dialogue.NPCDialogueInteractable>(
+                             FindObjectsInactive.Include, FindObjectsSortMode.None))
+                {
+                    if (npc == null || npc.GetTotalLoreCount() == 0) continue;
+                    var b = npc.GetBio();
+                    sb.AppendLine($"[CODEX]   amostra {npc.gameObject.name}: \"" +
+                                  (b.Length > 50 ? b.Substring(0, 50) + "..." : b) + "\"");
+                    break;
+                }
             }
         }
     }
