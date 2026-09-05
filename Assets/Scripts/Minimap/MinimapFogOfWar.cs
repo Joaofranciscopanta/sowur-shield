@@ -95,12 +95,14 @@ public class MinimapFogOfWar : MonoBehaviour, ISaveable
         // medicao) — sem reconstruir, a neblina ficaria deslocada do mapa que cobre.
         // Build() preserva a mascara ja revelada, entao isto nao devolve o jogador ao
         // escuro: so realinha.
-        MinimapTerrainPainter.OnRepainted += HandleTerrainRepainted;
+        // OnWorldChanged, nao OnRepainted: com o minimapa como camera aerea o painter esta
+        // desligado e nunca repinta, mas o mundo continua a mudar quando se edita o mapa.
+        MinimapTerrainPainter.OnWorldChanged += HandleTerrainRepainted;
     }
 
     private void OnDisable()
     {
-        MinimapTerrainPainter.OnRepainted -= HandleTerrainRepainted;
+        MinimapTerrainPainter.OnWorldChanged -= HandleTerrainRepainted;
     }
 
     private void HandleTerrainRepainted()

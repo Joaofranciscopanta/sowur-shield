@@ -133,35 +133,36 @@ public class MinimapCamera : MonoBehaviour
     }
 
     /// <summary>
-    /// The layers the minimap renders: the terrain layer plus the icon layer.
+    /// As camadas que o minimapa desenha: o chao, o MUNDO e os icones.
     ///
-    /// In SampleScene `minimapLayers` was serialized to the Minimap layer alone, which holds only
-    /// the icon sprites — the terrain tilemaps and all 107 world sprites live on Default — so the
-    /// camera rendered its clear colour plus three dots and the panel read as a black square.
-    /// Nothing errored; it simply looked switched off, and shipped that way.
+    /// Isto e uma camera aerea — fotografa a cena como ela e. Durante um tempo desenhou
+    /// apenas a camada do terreno, e um <c>MinimapTerrainPainter</c> carimbava borroes
+    /// coloridos por cima para representar arvores, agua e casas, porque na altura o chao
+    /// aparecia vazio.
     ///
-    /// Pointing it at Default instead is the obvious fix and the wrong one: it draws every world
-    /// sprite at full detail, which at the HUD's ~200px reduces to unreadable confetti. A minimap
-    /// wants ground plus markers, so the terrain gets its own layer (see
-    /// <see cref="MinimapTerrainLayerName"/>) that both this camera and the main camera render.
+    /// O comentario que aqui estava dizia que incluir Default era "a correcao obvia e a
+    /// errada", produzindo "confete ilegivel", e que os tilemaps rendiam 5,9% de cobertura.
+    /// Medido de novo em 2026-09-05: os tilemaps dao **99,9%** de cobertura, e o mundo
+    /// inteiro fotografado le-se perfeitamente — veem-se os caminhos de terra, os pomares,
+    /// as construcoes e os animais. Aquela medicao vinha de antes de o chao passar para a
+    /// sorting layer `Ground` (a correcao de Y-sorting), quando de facto nao se via nada.
     ///
-    /// A mask that cannot show terrain is treated as unconfigured. An explicit mask that already
-    /// includes something beyond the icon layer is honoured, so deliberate setups still work.
+    /// Uma mascara que nao consiga mostrar o mundo e tratada como nao configurada. Uma
+    /// mascara explicita que ja inclua algo alem dos icones e respeitada.
     /// </summary>
     private int ResolveCullingMask()
     {
         int iconBit = LayerBit(MinimapLayerName);
         int terrainBit = LayerBit(MinimapTerrainLayerName);
+        int worldBit = 1; // Default: onde vivem os sprites do mundo
         int configured = minimapLayers.value;
 
-        // Icons-only (or nothing) cannot draw a map.
+        // So icones (ou nada) nao desenha mapa nenhum.
         bool cannotShowGround = configured == 0 || (configured & ~iconBit) == 0;
         if (!cannotShowGround)
             return configured;
 
-        // Fall back to terrain + icons; if the terrain layer does not exist in this project,
-        // Default at least shows something rather than a blank square.
-        int fallback = (terrainBit != 0 ? terrainBit : 1) | iconBit;
+        int fallback = terrainBit | worldBit | iconBit;
         minimapLayers = fallback;
         return fallback;
     }

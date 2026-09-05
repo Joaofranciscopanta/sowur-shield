@@ -126,6 +126,34 @@ public class MinimapController : MonoBehaviour, IUIWindow
         LogDebug("MinimapController initialized");
     }
 
+    private void OnEnable()
+    {
+        // O mundo mudou (o editor pintou chao, colocou um predio): a medicao guardada na
+        // camera ficou velha, e e dela que saem o limite de arrasto e o enquadramento do
+        // fullscreen. Sem isto, editar o mapa deixava os dois presos a forma que o mundo
+        // tinha ao arrancar a cena.
+        MinimapTerrainPainter.OnWorldChanged += HandleWorldChanged;
+    }
+
+    private void OnDisable()
+    {
+        MinimapTerrainPainter.OnWorldChanged -= HandleWorldChanged;
+    }
+
+    private void HandleWorldChanged()
+    {
+        if (minimapCamera == null) return;
+
+        minimapCamera.InvalidateWorldBounds();
+
+        // Se o mapa esta aberto, reenquadrar ja; fechado, a proxima abertura mede de novo.
+        if (isFullscreenMode)
+        {
+            minimapCamera.CentreOnWorld();
+            ClampPanOffset();
+        }
+    }
+
     private void OnDestroy()
     {
         CleanupInput();

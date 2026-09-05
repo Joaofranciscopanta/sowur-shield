@@ -90,21 +90,25 @@ public class MinimapTerrainPainter : MonoBehaviour
     private const float EdgeFeatherStart = 0.88f;
 
     [Header("Behaviour")]
-    [Tooltip("Stand down when a tilemap on the terrain layer already draws the ground. " +
-             "Leave OFF while the world tilemaps render nothing readable at minimap scale.")]
-    [SerializeField] private bool deferToAuthoredTerrain = false;
+    [Tooltip("Ceder o lugar ao terreno real da cena. LIGADO por omissao: o minimapa e uma " +
+             "camera aerea e fotografa o mundo como ele e. Desligar volta aos borroes.")]
+    [SerializeField] private bool deferToAuthoredTerrain = true;
 
     private void Start()
     {
-        // Deliberately opt-in, and off by default.
+        // LIGADO por omissao desde 2026-09-05.
         //
-        // SampleScene's DisplayTilemap looks like authored terrain by every cheap test — 10,201
-        // tiles, every one carrying a sprite, renderer enabled — yet photographed by the minimap
-        // camera it produces 5.9% coverage: effectively nothing. Standing down for it would put
-        // the minimap straight back to the blank square this work set out to fix.
+        // O comentario aqui dizia que o DisplayTilemap da SampleScene, apesar dos 10.201 tiles
+        // todos com sprite, rendia 5,9% de cobertura — "efetivamente nada" — e que ceder-lhe o
+        // lugar devolveria o minimapa ao quadrado vazio. Voltei a medir: da **99,9%**. Aquela
+        // medicao e anterior a passagem do chao para a sorting layer `Ground`; hoje o mundo
+        // fotografa-se perfeitamente.
         //
-        // The flag exists so that a project which later paints genuine minimap terrain can hand
-        // the job back with one toggle, rather than deleting this component.
+        // Os borroes existiam para representar um mundo que a camera nao conseguia ver. Como
+        // ela ja o ve, carimba-los por cima so esconde o mapa verdadeiro — e classificava mal:
+        // o `GroundWateringCan` virava um lago porque o nome contem "water".
+        //
+        // O componente fica, para quem quiser o estilo estilizado: basta desligar a flag.
         if (deferToAuthoredTerrain && HasAuthoredTerrain())
         {
             enabled = false;
@@ -142,7 +146,19 @@ public class MinimapTerrainPainter : MonoBehaviour
         var painter = FindFirstObjectByType<MinimapTerrainPainter>();
         if (painter != null && painter.isActiveAndEnabled)
             painter.ScheduleRepaint();
+        else
+            OnWorldChanged?.Invoke();   // sem borroes, o aviso segue na mesma
     }
+
+    /// <summary>
+    /// O mundo mudou e quem depende da sua extensao tem de se remedir.
+    ///
+    /// Separado de <see cref="OnRepainted"/> de proposito. Com o minimapa como camera
+    /// aerea, este componente esta desligado e nunca repinta — mas o mundo continua a
+    /// mudar quando se edita o mapa, e a neblina continua a precisar de saber. Ligar a
+    /// neblina apenas a OnRepainted deixaria-a presa na medicao do arranque.
+    /// </summary>
+    public static System.Action OnWorldChanged;
 
     [Tooltip("Intervalo minimo entre dois repaints automaticos, em segundos.")]
     [SerializeField] private float repaintThrottleSeconds = 0.3f;
@@ -188,6 +204,7 @@ public class MinimapTerrainPainter : MonoBehaviour
         lastRepaintTime = Time.unscaledTime;
         Repaint();
         OnRepainted?.Invoke();
+        OnWorldChanged?.Invoke();
     }
 
     /// <summary>Disparado depois de cada repaint, para quem desenha por cima (ex.: a neblina).</summary>
@@ -343,6 +360,7 @@ public class MinimapTerrainPainter : MonoBehaviour
             if (iconLayer >= 0 && sr.gameObject.layer == iconLayer) continue;
             if (sr.sprite == null) continue;
             if (groundRenderer != null && sr == groundRenderer) continue; // never stamp our own output
+            if (IsMobileOrLoose(sr)) continue;                            // gente e coisas no chao nao sao terreno
 
             Ground kind = Classify(sr);
             if (kind == Ground.Grass) continue; // nothing to stamp
@@ -440,6 +458,43 @@ public class MinimapTerrainPainter : MonoBehaviour
     /// present on all 97 objects. It degrades safely — an unrecognised object simply stays grass
     /// rather than painting something wrong.
     /// </summary>
+    /// <summary>
+    /// Coisas que se MEXEM ou que estao pousadas no chao nao sao terreno.
+    ///
+    /// A classificacao e por texto no nome, e isso errava feio: o `GroundWateringCan` (um
+    /// regador largado no chao) tem "water" no nome e carimbava um LAGO azul onde nao ha
+    /// agua nenhuma; `AnimalMarketNPC` e `BuildingShopNPC` viravam mato e construcao porque
+    /// os sprites deles chamam-se "TX Props with Shadow_8" e "Premium Charakter
+    /// Spritesheet_49". Sao pessoas, nao cenario.
+    ///
+    /// NPCs, animais, o jogador e itens no chao ja aparecem como icones proprios no
+    /// minimapa — carimba-los outra vez como terreno era desenha-los duas vezes, e da
+    /// segunda com a cor errada.
+    ///
+    /// Testado pelo COMPONENTE, nao pelo nome: um NPC e um NPC independentemente de como o
+    /// sprite dele se chame, que e precisamente onde a heuristica de texto falhava.
+    /// </summary>
+    private static bool IsMobileOrLoose(SpriteRenderer sr)
+    {
+        var go = sr.gameObject;
+
+        if (go.CompareTag("Player")) return true;
+
+        // GetComponentInParent: a arte costuma estar num filho do objeto que leva o script.
+        if (go.GetComponentInParent<SowurShield.Core.GroundItem>() != null) return true;
+        if (go.GetComponentInParent<SowurShield.Animals.Animal>() != null) return true;
+        if (go.GetComponentInParent<SowurShield.Dialogue.NPCDialogueInteractable>() != null) return true;
+
+        // Os NPCs de loja nao herdam de NPCDialogueInteractable — sao classes proprias que
+        // so implementam IInteractable. Testar por IInteractable resolveria estes dois e
+        // partiria tudo o resto: a arvore, a cama, a caixa de venda, o comedouro e os
+        // pesqueiros tambem sao interativos, e esses SAO cenario.
+        if (go.GetComponentInParent<SowurShield.Animals.AnimalMarketNPC>() != null) return true;
+        if (go.GetComponentInParent<SowurShield.Dialogue.BuildingShopNPC>() != null) return true;
+
+        return false;
+    }
+
     private Ground Classify(SpriteRenderer sr)
     {
         string n = sr.sprite.name.ToLowerInvariant();

@@ -20963,7 +20963,7 @@ MonoBehaviour:
   scrubColor: {r: 0.52, g: 0.65, b: 0.35, a: 1}
   soilColor: {r: 0.48, g: 0.36, b: 0.24, a: 1}
   groundSortingOrder: 0
-  deferToAuthoredTerrain: 0
+  deferToAuthoredTerrain: 1
   repaintThrottleSeconds: 0.3
 --- !u!114 &1054705964
 MonoBehaviour:
@@ -146725,7 +146725,7 @@ MonoBehaviour:
   defaultOrthographicSize: 16
   minimapLayers:
     serializedVersion: 2
-    m_Bits: 320
+    m_Bits: 321
   cameraDistance: 10
   playerTarget: {fileID: 1203825692}
   followPlayer: 1
