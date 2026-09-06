@@ -30153,6 +30153,7 @@ GameObject:
   - component: {fileID: 328806572}
   - component: {fileID: 328806573}
   - component: {fileID: 328806574}
+  - component: {fileID: 328806575}
   m_Layer: 5
   m_Name: UI
   m_TagString: Untagged
@@ -30356,6 +30357,18 @@ MonoBehaviour:
   questTitleText: {fileID: 897483352}
   objectiveText: {fileID: 1997590579}
   progressBar: {fileID: 1864210662}
+--- !u!114 &328806575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 328806566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fab964c2f204de4e9aeffab2ae6d725, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Interiors.PersistentRoot
 --- !u!1 &328846637
 GameObject:
   m_ObjectHideFlags: 0
@@ -268567,6 +268580,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1703771085}
+  - component: {fileID: 1703771086}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -268595,6 +268609,18 @@ Transform:
   - {fileID: 1054705961}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1703771086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1703771084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fab964c2f204de4e9aeffab2ae6d725, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: SowurShield.Runtime::SowurShield.Interiors.PersistentRoot
 --- !u!1 &1703874294
 GameObject:
   m_ObjectHideFlags: 0
@@ -311246,7 +311272,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 310, y: -205.465}
-  m_SizeDelta: {x: 480, y: 0}
+  m_SizeDelta: {x: 480, y: 27.29}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2141346931
 MonoBehaviour:

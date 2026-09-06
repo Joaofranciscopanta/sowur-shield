@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace SowurShield.Interiors
@@ -32,11 +32,7 @@ public class PersistentPlayer : MonoBehaviour
 
     /// <summary>Limpa o estatico: o Play Mode sem domain reload preserva-o entre sessoes.</summary>
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    private static void Preparar()
-    {
-        instancia = null;
-        jaMarcado = false;
-    }
+    private static void Preparar() => instancia = null;
 
     private void Awake()
     {
@@ -101,23 +97,10 @@ public class PersistentPlayer : MonoBehaviour
         // Testar gameObject.scene.name != "DontDestroyOnLoad" parece resolver e nao
         // resolve: dentro do proprio Awake a cena do objeto ainda nao foi actualizada,
         // entao a comparacao passava e o DontDestroyOnLoad corria na mesma.
-        if (!jaMarcado)
-        {
-            jaMarcado = true;
-            DontDestroyOnLoad(gameObject);
-        }
+        // Delegado ao PersistentRoot: a regra e a mesma, e a guarda correta e a cena
+        // do objeto (buildIndex -1 = ja esta em DontDestroyOnLoad), nao uma flag nossa.
+        PersistentRoot.MarcarComoPersistente(gameObject);
     }
-
-    /// <summary>
-    /// Se JA foi chamado DontDestroyOnLoad nesta sessao de jogo.
-    ///
-    /// ESTATICO, e nao de instancia. O Awake corre outra vez sempre que o objeto e
-    /// reactivado — e o Unity reactiva o jogador persistente a cada carregamento de
-    /// cena — entao uma flag de instancia era reposta a false e o DontDestroyOnLoad
-    /// repetia-se, com a assercao interna que isso provoca. Reposto no arranque do
-    /// jogo por Preparar().
-    /// </summary>
-    private static bool jaMarcado;
 
     private void OnDestroy()
     {
