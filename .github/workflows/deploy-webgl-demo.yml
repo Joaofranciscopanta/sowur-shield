@@ -222,6 +222,29 @@ jobs:
             echo "✅ style.css backed up"
           fi
 
+          # Backup every hand-written page beside index.html (privacy, terms,
+          # cookies) and their shared stylesheet. Same trap as the Markdown docs
+          # below: `rm -rf docs` destroys anything not backed up here, and these
+          # are LEGAL pages - losing them silently is not acceptable.
+          html_count=0
+          for f in docs/*.html; do
+            [ -e "$f" ] || continue
+            base="$(basename "$f")"
+            # index.html is backed up separately above. Note: an `&& continue`
+            # here would be the last command of the loop body, and GitHub runs
+            # `bash -e`, so a false test would abort the whole step.
+            if [ "$base" != "index.html" ]; then
+              cp "$f" "custom_backup/$base"
+              html_count=$((html_count + 1))
+            fi
+          done
+          echo "✅ $html_count extra HTML page(s) backed up"
+
+          if [ -f "docs/legal.css" ]; then
+            cp docs/legal.css custom_backup/legal.css
+            echo "✅ legal.css backed up"
+          fi
+
           # Backup custom assets (landing page images, etc.)
           if [ -d "docs/assets" ]; then
             cp -r docs/assets custom_backup/assets
@@ -266,6 +289,20 @@ jobs:
             mkdir -p docs/TemplateData
             cp custom_backup/TemplateData/style.css docs/TemplateData/style.css
             echo "✅ Custom CSS restored"
+          fi
+
+          # Restore the legal pages and their stylesheet.
+          html_count=0
+          for f in custom_backup/*.html; do
+            [ -e "$f" ] || continue
+            cp "$f" "docs/$(basename "$f")"
+            html_count=$((html_count + 1))
+          done
+          echo "✅ $html_count extra HTML page(s) restored"
+
+          if [ -f "custom_backup/legal.css" ]; then
+            cp custom_backup/legal.css docs/legal.css
+            echo "✅ legal.css restored"
           fi
 
           # Restore custom assets (landing page images, etc.)
