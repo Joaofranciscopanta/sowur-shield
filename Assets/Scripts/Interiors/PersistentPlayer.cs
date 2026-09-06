@@ -102,6 +102,27 @@ public class PersistentPlayer : MonoBehaviour
         PersistentRoot.MarcarComoPersistente(gameObject);
     }
 
+    private void OnEnable()
+    {
+        // O jogador tambem nao pertence a toda a parte: a CombatScene monta as suas
+        // proprias equipas, e um Bunny persistente ficaria a andar por cima do
+        // combate. Destroi-se ao chegar a uma cena que nao seja de jogo; voltar a
+        // vila recarrega-o com a cena.
+        SceneManager.sceneLoaded -= AoMudarDeCena;
+        SceneManager.sceneLoaded += AoMudarDeCena;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= AoMudarDeCena;
+    }
+
+    private void AoMudarDeCena(Scene cena, LoadSceneMode modo)
+    {
+        if (PersistentRoot.EhCenaDeJogo(cena.name)) return;
+        Destroy(gameObject);
+    }
+
     private void OnDestroy()
     {
         if (instancia == this) instancia = null;

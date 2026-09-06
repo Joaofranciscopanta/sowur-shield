@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -57,8 +57,6 @@ public partial class CursorController : MonoBehaviour {
         sortingLayerOriginal = cursorRenderer.sortingLayerName;
         sortingOrderOriginal = cursorRenderer.sortingOrder;
 
-        if (mainCamera == null) {
-        }
         // Encontrar o inventário do jogador
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) {
@@ -71,6 +69,22 @@ public partial class CursorController : MonoBehaviour {
     }
 
     void Update() {
+        // Reencontrar a camera quando a referencia morre.
+        //
+        // mainCamera e capturado no Start, e apontava para a camera da SampleScene. Com
+        // interiores cada cena tem a SUA camera: entrar numa casa destroi aquela, e este
+        // Update saia logo na primeira linha — o indicador do rato ficava CONGELADO no
+        // ultimo sitio onde estava, sem erro nenhum na consola.
+        if (mainCamera == null) mainCamera = Camera.main;
+
+        // playerTransform tambem: o jogador atravessa cenas, mas uma cena que traga a
+        // sua copia deixa esta referencia a apontar para o objeto destruido.
+        if (playerTransform == null)
+        {
+            var jogador = GameObject.FindGameObjectWithTag("Player");
+            if (jogador != null) playerTransform = jogador.transform;
+        }
+
         if (mouse == null || mainCamera == null || playerTransform == null) return;
         
         // Com o editor de mapa aberto o cursor continua VISIVEL — e o mesmo indicador
