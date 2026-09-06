@@ -14,6 +14,9 @@
   </head>
   <body>
 
+    <!-- Keyboard users land here first: jump straight past the nav to the content. -->
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
     <!-- Ambient backdrop: scroll parallax (sky/forest/farm) + lamp glow + fireflies -->
     <div id="bg-fx" aria-hidden="true">
       <div class="bg-layer bg-layer-sky" id="bg-layer-sky"></div>
@@ -44,9 +47,9 @@
           <a href="https://github.com/Joaofranciscopanta/sowur-shield" target="_blank" rel="noopener">GitHub</a>
         </nav>
         <div class="lang-switch" id="lang-switch" role="group" aria-label="Language">
-          <button type="button" class="lang-btn" data-lang="en">EN</button>
-          <button type="button" class="lang-btn" data-lang="pt">PT</button>
-          <button type="button" class="lang-btn" data-lang="es">ES</button>
+          <button type="button" class="lang-btn" data-lang="en" aria-pressed="false" lang="en"><span aria-hidden="true">EN</span><span class="sr-only">English</span></button>
+          <button type="button" class="lang-btn" data-lang="pt" aria-pressed="false" lang="pt"><span aria-hidden="true">PT</span><span class="sr-only">Português</span></button>
+          <button type="button" class="lang-btn" data-lang="es" aria-pressed="false" lang="es"><span aria-hidden="true">ES</span><span class="sr-only">Español</span></button>
         </div>
         <a href="#play" class="btn btn-primary nav-cta" data-i18n="nav.playNow">Play Now</a>
         <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-links">
@@ -58,6 +61,7 @@
     <!-- ============================================= -->
     <!-- HERO                                            -->
     <!-- ============================================= -->
+    <a id="main-content" tabindex="-1"></a>
     <section id="top" class="hero">
       <div class="hero-glow"></div>
       <div class="hero-content">
@@ -81,11 +85,11 @@
         <div class="hero-meta">
           <span data-i18n="hero.metaWebgl">🖥️ Runs in your browser via WebGL</span>
           <span data-i18n="hero.metaKeyboard">🎮 Keyboard controls</span>
-          <span data-i18n="hero.metaFree">🆓 Free &amp; open source</span>
+          <span data-i18n="hero.metaFree">🆓 Free to play</span>
         </div>
       </div>
 
-      <img src="assets/hero-showcase.png" alt="Sowur Shield gameplay screenshot" class="hero-art">
+      <img src="assets/hero-showcase.png" alt="Sowur Shield gameplay: a farm with tilled crop rows, animals in a fenced paddock and the village beyond" class="hero-art">
     </section>
 
     <!-- ============================================= -->
@@ -192,13 +196,13 @@
       </div>
 
       <div class="gallery-grid">
-        <div class="gallery-item gallery-wide"><img src="assets/village.png" alt="The village street" class="gallery-img" tabindex="0" role="button" aria-label="View full size: The village street"></div>
-        <div class="gallery-item"><img src="assets/interior.png" alt="Inside a shop" class="gallery-img" tabindex="0" role="button" aria-label="View full size: Inside a shop"></div>
-        <div class="gallery-item"><img src="assets/minimap.png" alt="Fullscreen map" class="gallery-img" tabindex="0" role="button" aria-label="View full size: Fullscreen map"></div>
-        <div class="gallery-item"><img src="assets/animals.png" alt="Animal pen" class="gallery-img" tabindex="0" role="button" aria-label="View full size: Animal pen"></div>
-        <div class="gallery-item"><img src="assets/dialogue.png" alt="NPC dialogue" class="gallery-img" tabindex="0" role="button" aria-label="View full size: NPC dialogue"></div>
-        <div class="gallery-item"><img src="assets/combat.png" alt="Combat scene" class="gallery-img" tabindex="0" role="button" aria-label="View full size: Combat scene"></div>
-        <div class="gallery-item gallery-wide"><img src="assets/farm.png" alt="Farm overview" class="gallery-img" tabindex="0" role="button" aria-label="View full size: Farm overview"></div>
+        <div class="gallery-item gallery-wide"><img src="assets/village.png" alt="The village street, lined with villagers’ houses and their shop signs" class="gallery-img" tabindex="0" role="button" aria-label="View full size: village street"></div>
+        <div class="gallery-item"><img src="assets/interior.png" alt="Inside a village shop, with the shopkeeper standing behind the counter" class="gallery-img" tabindex="0" role="button" aria-label="View full size: shop interior"></div>
+        <div class="gallery-item"><img src="assets/minimap.png" alt="The fullscreen minimap showing explored terrain, the farm and village markers" class="gallery-img" tabindex="0" role="button" aria-label="View full size: fullscreen map"></div>
+        <div class="gallery-item"><img src="assets/animals.png" alt="The animal paddock, with chickens and cows beside the red barn" class="gallery-img" tabindex="0" role="button" aria-label="View full size: animal pen"></div>
+        <div class="gallery-item"><img src="assets/dialogue.png" alt="A dialogue window: an NPC portrait beside their line of speech and reply choices" class="gallery-img" tabindex="0" role="button" aria-label="View full size: NPC dialogue"></div>
+        <div class="gallery-item"><img src="assets/combat.png" alt="A turn-based battle: the player’s party facing enemies, with health bars above each" class="gallery-img" tabindex="0" role="button" aria-label="View full size: combat scene"></div>
+        <div class="gallery-item gallery-wide"><img src="assets/farm.png" alt="Overview of the farm: greenhouse, crop rows, paddock and the red barn" class="gallery-img" tabindex="0" role="button" aria-label="View full size: farm overview"></div>
       </div>
     </section>
 
@@ -252,7 +256,7 @@
           <span class="key-pill"><kbd>WASD</kbd> <span data-i18n="controls.key.move">Move</span></span>
           <span class="key-pill"><kbd>E</kbd> <span data-i18n="controls.key.interact">Interact</span></span>
           <span class="key-pill"><kbd>Click</kbd> <span data-i18n="controls.key.useTool">Use tool</span></span>
-          <span class="key-pill"><kbd>I</kbd> <span data-i18n="controls.key.inventory">Inventory</span></span>
+          <span class="key-pill"><kbd>Tab</kbd> <span data-i18n="controls.key.inventory">Inventory</span></span>
           <span class="key-pill"><kbd>M</kbd> <span data-i18n="controls.key.minimap">Minimap</span></span>
           <span class="key-pill"><kbd>1–9</kbd> <span data-i18n="controls.key.hotbar">Hotbar</span></span>
           <span class="key-pill"><kbd>ESC</kbd> <span data-i18n="controls.key.menu">Menu / Save</span></span>
@@ -313,10 +317,33 @@
             <li><a href="#play">▶ <span data-i18n="nav.play">Play Demo</span></a></li>
           </ul>
         </div>
+
+        <div class="footer-col">
+          <h4 data-i18n="footer.legal">Legal</h4>
+          <ul>
+            <li><a href="privacy.html"><span data-i18n="footer.linkPrivacy">Privacy Policy</span></a></li>
+            <li><a href="terms.html"><span data-i18n="footer.linkTerms">Terms &amp; Conditions</span></a></li>
+            <li><a href="cookies.html"><span data-i18n="footer.linkCookies">Cookie Policy</span></a></li>
+            <li><a href="https://github.com/Joaofranciscopanta/sowur-shield/blob/main/CREDITS.md" target="_blank" rel="noopener noreferrer"><span data-i18n="footer.linkCredits">Asset Credits</span></a></li>
+          </ul>
+        </div>
       </div>
+
+      <!-- Business identity. Required for a trader-facing site in the EU/UK and
+           expected under Brazilian consumer law. Replace the TODO markers with the
+           registered details before treating this site as a business presence. -->
+      <div class="footer-business">
+        <p>
+          <strong>[TODO: registered company name]</strong> &middot;
+          <span data-i18n="footer.regNumber">Company no.</span> [TODO] &middot;
+          [TODO: registered address] &middot;
+          <a href="mailto:TODO@example.com">[TODO: contact email]</a>
+        </p>
+      </div>
+
       <div class="footer-bottom">
         <span id="build-badge-footer">Build #15 &middot; June 2026</span>
-        <span data-i18n="footer.madeWith">Made with Unity</span>
+        <span data-i18n="footer.copyright">&copy; 2026 SoulStudio. Made with Unity.</span>
       </div>
     </footer>
 
@@ -651,7 +678,7 @@
             'hero.titleLine1': 'Grow your farm.', 'hero.titleLine2': 'Defend your world.',
             'hero.subtitle': 'Sowur Shield is a cozy 2D farming sim with deep systems — till the land, raise animals, befriend villagers, and gear up for turn-based battles across a living world map.',
             'hero.playBrowser': '▶ Play in Browser', 'hero.exploreFeatures': 'Explore Features',
-            'hero.metaWebgl': '🖥️ Runs in your browser via WebGL', 'hero.metaKeyboard': '🎮 Keyboard controls', 'hero.metaFree': '🆓 Free &amp; open source',
+            'hero.metaWebgl': '🖥️ Runs in your browser via WebGL', 'hero.metaKeyboard': '🎮 Keyboard controls', 'hero.metaFree': '🆓 Free to play',
             'features.eyebrow': "What's New", 'features.title': 'Everything you need for a full farm life',
             'features.subtitle': 'Core systems built and playable right now in the demo build.',
             'features.farming.title': 'Farming',
@@ -716,6 +743,10 @@
             'footer.roleOwner': 'Owner &amp; Lead Dev', 'footer.roleCoOwner': 'Co-Owner &amp; Dev', 'footer.roleArt': 'Art &amp; Design',
             'footer.links': 'Links', 'footer.linkRepo': 'GitHub Repository', 'footer.linkDocs': 'Documentation',
             'footer.madeWith': 'Made with Unity',
+            'footer.legal': 'Legal', 'footer.linkPrivacy': 'Privacy Policy',
+            'footer.linkTerms': 'Terms &amp; Conditions', 'footer.linkCookies': 'Cookie Policy',
+            'footer.linkCredits': 'Asset Credits', 'footer.regNumber': 'Company no.',
+            'footer.copyright': '© 2026 SoulStudio. Made with Unity.',
           },
           pt: {
             'nav.features': 'Recursos', 'nav.gallery': 'Galeria', 'nav.play': 'Jogar Demo',
@@ -724,7 +755,7 @@
             'hero.titleLine1': 'Cultive sua fazenda.', 'hero.titleLine2': 'Defenda seu mundo.',
             'hero.subtitle': 'Sowur Shield é um simulador de fazenda 2D acolhedor com sistemas profundos — cultive a terra, crie animais, faça amizade com os moradores e prepare-se para batalhas por turnos em um mapa-múndi vivo.',
             'hero.playBrowser': '▶ Jogar no Navegador', 'hero.exploreFeatures': 'Explorar Recursos',
-            'hero.metaWebgl': '🖥️ Roda no seu navegador via WebGL', 'hero.metaKeyboard': '🎮 Controles de teclado', 'hero.metaFree': '🆓 Grátis e código aberto',
+            'hero.metaWebgl': '🖥️ Roda no seu navegador via WebGL', 'hero.metaKeyboard': '🎮 Controles de teclado', 'hero.metaFree': '🆓 Grátis para jogar',
             'features.eyebrow': 'Novidades', 'features.title': 'Tudo que você precisa para uma vida completa na fazenda',
             'features.subtitle': 'Sistemas centrais já implementados e jogáveis na demo atual.',
             'features.farming.title': 'Agricultura',
@@ -789,6 +820,10 @@
             'footer.roleOwner': 'Dono e Dev Principal', 'footer.roleCoOwner': 'Co-Dono e Dev', 'footer.roleArt': 'Arte e Design',
             'footer.links': 'Links', 'footer.linkRepo': 'Repositório no GitHub', 'footer.linkDocs': 'Documentação',
             'footer.madeWith': 'Feito com Unity',
+            'footer.legal': 'Jurídico', 'footer.linkPrivacy': 'Política de Privacidade',
+            'footer.linkTerms': 'Termos e Condições', 'footer.linkCookies': 'Política de Cookies',
+            'footer.linkCredits': 'Créditos dos Assets', 'footer.regNumber': 'CNPJ',
+            'footer.copyright': '© 2026 SoulStudio. Feito com Unity.',
           },
           es: {
             'nav.features': 'Funciones', 'nav.gallery': 'Galería', 'nav.play': 'Jugar Demo',
@@ -797,7 +832,7 @@
             'hero.titleLine1': 'Cultiva tu granja.', 'hero.titleLine2': 'Defiende tu mundo.',
             'hero.subtitle': 'Sowur Shield es un acogedor simulador de granja 2D con sistemas profundos — labra la tierra, cría animales, hazte amigo de los aldeanos y prepárate para batallas por turnos en un mapa mundial vivo.',
             'hero.playBrowser': '▶ Jugar en el Navegador', 'hero.exploreFeatures': 'Explorar Funciones',
-            'hero.metaWebgl': '🖥️ Funciona en tu navegador vía WebGL', 'hero.metaKeyboard': '🎮 Controles de teclado', 'hero.metaFree': '🆓 Gratis y de código abierto',
+            'hero.metaWebgl': '🖥️ Funciona en tu navegador vía WebGL', 'hero.metaKeyboard': '🎮 Controles de teclado', 'hero.metaFree': '🆓 Gratis para jugar',
             'features.eyebrow': 'Novedades', 'features.title': 'Todo lo que necesitas para una vida completa en la granja',
             'features.subtitle': 'Sistemas principales ya implementados y jugables en la demo actual.',
             'features.farming.title': 'Agricultura',
@@ -862,6 +897,10 @@
             'footer.roleOwner': 'Propietario y Dev Principal', 'footer.roleCoOwner': 'Copropietario y Dev', 'footer.roleArt': 'Arte y Diseño',
             'footer.links': 'Enlaces', 'footer.linkRepo': 'Repositorio de GitHub', 'footer.linkDocs': 'Documentación',
             'footer.madeWith': 'Hecho con Unity',
+            'footer.legal': 'Legal', 'footer.linkPrivacy': 'Política de Privacidad',
+            'footer.linkTerms': 'Términos y Condiciones', 'footer.linkCookies': 'Política de Cookies',
+            'footer.linkCredits': 'Créditos de Assets', 'footer.regNumber': 'N.º de empresa',
+            'footer.copyright': '© 2026 SoulStudio. Hecho con Unity.',
           },
         };
 
@@ -877,7 +916,13 @@
             if (value !== undefined) el.innerHTML = value;
           });
           document.documentElement.lang = lang === 'pt' ? 'pt-br' : (lang === 'es' ? 'es' : 'en-us');
-          buttons.forEach((btn) => btn.classList.toggle('is-active', btn.dataset.lang === lang));
+          buttons.forEach((btn) => {
+            const active = btn.dataset.lang === lang;
+            btn.classList.toggle('is-active', active);
+            // Screen readers announce the selected language from aria-pressed,
+            // since the active state is otherwise only a colour change.
+            btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+          });
           localStorage.setItem(STORAGE_KEY, lang);
         }
 

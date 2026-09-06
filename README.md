@@ -1,7 +1,7 @@
 # 🌾 Sowur Shield
 
 [![Unity](https://img.shields.io/badge/Unity-2022.3.46f1-black?logo=unity)](https://unity.com/)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-see%20CREDITS-lightgrey.svg)](CREDITS.md)
 [![GitHub Stars](https://img.shields.io/github/stars/Joaofranciscopanta/sowur-shield?style=social)](https://github.com/Joaofranciscopanta/sowur-shield)
 [![Last Commit](https://img.shields.io/github/last-commit/Joaofranciscopanta/sowur-shield)](https://github.com/Joaofranciscopanta/sowur-shield/commits/main)
 
@@ -30,7 +30,7 @@ Experience the game directly in your browser! The WebGL demo includes:
 - **Harvest System**: Randomized yields and regrowth support for recurring harvests
 
 ### 🎒 Comprehensive Inventory
-- **36-Slot System**: 9 hotbar slots + 27 storage slots
+- **45-Slot System**: 9 hotbar slots + 36 storage slots
 - **Drag & Drop UI**: Intuitive item management with visual feedback
 - **Item Stacking**: Automatic stacking with configurable max stack sizes
 - **Rarity System**: Color-coded item rarity with glow effects
@@ -324,3 +324,21 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 Made with passion by [João Francisco](https://www.linkedin.com/in/joaofranciscopantaleao/), [Lucas Daniel](https://www.linkedin.com/in/enf-lucas-daniel/) & [Isabella Freitas](https://www.linkedin.com/in/isabellafferreira03/)
 
 </div>
+
+## 📄 Licensing
+
+This project does **not** currently carry an open-source licence, and the earlier
+MIT badge was inaccurate: no `LICENSE` file has ever existed in this repository.
+Without a licence, default copyright applies — all rights reserved.
+
+**This matters because the game bundles third-party art that we cannot relicense.**
+The *Sprout Lands* pack by Cup Nooble is used under a licence that requires credit and
+**forbids redistributing the pack**, even modified. Applying a blanket MIT licence to this
+repository would purport to grant rights over that art which we do not hold.
+
+See **[CREDITS.md](CREDITS.md)** for full asset attribution and the open licensing
+questions, including the fact that the pack is currently committed to a public repository.
+
+The website's own terms are published at:
+[Privacy Policy](docs/privacy.html) · [Terms & Conditions](docs/terms.html) · [Cookie Policy](docs/cookies.html)
+
