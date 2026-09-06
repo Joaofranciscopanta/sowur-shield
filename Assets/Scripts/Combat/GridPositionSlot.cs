@@ -36,9 +36,6 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
     [SerializeField] private Color fedColor = new Color(0.35f, 0.85f, 0.4f);
     [SerializeField] private Color hungryColor = new Color(0.95f, 0.75f, 0.2f);
 
-    [Header("Localization")]
-    [SerializeField] private LocalizedString positionLabelText_Localized; // table "Combat", key "combat.grid.position_label"
-
     // Grid position
     public Vector2Int gridPosition { get; private set; }
 
@@ -57,9 +54,9 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
 
     private void HandleLanguageChanged(Locale locale)
     {
-        if (positionText == null) return;
-        positionLabelText_Localized.Arguments = new object[] { gridPosition.x, gridPosition.y };
-        positionText.text = positionLabelText_Localized.SafeGetLocalizedString();
+        // Nothing language-dependent left on a slot: the raw grid coordinate it used to
+        // print ("6,2") told the player nothing, and the front/back meaning is now shown
+        // by labels on the grid itself.
     }
 
     /// <summary>
@@ -83,12 +80,10 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
             }
         }
 
-        // Display position text
+        // A slot built in code has no position label at all. One instantiated from the old
+        // scene prefab still carries its "6,2" caption, so blank it.
         if (positionText != null)
-        {
-            positionLabelText_Localized.Arguments = new object[] { position.x, position.y };
-            positionText.text = positionLabelText_Localized.SafeGetLocalizedString();
-        }
+            positionText.text = "";
 
         // Set default color
         UpdateVisuals();
@@ -111,8 +106,8 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
             return SwapAnimals(animal);
         }
 
-        // Check if animal is already in team at another position
-        var existingPosition = TeamAssemblerData.Instance.team.Find(pa => pa.animalData == animal.AnimalData);
+        // Check if this individual animal is already placed somewhere else on the grid.
+        var existingPosition = TeamAssemblerData.Instance.FindMember(animal);
         if (existingPosition != null)
         {
             TeamAssemblerData.Instance.RemoveAnimal(animal);
@@ -136,10 +131,12 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
         {
             assignedAnimal = animal;
 
-            // Auto-mark as fed if the animal was already fed today (via FeedingTrough or manual feeding)
+            // Auto-mark as fed if the animal was already fed today (via FeedingTrough or
+            // manual feeding). The trough serves each animal its own dailyFoodRequirements,
+            // which is its preferred food, so that counts toward the Well Fed synergy.
             if (!animal.NeedsFeeding)
             {
-                TeamAssemblerData.Instance.MarkAsFed(animal);
+                TeamAssemblerData.Instance.MarkAsFed(animal, preferredFood: true);
             }
 
             UpdateVisuals();
@@ -167,7 +164,7 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
         }
 
         // Get the position of the new animal (if it's already in team)
-        var newAnimalPosition = TeamAssemblerData.Instance.team.Find(pa => pa.animalData == newAnimal.AnimalData);
+        var newAnimalPosition = TeamAssemblerData.Instance.FindMember(newAnimal);
 
         if (newAnimalPosition != null)
         {
@@ -182,7 +179,7 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
 
             newAnimalPosition.gridPosition = gridPosition;
 
-            var currentAnimalPosition = TeamAssemblerData.Instance.team.Find(pa => pa.animalData == assignedAnimal.AnimalData);
+            var currentAnimalPosition = TeamAssemblerData.Instance.FindMember(assignedAnimal);
             if (currentAnimalPosition != null)
             {
                 currentAnimalPosition.gridPosition = oldPosition;
@@ -220,6 +217,36 @@ public class GridPositionSlot : MonoBehaviour, IDropHandler, IPointerEnterHandle
             assignedAnimal = null;
             return PlaceAnimal(newAnimal);
         }
+    }
+
+    /// <summary>
+    /// Wire up references for a slot built at runtime by TeamAssemblerUI.BuildSlot.
+    /// </summary>
+    public void AssignBuiltReferences(Image background, Image icon, Image fed)
+    {
+        slotBackground = background;
+        animalIcon = icon;
+        fedIndicator = fed;
+    }
+
+    /// <summary>
+    /// Take ownership of an animal already present in the team data, without re-adding it.
+    /// Used when a saved profile repopulates the grid.
+    /// </summary>
+    public void AdoptAnimal(Animal animal)
+    {
+        assignedAnimal = animal;
+        UpdateVisuals();
+    }
+
+    /// <summary>
+    /// Drop this slot's visual reference without touching the team data. Used before
+    /// re-applying a profile, where the team is rebuilt wholesale.
+    /// </summary>
+    public void ClearVisualOnly()
+    {
+        assignedAnimal = null;
+        UpdateVisuals();
     }
 
     /// <summary>

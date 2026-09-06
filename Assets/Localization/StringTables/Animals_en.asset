@@ -302,6 +302,26 @@ MonoBehaviour:
     m_Localized: Animal Market
     m_Metadata:
       m_Items: []
+  - m_Id: 27906654895595520
+    m_Localized: Cattle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654937538560
+    m_Localized: Poultry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654937538561
+    m_Localized: Waterfowl
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654937538562
+    m_Localized: Rabbits
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654937538563
+    m_Localized: Songbirds
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 using SowurShield.Animals;
 
 namespace SowurShield.Combat
@@ -164,6 +165,7 @@ public class CombatTeamSpawner : MonoBehaviour
         AnimalData data = positioned.animalData;
         string displayName = positioned.GetDisplayName();
 
+        spawningMember = positioned;
         return CreateAnimalUnit(displayName, pos, true, data,
             positioned.happiness,
             positioned.attackGrowth,
@@ -270,6 +272,16 @@ public class CombatTeamSpawner : MonoBehaviour
         if (animal.IsIll && animalData.illnessStatPenalty < 1f)
             combatUnit.ApplyStatMultiplier(animalData.illnessStatPenalty);
 
+        // An animal that went to battle without eating fights at a penalty. This replaces
+        // the old hard block, where an unfed team simply greyed out the battle button.
+        if (isPlayer && spawningMember != null && !spawningMember.isFed)
+            combatUnit.ApplyStatMultiplier(FoodPreference.UnfedStatPenalty);
+
+        // Team synergies — the same ones the assembler screen listed while the player was
+        // choosing. See TeamSynergy for why this is shared rather than reimplemented.
+        if (isPlayer && spawningMember != null)
+            ApplyTeamSynergies(combatUnit, spawningMember);
+
         // ── Place on grid (also assigns healthBarPrefab and creates health bar) ─
         bool placed = GridManager.Instance.PlaceUnitAt(combatUnit, gridPos);
         if (!placed)
@@ -291,13 +303,89 @@ public class CombatTeamSpawner : MonoBehaviour
     /// Apply permanent stat buffs for any of this animal's passive skills whose unlock
     /// condition is currently met (e.g. combat class or family-count requirements).
     /// </summary>
+    /// <summary>The team member currently being spawned, so per-member data reaches CreateAnimalUnit.</summary>
+    private TeamAssemblerData.PositionedAnimal spawningMember;
+
+    /// <summary>Cached synergy evaluation for this battle, plus the team's front column.</summary>
+    private List<ActiveSynergy> teamSynergies;
+    private int teamFrontColumn;
+    private bool synergiesEvaluated;
+
+    /// <summary>
+    /// Apply the team's active synergies to one unit.
+    ///
+    /// Duration is permanent for the battle, matching how class synergies behaved before.
+    /// Front Line is applied as a Shield status effect so it runs through the damage path
+    /// that already exists rather than a second, parallel reduction.
+    /// </summary>
+    private void ApplyTeamSynergies(CombatUnit unit, TeamAssemblerData.PositionedAnimal member)
+    {
+        if (!synergiesEvaluated)
+        {
+            var team = TeamAssemblerData.Instance.team;
+            var members = TeamSynergy.BuildMembers(team);
+            teamSynergies = TeamSynergy.Evaluate(members);
+            teamFrontColumn = members.Count > 0 ? members.Min(m => m.gridPosition.x) : 0;
+            synergiesEvaluated = true;
+
+            if (showDebugLogs)
+                Debug.Log($"[CombatTeamSpawner] {teamSynergies.Count} synergies active this battle.");
+        }
+
+        if (teamSynergies == null || teamSynergies.Count == 0) return;
+
+        var asMember = new TeamSynergy.Member
+        {
+            family = member.animalData != null ? member.animalData.animalFamily : "",
+            combatClass = member.animalData != null ? member.animalData.combatClass : "",
+            happiness = member.happiness,
+            fedPreferredFood = member.fedPreferredFood,
+            gridPosition = member.gridPosition
+        };
+
+        foreach (var synergy in teamSynergies)
+        {
+            if (!TeamSynergy.AppliesTo(synergy, asMember, teamFrontColumn)) continue;
+
+            if (synergy.attackMultiplier != 1f || synergy.defenseMultiplier != 1f || synergy.speedMultiplier != 1f)
+            {
+                unit.ApplyStatBuff(synergy.attackMultiplier, synergy.defenseMultiplier,
+                    synergy.speedMultiplier, PermanentBuffDuration);
+            }
+
+            if (synergy.healthMultiplier != 1f)
+                unit.ApplyHealthMultiplier(synergy.healthMultiplier);
+
+            if (synergy.damageTakenMultiplier < 1f)
+            {
+                unit.ApplyStatusEffect(StatusEffectType.Shield,
+                    1f - synergy.damageTakenMultiplier, PermanentBuffDuration);
+            }
+        }
+    }
+
+    /// <summary>How many members of the assembled team belong to this family.</summary>
+    private int CountFamilyInTeam(string family)
+    {
+        if (string.IsNullOrEmpty(family)) return 0;
+
+        var team = TeamAssemblerData.Instance.team;
+        if (team == null) return 0;
+
+        return team.Count(pa => pa?.animalData != null &&
+            string.Equals(pa.animalData.animalFamily, family,
+                System.StringComparison.OrdinalIgnoreCase));
+    }
+
     private void ApplyUnlockedPassiveSkills(Animal animal, CombatUnit combatUnit)
     {
         if (animal?.AnimalData?.availablePassiveSkills == null) return;
 
-        int familyCountInRoster = (AnimalRoster.Instance != null && animal.AnimalData != null)
-            ? AnimalRoster.Instance.GetFamilyCount(animal.AnimalData.animalFamily)
-            : 0;
+        // Count the family within the ASSEMBLED TEAM, not the whole farm. This used to ask
+        // AnimalRoster, which meant a farm with 15 chickens had every flock passive
+        // permanently unlocked no matter which animals were actually taken to battle —
+        // the team the player built changed nothing.
+        int familyCountInRoster = CountFamilyInTeam(animal.AnimalData?.animalFamily);
 
         // No season-singleton exists yet — Season-type unlock conditions simply won't trigger.
         const string currentSeason = "";

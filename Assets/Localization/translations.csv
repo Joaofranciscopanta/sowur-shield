@@ -164,7 +164,6 @@ Combat,combat.teamassembler.all_fed,All animals fed!,Todos os animais alimentado
 Combat,combat.teamassembler.required_food_header,"Required Food:\n","Comida Necessária:\n","Comida Necesaria:\n"
 Combat,combat.teamassembler.food_line,"• {0}x {1}\n","• {0}x {1}\n","• {0}x {1}\n"
 Combat,combat.teamassembler.synergies_header,"Synergies:\n","Sinergias:\n","Sinergias:\n"
-Combat,combat.teamassembler.synergy_line,"• {0}x {1} (Stack Bonus)\n","• {0}x {1} (Bônus de Pilha)\n","• {0}x {1} (Bono de Pila)\n"
 Combat,combat.teamassembler.no_synergies,No active synergies,Nenhuma sinergia ativa,Sin sinergias activas
 Combat,combat.teamassemblersetup.available_animals,Available Animals,Animais Disponíveis,Animales Disponibles
 Combat,combat.healthbar.fraction,{0}/{1},{0}/{1},{0}/{1}
@@ -440,3 +439,43 @@ Dialogue,dialogue.quests.empty_completed,Complete quests to fill your journal.,C
 Inventory,item.Fish.name,Fish,Peixe,Pez
 Inventory,item.RareFish.name,Rare Fish,Peixe Raro,Pez Raro
 Tutorial,tutorial.step_counter,Step {0}/{1},Passo {0}/{1},Paso {0}/{1}
+Combat,combat.teamassembler.formation,Formation,Formação,Formación
+Combat,combat.teamassembler.front_line,Front,Frente,Frente
+Combat,combat.teamassembler.back_line,Back,Fundo,Fondo
+Combat,combat.teamassembler.grid_hint,Drag an animal onto a slot,Arraste um animal para uma vaga,Arrastra un animal a una casilla
+Combat,combat.teamassembler.search_placeholder,Search animals...,Buscar animais...,Buscar animales...
+Combat,combat.teamassembler.no_matches,No animals match that search.,Nenhum animal corresponde à busca.,Ningún animal coincide con la búsqueda.
+Combat,combat.teamassembler.family_other,Other,Outros,Otros
+Combat,combat.teamassembler.team,Team,Time,Equipo
+Combat,combat.teamassembler.feed_all,Feed All,Alimentar Todos,Alimentar Todos
+Combat,combat.teamassembler.clear_grid,Clear Grid,Limpar Grade,Limpiar Cuadrícula
+Combat,combat.teamassembler.start_battle,Start Battle,Iniciar Batalha,Iniciar Batalla
+Combat,combat.teamassembler.start_battle_hungry,Start Battle,Iniciar Batalha,Iniciar Batalla
+Combat,combat.teamassembler.cancel,Cancel,Cancelar,Cancelar
+Combat,combat.teamassembler.difficulty,Difficulty,Dificuldade,Dificultad
+Combat,combat.teamassembler.recommended,Recommended,Recomendado,Recomendado
+Combat,combat.teamassembler.enemies,Enemies,Inimigos,Enemigos
+Combat,combat.teamassembler.boss,Boss,Chefe,Jefe
+Combat,combat.teamassembler.unfed_warning,{0} unfed - they fight at -25%,{0} sem comer - lutam com -25%,{0} sin comer - luchan con -25%
+Combat,combat.teamassembler.profiles,Saved teams:,Times salvos:,Equipos guardados:
+Combat,combat.teamassembler.save_team,+ Save current,+ Salvar atual,+ Guardar actual
+Combat,combat.teamassembler.hint_flock,{0} more {1} for Flock,Mais {0} {1} para Bando,{0} más {1} para Bandada
+Combat,combat.teamassembler.hint_mixed,{0} more families for Mixed Yard,Mais {0} famílias para Terreiro Misto,{0} más familias para Corral Mixto
+Combat,combat.teamassembler.hint_front,2 Tanks in the front column for Front Line,2 Tanques na coluna da frente para Linha de Frente,2 Tanques en la columna frontal para Línea de Frente
+Combat,combat.teamassembler.hint_cared,All at {0}+ happiness for Well Cared For,Todos com {0}+ de felicidade para Bem Tratados,Todos con {0}+ de felicidad para Bien Cuidados
+Combat,combat.teamassembler.hint_fed,Feed each their favourite food for Well Fed,Dê a comida preferida de cada um para Bem Alimentados,Dales su comida favorita para Bien Alimentados
+Combat,combat.synergy.flock.name,Flock,Bando,Bandada
+Combat,combat.synergy.flock.desc,+10% attack and defense to this family,+10% de ataque e defesa para esta família,+10% de ataque y defensa para esta familia
+Combat,combat.synergy.mixedyard.name,Mixed Yard,Terreiro Misto,Corral Mixto
+Combat,combat.synergy.mixedyard.desc,+15% health to the whole team,+15% de vida para todo o time,+15% de vida para todo el equipo
+Combat,combat.synergy.frontline.name,Front Line,Linha de Frente,Línea de Frente
+Combat,combat.synergy.frontline.desc,-20% damage taken behind the front line,-20% de dano recebido atrás da linha de frente,-20% de daño recibido detrás de la línea
+Combat,combat.synergy.wellcared.name,Well Cared For,Bem Tratados,Bien Cuidados
+Combat,combat.synergy.wellcared.desc,+10% speed to the whole team,+10% de velocidade para todo o time,+10% de velocidad para todo el equipo
+Combat,combat.synergy.wellfed.name,Well Fed,Bem Alimentados,Bien Alimentados
+Combat,combat.synergy.wellfed.desc,+10% attack to the whole team,+10% de ataque para todo o time,+10% de ataque para todo el equipo
+Animals,animals.family.bovidae,Cattle,Bovinos,Bovinos
+Animals,animals.family.galliformes,Poultry,Aves de Capoeira,Aves de Corral
+Animals,animals.family.anatidae,Waterfowl,Aquáticas,Acuáticas
+Animals,animals.family.leporidae,Rabbits,Coelhos,Conejos
+Animals,animals.family.passeridae,Songbirds,Pássaros,Pájaros

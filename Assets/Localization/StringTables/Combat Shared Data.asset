@@ -595,6 +595,134 @@ MonoBehaviour:
     m_Key: combat.status.weakness
     m_Metadata:
       m_Items: []
+  - m_Id: 27906654622965760
+    m_Key: combat.teamassembler.formation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742976
+    m_Key: combat.teamassembler.front_line
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742977
+    m_Key: combat.teamassembler.back_line
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742978
+    m_Key: combat.teamassembler.grid_hint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742979
+    m_Key: combat.teamassembler.search_placeholder
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742980
+    m_Key: combat.teamassembler.no_matches
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742981
+    m_Key: combat.teamassembler.family_other
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742982
+    m_Key: combat.teamassembler.team
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742983
+    m_Key: combat.teamassembler.start_battle_hungry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742984
+    m_Key: combat.teamassembler.cancel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742985
+    m_Key: combat.teamassembler.difficulty
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742986
+    m_Key: combat.teamassembler.recommended
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742987
+    m_Key: combat.teamassembler.enemies
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742988
+    m_Key: combat.teamassembler.boss
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742989
+    m_Key: combat.teamassembler.unfed_warning
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742990
+    m_Key: combat.teamassembler.profiles
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742991
+    m_Key: combat.teamassembler.save_team
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742992
+    m_Key: combat.teamassembler.hint_flock
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742993
+    m_Key: combat.teamassembler.hint_mixed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742994
+    m_Key: combat.teamassembler.hint_front
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742995
+    m_Key: combat.teamassembler.hint_cared
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742996
+    m_Key: combat.teamassembler.hint_fed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742997
+    m_Key: combat.synergy.flock.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742998
+    m_Key: combat.synergy.flock.desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742999
+    m_Key: combat.synergy.mixedyard.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639743000
+    m_Key: combat.synergy.mixedyard.desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639743001
+    m_Key: combat.synergy.frontline.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639743002
+    m_Key: combat.synergy.frontline.desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639743003
+    m_Key: combat.synergy.wellcared.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639743004
+    m_Key: combat.synergy.wellcared.desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639743005
+    m_Key: combat.synergy.wellfed.name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639743006
+    m_Key: combat.synergy.wellfed.desc
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

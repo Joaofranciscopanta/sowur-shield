@@ -101109,7 +101109,7 @@ MonoBehaviour:
   removeRadius: 1.2
   maxPins: 64
   pinColor: {r: 0.98, g: 0.85, b: 0.3, a: 1}
-  pinSize: 0.95
+  pinSize: 2.2
   controller: {fileID: 0}
   minimapUI: {fileID: 0}
   minimapCamera: {fileID: 0}

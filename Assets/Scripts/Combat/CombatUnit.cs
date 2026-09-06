@@ -720,6 +720,22 @@ public class CombatUnit : MonoBehaviour
     }
 
     /// <summary>
+    /// Scale max health only, keeping the unit at full health for the multiplier applied.
+    /// Used by the Mixed Yard synergy, which rewards team variety with bulk rather than
+    /// damage — ApplyStatMultiplier would also move attack and defense.
+    /// </summary>
+    public void ApplyHealthMultiplier(float multiplier)
+    {
+        if (multiplier == 1f) return;
+
+        float healthPercent = GetHealthPercent();
+        maxHealth *= multiplier;
+        // Preserve the fraction of health the unit had, so a spawn-time buff arrives full.
+        currentHealth = maxHealth * healthPercent;
+        UpdateHealthBar();
+    }
+
+    /// <summary>
     /// Get reference to source Animal (null for enemies)
     /// </summary>
     public Animal GetSourceAnimal() => animal;

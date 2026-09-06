@@ -31,12 +31,14 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
     [SerializeField] private Image foodStatusIcon;
     [SerializeField] private Image happinessFillBar;
 
-    [Header("Localization")]
-    [SerializeField] private LocalizedString happinessText_Localized; // table "Combat", key "combat.selection.happiness"
-    [SerializeField] private LocalizedString fedText_Localized; // table "Combat", key "combat.selection.fed"
-    [SerializeField] private LocalizedString noFoodNeededText_Localized; // table "Combat", key "combat.selection.no_food_needed"
-    [SerializeField] private LocalizedString needsText_Localized; // table "Combat", key "combat.selection.needs"
-    [SerializeField] private LocalizedString foodLineText_Localized; // table "Combat", key "combat.selection.food_line"
+    /// <summary>The card_animal art itself, tinted to show team membership.</summary>
+    [SerializeField] private Image cardFrame;
+
+    // The serialized LocalizedString fields that used to live here are gone: the card is
+    // built in code now, so they were always empty and resolving one threw a
+    // NullReferenceException that took the whole list build down with it. Captions come
+    // from Localize()/FormatHappiness() below, which construct the LocalizedString at
+    // call time.
 
     // These tint `cardBackground`, which is NOT what the player sees: a CardBackgroundFrame
     // child draws the card_animal sprite on top, and that art has a CREAM interior. So the
@@ -103,6 +105,24 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
     }
 
     /// <summary>
+    /// Wire up the references for a card built at runtime by TeamAssemblerUI.BuildCard.
+    ///
+    /// Note there is no cardBackground: the old card had a dark brown Image on the root
+    /// under the cream card art, and because the art paints only part of the rect, the
+    /// brown showed through as a band down every row. The frame art is the background.
+    /// </summary>
+    public void AssignBuiltReferences(Image frame, Image portrait, TextMeshProUGUI name,
+        TextMeshProUGUI happiness, Image happinessBar, TextMeshProUGUI foodStatus)
+    {
+        cardFrame = frame;
+        animalPortrait = portrait;
+        nameText = name;
+        happinessText = happiness;
+        happinessFillBar = happinessBar;
+        foodStatusText = foodStatus;
+    }
+
+    /// <summary>
     /// Initialize card with animal data
     /// </summary>
     public void Initialize(Animal animalData)
@@ -142,8 +162,7 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
 
         if (happinessText != null)
         {
-            happinessText_Localized.Arguments = new object[] { happinessPercent };
-            happinessText.text = happinessText_Localized.SafeGetLocalizedString();
+            happinessText.text = FormatHappiness(happinessPercent);
         }
 
         UpdateHappinessBar(happinessPercent);
@@ -181,11 +200,12 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
 
         if (isInTeam)
         {
-            var positioned = TeamAssemblerData.Instance.team.Find(pa => pa.animalData == animal.AnimalData);
+            // By individual animal, not by species — see PositionedAnimal.animalId.
+            var positioned = TeamAssemblerData.Instance.FindMember(animal);
             bool fed = positioned != null && positioned.isFed;
 
             statusColor = fed ? fedColor : hungryColor;
-            statusText = fed ? fedText_Localized.SafeGetLocalizedString() : GetFoodRequirementText();
+            statusText = fed ? Localize("combat.selection.fed", "Fed") : GetFoodRequirementText();
         }
         else
         {
@@ -206,21 +226,52 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
     }
 
     /// <summary>
+    /// Happiness caption.
+    ///
+    /// Built from a runtime LocalizedString rather than the serialized
+    /// happinessText_Localized field: this card is now created in code, so every
+    /// [SerializeField] LocalizedString on it is empty and resolving one threw.
+    /// </summary>
+    private static string FormatHappiness(float percent)
+    {
+        var localized = new LocalizedString("Combat", "combat.selection.happiness");
+        string text = localized.SafeGetLocalizedString(percent);
+        return string.IsNullOrEmpty(text) ? $"Happiness: {percent:F0}%" : text;
+    }
+
+    /// <summary>Resolve a Combat-table key with an English fallback.</summary>
+    private static string Localize(string key, string fallback)
+    {
+        string value = new LocalizedString("Combat", key).SafeGetLocalizedString();
+        return string.IsNullOrEmpty(value) ? fallback : value;
+    }
+
+    /// <summary>
     /// Get food requirement text for this animal
     /// </summary>
     private string GetFoodRequirementText()
     {
         if (animal.AnimalData == null || animal.AnimalData.dailyFoodRequirements.Count == 0)
         {
-            return noFoodNeededText_Localized.SafeGetLocalizedString();
+            return Localize("combat.selection.no_food_needed", "No food needed");
         }
 
-        string text = needsText_Localized.SafeGetLocalizedString();
+        // Show the favourite food, which is the one that earns the bonus. Before this,
+        // every card listed the same CarrotSeed and feeding carried no decision at all.
+        string preferred = FoodPreference.GetPreferredFood(animal.AnimalData);
+        if (!string.IsNullOrEmpty(preferred))
+        {
+            Item preferredItem = ItemDatabase.GetItem(preferred);
+            string name = preferredItem != null ? preferredItem.GetDisplayName() : preferred;
+            return $"♥ {name}";
+        }
+
+        string text = Localize("combat.selection.needs", "Needs:");
         foreach (FoodRequirement req in animal.AnimalData.dailyFoodRequirements)
         {
             Item foodItem = ItemDatabase.GetItem(req.itemName);
-            foodLineText_Localized.Arguments = new object[] { req.quantityPerDay, foodItem != null ? foodItem.GetDisplayName() : req.itemName };
-            text += foodLineText_Localized.SafeGetLocalizedString();
+            string itemName = foodItem != null ? foodItem.GetDisplayName() : req.itemName;
+            text += $" {req.quantityPerDay}x {itemName}";
         }
 
         return text.Trim();
@@ -234,6 +285,15 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
         if (cardBackground != null)
         {
             cardBackground.color = isInTeam ? inTeamColor : normalColor;
+        }
+
+        // Tint the card art itself. A light green wash reads as "on the team" without
+        // hiding the artwork the way an opaque background did.
+        if (cardFrame != null)
+        {
+            cardFrame.color = isInTeam
+                ? new Color(0.80f, 0.95f, 0.80f)
+                : Color.white;
         }
     }
 
@@ -378,6 +438,11 @@ public class AnimalSelectionCard : MonoBehaviour, IBeginDragHandler, IDragHandle
         if (cardBackground != null && !isInTeam)
         {
             cardBackground.color = hoverColor;
+        }
+
+        if (cardFrame != null && !isInTeam)
+        {
+            cardFrame.color = new Color(1f, 0.97f, 0.88f);
         }
     }
 
