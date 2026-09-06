@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
@@ -49,6 +49,22 @@ public class Inventory : MonoBehaviour, ISaveable
     private int selectedSlotIndex = 0;
     private InventorySlot selectedSlot;
     private bool isInventoryOpen = false;
+
+    /// <summary>
+    /// Se foi ESTA instancia que ligou as InputActions.
+    ///
+    /// As InputActionReference apontam para accoes do ASSET, partilhadas por toda a
+    /// gente. O jogador atravessa cenas (PersistentPlayer), mas cada cena traz a SUA
+    /// copia do Bunny, que se destroi ao chegar — e o OnDestroy dessa copia chamava
+    /// Disable() nas accoes do asset, desligando as do jogador que sobreviveu. Sintoma:
+    /// depois de entrar numa casa e voltar, o Tab nao abria o inventario e as teclas
+    /// 1-9 nao trocavam de slot, sem erro nenhum na consola. Medido: enabled=True antes
+    /// da travessia, enabled=False depois.
+    /// </summary>
+    private bool ligueiAsAccoes;
+
+    /// <summary>Handlers da hotbar, para os poder remover — ver DisableInputActions.</summary>
+    private System.Action<InputAction.CallbackContext>[] handlersHotbar;
 
     // Hotbar auto-refill tracking
     private Item[] lastHotbarItems; // Track last item in each hotbar slot for refill
@@ -225,6 +241,8 @@ public class Inventory : MonoBehaviour, ISaveable
 
     private void EnableInputActions()
     {
+        ligueiAsAccoes = true;
+
         if (inventoryToggleAction != null)
         {
             inventoryToggleAction.action.Enable();
@@ -236,19 +254,34 @@ public class Inventory : MonoBehaviour, ISaveable
         // or any runtime-built one — threw here in Start() and again in OnDestroy().
         if (hotbarActions == null) return;
 
+        // Guardar os delegados: um lambda anonimo nao pode ser removido depois, e sem
+        // remover eles acumulavam-se a cada travessia de cena (medido: 2 handlers na
+        // mesma accao depois de uma ida a uma casa).
+        handlersHotbar = new System.Action<InputAction.CallbackContext>[hotbarActions.Length];
+
         for (int i = 0; i < hotbarActions.Length; i++)
         {
             if (hotbarActions[i] != null)
             {
                 hotbarActions[i].action.Enable();
                 int slotIndex = i; // Capture index for closure
-                hotbarActions[i].action.performed += (ctx) => OnHotbarSlot(slotIndex);
+                handlersHotbar[i] = (ctx) => OnHotbarSlot(slotIndex);
+                hotbarActions[i].action.performed += handlersHotbar[i];
             }
         }
     }
 
     private void DisableInputActions()
     {
+        // ⚠️ So desligar se foi ESTA instancia que ligou.
+        //
+        // As accoes vivem no ASSET e sao partilhadas. A copia do Bunny que cada cena
+        // traz destroi-se logo no Awake (PersistentPlayer), sem nunca ter corrido o
+        // Start — entao nunca ligou nada, e desligar aqui matava o input do jogador
+        // que atravessou as cenas. Ver o comentario de ligueiAsAccoes.
+        if (!ligueiAsAccoes) return;
+        ligueiAsAccoes = false;
+
         if (inventoryToggleAction != null)
         {
             inventoryToggleAction.action.performed -= OnInventoryToggle;
@@ -261,9 +294,16 @@ public class Inventory : MonoBehaviour, ISaveable
         {
             if (hotbarActions[i] != null)
             {
+                // Remover o handler, e nao so desligar a accao: os lambdas ficavam
+                // pendurados no asset e somavam-se a cada travessia.
+                if (handlersHotbar != null && handlersHotbar[i] != null)
+                    hotbarActions[i].action.performed -= handlersHotbar[i];
+
                 hotbarActions[i].action.Disable();
             }
         }
+
+        handlersHotbar = null;
     }
 
     private void OnInventoryToggle(InputAction.CallbackContext context)
