@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace SowurShield.Combat
 {
@@ -157,6 +157,34 @@ public class GridCell : MonoBehaviour
         {
             unit.transform.position = transform.position + new Vector3(0, 0, -0.5f); // In front of grid
             unit.gridPosition = new Vector2Int(gridX, gridY);
+
+            // Refixar a pose de repouso do CombatMotion, AGORA que a unidade esta na casa.
+            //
+            // O CombatMotion guarda a pose no Awake, e o CombatUnit volta a guarda-la no
+            // fim da montagem visual — ambos ANTES disto. Nessa altura a unidade ainda
+            // esta em (0,0,0), entao era esse o ponto para onde toda a gente voltava no
+            // fim de cada ataque: as unidades acumulavam-se no centro da grelha e ficavam
+            // umas por cima das outras. Medido: Cell_8_1 em (4,-1) e Cell_2_2 em (-2,0),
+            // com as tres unidades em (0,0) e poseLocal (0,0,0).
+            //
+            // O comentario do SetupMotion so pensou na ESCALA (o NormalizeSpriteSize
+            // corre depois do Awake); a posicao so passa a existir aqui.
+            var motion = unit.GetComponent<CombatMotion>();
+            if (motion != null) motion.Guardar();
+
+            // Ordem de desenho por LINHA, para os corpos nao se misturarem.
+            //
+            // Todas as unidades nasciam com sortingOrder 10. Sprites que se tocam com a
+            // mesma ordem desenham-se por uma ordem indefinida, e no meio do movimento
+            // ficava impossivel perceber quem estava a frente de quem. Os sprites sao
+            // normalizados para 0,8 de altura mas chegam a 1,16 de LARGURA (a Vaca),
+            // portanto invadem mesmo a casa vizinha.
+            //
+            // Quem esta mais abaixo no ecra (y menor) desenha-se A FRENTE, que e a
+            // convencao do resto do jogo. A grelha tem 5 linhas, entao 10 + (4 - y) * 2
+            // mantem tudo entre 10 e 18, longe da barra de vida.
+            var sr = unit.GetComponent<SpriteRenderer>();
+            if (sr != null) sr.sortingOrder = 10 + (4 - gridY) * 2;
         }
 
         return true;
