@@ -4,6 +4,50 @@
 > behavior) and **Quirks** (surprising-but-intended or environment-specific behavior worth
 > knowing before debugging "ghosts").
 
+## [FIXED 2026-09-06] The team assembler showed one synergy rule and the battle applied another
+
+**The screen lied.** `TeamAssemblerUI` listed a bonus for stacking the same *species*, reading
+`AnimalData.canStack` / `maxStackSize` — fields **no combat system has ever read**. Meanwhile
+`TurnManager.ApplyClassSynergies` granted +10% attack/defense to 3+ units of the same *combat
+class*. Two different rules, so the panel could read "No active synergies" on a team that was
+in fact buffed, and list a bonus that never existed.
+
+**Fix:** one evaluator, `TeamSynergy.Evaluate()`, called by both the assembler and
+`CombatTeamSpawner`. `ApplyClassSynergies` is gone. `canStack`/`maxStackSize` are now unused
+by the combat path.
+
+---
+
+## [FIXED 2026-09-06] Family synergies counted the whole farm, not the assembled team
+
+`CombatTeamSpawner.ApplyUnlockedPassiveSkills` asked `AnimalRoster.GetFamilyCount()`, which
+counts **every animal on the farm**. With 15 Galliformes in the pens, `RoosterFury` (min 3)
+and `LargeBrood` (min 5) were permanently active no matter which animals were taken to
+battle. The mechanic that most promised depth was the one that ignored the player's choices
+entirely.
+
+**Fix:** `CountFamilyInTeam()` counts within `TeamAssemblerData.Instance.team`.
+
+---
+
+## [FIXED 2026-09-06] Two animals of the same species were treated as one animal
+
+Team membership, removal, movement and feeding all keyed off `pa.animalData ==
+animal.AnimalData` — the **shared ScriptableObject**. So two chickens of the same species
+collided: the second could not be added to the grid, and feeding one marked both.
+
+**Why it stayed hidden:** the shipped farm gives all 20 animals a distinct `AnimalData` asset,
+so it never triggered in normal play. It would have triggered the first time
+`AnimalMarketUI` sold a repeated species.
+
+**Fix:** `PositionedAnimal.animalId` holds `Animal.gameObject.name` (already the ISaveable
+identity key, kept unique by `GenerateUniquePurchasedName`), and lookups go through
+`TeamAssemblerData.FindMember(animal)`.
+
+**Covered by:** `Assets/Tests/EditMode/TeamAssemblerOverhaulTests.cs`.
+
+---
+
 ## [FIXED 2026-08-01] `TeamAssemblerUISetup` cached `.transform` before adding a `RectTransform`
 
 **Fixed** the same day it was logged — all four occurrences now construct with
@@ -24,7 +68,8 @@ RectTransform rect = panelObj.AddComponent<RectTransform>();  // <-- destroys it
 codex opened with an empty body and no console error.
 
 **Occurrences:** `TeamAssemblerUISetup.cs:102`, `:131`, `:151`, `:172` (AssemblerPanel,
-AnimalSelectionPanel, GridPanel, InfoPanel).
+AnimalSelectionPanel, GridPanel, InfoPanel). *That file was deleted on 2026-09-06 — it was one
+of three unreferenced UI builders — but the trap itself is general and still worth grepping for.*
 
 **Fix:** construct with the component — `new GameObject("X", typeof(RectTransform))` — and
 cache the reference *after*. Worth grepping for `= .*\.transform;` followed by

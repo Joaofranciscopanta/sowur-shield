@@ -303,6 +303,26 @@ MonoBehaviour:
     m_Localized: Mercado de Animais
     m_Metadata:
       m_Items: []
+  - m_Id: 27906654895595520
+    m_Localized: Bovinos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654937538560
+    m_Localized: Aves de Capoeira
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654937538561
+    m_Localized: "Aqu\xE1ticas"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654937538562
+    m_Localized: Coelhos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654937538563
+    m_Localized: "P\xE1ssaros"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

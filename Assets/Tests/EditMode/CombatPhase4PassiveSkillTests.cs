@@ -33,6 +33,10 @@ public class CombatPhase4PassiveSkillTests
 
         if (AnimalRoster.Instance != null)
             Object.DestroyImmediate(AnimalRoster.Instance.gameObject);
+
+        // The team is a persistent singleton; leaving entries behind would leak into the
+        // next test's family counts.
+        TeamAssemblerData.Instance.team.Clear();
     }
 
     // ── reflection helpers ──────────────────────────────────────────────────
@@ -68,6 +72,16 @@ public class CombatPhase4PassiveSkillTests
 
         SetField(animal, "animalData", data);
         return animal;
+    }
+
+    /// <summary>An AnimalData on its own, for building team entries without a GameObject.</summary>
+    private AnimalData CreateAnimalData(string combatClass, string animalFamily)
+    {
+        var data = ScriptableObject.CreateInstance<AnimalData>();
+        Track(data);
+        data.combatClass = combatClass;
+        data.animalFamily = animalFamily;
+        return data;
     }
 
     private CombatUnit CreateCombatUnit(float atk = 10f, float def = 10f, float spd = 10f)
@@ -143,22 +157,27 @@ public class CombatPhase4PassiveSkillTests
     // FamilyCount unlock condition
     // =========================================================================
 
+    /// <summary>
+    /// FamilyCount counts within the ASSEMBLED TEAM as of 2026-09-06. It used to ask
+    /// AnimalRoster for the count across the whole farm, so a farm with plenty of one
+    /// family had these passives permanently unlocked regardless of who was taken to
+    /// battle — the team the player built made no difference.
+    /// </summary>
     [Test]
     public void ApplyUnlockedPassiveSkills_FamilyCountConditionMet_AppliesBuff()
     {
-        // Register 3 Bovidae animals in the roster so FamilyCount (min 2) is satisfied.
-        var rosterGo = new GameObject("AnimalRoster");
-        Track(rosterGo);
-        var roster = rosterGo.AddComponent<AnimalRoster>();
-
-        // AddComponent() does not run Awake() synchronously in Edit Mode, so invoke it
-        // manually via reflection to set AnimalRoster.Instance now.
-        InvokePrivate(roster, "Awake", null);
-
-        var registeredAnimals = new List<Animal>();
+        // Put 3 Bovidae on the TEAM so FamilyCount (min 2) is satisfied.
+        var team = TeamAssemblerData.Instance.team;
+        team.Clear();
         for (int i = 0; i < 3; i++)
-            registeredAnimals.Add(CreateAnimal(combatClass: "Tank", animalFamily: "Bovidae", passiveSkills: null));
-        SetField(roster, "registeredAnimals", registeredAnimals);
+        {
+            team.Add(new TeamAssemblerData.PositionedAnimal
+            {
+                animalData = CreateAnimalData(combatClass: "Tank", animalFamily: "Bovidae"),
+                animalId = "TeamCow_" + i,
+                gridPosition = new Vector2Int(6, i)
+            });
+        }
 
         var skill = CreatePassiveSkill(SkillUnlockConditionType.FamilyCount, minFamilyCount: 2,
             atkMult: 1.15f, defMult: 1f, spdMult: 1f);
@@ -169,15 +188,15 @@ public class CombatPhase4PassiveSkillTests
         InvokePrivate(spawner, "ApplyUnlockedPassiveSkills", new object[] { animal, unit });
 
         Assert.AreEqual(11.5f, unit.GetAttack(), 0.001f, "Attack buff from FamilyCount-unlocked passive should be applied.");
+        team.Clear();
     }
 
     [Test]
     public void ApplyUnlockedPassiveSkills_FamilyCountConditionNotMet_NoBuff()
     {
-        var rosterGo = new GameObject("AnimalRoster");
-        Track(rosterGo);
-        var roster = rosterGo.AddComponent<AnimalRoster>();
-        SetField(roster, "registeredAnimals", new List<Animal>());
+        // An empty team means no family reaches the threshold, however many animals the
+        // farm itself holds.
+        TeamAssemblerData.Instance.team.Clear();
 
         var skill = CreatePassiveSkill(SkillUnlockConditionType.FamilyCount, minFamilyCount: 2,
             atkMult: 1.15f, defMult: 1f, spdMult: 1f);

@@ -304,6 +304,26 @@ MonoBehaviour:
     m_Localized: Mercado de Animales
     m_Metadata:
       m_Items: []
+  - m_Id: 27906654895595520
+    m_Localized: Bovinos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654937538560
+    m_Localized: Aves de Corral
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654937538561
+    m_Localized: "Acu\xE1ticas"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654937538562
+    m_Localized: Conejos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654937538563
+    m_Localized: "P\xE1jaros"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

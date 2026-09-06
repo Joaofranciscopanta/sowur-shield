@@ -160,6 +160,61 @@ Assets/Scripts/
 
 ## Development Notes
 
+### ⚠️ Check `HasCharacter` before shipping any symbol in UI text
+
+`Nunito SDF` is a **Static** atlas (deliberately — it used to regenerate without accents),
+so a glyph it does not already contain is never added: it renders as a tofu box. Four of
+the seven symbols drafted for the team assembler were missing:
+
+| Symbol | Codepoint | In Nunito SDF |
+|---|---|---|
+| ◀ ▶ | U+25C0 / U+25B6 | **no** — use ASCII `<` `>` |
+| ✓ | U+2713 | **no** — use `*` |
+| ⚠ | U+26A0 | **no** — write `(5!)` |
+| ♥ ○ × | U+2665 / U+25CB / U+00D7 | yes |
+
+One line in the Editor settles it before it reaches a screenshot:
+
+```csharp
+Resources.Load<UITheme>("UI/CozyUITheme").fontPrimary.HasCharacter('⚠')
+```
+
+### ⚠️ A 9-sliced button's painted fraction depends on its WIDTH — measure on screen
+
+The button sprites are 600x120 with 16px borders and paint ~77% of the *texture*. That
+number is useless for sizing a caption: `Image.Type.Sliced` keeps the borders at their
+texture size while only the middle stretches, so at a 160px-wide rect the painted pill is
+only **104px — 65% of the rect**, i.e. ~17.5% empty on each side.
+
+Sizing captions from the texture's 12% inset therefore still clipped them, with every
+in-editor number reporting "fits" (label wants 146px, label rect is 161px) while the
+screenshot showed text running edge to edge. `TeamAssemblerLayout.ButtonArtInset = 0.175f`
+comes from measuring the rendered button, and the caption is inset by *anchors* (a
+fraction) rather than fixed pixels so it tracks the rect's width.
+
+Same family as the panel-frame trap: the rect is not the art, and the texture is not the
+art either — only the screenshot is.
+
+### ⚠️ Screen text built in code must be re-resolved after the tables load
+
+`BuildUI()` runs before Unity Localization finishes loading its tables, so every caption
+resolved at construction time keeps its **English fallback for the life of the screen** —
+on a Portuguese build. Scene labels escape this because their `LocalizeStringEvent`
+re-resolves itself; anything created at runtime has to do it by hand.
+
+The team assembler keeps `staticLabels` — a list of `(label, key, fallback)` — and calls
+`RefreshStaticLabels()` from `RefreshEverything()` and on locale change. Confirmed by
+measurement: the tables answered `'Animais Disponíveis'` while the on-screen title still
+read `Available Animals`.
+
+### ⚠️ `childForceExpandWidth` is per-list, not a global default
+
+Turning it **off** so animal cards keep their art's 5:1 ratio also collapsed the synergy
+rows to a **one-character-wide vertical column** — text rows need the width, image rows
+must not have it. `TeamAssemblerLayout.CreateScrollView` takes `expandChildWidth` for
+exactly this reason. A card given the full panel width instead stretches the middle of the
+9-slice; see the sliced-border traps below.
+
 ### ⚠️ A MonoBehaviour needs its own file, or it cannot go in a prefab
 
 Unity creates one **MonoScript asset per file**, named after the file. A `MonoBehaviour`

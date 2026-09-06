@@ -138,8 +138,16 @@ of Aug/1. 3 asmdefs + 2 test asmdefs.
   (Stun/Shield/Burn/Poison/Weakness — well-tested), immunities, crits (5%/×1.5), combo counter,
   melee/ranged positional targeting, in-battle consumables, battle modifiers (DoubleSpeed/
   LowVisibility/HealingRain/GlassCannon), behavior-aware enemy AI (Aggressive/Defensive/Support)
-- Class synergy: 3+ units sharing `combatClass` get +10% buffs; passive skill unlocks via
-  `AnimalSkill.CanUnlock` (Season-type conditions still N/A — no season singleton)
+- **Team synergies (reworked 2026-09-06)**: five rules evaluated by `TeamSynergy.Evaluate()`,
+  the single source shared by the assembler screen and `CombatTeamSpawner` — Flock (3+ same
+  family, 5+ scales up), Mixed Yard (3+ families), Front Line (2+ Tanks in the front column),
+  Well Cared For (all at 70+ happiness), Well Fed (all fed their family's preferred food).
+  Replaces the old class-synergy rule, which the screen never actually displayed: it listed a
+  same-*species* bonus from `canStack` that no combat system read. `canStack`/`maxStackSize`
+  are now unused by combat.
+- Passive skill unlocks via `AnimalSkill.CanUnlock`; `FamilyCount` counts within the
+  **assembled team** (it used to count the whole farm roster, so flock passives were always on).
+  Season-type conditions still N/A — no season singleton
 - Self-spawning VFX/UI: `HitStopController`, `CombatUnitVFX` (status icons + damage numbers),
   `TelegraphHighlighter`, `BattleHudOverlay` (modifier banner + combo, outlined text Jul/2),
   `ConsumableBattleUI` (restyled Jul/2 — gold button + wood panel)
@@ -182,6 +190,14 @@ of Aug/1. 3 asmdefs + 2 test asmdefs.
   tokens, consumed across combat and farm UI
 - Shared sprite kit in `Assets/Resources/Sprites/UI/` (panels, buttons, bars, slots, frames) —
   runtime-loadable via `Resources.Load` for self-spawning UI
+- **The team assembler screen is built procedurally** (`TeamAssemblerLayout` +
+  `TeamAssemblerUI.BuildUI`) rather than laid out in the scene: roster with search and
+  per-family grouping, formation grid labelled front/back, a briefing column with enemy
+  preview and live synergies, and saved team profiles (`TeamProfileManager`, persisted per
+  save slot). `TeamAssemblerUISetup`, `TeamAssemblerUIManualFix` and `TeamAssemblerUIBuilder`
+  (1358 lines, none referenced by anything) were deleted with it.
+- Feeding is no longer a gate: an unfed animal fights at `FoodPreference.UnfedStatPenalty`
+  instead of greying out the battle button
 - All four popup canvases (TeamAssembler, BuildingShop, Quests, AnimalMarket) standardized to
   1920×1080 reference resolution matching the HUD (Jul/1)
 

@@ -613,6 +613,134 @@ MonoBehaviour:
     m_Localized: DBL
     m_Metadata:
       m_Items: []
+  - m_Id: 27906654622965760
+    m_Localized: "Formaci\xF3n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742976
+    m_Localized: Frente
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742977
+    m_Localized: Fondo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742978
+    m_Localized: Arrastra un animal a una casilla
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742979
+    m_Localized: Buscar animales...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742980
+    m_Localized: "Ning\xFAn animal coincide con la b\xFAsqueda."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742981
+    m_Localized: Otros
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742982
+    m_Localized: Equipo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742983
+    m_Localized: Iniciar Batalla
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742984
+    m_Localized: Cancelar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742985
+    m_Localized: Dificultad
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742986
+    m_Localized: Recomendado
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742987
+    m_Localized: Enemigos
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742988
+    m_Localized: Jefe
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742989
+    m_Localized: '{0} sin comer - luchan con -25%'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742990
+    m_Localized: 'Equipos guardados:'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742991
+    m_Localized: + Guardar actual
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742992
+    m_Localized: "{0} m\xE1s {1} para Bandada"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742993
+    m_Localized: "{0} m\xE1s familias para Corral Mixto"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742994
+    m_Localized: "2 Tanques en la columna frontal para L\xEDnea de Frente"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742995
+    m_Localized: Todos con {0}+ de felicidad para Bien Cuidados
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742996
+    m_Localized: Dales su comida favorita para Bien Alimentados
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742997
+    m_Localized: Bandada
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742998
+    m_Localized: +10% de ataque y defensa para esta familia
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639742999
+    m_Localized: Corral Mixto
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639743000
+    m_Localized: +15% de vida para todo el equipo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639743001
+    m_Localized: "L\xEDnea de Frente"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639743002
+    m_Localized: "-20% de da\xF1o recibido detr\xE1s de la l\xEDnea"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639743003
+    m_Localized: Bien Cuidados
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639743004
+    m_Localized: +10% de velocidad para todo el equipo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639743005
+    m_Localized: Bien Alimentados
+    m_Metadata:
+      m_Items: []
+  - m_Id: 27906654639743006
+    m_Localized: +10% de ataque para todo el equipo
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

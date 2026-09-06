@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 using SowurShield.Animals;
 
 namespace SowurShield.Combat
@@ -20,9 +21,29 @@ public class TeamAssemblerData : MonoBehaviour
         // ScriptableObject reference - persists across scenes!
         public AnimalData animalData;
 
+        /// <summary>
+        /// Identity of the individual animal, not its species.
+        ///
+        /// Everything here used to key off animalData, the shared ScriptableObject, so two
+        /// animals of the same species were indistinguishable: the second one could not be
+        /// added to the team, and feeding one marked both. It only went unnoticed because
+        /// the shipped farm happens to give every animal a distinct AnimalData asset — the
+        /// moment the market sells a repeated species, it breaks.
+        ///
+        /// Animal.gameObject.name is already the ISaveable identity key and is kept unique
+        /// for purchased animals by GenerateUniquePurchasedName, so it is the natural id.
+        /// </summary>
+        public string animalId;
+
         // Runtime data extracted from Animal component
         public string customName;
         public float happiness;
+
+        /// <summary>
+        /// True when this animal ate the food its family actually prefers, which is what
+        /// the Well Fed synergy rewards. Being merely fed is not enough.
+        /// </summary>
+        public bool fedPreferredFood;
 
         // Combat progression stats
         public float attackGrowth;
@@ -53,6 +74,7 @@ public class TeamAssemblerData : MonoBehaviour
 
             // Extract the persistent data
             this.animalData = animal.AnimalData;
+            this.animalId = GetAnimalId(animal);
             this.customName = animal.GetDisplayName();
             this.happiness = animal.GetHappiness();
             this.gridPosition = pos;
@@ -100,6 +122,16 @@ public class TeamAssemblerData : MonoBehaviour
             }
             return animalData != null ? animalData.GetDisplayName() : "Unknown";
         }
+    }
+
+    /// <summary>
+    /// The identity of an individual animal. See PositionedAnimal.animalId for why this
+    /// is the GameObject name and not the AnimalData asset.
+    /// </summary>
+    public static string GetAnimalId(Animal animal)
+    {
+        if (animal == null) return "";
+        return animal.gameObject.name;
     }
 
     [Header("Team Composition")]
@@ -180,7 +212,11 @@ public class TeamAssemblerData : MonoBehaviour
                     // Create a persistent root GameObject
                     var go = new GameObject("TeamAssemblerData");
                     instance = go.AddComponent<TeamAssemblerData>();
-                    DontDestroyOnLoad(go);
+
+                    // DontDestroyOnLoad throws outside play mode, which would take down
+                    // any edit-mode test that merely reads the team.
+                    if (Application.isPlaying)
+                        DontDestroyOnLoad(go);
                 }
             }
             return instance;
@@ -195,7 +231,8 @@ public class TeamAssemblerData : MonoBehaviour
             return;
         }
         instance = this;
-        DontDestroyOnLoad(gameObject);
+        if (Application.isPlaying)
+            DontDestroyOnLoad(gameObject);
     }
 
     // ── PlayerPrefs persistence (survives domain reload in builds) ────────────
@@ -217,6 +254,8 @@ public class TeamAssemblerData : MonoBehaviour
         {
             var p = team[i];
             PlayerPrefs.SetString(PrefsKeyTeamPrefix + i + "_animal", p.animalData?.animalName ?? "");
+            PlayerPrefs.SetString(PrefsKeyTeamPrefix + i + "_id",     p.animalId ?? "");
+            PlayerPrefs.SetInt   (PrefsKeyTeamPrefix + i + "_pref",   p.fedPreferredFood ? 1 : 0);
             PlayerPrefs.SetString(PrefsKeyTeamPrefix + i + "_name",   p.customName ?? "");
             PlayerPrefs.SetFloat (PrefsKeyTeamPrefix + i + "_happiness", p.happiness);
             PlayerPrefs.SetInt   (PrefsKeyTeamPrefix + i + "_gx",  p.gridPosition.x);
@@ -261,6 +300,8 @@ public class TeamAssemblerData : MonoBehaviour
 
             var p = new PositionedAnimal();
             p.animalData        = data;
+            p.animalId          = PlayerPrefs.GetString(PrefsKeyTeamPrefix + i + "_id", animalName);
+            p.fedPreferredFood  = PlayerPrefs.GetInt(PrefsKeyTeamPrefix + i + "_pref", 0) == 1;
             p.customName        = PlayerPrefs.GetString(PrefsKeyTeamPrefix + i + "_name", "");
             p.happiness         = PlayerPrefs.GetFloat (PrefsKeyTeamPrefix + i + "_happiness", 50f);
             p.gridPosition      = new Vector2Int(PlayerPrefs.GetInt(PrefsKeyTeamPrefix + i + "_gx", 6),
@@ -291,7 +332,8 @@ public class TeamAssemblerData : MonoBehaviour
             return false;
         }
 
-        // Check if animal is already in team
+        // Check if this individual animal is already in the team. Deliberately by id:
+        // two animals of the same species are two different animals.
         if (IsAnimalInTeam(animal))
         {
             return false;
@@ -306,9 +348,9 @@ public class TeamAssemblerData : MonoBehaviour
     /// </summary>
     public bool RemoveAnimal(Animal animal)
     {
-        if (animal == null || animal.AnimalData == null) return false;
+        if (animal == null) return false;
 
-        PositionedAnimal positioned = team.Find(pa => pa.animalData == animal.AnimalData);
+        PositionedAnimal positioned = FindMember(animal);
         if (positioned != null)
         {
             team.Remove(positioned);
@@ -336,14 +378,14 @@ public class TeamAssemblerData : MonoBehaviour
     /// </summary>
     public bool MoveAnimal(Animal animal, Vector2Int newPosition)
     {
-        if (animal == null || animal.AnimalData == null) return false;
+        if (animal == null) return false;
 
-        PositionedAnimal positioned = team.Find(pa => pa.animalData == animal.AnimalData);
+        PositionedAnimal positioned = FindMember(animal);
         if (positioned != null)
         {
             // Check if new position is occupied by different animal
             PositionedAnimal occupant = team.Find(pa => pa.gridPosition == newPosition);
-            if (occupant != null && occupant.animalData != animal.AnimalData)
+            if (occupant != null && occupant != positioned)
             {
                 // Swap positions
                 Vector2Int oldPosition = positioned.gridPosition;
@@ -363,15 +405,24 @@ public class TeamAssemblerData : MonoBehaviour
     /// <summary>
     /// Mark an animal as fed
     /// </summary>
-    public void MarkAsFed(Animal animal)
+    public void MarkAsFed(Animal animal, bool preferredFood = false)
     {
-        if (animal == null || animal.AnimalData == null) return;
+        if (animal == null) return;
 
-        PositionedAnimal positioned = team.Find(pa => pa.animalData == animal.AnimalData);
+        PositionedAnimal positioned = FindMember(animal);
         if (positioned != null)
         {
             positioned.isFed = true;
+            if (preferredFood) positioned.fedPreferredFood = true;
         }
+    }
+
+    /// <summary>Find this individual animal's entry in the team, or null.</summary>
+    public PositionedAnimal FindMember(Animal animal)
+    {
+        if (animal == null) return null;
+        string id = GetAnimalId(animal);
+        return team.Find(pa => pa.animalId == id);
     }
 
     /// <summary>
@@ -423,8 +474,7 @@ public class TeamAssemblerData : MonoBehaviour
     /// </summary>
     public bool IsAnimalInTeam(Animal animal)
     {
-        if (animal == null || animal.AnimalData == null) return false;
-        return team.Exists(pa => pa.animalData == animal.AnimalData);
+        return FindMember(animal) != null;
     }
 
     /// <summary>
@@ -456,7 +506,24 @@ public class TeamAssemblerData : MonoBehaviour
     /// </summary>
     public bool IsTeamValid()
     {
-        return team.Count > 0 && AreAllAnimalsFed();
+        // Feeding is no longer a gate. An unfed animal fights at a penalty (applied by
+        // CombatTeamSpawner) rather than blocking the battle button with no explanation.
+        return team.Count > 0;
+    }
+
+    /// <summary>
+    /// The synergies this team currently has. Single source of truth shared with the
+    /// battle — see <see cref="TeamSynergy"/>.
+    /// </summary>
+    public List<ActiveSynergy> GetActiveSynergies()
+    {
+        return TeamSynergy.Evaluate(TeamSynergy.BuildMembers(team));
+    }
+
+    /// <summary>How many team members have not been fed at all.</summary>
+    public int GetUnfedCount()
+    {
+        return team.Count(pa => !pa.isFed);
     }
 }
 
