@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -9,9 +9,10 @@ namespace SowurShield.MapEditor
     /// <summary>
     /// A lista de objetos que se pode colocar no mundo.
     ///
-    /// Painel proprio, com rolagem, aberto por um botao da paleta principal: sao 57
-    /// prefabs (34 decoracoes, 17 itens de chao, 4 arvores, 2 frutas) e uma lista
-    /// fixa desse tamanho nao cabe na tela nem faz sentido misturada aos pinceis.
+    /// Painel proprio, com rolagem, aberto por um botao da paleta principal: sao 73
+    /// entradas (10 NPCs, 34 decoracoes, 17 itens de chao, 6 pedras de caminho,
+    /// 4 arvores, 2 frutas) e uma lista fixa desse tamanho nao cabe na tela nem faz
+    /// sentido misturada aos pinceis.
     ///
     /// Construida por codigo, como o resto da UI do editor.
     /// </summary>
@@ -288,7 +289,7 @@ namespace SowurShield.MapEditor
         }
 
         /// <summary>
-        /// A lista rolavel. 57 itens nao cabem sem rolagem, e um ScrollRect com
+        /// A lista rolavel. 73 itens nao cabem sem rolagem, e um ScrollRect com
         /// VerticalLayoutGroup e o caminho padrao do Unity para isso.
         /// </summary>
         private void ConstruirLista(Transform pai, float y, float altura)
@@ -345,7 +346,7 @@ namespace SowurShield.MapEditor
             string categoriaAtual = null;
             foreach (var entrada in PrefabCatalog.Tudo())
             {
-                // Cabecalho por categoria: 57 nomes numa lista corrida sao dificeis
+                // Cabecalho por categoria: 73 nomes numa lista corrida sao dificeis
                 // de varrer com o olho.
                 if (entrada.Categoria != categoriaAtual)
                 {
@@ -419,6 +420,7 @@ namespace SowurShield.MapEditor
         {
             "NPCs"        => "Personagens",
             "Decorations" => "Decoração",
+            "Paths"       => "Caminhos",
             "FruitTrees"  => "Árvores frutíferas",
             "Fruits"      => "Frutas",
             "GroundItems" => "Itens de chão",

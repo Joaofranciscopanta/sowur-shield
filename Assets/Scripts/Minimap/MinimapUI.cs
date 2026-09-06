@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
@@ -134,26 +134,31 @@ public class MinimapUI : MonoBehaviour
     /// </summary>
     private void InsetMapInsideFrame()
     {
-        if (minimapImage == null || borderImage == null) return;
+        if (minimapImage == null) return;
 
         var mapRect = minimapImage.rectTransform;
 
-        // Stretch to the panel, then pull each edge in by the frame's own padding plus a little
-        // of the frame's width so the map tucks under the moulding rather than butting against it.
+        // A moldura procedural tem espessura CONSTANTE em pixels (nao uma fracao do rect),
+        // porque e desenhada com 9-slice honesto. Entao o recuo do mapa tambem tem de ser
+        // em pixels: ancorar por fracao encolhia o mapa proporcionalmente e, no fullscreen
+        // de 1720px, abria um vao enorme entre o mapa e a moldura.
         mapRect.anchorMin = Vector2.zero;
         mapRect.anchorMax = Vector2.one;
-
-        mapRect.anchorMin = new Vector2(FrameInsetLeft, FrameInsetBottom);
-        mapRect.anchorMax = new Vector2(1f - FrameInsetRight, 1f - FrameInsetTop);
-        mapRect.offsetMin = Vector2.zero;
-        mapRect.offsetMax = Vector2.zero;
+        mapRect.offsetMin = new Vector2(FrameThicknessPx, FrameThicknessPx);
+        mapRect.offsetMax = new Vector2(-FrameThicknessPx, -FrameThicknessPx);
     }
 
-    // Fractions of the frame sprite taken up by transparent padding plus the moulding itself.
-    private const float FrameInsetLeft = 0.115f;
-    private const float FrameInsetRight = 0.105f;
-    private const float FrameInsetBottom = 0.155f;
-    private const float FrameInsetTop = 0.135f;
+    /// <summary>
+    /// Espessura pintada da moldura, em pixels de UI.
+    ///
+    /// A moldura antiga era o PNG frame_decorative_border com Image.Type.Sliced e borda de
+    /// 9-slice de 24px, enquanto o ornamento pintado tem ~66px de largura. O Sliced nunca
+    /// comprime a borda: fixava 24px de canto e esticava os outros 42px de desenho ao longo
+    /// de cada aresta — no fullscreen, mais de 8x. Era essa a causa das bordas que nao
+    /// batiam. A moldura de agora e gerada por codigo com a borda de 9-slice igual a
+    /// espessura desenhada, entao so a faixa lisa estica.
+    /// </summary>
+    private const float FrameThicknessPx = 14f;
 
     private void SetupUI()
     {
@@ -173,7 +178,87 @@ public class MinimapUI : MonoBehaviour
         if (canvasGroup != null)
             canvasGroup.alpha = 1f;
 
+        ApplyFrameArt();
         InsetMapInsideFrame();
+        SyncCameraAspect(normalSize);
+    }
+
+    /// <summary>
+    /// Poe a moldura procedural no lugar da arte fatiada errado, e desliga o miolo.
+    ///
+    /// Dois defeitos numa linha so: o Image estava Sliced com borda de 24px sobre um
+    /// ornamento de 66px (ver <see cref="FrameThicknessPx"/>), e com fillCenter LIGADO —
+    /// isto e, pintava um retangulo opaco por cima do mapa que a moldura deveria emoldurar.
+    /// </summary>
+    private void ApplyFrameArt()
+    {
+        if (borderImage == null) return;
+
+        borderImage.sprite = MinimapFrameSprite.Get();
+        borderImage.type = Image.Type.Sliced;
+        borderImage.fillCenter = false;   // a moldura emoldura; nao tapa
+        borderImage.color = borderColor;
+        borderImage.raycastTarget = false;
+        borderImage.pixelsPerUnitMultiplier = 1f;
+
+        // A moldura tem de ficar por cima do mapa e por baixo dos marcadores, senao o
+        // marcador do jogador desaparece sob o ornamento ao chegar perto da borda. Na cena
+        // a ordem era MinimapImage, PlayerMarker, Border — com a moldura por CIMA de tudo.
+        borderImage.rectTransform.SetAsLastSibling();
+        if (playerMarker != null)
+            playerMarker.SetAsLastSibling();
+        if (infoPanel != null)
+            infoPanel.transform.SetAsLastSibling();
+
+        PlaceInfoPanel();
+    }
+
+    /// <summary>
+    /// Poe o painel de informacao DENTRO da area util, recuado da moldura.
+    ///
+    /// Estava ancorado na base do rect com pivot 0 e posicao zero, ou seja encostado ao
+    /// limite exterior — no fullscreen a legenda ficava por baixo do ornamento de madeira,
+    /// meia dentro e meia fora. A moldura tem espessura fixa, entao o recuo tambem e fixo.
+    /// </summary>
+    private void PlaceInfoPanel()
+    {
+        if (infoPanel == null) return;
+
+        var rt = infoPanel.GetComponent<RectTransform>();
+        if (rt == null) return;
+
+        rt.anchorMin = new Vector2(0.5f, 0f);
+        rt.anchorMax = new Vector2(0.5f, 0f);
+        rt.pivot = new Vector2(0.5f, 0f);
+        rt.anchoredPosition = new Vector2(0f, FrameThicknessPx + InfoPanelMargin);
+    }
+
+    private const float InfoPanelMargin = 8f;
+
+    /// <summary>
+    /// Faz a textura do minimapa nascer com a mesma proporcao da janela onde e desenhada.
+    ///
+    /// O alvo de render era sempre quadrado. Nesta cena o painel de fullscreen mede
+    /// 1720x940, entao o mundo aparecia esticado quase para o dobro da largura; e mesmo o
+    /// HUD "quadrado" nao era quadrado por dentro, porque a janela util fica menor que o
+    /// rect pela espessura da moldura.
+    /// </summary>
+    private void SyncCameraAspect(Vector2 panelSize)
+    {
+        if (cachedMinimapCamera == null)
+            cachedMinimapCamera = FindFirstObjectByType<MinimapCamera>();
+        if (cachedMinimapCamera == null) return;
+
+        float w = panelSize.x - FrameThicknessPx * 2f;
+        float h = panelSize.y - FrameThicknessPx * 2f;
+        if (w <= 1f || h <= 1f) return;
+
+        cachedMinimapCamera.SetAspect(w / h);
+
+        // SetAspect pode trocar o RenderTexture por um de outro tamanho; a RawImage guarda
+        // a referencia antiga e ficaria a desenhar uma textura ja libertada (um quadrado
+        // preto). Reconectar e barato e cobre tambem o caso de ainda nao estar ligada.
+        ConnectToMinimapCamera();
     }
 
     private void ConnectToMinimapCamera()
@@ -299,6 +384,14 @@ public class MinimapUI : MonoBehaviour
         if (infoPanel != null)
             infoPanel.SetActive(true);
 
+        // O painel toma a proporcao do MUNDO, nao um retangulo fixo.
+        //
+        // fullscreenSize estava em 1720x940 (1,86:1) enquanto a quinta mede ~30x31 unidades
+        // — quase quadrada. Por melhor que fosse o enquadramento, sobravam faixas vazias
+        // dos dois lados: metade da largura do painel nao tinha mundo para mostrar. Com o
+        // painel a seguir a forma do mundo, o mapa preenche a moldura toda.
+        Vector2 target = FullscreenSizeForWorld();
+
         // Change anchor to center
         minimapPanel.anchorMin = new Vector2(0.5f, 0.5f);
         minimapPanel.anchorMax = new Vector2(0.5f, 0.5f);
@@ -309,11 +402,50 @@ public class MinimapUI : MonoBehaviour
 
         // Animate to center position and fullscreen size
         AnimatePosition(Vector2.zero, duration, ease);
-        AnimateSize(fullscreenSize, duration, ease);
+        AnimateSize(target, duration, ease);
         AnimateOpacity(1f, duration, ease);
 
         // Update state text
         UpdateStateText("Fullscreen");
+    }
+
+    /// <summary>
+    /// Tamanho do painel de fullscreen: a forma do mundo, dentro do que o ecra permite.
+    ///
+    /// <see cref="fullscreenSize"/> passa a ser o LIMITE (a caixa maxima que o painel pode
+    /// ocupar), e nao a forma imposta. A altura manda, porque um ecra e sempre mais largo
+    /// que alto; a largura sai da proporcao do mundo mais a moldura, e e cortada pelo
+    /// limite caso o mundo seja muito largo.
+    /// </summary>
+    private Vector2 FullscreenSizeForWorld()
+    {
+        Vector2 limit = fullscreenSize;
+
+        if (cachedMinimapCamera == null)
+            cachedMinimapCamera = FindFirstObjectByType<MinimapCamera>();
+
+        Bounds world;
+        if (cachedMinimapCamera == null || !cachedMinimapCamera.TryGetWorldBounds(out world))
+            return limit;
+
+        if (world.size.y <= 0.01f) return limit;
+
+        float worldAspect = world.size.x / world.size.y;
+        if (worldAspect <= 0.01f || float.IsNaN(worldAspect)) return limit;
+
+        // A area do mapa e o painel menos a moldura, dos dois lados.
+        float mapH = limit.y - FrameThicknessPx * 2f;
+        float mapW = mapH * worldAspect;
+
+        float maxMapW = limit.x - FrameThicknessPx * 2f;
+        if (mapW > maxMapW)
+        {
+            // Mundo largo demais para a caixa: manda a largura e a altura acompanha.
+            mapW = maxMapW;
+            mapH = mapW / worldAspect;
+        }
+
+        return new Vector2(mapW + FrameThicknessPx * 2f, mapH + FrameThicknessPx * 2f);
     }
 
     // ============================================================================
@@ -342,6 +474,11 @@ public class MinimapUI : MonoBehaviour
     private void AnimateSize(Vector2 targetSize, float duration, Ease ease)
     {
         currentTargetSize = targetSize;
+
+        // A proporcao e acertada pelo tamanho ALVO, nao a cada frame da animacao: refazer o
+        // RenderTexture e caro e faria dezenas de realocacoes durante a transicao. O mapa
+        // acompanha a animacao levemente esticado por ~0,3s e assenta certo no fim.
+        SyncCameraAspect(targetSize);
 
         if (sizeTween != null && sizeTween.IsActive())
             sizeTween.Kill();
@@ -483,10 +620,16 @@ public class MinimapUI : MonoBehaviour
         if (!playerMarker.gameObject.activeSelf)
             playerMarker.gameObject.SetActive(true);
 
-        // Convert viewport to local position within minimap panel
+        // Mapeado sobre a area UTIL — o rect menos a moldura — e nao sobre o rect inteiro.
+        // Usar sizeDelta punha o marcador progressivamente fora do sitio quanto mais longe
+        // do centro, ate cair por baixo do ornamento nas bordas: o mapa ocupa so a parte de
+        // dentro, mas o marcador era espalhado pela largura toda do painel.
+        float usableW = minimapPanel.rect.width - FrameThicknessPx * 2f;
+        float usableH = minimapPanel.rect.height - FrameThicknessPx * 2f;
+
         Vector2 localPos = new Vector2(
-            (viewportPos.x - 0.5f) * minimapPanel.sizeDelta.x,
-            (viewportPos.y - 0.5f) * minimapPanel.sizeDelta.y
+            (viewportPos.x - 0.5f) * usableW,
+            (viewportPos.y - 0.5f) * usableH
         );
 
         playerMarker.anchoredPosition = localPos;

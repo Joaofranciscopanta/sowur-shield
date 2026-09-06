@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using SowurShield.Farming;
 
 namespace SowurShield.MapEditor
@@ -238,6 +238,10 @@ namespace SowurShield.MapEditor
                 scale = EscalaComEspelho(prefabSelecionado),
                 isActive = true
             });
+
+            // O minimapa desenha o chao a partir dos sprites da cena; um predio novo so
+            // aparece la se alguem pedir o redesenho.
+            SowurShield.Minimap.MinimapTerrainPainter.RequestRepaint();
         }
 
         /// <summary>
@@ -265,11 +269,15 @@ namespace SowurShield.MapEditor
                 if (Vector3.Distance(filho.position, posicao) > tolerancia) continue;
 
                 var alvo = filho.position;
-                if (Application.isPlaying) Destroy(filho.gameObject);
-                else DestroyImmediate(filho.gameObject);
+                // DestroyImmediate mesmo em Play Mode: Destroy() so remove no fim do frame,
+                // e o repaint pedido logo abaixo ainda fotografaria o objeto que acabou de
+                // ser apagado — ele reapareceria no minimapa ate a proxima edicao.
+                DestroyImmediate(filho.gameObject);
 
                 mapEditor.CurrentMapData.objectSpawns.RemoveAll(
                     o => Vector3.Distance(o.position, alvo) <= tolerancia);
+
+                SowurShield.Minimap.MinimapTerrainPainter.RequestRepaint();
                 return;
             }
         }

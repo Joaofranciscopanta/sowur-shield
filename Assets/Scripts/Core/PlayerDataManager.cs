@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace SowurShield.Core
 {
@@ -122,8 +122,25 @@ public class PlayerDataManager : MonoBehaviour, ISaveable
     public void LoadData(GameData gameData)
     {
         Transform playerTf = PlayerTransform;
-        playerTf.position = gameData.playerData.position;
-        playerTf.rotation = Quaternion.Euler(0, 0, gameData.playerData.rotation);
+
+        // Uma chegada por porta manda na posicao guardada.
+        //
+        // SaveManager.Start() chama LoadGame(), que corre este metodo. Ao voltar de um
+        // interior para a vila isso restaurava a posicao GRAVADA no save — atirando o
+        // jogador de volta para onde estava quando gravou, em vez de o deixar a porta
+        // por onde acabou de sair. O sintoma parece a porta nao funcionar, e nao ha
+        // erro nenhum a apontar para aqui.
+        // ChegouAgoraPorPorta, e nao PontoDeChegadaPendente: o ponto e CONSUMIDO pelo
+        // PlayerSpawnPoint, que corre no Start e portanto costuma chegar primeiro. Ler
+        // o ponto aqui dava sempre vazio, e a posicao gravada voltava a ser aplicada por
+        // cima — o jogador aparecia a 5,3 unidades da porta por onde acabara de sair.
+        bool chegouPorPorta = SowurShield.Interiors.DoorInteractable.ChegouAgoraPorPorta;
+
+        if (!chegouPorPorta)
+        {
+            playerTf.position = gameData.playerData.position;
+            playerTf.rotation = Quaternion.Euler(0, 0, gameData.playerData.rotation);
+        }
 
         // Load player stats if available
         if (playerStats != null)

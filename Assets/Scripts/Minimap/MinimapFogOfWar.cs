@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using SowurShield.Core;
 
 namespace SowurShield.Minimap
@@ -88,6 +88,28 @@ public class MinimapFogOfWar : MonoBehaviour, ISaveable
         StartCoroutine(BuildNextFrame());
     }
 
+    private void OnEnable()
+    {
+        // A neblina e dimensionada pelos bounds do painter. Quando o mundo e editado e o
+        // chao redesenhado, esses bounds podem crescer (um predio colocado longe alarga a
+        // medicao) — sem reconstruir, a neblina ficaria deslocada do mapa que cobre.
+        // Build() preserva a mascara ja revelada, entao isto nao devolve o jogador ao
+        // escuro: so realinha.
+        // OnWorldChanged, nao OnRepainted: com o minimapa como camera aerea o painter esta
+        // desligado e nunca repinta, mas o mundo continua a mudar quando se edita o mapa.
+        MinimapTerrainPainter.OnWorldChanged += HandleTerrainRepainted;
+    }
+
+    private void OnDisable()
+    {
+        MinimapTerrainPainter.OnWorldChanged -= HandleTerrainRepainted;
+    }
+
+    private void HandleTerrainRepainted()
+    {
+        if (built) Build();
+    }
+
     private void OnDestroy()
     {
         SaveManager.Instance?.UnregisterSaveable(this);
@@ -170,6 +192,10 @@ public class MinimapFogOfWar : MonoBehaviour, ISaveable
         {
             fogObject = new GameObject("MinimapFog");
             fogObject.transform.SetParent(transform, false);
+
+            // Gerado, nao autorado: sem DontSave ficaria gravado na cena se esta for salva
+            // durante o Play Mode, e reapareceria dimensionado para o mundo antigo.
+            fogObject.hideFlags = HideFlags.DontSave;
 
             // The icon layer, NOT MinimapTerrain. MinimapTerrain is deliberately shared with the
             // main camera so the ground reads on both (see MinimapCamera.MinimapTerrainLayerName);

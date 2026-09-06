@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -33,6 +33,12 @@ namespace SowurShield.MapEditor
             // lista de cenario tem 57 entradas para percorrer.
             "Assets/Resources/Prefabs/NPCs",
             "Assets/Resources/Prefabs/Decorations",
+            // Pedras soltas para desenhar caminhos. Sao objetos, e nao um tipo de
+            // terreno: o Stone_Path.png nao e um tileset de encaixe, sao 33 pedras
+            // avulsas pensadas para se espalharem. Pinta-las com o pincel de chao
+            // exigiria ensinar o dual grid a um segundo terreno, e o resultado seria
+            // um piso continuo — que nao e o que a arte desenha.
+            "Assets/Resources/Prefabs/Paths",
             "Assets/Resources/Prefabs/FruitTrees",
             "Assets/Resources/Prefabs/Fruits",
             "Assets/Resources/Prefabs/GroundItems"

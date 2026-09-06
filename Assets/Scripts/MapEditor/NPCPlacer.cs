@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using SowurShield.Dialogue;
@@ -299,6 +299,7 @@ public class NPCPlacer : MonoBehaviour
         
         // Trigger event
         OnNPCPlaced?.Invoke(spawnData);
+        SowurShield.Minimap.MinimapTerrainPainter.RequestRepaint();
         
 
     }
@@ -374,6 +375,7 @@ public class NPCPlacer : MonoBehaviour
         
         // Trigger event
         OnNPCRemoved?.Invoke(npcPosition);
+        SowurShield.Minimap.MinimapTerrainPainter.RequestRepaint();
         
 
     }
