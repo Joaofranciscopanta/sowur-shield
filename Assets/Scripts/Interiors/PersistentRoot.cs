@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace SowurShield.Interiors
 {
@@ -73,6 +74,45 @@ public class PersistentRoot : MonoBehaviour
 
         // Nenhum era persistente (arranque normal): fica o primeiro.
         if (!guardado && todos.Length > 0) todos[0].enabled = true;
+    }
+
+    /// <summary>
+    /// Cenas onde esta UI faz sentido: a vila e os interiores das casas.
+    ///
+    /// A UI da quinta nao pertence a toda a parte. Marcar o TeamAssemblerCanvas como
+    /// persistente fez com que ele sobrevivesse a ida para a CombatScene e ficasse
+    /// desenhado POR CIMA do combate — que tem a sua propria interface. O mesmo valeria
+    /// para o menu principal.
+    ///
+    /// Testar pelo NOME da cena, e nao por uma lista de excecoes: uma cena nova de
+    /// combate ou de menu nao precisa de ser acrescentada a lado nenhum para se
+    /// comportar bem.
+    /// </summary>
+    internal static bool EhCenaDeJogo(string nomeDaCena)
+    {
+        if (string.IsNullOrEmpty(nomeDaCena)) return false;
+        return nomeDaCena == "SampleScene" || nomeDaCena.StartsWith("Interior_");
+    }
+
+    private void OnEnable()
+    {
+        // Sair da vila para uma cena que NAO e de jogo (combate, menu principal) leva
+        // esta UI consigo. Destruir-se ao chegar la e o que a mantem invisivel onde
+        // nao pertence, sem precisar de a religar depois: voltar a vila recarrega-a
+        // com a cena.
+        SceneManager.sceneLoaded -= AoMudarDeCena;
+        SceneManager.sceneLoaded += AoMudarDeCena;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= AoMudarDeCena;
+    }
+
+    private void AoMudarDeCena(Scene cena, LoadSceneMode modo)
+    {
+        if (EhCenaDeJogo(cena.name)) return;
+        Destroy(gameObject);
     }
 
     private void Awake()

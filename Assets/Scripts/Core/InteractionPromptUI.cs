@@ -1,4 +1,4 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 namespace SowurShield.Core
@@ -73,6 +73,8 @@ public class InteractionPromptUI : MonoBehaviour
 
         anchor.position = new Vector3(behaviour.transform.position.x, top + heightAbove * 0.35f,
                                       behaviour.transform.position.z);
+        // Reencontrar a camera: cada cena tem a sua, e a da cena anterior foi destruida.
+        if (mainCamera == null) mainCamera = Camera.main;
         if (mainCamera != null) anchor.rotation = mainCamera.transform.rotation;
 
         SetVisible(true);
