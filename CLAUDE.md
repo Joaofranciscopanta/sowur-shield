@@ -107,6 +107,24 @@ Assets/Scripts/
 - DOTween transitions; RenderTexture on Minimap layer; IUIWindow integration
 - Components: `MinimapController.cs`, `MinimapCamera.cs`, `MinimapUI.cs`, `MinimapIcon.cs`
 
+**⚠️ Automatic markers are OFF (since 2026-09-06).** The minimap is deliberately a plain
+aerial view of the farm: no player arrow, no NPC/animal diamonds, no building squares. The
+gate is `MinimapIcon.DrawsMarker`, which returns true only for `MinimapIconType.Waypoint` —
+the pins the *player* drops with right-click on the fullscreen map. Those still draw, because
+they are the player's own notes rather than clutter the game adds. To restore the automatic
+markers, make `DrawsMarker` return true unconditionally; nothing was deleted (the marker
+shapes, the clusterer and `MinimapIconSprites` are all still there).
+
+**Do NOT "clean up" by deleting the MinimapIcon components from the scene.** Their `Awake`
+is what strips the `Minimap` layer from every gameplay camera's culling mask — remove them
+and the painted minimap ground and fog start rendering over the game world. They stay on the
+35 scene objects and keep running even though most of them now draw nothing.
+
+`MinimapPinManager` builds a pin with `AddComponent` and calls `SetIconType(Waypoint)`
+*afterwards*, so `Start()` has already run with the default type. `SetIconType` therefore
+creates the sprite late when the new type says it should draw — without that, pins were
+placed, saved and counted, and invisible.
+
 ### Animal Husbandry System
 - `AnimalData.cs` (ScriptableObject): stats, feeding requirements, heart particle prefab
 - `Animal.cs`: petting (+5 happiness, first pet/day spawns heart), feeding (+3 happiness), production (spawns GroundItem)

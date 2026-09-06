@@ -6,9 +6,31 @@ namespace SowurShield.Minimap
 /// <summary>
 /// Component for GameObjects to appear on the minimap
 /// Attach to any object that should be visible on the minimap (NPCs, SellBox, Beds, etc.)
+///
+/// AUTOMATIC MARKERS ARE OFF — see <see cref="DrawsMarker"/>. The minimap reads as a plain
+/// aerial photograph of the farm: no player arrow, no NPC or animal diamonds, no building
+/// squares. The player's own pins are the one exception and still draw.
+///
+/// The component is deliberately still present and still runs even for the types that draw
+/// nothing, because it does a second job the minimap depends on: taking the Minimap layer out
+/// of every gameplay camera's culling mask. Delete these components and the painted minimap
+/// ground starts rendering over the game world.
 /// </summary>
 public class MinimapIcon : MonoBehaviour
 {
+    /// <summary>
+    /// Whether this icon draws a symbol on the minimap.
+    ///
+    /// Changed on 2026-09-06: the minimap is an aerial view of the farm, so the markers the
+    /// *game* places (player, NPCs, animals, buildings, bed, sell box) draw nothing. Markers
+    /// the *player* places — the pins dropped with right-click on the fullscreen map — still
+    /// draw, because those are the player's own notes rather than clutter the game adds.
+    ///
+    /// To bring the automatic markers back, return true here unconditionally. Nothing else was
+    /// removed: the drawing code, the marker shapes and the clusterer are all still in place.
+    /// </summary>
+    private bool DrawsMarker => iconType == MinimapIconType.Waypoint;
+
     [Header("Icon Settings")]
     [SerializeField] private MinimapIconType iconType = MinimapIconType.Generic;
     [SerializeField] private Sprite iconSprite;
@@ -141,8 +163,11 @@ public class MinimapIcon : MonoBehaviour
             playerTransform = player.transform;
         }
 
-        // Create icon representation
-        CreateIconObject();
+        // Create icon representation. Skipped for the automatic marker types: Awake has
+        // already done the culling-mask sweep, which is the part the rest of the minimap
+        // relies on, and that runs regardless.
+        if (DrawsMarker)
+            CreateIconObject();
 
         isInitialized = true;
     }
@@ -343,6 +368,13 @@ public class MinimapIcon : MonoBehaviour
     {
         iconType = type;
         ApplyIconTypeDefaults();
+
+        // A pin is built with AddComponent and only then told what it is, so Start() already
+        // ran with the default type and skipped creating the sprite. Create it now that the
+        // type says this marker should draw. Without this the player's pins were placed,
+        // saved and counted — and invisible.
+        if (isInitialized && DrawsMarker && iconObject == null)
+            CreateIconObject();
     }
 
     private void ApplyIconTypeDefaults()

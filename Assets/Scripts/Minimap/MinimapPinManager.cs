@@ -35,7 +35,12 @@ public class MinimapPinManager : MonoBehaviour, ISaveable
 
     [Header("Appearance")]
     [SerializeField] private Color pinColor = new Color(0.98f, 0.85f, 0.30f, 1f);
-    [SerializeField] private float pinSize = 0.95f;
+
+    // Raised from 0.95 on 2026-09-06. That value was picked when the map carried 35 automatic
+    // markers and a pin had to sit among them without shouting; now pins are the ONLY thing
+    // drawn over the aerial view, and at 0.95 units against a 32-unit camera each one was a
+    // 2%-wide dot that could not be found at a glance in the corner HUD.
+    [SerializeField] private float pinSize = 2.2f;
 
     [Header("References")]
     [SerializeField] private MinimapController controller;
