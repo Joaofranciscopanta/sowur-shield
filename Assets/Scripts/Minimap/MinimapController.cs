@@ -192,8 +192,13 @@ public class MinimapController : MonoBehaviour, IUIWindow
             timeController = FindFirstObjectByType<GameTimeController>();
     }
 
+    /// <summary>Se foi ESTA instancia que ligou as InputActions. Ver CleanupInput.</summary>
+    private bool ligueiAsAccoes;
+
     private void SetupInput()
     {
+        ligueiAsAccoes = true;
+
         if (toggleMinimapAction != null)
         {
             toggleMinimapAction.action.Enable();
@@ -221,6 +226,16 @@ public class MinimapController : MonoBehaviour, IUIWindow
 
     private void CleanupInput()
     {
+        // ⚠️ So desligar se foi ESTA instancia que ligou — as accoes vivem no ASSET e
+        // sao partilhadas. A raiz 'UI' atravessa cenas, mas cada cena traz a SUA copia,
+        // que se destroi ao chegar; o OnDestroy dessa copia desligava as accoes do
+        // minimapa que sobreviveu. Sintoma: depois de entrar numa casa e voltar, a tecla
+        // M deixava de abrir o minimapa, sem erro nenhum. Medido: as 7 accoes com
+        // enabled=False depois de uma travessia.
+        // Mesma causa do Inventory — ver o comentario de ligueiAsAccoes la.
+        if (!ligueiAsAccoes) return;
+        ligueiAsAccoes = false;
+
         if (toggleMinimapAction != null)
         {
             toggleMinimapAction.action.performed -= OnToggleMinimap;
