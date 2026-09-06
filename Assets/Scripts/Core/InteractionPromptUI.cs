@@ -71,10 +71,30 @@ public class InteractionPromptUI : MonoBehaviour
         var renderer = behaviour.GetComponentInChildren<SpriteRenderer>();
         float top = renderer != null ? renderer.bounds.max.y : behaviour.transform.position.y;
 
-        anchor.position = new Vector3(behaviour.transform.position.x, top + heightAbove * 0.35f,
-                                      behaviour.transform.position.z);
         // Reencontrar a camera: cada cena tem a sua, e a da cena anterior foi destruida.
         if (mainCamera == null) mainCamera = Camera.main;
+
+        float alvoY = top + heightAbove * 0.35f;
+
+        // Manter o emblema DENTRO do ecra.
+        //
+        // A camera do jogo so mostra 2,6 unidades acima do jogador. Um alvo alto —
+        // o altar do combate mede 1,9 e fica acima de quem se aproxima — empurrava o
+        // emblema para y=1,35 quando a camera so via ate 1,20: o "E" saia pelo topo e
+        // o portal parecia nao ter interacao nenhuma. O Lucas relatou isso como "nao
+        // consigo clicar no portal".
+        //
+        // Descer o emblema para baixo do limite superior e melhor do que o esconder:
+        // ele continua a apontar o alvo certo, apenas encostado ao topo.
+        if (mainCamera != null && mainCamera.orthographic)
+        {
+            float topoDoEcra = mainCamera.transform.position.y + mainCamera.orthographicSize;
+            const float Margem = 0.45f;   // meia altura do emblema, com folga
+            if (alvoY > topoDoEcra - Margem) alvoY = topoDoEcra - Margem;
+        }
+
+        anchor.position = new Vector3(behaviour.transform.position.x, alvoY,
+                                      behaviour.transform.position.z);
         if (mainCamera != null) anchor.rotation = mainCamera.transform.rotation;
 
         SetVisible(true);
