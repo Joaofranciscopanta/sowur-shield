@@ -61,19 +61,30 @@ public class PersistentRoot : MonoBehaviour
     {
         var todos = FindObjectsByType<UnityEngine.EventSystems.EventSystem>(
             FindObjectsInactive.Include, FindObjectsSortMode.None);
-        if (todos.Length <= 1) return;
+        if (todos.Length == 0) return;
 
-        // Fica o que ja atravessou cenas (buildIndex -1); os outros desligam-se.
-        bool guardado = false;
+        // Numa cena que NAO e de jogo (combate, menu), o EventSystem persistente esta
+        // de saida — as raizes da quinta destroem-se ao chegar aqui. Preferir o dela.
+        //
+        // ⚠️ Preferir sempre o persistente partia o combate: este callback corre ANTES
+        // de o Destroy acontecer, entao havia dois, o da CombatScene era desligado, e o
+        // persistente morria logo a seguir — a cena ficava com ZERO EventSystem ativos e
+        // nenhum botao do turno respondia. Medido: enabled=False, currentInputModule=NULL.
+        bool cenaDeJogo = EhCenaDeJogo(cena.name);
+
+        UnityEngine.EventSystems.EventSystem escolhido = null;
         foreach (var ev in todos)
         {
             bool persistente = ev.gameObject.scene.buildIndex == -1;
-            if (persistente && !guardado) { ev.enabled = true; guardado = true; }
-            else ev.enabled = false;
+            bool serve = cenaDeJogo ? persistente : !persistente;
+            if (serve) { escolhido = ev; break; }
         }
 
-        // Nenhum era persistente (arranque normal): fica o primeiro.
-        if (!guardado && todos.Length > 0) todos[0].enabled = true;
+        // Nao ha nenhum do tipo preferido: fica o primeiro que houver, seja qual for.
+        if (escolhido == null) escolhido = todos[0];
+
+        foreach (var ev in todos)
+            ev.enabled = (ev == escolhido);
     }
 
     /// <summary>
@@ -112,6 +123,20 @@ public class PersistentRoot : MonoBehaviour
     private void AoMudarDeCena(Scene cena, LoadSceneMode modo)
     {
         if (EhCenaDeJogo(cena.name)) return;
+
+        // Desligar o EventSystem JA, e nao so no Destroy.
+        //
+        // Destroy so remove no fim do frame, e ate la este EventSystem — que esta de
+        // saida — ainda podia receber os cliques do frame. Desligar aqui garante que
+        // quem os recebe e o da cena nova.
+        //
+        // ⚠️ Isto NAO faz desaparecer o "There can be only one active Event System" da
+        // consola: esse erro e escrito pelo OnEnable do EventSystem da cena nova, que
+        // corre antes de qualquer callback nosso. Medido — sobra 1 mensagem por ida a
+        // uma cena que nao e de jogo, e o estado final fica correto (1 ativo).
+        foreach (var ev in GetComponentsInChildren<UnityEngine.EventSystems.EventSystem>(true))
+            ev.enabled = false;
+
         Destroy(gameObject);
     }
 
@@ -160,16 +185,34 @@ public class PersistentRoot : MonoBehaviour
     /// Unity registá-lo numa lista onde ja consta, e sai um "Assertion failed on
     /// expression: m_GameObjects.find(gameObject.GetEntityId()) == m_GameObjects.end()".
     ///
-    /// Uma flag de instancia NAO resolve: o objeto que a cena recem-carregada traz e
-    /// uma instancia NOVA, com a flag a false — e o objeto que ja persistiu tem o Awake
-    /// a correr outra vez quando e reactivado, tambem com a sua flag ja perdida em
-    /// alguns casos. O estado real esta na cena a que o objeto pertence, nao numa
-    /// variavel nossa.
+    /// ⚠️ NAO chega registar quem NOS marcamos. O objeto pode ja ter sido marcado por
+    /// OUTRO componente seu: o InteractionManager, o SaveManager e mais uma duzia de
+    /// singletons chamam DontDestroyOnLoad no seu proprio Awake. Num GameObject que
+    /// tenha ambos, a primeira chamada e deles e nunca passa por aqui — foi exatamente
+    /// isso que manteve a assercao a aparecer no arranque, no 'InteractionManager' e no
+    /// 'Bunny'. A pergunta certa e "este objeto JA esta em DontDestroyOnLoad?", seja
+    /// quem for que o tenha posto la.
     /// </summary>
     internal static void MarcarComoPersistente(GameObject alvo)
     {
         if (alvo.scene.buildIndex == -1) return;   // ja esta em DontDestroyOnLoad
-        Object.DontDestroyOnLoad(alvo);
+
+        // Nenhuma guarda feita DENTRO do Awake resolve isto, e vale a pena dizer porque:
+        // a cena do objeto so e reatribuida DEPOIS de todos os Awake, entao ate la a
+        // leitura acima da sempre a cena antiga, tanto para nos como para eles. E um
+        // registo nosso de ids nao ve a chamada do OUTRO componente, que corre primeiro.
+        // Medido: a assercao continuava no 'InteractionManager' e no 'Bunny' com as duas
+        // guardas em vigor.
+        //
+        // Silenciar a assercao tambem nao serve: ela e um Assert do motor, nao um
+        // Debug.Log nosso.
+        //
+        // Entao NAO marcar aqui. A unica coisa que este objeto precisa e de estar
+        // persistente quando a cena mudar — e isso acontece muito depois do fim deste
+        // frame. Ao adiar, a leitura da cena ja e a definitiva e a guarda funciona:
+        // se outro singleton ja o marcou, saimos; se ninguem marcou, marcamos nos.
+        var adiador = alvo.AddComponent<AdiarPersistencia>();
+        adiador.hideFlags = HideFlags.HideInInspector;
     }
 
     private void OnDestroy()
