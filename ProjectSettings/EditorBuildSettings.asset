@@ -14,6 +14,36 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CombatScene.unity
     guid: 8123d2775d645ea438ba40e24f9543ec
+  - enabled: 1
+    path: Assets/Scenes/Interiors/Interior_Jogador.unity
+    guid: f8acde2fc64f3ef44bc1606e8dba0ce3
+  - enabled: 1
+    path: Assets/Scenes/Interiors/Interior_Isabela.unity
+    guid: 60c12cc78178b80429a9f17e981f0e19
+  - enabled: 1
+    path: Assets/Scenes/Interiors/Interior_Tomas.unity
+    guid: 17bd8e2458ffb9d44986a2eaf8199d15
+  - enabled: 1
+    path: Assets/Scenes/Interiors/Interior_Nara.unity
+    guid: 711c82819efa84944a175adbc2d1adfc
+  - enabled: 1
+    path: Assets/Scenes/Interiors/Interior_Clara.unity
+    guid: d102a7a84548fc949b2eaca4de7b9c2f
+  - enabled: 1
+    path: Assets/Scenes/Interiors/Interior_Rui.unity
+    guid: a57643c6eea521c4db8a5c66fa409bba
+  - enabled: 1
+    path: Assets/Scenes/Interiors/Interior_Bento.unity
+    guid: 7c939697c2617354080a871d0b287c71
+  - enabled: 1
+    path: Assets/Scenes/Interiors/Interior_Elias.unity
+    guid: 83e1f78ec1a81e749b7490b8860275d4
+  - enabled: 1
+    path: Assets/Scenes/Interiors/Interior_Joana.unity
+    guid: a892c63cf2811d34286fd1ff9364d354
+  - enabled: 1
+    path: Assets/Scenes/Interiors/Interior_Maren.unity
+    guid: b0477083bd80202438625f211c2a8632
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: b286c2084139f764ea5654cc096dc19f, type: 2}
     com.unity.input.settings: {fileID: 11400000, guid: 971ae17871d2c2e478f657f276ae76f2, type: 2}

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using TMPro;
 using UnityEngine;
 using SowurShield.Inventory;
@@ -145,6 +145,13 @@ public class FarmFloatingText : MonoBehaviour
         float elapsed = 0f;
         while (elapsed < duration)
         {
+            // O rotulo pode ser destruido a meio da animacao — uma mudanca de cena leva
+            // consigo tudo o que nao seja DontDestroyOnLoad, e esta corrotina corre no
+            // jogador, que ATRAVESSA as cenas. Sem esta guarda ficava a mexer num
+            // GameObject destruido e a consola enchia-se de MissingReferenceException
+            // a cada porta.
+            if (go == null || tmp == null) yield break;
+
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / duration);
 

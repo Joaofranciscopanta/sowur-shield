@@ -84,6 +84,18 @@ public class MinimapCamera : MonoBehaviour
 
     private void LateUpdate()
     {
+        // Reencontrar o jogador quando a referencia morre.
+        //
+        // O jogador atravessa cenas (ver PersistentPlayer) e cada cena traz a SUA copia,
+        // que se destroi ao chegar. Esta referencia foi resolvida no arranque e aponta
+        // para essa copia — um objeto ja destruido — entao o minimapa deixava de seguir
+        // ninguem e deixava um MissingReferenceException na consola.
+        if (playerTarget == null)
+        {
+            var jogador = GameObject.FindGameObjectWithTag("Player");
+            if (jogador != null) playerTarget = jogador.transform;
+        }
+
         if (followPlayer && playerTarget != null)
         {
             UpdateCameraPosition();
