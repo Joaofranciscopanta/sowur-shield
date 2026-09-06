@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace SowurShield.Core
@@ -200,6 +200,29 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
         }
     }
 
+    /// <summary>
+    /// Volta a encontrar o painel do menu quando a referencia morre.
+    ///
+    /// Este componente sobrevive a mudanca de cena, mas a referencia para o
+    /// `menuPanel` apontava para a copia que a cena trazia — destruida ao chegar. O
+    /// resultado era o ESC nao fazer NADA: a guarda `if (menuPanel == null) return;`
+    /// engolia tudo sem um erro sequer, e o jogador ficava sem menu depois de entrar
+    /// e sair de uma casa.
+    ///
+    /// Procura por nome porque o painel persiste com o mesmo GameObject; incluir
+    /// inativos e essencial, ja que o menu esta fechado quando isto corre.
+    /// </summary>
+    private void ReencontrarPainel()
+    {
+        foreach (var go in Resources.FindObjectsOfTypeAll<GameObject>())
+        {
+            if (go.name != "MenuPanel") continue;
+            if (go.scene.name == null) continue;   // prefab, nao objeto de cena
+            menuPanel = go;
+            return;
+        }
+    }
+
     public void OpenMenu()
     {
         if (isMenuOpen) return;
@@ -240,6 +263,8 @@ public class GameMenuManager : MonoBehaviour, IUIWindow
         if (isMenuOpen) return;
 
         // Validate required components
+        if (menuPanel == null) ReencontrarPainel();
+
         if (menuPanel == null)
         {
             return;

@@ -306,6 +306,28 @@ public static class BuildInteriorScenes
         col.isTrigger = true;
         col.size = new Vector2(1.4f, 0.8f);
 
+        // Uma porta VISIVEL na parede sul.
+        //
+        // O Lucas jogou a build e nao percebeu como sair: a saida era um colisor
+        // invisivel no chao. O emblema "E" do InteractionPromptUI so aparece quando ja
+        // se esta em cima dela — nao diz onde ela esta. Uma porta desenhada na parede
+        // le-se de longe, e e o que qualquer jogo 2D faz.
+        var props = CarregarFolha("Assets/Texture/Extra/TX Props with Shadow.png");
+        if (props.TryGetValue("TX Props with Shadow_9", out var spPorta))
+        {
+            var arte = new GameObject("Arte_Saida");
+            arte.transform.SetParent(saida.transform, false);
+            var sr = arte.AddComponent<SpriteRenderer>();
+            sr.sprite = spPorta;
+            sr.sortingLayerName = "Default";
+            // Acima da parede (-1000), abaixo de tudo o que anda.
+            sr.sortingOrder = -900;
+            float k = 1.1f / (spPorta.rect.height / spPorta.pixelsPerUnit);
+            arte.transform.localScale = new Vector3(k, k, 1f);
+            // Na parede, nao no chao: a fiada sul comeca meia celula abaixo de y0.
+            arte.transform.localPosition = new Vector3(0f, -0.35f, 0f);
+        }
+
         var porta = saida.AddComponent<DoorInteractable>();
         var so = new SerializedObject(porta);
         so.FindProperty("cenaDestino").stringValue = "SampleScene";

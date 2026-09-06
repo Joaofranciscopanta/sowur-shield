@@ -1,4 +1,5 @@
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -73,6 +74,45 @@ public class UIManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        // Reconstruir o registo a cada cena carregada.
+        //
+        // As janelas registam-se uma unica vez, no seu Start. Isso bastava quando a
+        // UI vivia toda na mesma cena do jogo, mas com interiores ha DOIS grupos:
+        //
+        //   - as que persistem (DialogueTreeUI, GameMenuSystem, MinimapController...)
+        //     — registam-se uma vez e nunca mais, porque o Start nao volta a correr;
+        //   - as que vivem em raizes proprias da SampleScene (SellingBox, ShopCanvas,
+        //     QuestsCanvas, FeedingTrough...) — sao destruidas ao entrar numa casa, e
+        //     as copias que a cena traz de volta registam-se... para serem destruidas
+        //     logo a seguir pelo PersistentRoot, deixando entradas MORTAS.
+        //
+        // Medido apos tres idas e voltas: o registo tinha 3 entradas, TODAS mortas. O
+        // ESC deixava de abrir o menu e nenhuma janela fechava — que e o "bugou de
+        // novo os menus" depois de entrar e sair varias vezes.
+        //
+        // Varrer a cena e mais fiavel do que confiar em N pontos de registo espalhados
+        // por N componentes, cada um com o seu ciclo de vida.
+        SceneManager.sceneLoaded += (_, __) => RebuildRegistry();
+    }
+
+    /// <summary>
+    /// Redescobre todas as janelas vivas e deita fora as entradas mortas.
+    ///
+    /// Chamado a cada carregamento de cena. `RegisterWindow` ignora duplicados, entao
+    /// voltar a registar o que ja la esta e inofensivo.
+    /// </summary>
+    public void RebuildRegistry()
+    {
+        PruneDeadWindows();
+
+        foreach (var mb in FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include,
+                                                            FindObjectsSortMode.None))
+        {
+            if (mb is IUIWindow janela) RegisterWindow(janela);
+        }
+
+        LogDebug($"Registry rebuilt: {registeredWindows.Count} windows");
     }
 
     /// <summary>
